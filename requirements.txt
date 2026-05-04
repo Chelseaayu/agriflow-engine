@@ -1,0 +1,24 @@
+### AgriFlow Engine — Python Dependencies
+### Tested with Python 3.12, kompatibel dengan 3.10+
+
+# Core scientific
+scipy>=1.10.0
+numpy>=1.24.0
+
+# Algorithm libraries
+matching>=1.4.0          # Gale-Shapley stable matching (Tier 1)
+
+# Geospatial
+geopy>=2.4.0             # Geodesic distance fallback
+
+# Testing
+pytest>=7.4.0
+
+# Data source connectors (HTTP)
+requests>=2.31.0
+beautifulsoup4>=4.12.0   # HTML parsing untuk PIHPS scraper
+
+# Optional: API server (uncomment untuk production)
+# fastapi>=0.115.0
+# pydantic>=2.5.0
+# uvicorn>=0.30.0

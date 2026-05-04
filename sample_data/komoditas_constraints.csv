@@ -1,0 +1,20 @@
+code,nama,max_distance_km,min_viable_tons,max_fresh_age_days,baseline_price_idr_per_kg
+cabai_merah,Cabai Merah Besar,200,1.0,5,45000
+cabai_rawit,Cabai Rawit Merah,200,1.0,5,60000
+bawang_merah,Bawang Merah,400,2.0,30,35000
+bawang_putih,Bawang Putih (Bonggol),600,2.0,60,40000
+tomat,Tomat Sayur,150,1.0,7,12000
+kentang,Kentang,400,2.0,21,14000
+kol,Kol/Kubis,300,2.0,14,8000
+wortel,Wortel,300,2.0,14,11000
+beras_premium,Beras Premium,800,5.0,180,15500
+beras_medium,Beras Medium,800,5.0,180,13000
+jagung,Jagung Pipilan Kering,600,5.0,120,6000
+kedelai,Kedelai Lokal,600,3.0,120,11000
+telur_ayam,Telur Ayam Ras,300,1.0,21,29000
+daging_ayam,Daging Ayam Ras,200,0.5,3,37000
+daging_sapi,Daging Sapi Murni,200,0.5,3,138000
+gula_pasir,Gula Pasir Lokal,600,3.0,365,18000
+minyak_goreng,Minyak Goreng Curah,600,3.0,180,16500
+ikan_segar,Ikan Segar (Bandeng/Tongkol),150,0.5,2,35000
+tepung_terigu,Tepung Terigu,600,3.0,180,13000

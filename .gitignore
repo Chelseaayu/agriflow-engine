@@ -1,0 +1,76 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.cache
+*.cover
+*.log
+
+# Word lock files (when Word has docx open)
+~$*.docx
+~$*.xlsx
+~$*.pptx
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# OS
+.directory
+desktop.ini
+
+# Local configs
+*.local
+.env.local
+config.local.json
+
+# API keys / secrets (defensive — never commit)
+.secrets
+secrets/
+*.pem
+*.key
+api_keys.txt
+
+# Temporary extraction artifacts
+v8_extracted.txt
+v9_extracted.txt
+*_extracted.txt
+
+# Optional: docx output if you want to keep gitignored (we keep AgriFlow_v10.docx tracked)
+# AgriFlow_v10.docx

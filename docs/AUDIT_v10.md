@@ -274,4 +274,91 @@ python docs/generate_v10_docx.py
 
 ---
 
+---
+
+## 11. OTAK Matching Engine — Final Verdict (Mei 2026)
+
+> Section ini ditulis setelah review eksternal yang membandingkan AgriFlow v10 dengan paradigma algoritma sistem pangan global (MILP, MAS, ADP, ML black-box) dan platform LLM agrikultur (AgroLLM, AgriGPT, Farmer.Chat). Scope verdict ini terbatas pada **core matching engine** (bukan periphery seperti LLM/IVR/forecasting yang masih roadmap Y1).
+
+### 11.1 Verdict Singkat
+
+**✅ OTAK matching engine v10 SOLID** — production-ready untuk provincial scope (Jatim 38 kab), architecturally sound untuk national scale dengan optimization roadmap ter-quantify.
+
+### 11.2 Yang Konkret Tervalidasi (Defensible Claims)
+
+| # | Kapabilitas | Bukti di Codebase |
+|---|---|---|
+| 1 | 4-layer architecture (Layer 0/1/2/3 + post-process) | 5 module Python di `matching_engine/` (~1000 baris) |
+| 2 | 19 skenario edge case (Volume A1-A4, Spasial B1-B3, Temporal C1-C3, Disrupsi D1-D5, Politis E1-E5) | 106/106 pytest pass dalam 0.16s |
+| 3 | Equity multiplier kalibrasi BPS 2024 | `EQUITY_BOOST_30` fires untuk Sampang (66.72) & Bangkalan (67.70) di demo aktual |
+| 4 | Two-tier confidence (Tier 1 stable matching, Tier 2 greedy) | Auto-dispatch logic di `allocation.allocate()`, tested |
+| 5 | 5-dimensi multi-objective scoring + 3 weight schemes | `DEFAULT/RAMADAN/IMPORT_POLICY_WEIGHTS` di `scoring.py`, 23 unit test |
+| 6 | 8 hard constraints + BBM-aware distance shrink | `is_viable_pair()` dengan 9 ConstraintReason codes |
+| 7 | Cross-platform demo (Windows/Linux/Mac UTF-8) | Demo runs di Windows fresh-install dengan default cp1252 console |
+
+### 11.3 Yang TIDAK Boleh Diklaim (Risk Mitigation untuk Pitch)
+
+Berdasarkan review external, beberapa klaim di analisis komparatif **harus di-tone-down** sebelum pitch agar tidak terbongkar di Q&A teknis:
+
+| Klaim Risky | Versi Defensible |
+|---|---|
+| ❌ "First in world" | ✅ "First-in-Indonesia operational implementation of equity-weighted stable matching for sub-national food commodity distribution" |
+| ❌ "Production-ready" (tanpa qualifier) | ✅ "Production-ready untuk provincial scale; national scale roadmap quantified (spatial indexing + per-provinsi batching = 100-200× speedup estimate)" |
+| ❌ "Sahabat-AI 70B + 5 Bahasa Daerah + IVR" | ✅ "Sahabat-AI/IVR planned di Y1 build (saat ini engine matching saja yang implemented)" |
+| ❌ "XGBoost + Prophet ensemble" | ✅ "Predictive layer planned Y1; current scope: matching engine deterministic" |
+| ❌ "Menang mutlak benchmark 12 platform global" | ✅ "Comparative analysis dari 12 prominent platforms yang kami review menunjukkan AgriFlow unique dalam kombinasi 8 kapabilitas" |
+| ❌ "Lebih cepat dari Uber matching" | ✅ "Compute latency p99 < 60ms (target <500ms), margin >88%" |
+
+### 11.4 Strategic Positioning untuk Pitch DIGDAYA
+
+**Pesan utama yang BISA dipertahankan dengan integrity:**
+
+> "AgriFlow Matching Engine v10 adalah implementasi operasional pertama di Indonesia untuk equity-weighted stable matching sub-national food commodity distribution. Engine ini memadukan algoritma deterministic yang explainable (Gale-Shapley + Greedy + 5-dim scoring) dengan kalibrasi data real BPS 2024, sehingga aman digunakan oleh stakeholder B2G yang memerlukan transparansi tinggi (Bank Indonesia, Pemda, Bapanas). 19 skenario edge case yang relevan untuk realitas Indonesia (Ramadan spike, erupsi gunung, BBM naik, Pemda override, Bulog priority, dll) sudah ter-validasi otomatis via 106 pytest. Provincial scope tervalidasi performa dan correctness; national scope sudah ter-stress-test untuk identifikasi optimization plan yang clear."
+
+**Differentiator unik yang tidak bisa di-copy mudah:**
+
+1. **Equity multiplier kalibrasi BPS 2024** — bukan sekadar weight tuning, tapi konkret applicable ke kab tertinggal Jatim (Sampang & Bangkalan +30%)
+2. **Two-tier confidence (honest engineering)** — explicit handling perbedaan kualitas data PIHPS daily vs Bapanas weekly
+3. **19 skenario edge case** — coverage komprehensif yang tidak ada di platform global (eNAM 1, MealConnect 3, Food Drop 4)
+4. **Reproducible benchmarks** — `pytest tests/` + `benchmarks/latency.py` + `benchmarks/national_scale.py` semua bisa di-run oleh juri kapan saja
+
+### 11.5 Yang Solid tapi Bukan First-in-World
+
+Beberapa kapabilitas yang strong di AgriFlow tapi **memiliki precedent di academic/global** (jadi jangan diklaim sebagai breakthrough):
+
+- **Stable matching** — Gale-Shapley 1962, Nobel 2012. Banyak paper applied untuk berbagai domain. AgriFlow bukan first-of-kind.
+- **Multi-objective scoring** — Pattern lama di operations research. AgriFlow's 5 dimensions adalah pilihan domain-specific yang bagus, tapi paradigma-nya bukan novel.
+- **Perishability-aware matching** — Ada di literature food supply chain (mis. Akkerman et al. 2010, IIT food systems papers).
+- **Climate-adaptive routing** — Drone delivery research, food bank logistics papers punya prior art.
+
+**Yang genuinely unique adalah KOMBINASI 8 kapabilitas dalam satu engine yang ter-package, ter-test, dan kalibrasi data Indonesia 2024 untuk konteks Jatim sub-nasional.** Itu defensible.
+
+### 11.6 Hubungan dengan National Scale Gap (Section 3.2)
+
+Pertanyaan: "Kalau OTAK solid, mengapa national scale gagal benchmark?"
+
+**Jawaban honest:** Algorithmic correctness ≠ scalability. Engine v10 algoritmanya benar untuk semua skala (Tier 1 stable matching tetap valid 8 kota atau 90 kota; greedy tetap valid 30 atau 424 kab). Yang gagal adalah **implementasi Layer 1** yang tidak punya spatial indexing — saat scale linear → quadratic compute.
+
+Ini bukan masalah otak, ini masalah **plumbing**. Otak (decision logic) tetap sound. Optimization plan di Section 6 fokus full di Layer 1 plumbing, tidak menyentuh Layer 2 (scoring) atau Layer 3 (allocation) yang merupakan "decision brain" sesungguhnya.
+
+**Analogi:** Mesin Ferrari yang dipasang di sasis Pajero. Mesin (otak) bagus, tapi sasis (Layer 1) tidak optimized untuk kecepatan. Solusi: ganti sasis, bukan mesin.
+
+### 11.7 Status Sign-off
+
+| Aspek | Verdict | Confidence |
+|---|---|---|
+| Algoritma correctness | ✅ Solid | HIGH (106/106 tests) |
+| 19 skenario coverage | ✅ Complete | HIGH (semua tested otomatis) |
+| Equity multiplier | ✅ Applicable | HIGH (demonstrable di demo) |
+| Provincial latency (38 kab) | ✅ Production-grade | HIGH (margin 35× target) |
+| National latency (514 kab) | ⚠ Not yet | MEDIUM (roadmap clear, 1-2 minggu effort) |
+| Honest engineering | ✅ Aligned | HIGH (two-tier confidence + stale data + fail-safe) |
+| Cross-platform | ✅ Verified | HIGH (Windows/Linux/Mac UTF-8 fix) |
+| Documentation | ✅ Comprehensive | HIGH (proposal docx + audit + README + tests) |
+| Reproducibility | ✅ Solid | HIGH (generator script + benchmark scripts) |
+
+**Final sign-off:** Untuk fitur OTAK matching engine — ✅ APPROVED untuk submission DIGDAYA dengan kualifikasi "provincial-ready, national-roadmap". Periphery features (LLM, IVR, XGBoost) akan dibahas di review terpisah.
+
+---
+
 **End of audit.** Untuk lanjutan diskusi, referensikan section atau line spesifik di file ini.

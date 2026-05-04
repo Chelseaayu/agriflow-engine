@@ -12,7 +12,7 @@
 
 | File | Lokasi | Ukuran | Status |
 |---|---|---|---|
-| `AgriFlow_v10.docx` | `docs/AgriFlow_v10.docx` (in-repo) | 72.5 KB | ✅ Latest, 14 section, 80 heading, 58 tabel |
+| `AgriFlow_v10.docx` | `docs/AgriFlow_v10.docx` (gitignored — internal team artifact) | 72.5 KB | ✅ Latest, 14 section, 80 heading, 58 tabel. Regenerate via `python docs/generate_v10_docx.py` |
 | Generator script | `docs/generate_v10_docx.py` | ~75 KB | ✅ Reproducible — regenerate kapan saja |
 | Engine code | `matching_engine/*.py` | 5 module | ✅ 106/106 tests PASS |
 | Data connectors | `data_sources/*.py` | 8 connector | ✅ Dual-mode (mock + live) |
@@ -230,7 +230,7 @@ Total effort 1-2 minggu engineering untuk siap nasional. Tidak butuh redesign �
 - `benchmarks/national_scale.py` — synthetic national workload stress test
 - `docs/generate_v10_docx.py` — proposal regeneration script
 - `docs/AUDIT_v10.md` — this file
-- `AgriFlow_v10.docx` (parent folder) — superset proposal v9 + v10 updates
+- `docs/AgriFlow_v10.docx` (gitignored, regenerate via generator) — superset proposal v9 + v10 updates
 
 **Modified:**
 - `matching_engine/allocation.py` — equity threshold recalibration `<68/<72/<78/≥78`
@@ -269,7 +269,7 @@ python benchmarks/national_scale.py
 
 # Regenerate proposal docx
 python docs/generate_v10_docx.py
-# Output: ../AgriFlow_v10.docx (or AgriFlow_v10_NEW.docx if file locked)
+# Output: docs/AgriFlow_v10.docx (or AgriFlow_v10_NEW.docx if file locked)
 ```
 
 ---

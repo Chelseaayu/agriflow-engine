@@ -556,7 +556,7 @@ pip install python-docx  # untuk regenerate proposal docx
 
 | Document | Lokasi | Deskripsi |
 |---|---|---|
-| **Proposal v10** | [`docs/AgriFlow_v10.docx`](docs/AgriFlow_v10.docx) | Proposal lengkap 14 section: business + technical |
+| **Proposal v10** | Generate via `python docs/generate_v10_docx.py` | Proposal lengkap 14 section: business + technical (docx tidak ditracking di repo — internal team artifact) |
 | **Audit v10** | [`docs/AUDIT_v10.md`](docs/AUDIT_v10.md) | Consistency check + national scale analysis |
 | **README** | This file | Quick reference + getting started |
 | **Generator script** | [`docs/generate_v10_docx.py`](docs/generate_v10_docx.py) | Regenerate proposal docx dari source |
@@ -632,7 +632,7 @@ PIDI DIGDAYA × Hackathon 2026, Bank Indonesia.
 ## Pertanyaan & Kontak
 
 - Issue tracker: GitHub Issues (this repo)
-- Proposal lengkap: `AgriFlow_v10.docx` (parent folder)
+- Proposal lengkap: regenerate via `python docs/generate_v10_docx.py` (output: `docs/AgriFlow_v10.docx`, gitignored)
 - Audit teknis: [`docs/AUDIT_v10.md`](docs/AUDIT_v10.md)
 
 **Deteksi. Prediksi. Distribusi. Untuk Semua.**

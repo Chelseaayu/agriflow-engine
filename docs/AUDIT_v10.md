@@ -361,4 +361,123 @@ Ini bukan masalah otak, ini masalah **plumbing**. Otak (decision logic) tetap so
 
 ---
 
+---
+
+## 12. Academic Literature Review — Defensive Arsenal untuk Pitch (Mei 2026)
+
+> Section ini ditulis setelah research literatur mendalam terhadap klaim diferensiator AgriFlow v10. Tujuan: pisahkan claim yang **defensible secara akademik** dari yang **risky overclaim**, dan persiapkan defensive arsenal untuk Q&A juri akademisi.
+
+### 12.1 Final Decision: KEEP v10 Algorithm ✅
+
+Setelah review literatur, keputusan: **algoritma v10 tetap, tidak perlu redesign**. Setiap komponen punya academic foundation yang solid; kombinasi + kontekstualisasi Indonesia yang membuat AgriFlow unique.
+
+### 12.2 Yang Punya Prior Art (Jangan Diklaim "First")
+
+#### Equity-Weighted Food Distribution
+
+| Paper | Tahun | Kontribusi | Implikasi |
+|---|---|---|---|
+| Sengul Orgut & Lodree, "Equitable distribution of perishable items in a food bank supply chain" — *Production and Operations Management* | 2023 | Capacitated multi-period multi-product network flow model dengan equity criterion + perishability | Equity-weighted distribution **bukan novelty algoritmik**; AgriFlow extends dari charity (food bank) ke commercial B2G dengan IPM (bukan nutritional) |
+| Cornell ADP framework — Food Bank of Southern Tier NY | 2020 | ADP outperformed current policy 7.73%, 3% nutrition improvement | Confirms ADP works untuk food bank; AgriFlow pilih greedy+stable matching karena B2G butuh explainability tinggi |
+| Hasnain, Sengul Orgut, Ivy — "Elicitation of Preference among Multiple Criteria in Food Distribution by Food Banks" | 2021 | Multi-criteria framework: equity + effectiveness + efficiency | Confirms 3-criteria standard; AgriFlow tambah climate + perishability sebagai 4th-5th dimension |
+| Eisenhandler & Tzur, "On the equity-efficiency trade-off in food-bank network operations" | 2023 | Trade-off analysis equity vs efficiency, modest equity deviation can improve quantity & quality | Justifikasi mengapa AgriFlow tidak pure-equity; +30% boost adalah modest deviation yang reasonable |
+
+**Defensible AgriFlow contribution (bukan equity-weighted itu sendiri):** kalibrasi threshold ke distribusi IPM 2024 Jatim spesifik (Sampang 66.72, Bangkalan 67.70 → +30% konkret), bukan generic equity formula.
+
+#### Multi-Objective Perishable Food Distribution
+
+| Paper | Tahun | Kontribusi |
+|---|---|---|
+| OPSEARCH — "Multi-objective model for perishable food logistics networks design considering availability and access" | 2022 | Network design dengan availability + access constraints |
+| PMC — "Optimizing Cold Food Supply Chains for Enhanced Food Availability Under Climate Variability" | 2025 | Multi-dim climate-adaptive routing untuk cold chain |
+| ScienceDirect — "The Multi-objective Optimization for Perishable Food Distribution Route Considering Temporal-spatial Distance" | 2016 | Distance + time multi-objective optimization |
+| Frontiers Sustainable Food Systems — "Stochastic optimization of perishable agricultural supply chains: a hybrid genetic algorithm approach for robust network design under multi-dimensional uncertainty" | 2026 | GA-based network design dengan multi-dimensional uncertainty |
+| Springer ANOR — "Adaptive optimization approach for production and distribution planning of perishable food products under demand uncertainty" | 2025 | Adaptive optimization perishable products |
+
+**Defensible AgriFlow contribution (bukan multi-objective perishable itself):** 5-dim spesifik untuk Indonesia (climate weight 16% relevan karena monsoon, perishability calibrated dengan PIHPS data harian, BBM-aware distance untuk realitas subsidi BBM Indonesia).
+
+#### eNAM India — Known Limitations sudah Didokumentasikan
+
+Per literature (RNI 2024, Wikipedia eNAM, ResearchGate review):
+> "Without cold chains and transport infrastructure, perishable items become hard to keep fresh during trade. Logistical inefficiencies delay goods delivery."
+
+Klaim AgriFlow bahwa eNAM "lacks inter-regional surplus-deficit matching" **defensible** — eNAM adalah auction platform, bukan matching engine.
+
+### 12.3 Yang Plausibly Novel (Defensible)
+
+| Klaim | Status Literatur | Defensibility |
+|---|---|---|
+| **Stable matching (Gale-Shapley) applied untuk sub-national agricultural commodity matching** | Tidak ditemukan direct precedent dalam search. Stable matching biasanya untuk medical residency, school choice, organ donation, bukan food commodities | **HIGH** — defensible "first operational application of Gale-Shapley to sub-national food commodity matching" |
+| **Indonesia kabupaten-level operational matching engine across 19 komoditas** | Indonesian food distribution research existing tapi: descriptive (East Java rice study), single-district (Gunung Sindur EOQ), atau commodity-specific (kedelai). Tidak ada multi-province operational engine | **HIGH** — defensible "first operational implementation di Indonesia" |
+| **19 skenario edge case ter-test pytest** | Kebanyakan academic papers berhenti di simulation. Production-ready code dengan automated regression test jarang ditemukan di literatur food matching | **MEDIUM-HIGH** — defensible engineering contribution, bukan algorithmic novelty |
+| **Two-tier data confidence (HIGH/MEDIUM/LOW)** | Confidence labeling per match output tidak ditemukan eksplisit di paper food distribution | **MEDIUM** — defensible "first explicit confidence labeling per match dalam food matching engine" |
+| **Combination 8 kapabilitas dalam satu engine** | Tidak ada single platform di 12 yang di-review (eNAM, MealConnect, Food Drop, Uber, ECX, EAX, AfMX, FEWS NET, dll) yang punya semua 8 | **HIGH** — defensible "unique combination" claim |
+
+### 12.4 Recommended Pitch Positioning (Revised)
+
+**❌ Versi v10 saat ini di proposal docx:**
+> "AgriFlow Matching Engine adalah pertama di dunia yang menggabungkan stable matching, multi-objective scoring 5 dimensi, equity multiplier, dan climate-adaptive triggers."
+
+**✅ Versi defensible yang harus dipakai:**
+> "AgriFlow Matching Engine adalah **first operational implementation di Indonesia** yang menggabungkan stable matching (Gale-Shapley, Nobel 2012) dengan equity-weighted multi-objective scoring untuk sub-national food commodity distribution. Setiap komponen algoritmik (stable matching, equity weighting, multi-objective optimization) punya academic foundation yang well-established (Sengul Orgut 2023, Cornell ADP 2020, dll); kontribusi AgriFlow adalah **integrated engineering**, **kalibrasi BPS 2024 Indonesia**, dan **production-ready code dengan 106 pytest tests passing dalam 0.16s**."
+
+Specific, defensible, intellectually honest — and importantly, masih impressive untuk juri.
+
+### 12.5 Defensive Arsenal — Q&A Preparation
+
+Kalau juri yang dosen/peneliti tanya pertanyaan teknis berikut, ini referensi untuk respon defensible:
+
+**Q: "Apakah equity-weighted food distribution sudah ada di literatur?"**
+
+A: "Ya, ada banyak. Sengul Orgut & Lodree 2023 mempelajari equitable distribution of perishable items in food bank supply chain di POMS. Cornell punya ADP framework untuk food bank yang sudah deployed di Southern Tier NY. AgriFlow menggunakan prinsip yang sama tapi dengan dua extensions: (1) commercial B2G context bukan charity, (2) calibration menggunakan IPM BPS 2024 Indonesia bukan nutritional measure."
+
+**Q: "Mengapa Anda pakai Gale-Shapley dan bukan ADP atau MILP?"**
+
+A: "ADP dan MILP keduanya valid untuk food distribution — Cornell pakai ADP untuk food bank, banyak penelitian pakai MILP untuk supply chain. AgriFlow pilih Gale-Shapley untuk Tier 1 karena: (1) explainability tinggi yang dibutuhkan B2G stakeholder seperti BI dan Pemda, (2) latency target <500ms tidak mungkin dengan MILP global solve, (3) stability guarantee meaningful saat kualitas data tinggi (PIHPS daily). Untuk Tier 2 dengan data ±15% error, kami pakai greedy karena stability guarantee tidak meaningful — honest engineering choice."
+
+**Q: "Apa yang membedakan AgriFlow dari multi-objective perishable food papers seperti OPSEARCH 2022 atau Frontiers 2026?"**
+
+A: "Algorithmically, banyak shared concepts. Yang berbeda: (1) AgriFlow operasional dengan deployable code 106/106 pytest pass, kebanyakan paper stop di simulation, (2) calibration spesifik konteks Indonesia (5-dim weight tuned untuk monsoon climate + BBM subsidi + Ramadan spike), (3) integrasi langsung dengan 8 government data source Indonesia (PIHPS, Bapanas, BPS, BMKG, PVMBG, BNPB), (4) 19 skenario edge case yang relevan untuk realitas Indonesia."
+
+**Q: "Apakah klaim 'first in world' bisa dipertanggungjawabkan?"**
+
+A: "Klaim yang kami pertahankan: 'first operational implementation di Indonesia' untuk equity-weighted stable matching food commodity distribution di kabupaten-level. Komponen algoritmik individual (stable matching, equity weighting, multi-objective scoring) punya prior art di literatur. Yang novel adalah integrasi + kontekstualisasi + production-ready engineering — defensible secara akademik."
+
+### 12.6 Saran Update untuk Proposal Docx (v11 Future)
+
+Saat regenerate proposal v10 → v11, recommend update:
+
+1. **Section 5.5.2** "Benchmark vs 12 Platform Pangan Dunia" — frame sebagai "comparative analysis" bukan "menang mutlak benchmark"
+2. **Section 5.5.4** Layer 3 — tambahkan citation Sengul Orgut 2023 untuk equity-weighted approach (legitimasi via prior art, bukan claim novelty)
+3. **Section 5.5.5** — tambah footnote "Each scenario category corresponds to documented food supply chain risks (e.g., perishability handling per OPSEARCH 2022)"
+4. **Section 13** "Why AgriFlow Wins" — tambahkan bullet "Production-ready engineering: 106 pytest tests passing dalam 0.16s, runnable code dengan reproducible benchmarks. Most academic prior art (Sengul Orgut, Cornell ADP, OPSEARCH) berhenti di simulation."
+
+### 12.7 Bibliography (Untuk Referensi Tim)
+
+Wajib tim AgriFlow baca atau setidaknya familiar dengan papers ini sebelum pitch:
+
+1. **Sengul Orgut, I., & Lodree, E.J.** (2023). Equitable distribution of perishable items in a food bank supply chain. *Production and Operations Management*. https://onlinelibrary.wiley.com/doi/abs/10.1111/poms.14019
+
+2. **Cornell University** (2020). Algorithm boosts efficiency, nutrition for food bank ops. https://news.cornell.edu/stories/2020/09/algorithm-boosts-efficiency-nutrition-food-bank-ops
+
+3. **Hasnain, T., Sengul Orgut, I., & Ivy, J.S.** (2021). Elicitation of Preference among Multiple Criteria in Food Distribution by Food Banks. https://journals.sagepub.com/doi/10.1111/poms.13551
+
+4. **Eisenhandler, O., & Tzur, M.** (2023). On the equity-efficiency trade-off in food-bank network operations. *Journal of the Operational Research Society*. https://arxiv.org/pdf/2111.05839
+
+5. **Gale, D., & Shapley, L.S.** (1962). College Admissions and the Stability of Marriage. *American Mathematical Monthly* 69(1): 9-15. (Foundational paper untuk Tier 1 algorithm)
+
+6. **Roth, A.E., & Sotomayor, M.A.O.** (1990). Two-sided Matching: A Study in Game-theoretic Modeling and Analysis. (Comprehensive treatment dari market matching)
+
+7. **Multi-objective perishable food distribution route** (2016). https://www.sciencedirect.com/science/article/pii/S1877050916319755
+
+8. **Sun et al.** (2024). Enhancing food security through import volume optimization and supply chain communication models: A case study of East Java's rice sector. https://www.sciencedirect.com/science/article/pii/S2199853124002567 (Indonesia-specific, East Java context)
+
+### 12.8 Kesimpulan Section 12
+
+**Tetap dengan algoritma v10.** Tidak ada paper yang memberi alasan untuk redesign. Yang perlu di-update adalah **bahasa klaim** (dari "first in world" ke "first operational implementation di Indonesia" + acknowledgment of prior art). Algoritma engineering AgriFlow solid dan well-grounded di academic foundation.
+
+**Defensive posture untuk pitch:** Acknowledge prior art secara explicit (justru meningkatkan credibility), highlight specific contributions (Indonesia calibration + 19 scenarios + production-ready code + integrated engineering). Hindari overclaim yang bisa di-test forensik oleh juri akademisi.
+
+---
+
 **End of audit.** Untuk lanjutan diskusi, referensikan section atau line spesifik di file ini.

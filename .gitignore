@@ -73,4 +73,4 @@ v9_extracted.txt
 *_extracted.txt
 
 # Optional: docx output if you want to keep gitignored (we keep AgriFlow_v10.docx tracked)
-# AgriFlow_v10.docx
+AgriFlow_v10.docx

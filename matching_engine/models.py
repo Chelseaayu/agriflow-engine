@@ -41,6 +41,19 @@ class EmergencyMode(str, Enum):
     PEMDA_LOCKED = "PEMDA_LOCKED"   # do_not_export oleh Pemda
 
 
+class DemandSegment(str, Enum):
+    """Segmentasi demand-side untuk skenario F2 (HORECA vs Retail).
+
+    Sama komoditas, beda customer → beda grade preferensi + price point.
+    Engine tidak merge HORECA dan RETAIL demand di kab yang sama;
+    setiap segment di-match independen.
+    """
+    RETAIL = "RETAIL"           # household / pasar tradisional (default)
+    HORECA = "HORECA"           # hotel / restoran / catering — volume tinggi, grade Medium
+    GOVERNMENT = "GOVERNMENT"   # Bulog procurement, sekolah, militer, kantor
+    INDUSTRIAL = "INDUSTRIAL"   # pabrik (tepung → mie, kedelai → tahu/tempe)
+
+
 # =============================================================================
 # CORE ENTITIES
 # =============================================================================
@@ -105,13 +118,20 @@ class SupplyNode:
 
 @dataclass
 class DemandNode:
-    """Defisit/kebutuhan dari satu kabupaten untuk satu komoditas."""
+    """Defisit/kebutuhan dari satu kabupaten untuk satu komoditas.
+
+    Skenario F2: segment != RETAIL menandai demand-side segmentation
+    (HORECA, GOVERNMENT, INDUSTRIAL). Engine tidak merge demand antar
+    segment untuk komoditas + kab yang sama — Pemda dapat melihat tiap
+    segment dipenuhi oleh surplus berbeda dengan grade berbeda.
+    """
     kabupaten: Kabupaten
     commodity: Commodity
     volume_tons: float
     price_per_kg: float
     timestamp: datetime = field(default_factory=datetime.now)
     data_source: str = "PIHPS"
+    segment: DemandSegment = DemandSegment.RETAIL  # F2 — backwards compat default
 
 
 @dataclass
@@ -122,6 +142,28 @@ class WeatherForecast:
     max_rain_mm: float              # mm hujan maksimum di rute selama transit
     transit_window_days: int = 1
     source: str = "BMKG"            # "BMKG" | "OPEN_METEO"
+
+
+@dataclass
+class RouteBlackout:
+    """Skenario D6 — rute tidak tersedia karena mudik / demo / maintenance.
+
+    Origin/dest wildcard: gunakan "*" untuk match-any (mis. semua rute via
+    toll Cikampek). start_date / end_date inclusive.
+    """
+    origin_kab_id: str              # "*" untuk wildcard
+    dest_kab_id: str                # "*" untuk wildcard
+    start_date: datetime
+    end_date: datetime
+    reason: str = ""                # "MUDIK_H1_IDUL_FITRI" | "DEMO_TRANS_JAWA" | "SURAMADU_MAINT"
+
+    def is_active(self, reference_date: datetime) -> bool:
+        return self.start_date <= reference_date <= self.end_date
+
+    def matches_route(self, origin_id: str, dest_id: str) -> bool:
+        ok_origin = self.origin_kab_id == "*" or self.origin_kab_id == origin_id
+        ok_dest = self.dest_kab_id == "*" or self.dest_kab_id == dest_id
+        return ok_origin and ok_dest
 
 
 @dataclass
@@ -168,19 +210,26 @@ class ScoreBreakdown:
 
 @dataclass
 class MatchResult:
-    """Hasil satu pasangan surplus → deficit."""
+    """Hasil satu pasangan surplus → deficit.
+
+    v11: final_score = base_score × equity_multiplier × segment_multiplier.
+    segment_multiplier default 1.00 (RETAIL baseline) — backward-compat dengan
+    callers yang tidak set demand.segment.
+    """
     surplus: SupplyNode
     deficit: DemandNode
     matched_volume_tons: float
     distance_km: float
     base_score: float                       # 0-100, dari 5-dim weighted
     equity_multiplier: float                # 1.00, 1.05, 1.15, atau 1.30
-    final_score: float                      # base_score × equity_multiplier
+    final_score: float                      # base_score × equity_multiplier × segment_multiplier
     confidence: Confidence
     breakdown: ScoreBreakdown
     flags: List[str] = field(default_factory=list)
-    # contoh flags: ["RAMADAN_SPIKE", "BULOG_PRIORITY", "EQUITY_BOOST_30"]
+    # contoh flags: ["RAMADAN_SPIKE", "BULOG_PRIORITY", "EQUITY_BOOST_30",
+    #                "SEGMENT_HORECA_BULK_BONUS"]
     notes: str = ""
+    segment_multiplier: float = 1.00        # v11 — segment-aware adjustment
 
     def to_dict(self) -> Dict[str, Any]:
         """Untuk API response — semua nested object di-flatten."""

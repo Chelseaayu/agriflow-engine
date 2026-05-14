@@ -57,11 +57,21 @@ class TestVolumeScore:
         score = volume_score(s, d)
         assert score == 0.05  # 5/100
 
-    def test_supply_larger_than_demand(self, surabaya, kediri_kab, cabai_merah, make_supply, make_demand):
+    def test_supply_larger_than_demand_full_coverage(self, surabaya, kediri_kab, cabai_merah, make_supply, make_demand):
+        # v11 fix: surplus 200t > demand 50t → demand fully covered (50/50 = 1.0).
+        # Excess surplus (150t) akan di-split ke deficit lain di Layer 3 greedy.
+        # Old semantics (min/max → 0.25) punished big-producer matches —
+        # not aligned dengan Indonesian supply chain reality.
         s = make_supply(kediri_kab, cabai_merah, volume=200)
         d = make_demand(surabaya, cabai_merah, volume=50)
-        # matched=50, larger=200, score=0.25
-        assert volume_score(s, d) == pytest.approx(0.25)
+        assert volume_score(s, d) == pytest.approx(1.0)
+
+    def test_supply_partial_coverage(self, surabaya, kediri_kab, cabai_merah, make_supply, make_demand):
+        # Supply < demand → partial coverage.
+        # 30t supply / 50t demand = 0.6 (60% of demand satisfied by this source).
+        s = make_supply(kediri_kab, cabai_merah, volume=30)
+        d = make_demand(surabaya, cabai_merah, volume=50)
+        assert volume_score(s, d) == pytest.approx(0.6)
 
 
 # =============================================================================

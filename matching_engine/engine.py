@@ -28,8 +28,9 @@ from .constraints import (
     BULOG_PROCUREMENT_KAB, generate_candidates, is_viable_pair,
 )
 from .models import (
-    Confidence, DemandNode, EmergencyMode, Kabupaten, LogisticsContext,
-    MatchingReport, MatchResult, SupplyNode, Tier, WeatherForecast,
+    Confidence, DemandNode, DemandSegment, EmergencyMode, Kabupaten,
+    LogisticsContext, MatchingReport, MatchResult, RouteBlackout,
+    SupplyNode, Tier, WeatherForecast,
 )
 
 
@@ -182,6 +183,148 @@ def is_ramadan_proximity(reference_date: Optional[datetime] = None) -> bool:
 
 
 # =============================================================================
+# C4 — HOLIDAY CALENDAR (extends C1 Ramadan to multi-event)
+# =============================================================================
+
+def get_active_demand_event(
+    reference_date: Optional[datetime] = None,
+) -> Optional[str]:
+    """
+    Skenario C4: deteksi event demand spike yang sedang aktif.
+
+    Return event name: "RAMADAN" | "IMLEK" | "NATAL" | "SCHOOL_START" | None.
+
+    Window per event:
+        RAMADAN — H-21 to H-1 sebelum Idul Fitri (warisan dari C1)
+        IMLEK   — H-7 to H-1 sebelum Chinese New Year (window pendek)
+        NATAL   — H-21 to H-1 sebelum 25 Desember
+        SCHOOL_START — 2 minggu sebelum mid-Juli + mid-Januari (kos-kosan)
+
+    Priority order saat overlap: RAMADAN > NATAL > IMLEK > SCHOOL_START.
+    Production: ganti hardcoded tanggal dengan Hijri + Lunar calendar API.
+    """
+    reference_date = reference_date or datetime.now()
+    yr = reference_date.year
+
+    # RAMADAN — re-use existing logic
+    if is_ramadan_proximity(reference_date):
+        return "RAMADAN"
+
+    # NATAL — H-21 to H-1
+    for natal_yr in (yr, yr - 1, yr + 1):
+        natal = datetime(natal_yr, 12, 25)
+        if natal - timedelta(days=21) <= reference_date <= natal - timedelta(days=1):
+            return "NATAL"
+
+    # IMLEK — hardcoded approximations (production: lunar calendar)
+    imlek_dates = {
+        2026: datetime(2026, 2, 17),
+        2027: datetime(2027, 2, 6),
+        2028: datetime(2028, 1, 26),
+    }
+    imlek = imlek_dates.get(yr) or imlek_dates.get(yr - 1)
+    if imlek:
+        if imlek - timedelta(days=7) <= reference_date <= imlek - timedelta(days=1):
+            return "IMLEK"
+
+    # SCHOOL_START — 2 minggu sebelum mid-Juli & mid-Januari
+    for school_start in (datetime(yr, 7, 15), datetime(yr, 1, 15)):
+        if school_start - timedelta(days=14) <= reference_date <= school_start:
+            return "SCHOOL_START"
+
+    return None
+
+
+def _weights_for_event(event: Optional[str]) -> Dict[str, float]:
+    """Map event name → weight profile dari scoring.py."""
+    if event == "RAMADAN":
+        return scoring.RAMADAN_WEIGHTS
+    if event == "IMLEK":
+        return scoring.IMLEK_WEIGHTS
+    if event == "NATAL":
+        return scoring.NATAL_WEIGHTS
+    if event == "SCHOOL_START":
+        return scoring.SCHOOL_START_WEIGHTS
+    return scoring.DEFAULT_WEIGHTS
+
+
+# =============================================================================
+# D6 — ROUTE BLACKOUT (mudik / demonstrasi / maintenance)
+# =============================================================================
+
+def is_route_blacked_out(
+    origin_id: str,
+    dest_id: str,
+    blackouts: List[RouteBlackout],
+    reference_date: datetime,
+) -> Optional[RouteBlackout]:
+    """
+    Skenario D6: cek apakah rute origin→dest sedang ditutup pada reference_date.
+    Return RouteBlackout pertama yang matching, None kalau bersih.
+    Wildcard "*" pada origin/dest cocok semua kab.
+    """
+    for b in blackouts:
+        if b.is_active(reference_date) and b.matches_route(origin_id, dest_id):
+            return b
+    return None
+
+
+# =============================================================================
+# E6 — CONTRACT RESERVE (generalized Bulog pattern)
+# =============================================================================
+
+def apply_contract_reserve(
+    surplus_nodes: List[SupplyNode],
+    contracts: Optional[Dict[tuple, float]] = None,
+) -> tuple[List[SupplyNode], List[str]]:
+    """
+    Skenario E6: generalisasi Bulog reserve pattern untuk contract farming
+    pre-commitment (mis. Carrefour MoU 70%, Indofood kontrak gula 50%).
+
+    Args:
+        contracts: Dict[(kab_id, commodity_code), reserve_pct_0_to_1]
+            mis. {("3506", "bawang_merah"): 0.70} → 70% bawang Kediri
+            reserved untuk kontrak, 30% available untuk spot matching.
+
+    Return (adjusted_surplus_nodes, warning_messages).
+    """
+    if not contracts:
+        return list(surplus_nodes), []
+    adjusted = []
+    warnings = []
+    for s in surplus_nodes:
+        key = (s.kabupaten.id, s.commodity.code)
+        reserve_pct = contracts.get(key)
+        if reserve_pct is None or reserve_pct <= 0:
+            adjusted.append(s)
+            continue
+        reserved = s.volume_tons * reserve_pct
+        available = s.volume_tons - reserved
+        if available <= 0:
+            warnings.append(
+                f"{s.kabupaten.nama} {s.commodity.nama}: "
+                f"100% reserved untuk contract ({s.volume_tons:.1f}t)"
+            )
+            continue
+        new_s = SupplyNode(
+            kabupaten=s.kabupaten,
+            commodity=s.commodity,
+            volume_tons=available,
+            price_per_kg=s.price_per_kg,
+            harvest_age_days=s.harvest_age_days,
+            timestamp=s.timestamp,
+            data_source=s.data_source,
+        )
+        adjusted.append(new_s)
+        warnings.append(
+            f"{s.kabupaten.nama} {s.commodity.nama}: "
+            f"{reserved:.1f}t contract priority ({reserve_pct*100:.0f}%), "
+            f"{available:.1f}t available untuk spot matching"
+        )
+    return adjusted, warnings
+
+
+# =============================================================================
 # MAIN ENTRYPOINT
 # =============================================================================
 
@@ -195,6 +338,9 @@ def run_matching(
     import_policy_active: bool = False,
     reference_date: Optional[datetime] = None,
     force_strategy: Optional[str] = None,
+    route_blackouts: Optional[List[RouteBlackout]] = None,
+    contracts: Optional[Dict[tuple, float]] = None,
+    allow_grade_substitution: bool = False,
 ) -> MatchingReport:
     """
     AgriFlow Matching Engine — main entrypoint.
@@ -271,12 +417,25 @@ def run_matching(
     surplus_nodes, bulog_warnings = apply_bulog_split(surplus_nodes)
     warnings.extend(bulog_warnings)
 
-    # Skenario C1 — Ramadan proximity
-    ramadan_active = is_ramadan_proximity(reference_date) or logistics.is_ramadan_proximity
-    if ramadan_active:
-        weights = scoring.RAMADAN_WEIGHTS
-        warnings.append("Pre-Ramadan/Idul Fitri spike mode aktif — "
-                        "bobot perishability & price disesuaikan.")
+    # Skenario E6 — Contract reserve (generalisasi Bulog untuk MoU swasta)
+    surplus_nodes, contract_warnings = apply_contract_reserve(surplus_nodes, contracts)
+    warnings.extend(contract_warnings)
+
+    # Skenario C1 + C4 — Holiday calendar (RAMADAN / IMLEK / NATAL / SCHOOL_START)
+    active_event = get_active_demand_event(reference_date)
+    if logistics.is_ramadan_proximity:
+        active_event = active_event or "RAMADAN"
+    ramadan_active = active_event == "RAMADAN"
+    if active_event:
+        weights = _weights_for_event(active_event)
+        event_label = {
+            "RAMADAN": "Pre-Ramadan/Idul Fitri",
+            "IMLEK": "Pre-Imlek",
+            "NATAL": "Pre-Natal",
+            "SCHOOL_START": "School-start kos-kosan",
+        }.get(active_event, active_event)
+        warnings.append(f"{event_label} spike mode aktif — "
+                        f"bobot scoring disesuaikan untuk event ini.")
     elif import_policy_active:
         weights = scoring.IMPORT_POLICY_WEIGHTS
         warnings.append("Import policy detected — bobot price diturunkan, "
@@ -309,8 +468,29 @@ def run_matching(
     # LAYER 1 — CANDIDATE GENERATION
     # =========================================================================
     candidates = generate_candidates(
-        surplus_nodes, deficit_nodes, logistics=logistics
+        surplus_nodes, deficit_nodes, logistics=logistics,
+        allow_grade_substitution=allow_grade_substitution,
     )
+
+    # Skenario D6 — Filter rute yang ditutup (mudik / demo / maintenance)
+    if route_blackouts:
+        ref_date = reference_date or datetime.now()
+        filtered = []
+        blackout_count = 0
+        for s, d in candidates:
+            blocked = is_route_blacked_out(
+                s.kabupaten.id, d.kabupaten.id, route_blackouts, ref_date,
+            )
+            if blocked:
+                blackout_count += 1
+                continue
+            filtered.append((s, d))
+        if blackout_count > 0:
+            warnings.append(
+                f"Route blackout aktif: {blackout_count} pair difilter karena "
+                f"rute tertutup pada {ref_date.date().isoformat()}."
+            )
+        candidates = filtered
 
     # Track unmatched surplus/deficit
     matched_surplus_ids: Set[str] = set()
@@ -352,11 +532,18 @@ def run_matching(
     # POST-PROCESSING
     # =========================================================================
 
-    # Tag flags untuk tracking
+    # Tag flags untuk tracking. v11: preserve segment flags from allocation
+    # (F2 segment-aware multiplier emits audit flags like SEGMENT_HORECA_BULK_BONUS).
     for m in matches:
-        flags = []
+        flags = list(m.flags) if m.flags else []  # preserve segment audit flags
         if ramadan_active:
             flags.append("RAMADAN_SPIKE")
+        elif active_event == "IMLEK":
+            flags.append("IMLEK_SPIKE")
+        elif active_event == "NATAL":
+            flags.append("NATAL_SPIKE")
+        elif active_event == "SCHOOL_START":
+            flags.append("SCHOOL_START_SPIKE")
         if import_policy_active:
             flags.append("IMPORT_POLICY_ACTIVE")
         if m.equity_multiplier == 1.30:
@@ -370,6 +557,16 @@ def run_matching(
             flags.append("MADURA_CLUSTER")
         if m.deficit.kabupaten.emergency_mode == EmergencyMode.HUMANITARIAN:
             flags.append("HUMANITARIAN_PRIORITY")
+        # F1 — Grade substitution flag
+        if m.surplus.commodity.code != m.deficit.commodity.code:
+            flags.append("GRADE_SUBSTITUTION")
+            m.notes = (
+                f"{m.surplus.commodity.code} digunakan untuk memenuhi demand "
+                f"{m.deficit.commodity.code} (grade compatible substitution)."
+            )
+        # F2 — Demand segmentation flag (non-default segment)
+        if m.deficit.segment != DemandSegment.RETAIL:
+            flags.append(f"SEGMENT_{m.deficit.segment.value}")
         # Stale data flag → confidence drop satu tingkat
         # HIGH → MEDIUM, MEDIUM → LOW (sesuai spec C3).
         s_key = (m.surplus.kabupaten.id, m.surplus.commodity.code)

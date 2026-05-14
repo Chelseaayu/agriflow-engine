@@ -41,17 +41,33 @@ def distance_score(s: SupplyNode, d: DemandNode) -> tuple[float, float]:
 
 def volume_score(s: SupplyNode, d: DemandNode) -> float:
     """
-    Score = matched_volume / larger_volume.
-    Perfect 1-to-1 match → 1.0.
-    Mismatch besar (10t surplus vs 100t demand) → 0.1.
+    v11 fix: coverage-of-demand model.
 
-    Skenario A3 Volume Mismatch Drastis di-flag low score di sini.
+    Score = min(supply, demand) / demand.volume_tons.
+    Range [0, 1]:
+        - Perfect coverage (supply >= demand) → 1.0
+        - Partial coverage (supply < demand, e.g. 5t/100t) → 0.05
+        - Demand fully met → score reflects demand satisfaction, not surplus
+          efficiency. Excess surplus akan di-split ke deficit lain di Layer 3
+          allocation (greedy_match_tier2 partial-volume logic).
+
+    Rasional fix v11:
+        Formulasi lama (min/max) punish big-producer-to-small-deficit matches —
+        Tuban 800t beras → Surabaya 100t demand dapat score 0.125 padahal
+        match itu adalah pattern paling realistis untuk supply chain beras
+        Indonesia (1 sentra besar memasok many smaller markets). Formulasi
+        coverage-of-demand mengevaluasi kualitas match dari perspektif buyer,
+        yang adalah unit utama yang Layer 3 allocate.
+
+    Skenario A3 (Volume Mismatch Drastis) tetap detected via:
+        - Score rendah saat supply << demand (di sini)
+        - Flag VOLUME_MISMATCH_DRASTIS saat ratio < 0.20 (di engine.py
+          post-processing — flag terpisah dari score, untuk warning UX)
     """
-    matched = min(s.volume_tons, d.volume_tons)
-    larger = max(s.volume_tons, d.volume_tons)
-    if larger == 0:
+    if d.volume_tons == 0:
         return 0.0
-    return matched / larger
+    matched = min(s.volume_tons, d.volume_tons)
+    return matched / d.volume_tons
 
 
 # =============================================================================
@@ -182,6 +198,37 @@ IMPORT_POLICY_WEIGHTS: Dict[str, float] = {
     "price": 0.10,
     "perishability": 0.22,
     "climate": 0.18,
+}
+
+# Skenario C4 — Imlek (Chinese New Year): urban demand spike untuk
+# beras premium + jeruk + ayam. Mirip Ramadan tapi window lebih pendek
+# (H-7 sebelum Imlek). Bobot perishability + price naik moderate.
+IMLEK_WEIGHTS: Dict[str, float] = {
+    "distance": 0.20,
+    "volume": 0.20,
+    "price": 0.22,
+    "perishability": 0.21,
+    "climate": 0.17,
+}
+
+# Skenario C4 — Natal (Christmas): demand spike di Indonesia Timur
+# (NTT, Papua, Sulut, Maluku) — sembako + daging. Window H-21 to H-1.
+NATAL_WEIGHTS: Dict[str, float] = {
+    "distance": 0.20,
+    "volume": 0.22,
+    "price": 0.22,
+    "perishability": 0.20,
+    "climate": 0.16,
+}
+
+# Skenario C4 — School start (mid-Juli + mid-Januari): kos-kosan demand
+# untuk beras + minyak + telur. Bobot lebih menekankan volume + price.
+SCHOOL_START_WEIGHTS: Dict[str, float] = {
+    "distance": 0.22,
+    "volume": 0.24,
+    "price": 0.22,
+    "perishability": 0.16,
+    "climate": 0.16,
 }
 
 

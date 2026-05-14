@@ -72,5 +72,13 @@ v8_extracted.txt
 v9_extracted.txt
 *_extracted.txt
 
-# Optional: docx output if you want to keep gitignored (we keep AgriFlow_v10.docx tracked)
+# Proposal docx files — internal team artifacts, not for public repo
+AgriFlow_v8.docx
+AgriFlow_v9.docx
 AgriFlow_v10.docx
+docs/AgriFlow_v10.docx
+docs/AgriFlow_v11.docx
+
+# Proposal PDF intermediates (rendered from docx for wiki ingest)
+docs/AgriFlow_v10.pdf
+docs/AgriFlow_v11.pdf

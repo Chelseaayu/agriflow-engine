@@ -1,19 +1,7 @@
 # AgriFlow Matching Engine
 
-> **v11.0 release notes (Mei 2026)** — this README has been updated for v11. The previous v10 README is preserved at [`README_v10.md`](README_v10.md) for reference / diff.
->
-> **v11 contains 3 layers of change vs v10** (engine + scenarios + claims):
-> 1. **Engine fix #1** — `volume_score` now uses **coverage-of-demand** (`min(s,d) / demand.volume_tons`) instead of the old `min/max` ratio. Big-producer-to-small-deficit matches (Tuban 800t→Surabaya 100t beras) no longer get unfairly penalized. Demo impact: equity-boost matches (Lamongan→Bangkalan/Sampang beras) now rank **#1 and #2** with FinalScore 100.0 and 98.4 (was #8 in v10).
-> 2. **Engine fix #2** — `MatchResult.segment_multiplier` added. HORECA/GOVERNMENT/INDUSTRIAL demand now get segment-aware adjustments (±10%) based on supply characteristics; final_score = `base × equity × segment`. Fully auditable via per-match flags (`SEGMENT_HORECA_BULK_BONUS`, `SEGMENT_GOVERNMENT_TIER1_BONUS`, etc.). Greedy deficit-ordering also segment-aware.
-> 3. **Scenario expansion 19 → 24** — added C4 multi-holiday calendar (Imlek/Natal/school-start), D6 route blackout (mudik/demo/maintenance), E6 contract reserve (generalisasi Bulog), F1 grade substitution (premium → medium), F2 demand segmentation. New Kategori F: Kualitas & Segmentasi Komersial.
-> 4. **Claim-precision pass** — every diferensiator claim now references `file:line` in `matching_engine/`. Dropped "World-First" / "first-in-world" marketing; replaced with verifiable specifics. Two-tier confidence, +30% equity boost, stable matching — all now scoped to when they actually fire in production.
->
-> **Test suite: 134/134 pytest pass in 0.42s** (up from v10's 106/106). See [Status & Roadmap](#status--roadmap) for full details. Engine code remains backward-compatible: RETAIL default segment + opt-in `allow_grade_substitution` flag mean existing callers see identical behavior.
-
----
-
 > **Sub-national pangan matching engine pertama di Indonesia.**
-> Algoritma 4-lapis purpose-built untuk konteks pangan sub-nasional Indonesia. Layer 3 menggabungkan **Modified Gale-Shapley stable matching** (aktif saat kedua kabupaten Tier 1) dengan **greedy multi-objective + equity priority** (aktif saat ada Tier 2 — produksi Jatim saat ini), multi-objective scoring 5 dimensi, dan equity multiplier untuk kabupaten tertinggal IPM <68 saat menjadi deficit — semua untuk komoditas pangan tingkat kabupaten.
+> Algoritma 4-lapis hybrid yang menghubungkan kabupaten surplus dengan defisit menggunakan stable matching, multi-objective scoring 5 dimensi, dan equity multiplier untuk kabupaten tertinggal — semua untuk komoditas pangan tingkat kabupaten.
 
 [![Tests](https://img.shields.io/badge/tests-106%2F106%20passing-brightgreen)]()
 [![Latency](https://img.shields.io/badge/p99%20latency-1.4ms%20%E2%86%92%2055.5ms-blue)]()
@@ -54,19 +42,13 @@ AgriFlow Matching Engine memecahkan ini dengan 6 dimensi yang Uber tidak punya:
 | Dimensi | Penjelasan |
 |---|---|
 | **Perishability** | Cabai busuk dalam 5 hari, beras tahan 180 hari — engine hitung shelf life |
-| **Equity** | Kabupaten tertinggal IPM <68 dapat boost +30% **saat menjadi deficit/penerima** (allocation.py:38–65). Demo Jatim: Sampang (66.72) + Bangkalan (67.70) trigger `EQUITY_BOOST_30` di 2 dari 32 match (Ngawi→Bangkalan/Sampang beras). Rare-but-correct di Jatim; impact tumbuh dengan rollout nasional (Papua IPM ~50). |
+| **Equity** | Kabupaten tertinggal IPM rendah (Sampang 66.72) dapat boost +30% |
 | **Climate** | Banjir di rute = re-route otomatis |
 | **Volume** | 1 surplus bisa di-split ke banyak deficit |
-| **Stable Matching** | Modified Gale-Shapley (Nobel Prize Economics 2012) — fires saat kedua kabupaten Tier 1 (`allocation.py:341–347`). Untuk Jatim 8-IHK / 30-non-IHK saat ini, supply originate dari Tier 2 → production path = greedy-with-equity-priority. Stable matching jadi load-bearing setelah Tier 1 coverage expand nasional (~90 kota IHK). |
-| **Two-tier Confidence** | Setiap match return label `HIGH` / `MEDIUM` / `LOW` (`allocation.py:68–77`). Di Jatim saat ini MEDIUM adalah label default (semua surplus dari non-IHK kab); HIGH require kedua kab Tier 1 (rare di Jatim, achievable nasional); LOW fires saat data >24h stale. Transparant ke user. |
-| **Climate** | Score penalty saat BMKG/Open-Meteo forecast hujan deras di rute (`scoring.py:130–153`): >50mm/day → 0.3, >20mm → 0.6, ≤20mm → 1.0. Fallback neutral 0.7 untuk rute tanpa forecast data (demo: 10 rute weather seeded). Scoring penalty, bukan re-routing logic. |
+| **Stable Matching** | Guarantee fairness via Gale-Shapley (Nobel Prize Economics 2012) |
+| **Two-tier Confidence** | Data harian PIHPS (Tier 1) pakai algoritma ketat; data mingguan Bapanas (Tier 2) pakai algoritma fleksibel |
 
-**Status:** Production-ready untuk skala provinsial (38 kab Jatim) — **134/134 tests pass** dalam 0.24s, latency p99 1.4ms (sample) - 55.5ms (stress 361×361). **v11.0 (Mei 2026)** adalah *claim-precision + scoring-quality update*:
-1. Claim-precision: setiap klaim diferensiator di proposal sekarang punya referensi spesifik ke `file:line` di `matching_engine/`
-2. **Scoring fix #1** — `volume_score` direvisi dari `min/max` ke `coverage-of-demand`. Big-producer matches (mis. Tuban 800t → Surabaya 100t beras) tidak lagi di-penalize. Hasil demo: equity-boost matches (Lamongan → Bangkalan/Sampang beras) sekarang ranking **#1 dan #2** dengan FinalScore 100.0 dan 98.4 (sebelumnya ranking #8).
-3. **Scoring fix #2** — `segment_multiplier` baru: HORECA/GOVERNMENT/INDUSTRIAL demand sekarang dapat segment-aware bonus (range ±10%) berdasarkan supply characteristics, plus deficit ordering segment-aware. `final_score = base × equity × segment`. Test acid: HORECA wins atas RETAIL di contested-bulk-supply scenario.
-
-24 scenarios coverage tetap 126/126 + 8 new segment/coverage tests = 134/134.
+**Status:** Production-ready untuk skala provinsial (38 kab Jatim) — 106/106 tests pass dalam 0.16s, latency p99 1.4ms (sample) - 55.5ms (stress 361×361).
 
 ---
 
@@ -180,15 +162,13 @@ Threshold dikalibrasi sesuai distribusi IPM 2024 BPS Jatim sehingga klaim "+30% 
 
 **Mengapa kalibrasi:** Threshold v9 lama (`<65 → 1.30`) tidak pernah ter-trigger karena IPM terendah Jatim 2024 = Sampang 66.72. v10 menggeser threshold sehingga klaim "+30% boost" demonstrably valid.
 
-**Catatan v11:** Boost +30% applies ke kab IPM <68 **saat menjadi deficit/penerima** (di-multiply dengan `base_score` dari Layer 2 untuk menghasilkan `final_score`). Demo run menunjukkan 2 dari 32 match trigger `EQUITY_BOOST_30` — keduanya Ngawi mengirim beras ke Madura (Bangkalan & Sampang). Saat Sampang sendiri jadi surplus (misal bawang), tidak ada boost karena bukan dia yang menjadi penerima. Honest framing: equity boost menggeser hasil saat low-IPM kab adalah sisi demand, bukan saat low-IPM kab disebutkan saja.
-
 **Update IPM tahunan:** Saat BPS publish IPM baru (biasanya BRS Desember), edit di [`sample_data/generate_sample_data.py:KABUPATEN_DATA`](sample_data/generate_sample_data.py) sebagai source of truth, lalu mirror ke [`data_sources/bps.py:IPM_2024_JATIM`](data_sources/bps.py).
 
 ---
 
-## 24 Skenario Edge Case
+## 19 Skenario Edge Case
 
-6 kategori, 24 skenario, semua tervalidasi pytest (126/126). Detail lengkap di [`docs/AUDIT_v10.md`](docs/AUDIT_v10.md) dan `AgriFlow_v11.docx` Section 5.5.5. **v11 menambahkan 5 commercial-reality scenarios** (C4 multi-holiday, D6 route blackout, E6 contract reserve, F1 grade substitution, F2 demand segmentation) di atas 19 skenario engineering edge case asli v10.
+5 kategori, 19 skenario, semua tervalidasi pytest. Detail lengkap di [`docs/AUDIT_v10.md`](docs/AUDIT_v10.md) dan `AgriFlow_v10.docx` Section 5.5.5.
 
 ### Kategori A — Volume (4 skenario)
 
@@ -207,16 +187,15 @@ Threshold dikalibrasi sesuai distribusi IPM 2024 BPS Jatim sehingga klaim "+30% 
 | B2 | Long distance (jarak > max_distance_km → REJECT) | `TestB2_LongDistance` |
 | B3 | Cluster Madura (4 kab semua surplus → ekspor) | `TestB3_ClusterMadura` |
 
-### Kategori C — Temporal (4 skenario)
+### Kategori C — Temporal (3 skenario)
 
 | Kode | Skenario | Test |
 |---|---|---|
 | C1 | Ramadan/Idul Fitri spike (H-21 to H-1, RAMADAN_WEIGHTS) | `TestC1_RamadanSpike` |
 | C2 | Pasca panen raya (oversupply, multiple match) | `TestC2_PostHarvest` |
 | C3 | Stale data >24h (confidence drop bertingkat HIGH→MEDIUM→LOW) | `TestC3_StaleData` |
-| **C4** | **Multi-holiday calendar (Imlek H-7, Natal H-21, school-start H-14)** dengan weight profile per event | `TestC4_HolidayCalendar` |
 
-### Kategori D — Disrupsi (6 skenario)
+### Kategori D — Disrupsi (5 skenario)
 
 | Kode | Skenario | Test |
 |---|---|---|
@@ -225,9 +204,8 @@ Threshold dikalibrasi sesuai distribusi IPM 2024 BPS Jatim sehingga klaim "+30% 
 | D3 | Harga anomali (>3σ dari rolling median → exclude) | `TestD3_HargaAnomali` |
 | D4 | Erupsi gunung (PVMBG MAGMA → UNREACHABLE) | `TestD4_ErupsiGunung` |
 | D5 | Banjir multi-kab (BNPB DIBI → emergency mode) | `TestD5_BanjirMultiKab` |
-| **D6** | **Route blackout (mudik H+1 Idul Fitri, demo Trans-Jawa, Suramadu maintenance)** dengan wildcard support | `TestD6_RouteBlackout` |
 
-### Kategori E — Politis & Kebijakan (6 skenario)
+### Kategori E — Politis & Kebijakan (5 skenario)
 
 | Kode | Skenario | Test |
 |---|---|---|
@@ -236,14 +214,6 @@ Threshold dikalibrasi sesuai distribusi IPM 2024 BPS Jatim sehingga klaim "+30% 
 | E3 | Bulog priority (60% reserve, sisa 40% private) | `TestE3_BulogPriority` |
 | E4 | Import policy aktif (IMPORT_POLICY_WEIGHTS, price weight ↓) | `TestE4_ImportPolicy` |
 | E5 | BBM naik (max_distance shrink, logistics cost ↑) | `TestE5_BBMNaik` |
-| **E6** | **Contract reserve generalisasi (Carrefour MoU 70%, Indofood gula 50%, dll)** — Bulog pattern di-generalisir | `TestE6_ContractReserve` |
-
-### Kategori F — Kualitas & Segmentasi Komersial (2 skenario, NEW v11)
-
-| Kode | Skenario | Test |
-|---|---|---|
-| **F1** | **Grade substitution** — surplus `beras_premium` dapat memenuhi demand `beras_medium` (opt-in `allow_grade_substitution=True`); reverse direction tetap REJECT | `TestF1_GradeSubstitution` |
-| **F2** | **Demand segmentation** — `RETAIL` / `HORECA` / `GOVERNMENT` / `INDUSTRIAL` coexist untuk kab + komoditas yang sama; tiap segment di-match independen dengan flag `SEGMENT_<NAME>` | `TestF2_DemandSegmentation` |
 
 ---
 
@@ -293,13 +263,6 @@ for m in report.matches:
     print(f"  Volume: {m.matched_volume_tons}t @ {m.distance_km:.0f}km")
     print(f"  Score: {m.final_score:.1f} (base {m.base_score:.1f} × {m.equity_multiplier})")
     print(f"  Confidence: {m.confidence.value}, Flags: {m.flags}")
-    # Realistic output dari demo Jatim:
-    #   Probolinggo → Kota Surabaya: 120.0t Bawang Merah
-    #   Score: 89.5 (base 89.5 × 1.00), Confidence: MEDIUM, Flags: []
-    #   Bangkalan → Gresik: 40.0t Bawang Merah
-    #   Score: 89.4 (base 85.1 × 1.05), Confidence: MEDIUM, Flags: ['EQUITY_BOOST_05', 'MADURA_CLUSTER']
-    #   Ngawi → Bangkalan: 250.0t Beras Premium
-    #   Score: 82.8 (base 63.7 × 1.30), Confidence: MEDIUM, Flags: ['EQUITY_BOOST_30', 'MADURA_CLUSTER']
 
 # Output:
 # Kediri → Kota Surabaya
@@ -401,7 +364,7 @@ $ python benchmarks/latency.py
 
 ### National Scale (Indonesia 514 kab)
 
-⚠ **HONEST DISCLOSURE:** Engine v11 (sama dengan v10 — claim-precision pass, bukan engine change) saat ini BELUM siap untuk produksi nasional 514 kab. Lihat [`docs/AUDIT_v10.md`](docs/AUDIT_v10.md) Section 3.2 untuk detail. Optimization roadmap (spatial indexing, per-provinsi batching, parallel) sudah ter-quantify untuk Y2-Y3.
+⚠ **HONEST DISCLOSURE:** Engine v10 saat ini BELUM siap untuk produksi nasional 514 kab. Lihat [`docs/AUDIT_v10.md`](docs/AUDIT_v10.md) Section 3.2 untuk detail. Optimization roadmap (spatial indexing, per-provinsi batching, parallel) sudah ter-quantify untuk Y2-Y3.
 
 ```bash
 $ python benchmarks/national_scale.py
@@ -486,8 +449,7 @@ agriflow_engine/
 │   ├── latency.py           # Multi-config provincial benchmark
 │   └── national_scale.py    # National scale stress test (514 kab)
 ├── docs/
-│   ├── generate_v11_docx.py # Proposal v11 docx generator (claim-precision pass; current)
-│   ├── generate_v10_docx.py # Proposal v10 docx generator (history)
+│   ├── generate_v10_docx.py # Proposal v10 docx generator
 │   └── AUDIT_v10.md         # Audit lengkap (consistency + national scale analysis)
 ├── README.md                # This file
 ├── requirements.txt         # Python dependencies
@@ -557,7 +519,7 @@ pip install python-docx  # untuk regenerate proposal docx
 
 ### Roadmap to National Scale (Y2-Y3)
 
-⚠ **Honest disclosure:** Engine v11 (sama core dengan v10) saat ini BELUM siap untuk produksi nasional 514 kab. p99 untuk full Indonesia = 2.2 detik (4.4× over 500ms target).
+⚠ **Honest disclosure:** Engine v10 saat ini BELUM siap untuk produksi nasional 514 kab. p99 untuk full Indonesia = 2.2 detik (4.4× over 500ms target).
 
 **Optimization plan** (lihat [`docs/AUDIT_v10.md`](docs/AUDIT_v10.md) Section 6):
 
@@ -594,11 +556,10 @@ pip install python-docx  # untuk regenerate proposal docx
 
 | Document | Lokasi | Deskripsi |
 |---|---|---|
-| **Proposal v11** (current) | Generate via `python docs/generate_v11_docx.py` | Proposal lengkap dengan claim-precision pass — setiap klaim diferensiator dirujuk ke `file:line` di `matching_engine/` (docx gitignored — internal team artifact) |
-| **Proposal v10** (history) | Generate via `python docs/generate_v10_docx.py` | Versi sebelum claim-precision pass; tetap dipertahankan sebagai history |
-| **Audit v10** | [`docs/AUDIT_v10.md`](docs/AUDIT_v10.md) | Consistency check + national scale analysis (engine code identik di v11) |
+| **Proposal v10** | Generate via `python docs/generate_v10_docx.py` | Proposal lengkap 14 section: business + technical (docx tidak ditracking di repo — internal team artifact) |
+| **Audit v10** | [`docs/AUDIT_v10.md`](docs/AUDIT_v10.md) | Consistency check + national scale analysis |
 | **README** | This file | Quick reference + getting started |
-| **Generator script** | [`docs/generate_v11_docx.py`](docs/generate_v11_docx.py) | Regenerate proposal v11 docx dari source |
+| **Generator script** | [`docs/generate_v10_docx.py`](docs/generate_v10_docx.py) | Regenerate proposal docx dari source |
 | **Code comments** | All `.py` files | Inline docstrings dengan reference ke proposal section |
 
 ---
@@ -653,7 +614,7 @@ pytest tests/
 **Lisensi:** Hackathon submission. Code internal AgriFlow team.
 
 **Credits:**
-- **Algoritma:** Modified Gale-Shapley Stable Matching (Nobel Prize Economics 2012, Roth & Shapley) — fires saat kedua kab Tier 1; Greedy multi-objective + equity priority untuk Tier 2 dan cross-tier
+- **Algoritma:** Gale-Shapley Stable Matching (Nobel Prize Economics 2012, Roth & Shapley)
 - **Inspirasi platform:** eNAM (India), MealConnect (Feeding America), FEWS NET (USAID), Uber matching pattern, Food Drop Indiana
 - **Data sumber:** Bank Indonesia (PIHPS), Bapanas (Panel Harga), BPS (BRS Desember 2024 IPM), BMKG, PVMBG MAGMA, BNPB DIBI
 
@@ -661,9 +622,8 @@ pytest tests/
 
 **Citing:**
 ```
-AgriFlow Team. (2026). AgriFlow Matching Engine v11.0:
-Purpose-Built Sub-National Indonesian Food Matching Engine
-dengan Stable Matching (Tier 1) + Greedy-Equity-Priority (Tier 2) + IPM-Based Equity Multiplier (BPS 2024).
+AgriFlow Team. (2026). AgriFlow Matching Engine v10.0:
+Sub-National Pangan Matching dengan Stable Matching + Equity Multiplier.
 PIDI DIGDAYA × Hackathon 2026, Bank Indonesia.
 ```
 
@@ -676,4 +636,4 @@ PIDI DIGDAYA × Hackathon 2026, Bank Indonesia.
 - Audit teknis: [`docs/AUDIT_v10.md`](docs/AUDIT_v10.md)
 
 **Deteksi. Prediksi. Distribusi. Untuk Semua.**
-*AgriFlow — Purpose-Built Sub-National AI Matching Engine for Indonesian Food Distribution.*
+*AgriFlow — Powered by World-First AI Matching Engine for Sub-National Food Distribution.*

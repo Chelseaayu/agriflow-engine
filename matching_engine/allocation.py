@@ -27,7 +27,8 @@ from collections import defaultdict
 from typing import Callable, Dict, List, Optional, Tuple
 
 from .models import (
-    Confidence, DemandNode, MatchResult, ScoreBreakdown, SupplyNode, Tier,
+    Confidence, DemandNode, DemandSegment, MatchResult, ScoreBreakdown,
+    SupplyNode, Tier,
 )
 
 
@@ -63,6 +64,94 @@ def equity_multiplier_value(ipm: float) -> float:
         return 1.05
     else:
         return 1.00
+
+
+# =============================================================================
+# F2 (v11 fix #2) — SEGMENT-AWARE MULTIPLIER
+# =============================================================================
+
+# Segment-aware adjustment ranges (kalibrasi konservatif, max swing ±10%
+# supaya base_score 5-dim tetap dominan).
+#
+# HORECA (hotel/restoran/catering): high-volume contract buyers, margin-sensitive.
+#   - +5% bonus saat surplus >= 50t (bulk handling efficiency)
+#   - -3% penalty saat surplus < 5t (lots of micro-shipments not viable)
+#
+# GOVERNMENT (Bulog, sekolah, militer): compliance + reliability premium.
+#   - +5% bonus saat supplier Tier 1 (HIGH data confidence)
+#   - +3% bonus saat harvest_age == 0 (fresh, institutional consumers care)
+#
+# INDUSTRIAL (pabrik mie/tahu/tempe): raw bulk, processing-grade quality.
+#   - +8% bonus saat surplus >= 100t (bulk processing efficiency)
+#   - +2% bonus saat supplier Tier 2 (cheaper supply OK untuk processing)
+#
+# RETAIL (default): no adjustment — baseline.
+
+
+SEGMENT_BONUS_HORECA_BULK_VOLUME_T = 50.0
+SEGMENT_BONUS_INDUSTRIAL_BULK_VOLUME_T = 100.0
+SEGMENT_PENALTY_HORECA_MICRO_VOLUME_T = 5.0
+
+
+def _segment_priority_upper_bound(segment: DemandSegment) -> float:
+    """
+    Upper-bound multiplier yang achievable untuk segment ini.
+    Dipakai oleh greedy allocator untuk sort deficits — segment dengan
+    bonus potensial lebih tinggi dapat priority earlier saat supply
+    contested. Tidak mengubah final_score, hanya order of processing.
+    """
+    if segment == DemandSegment.HORECA:
+        return 1.05  # best case: bulk bonus
+    if segment == DemandSegment.GOVERNMENT:
+        return 1.05 * 1.03  # tier1 × fresh = 1.0815
+    if segment == DemandSegment.INDUSTRIAL:
+        return 1.08 * 1.02  # bulk × tier2-OK = 1.1016
+    return 1.00  # RETAIL baseline
+
+
+def segment_multiplier_value(s: SupplyNode, d: DemandNode) -> tuple[float, list[str]]:
+    """
+    F2 v11: hitung segment-aware multiplier untuk pair (supply, demand).
+
+    Return (multiplier, applied_flags).
+    Multiplier range: [0.97, 1.10]. RETAIL = 1.00 baseline.
+
+    Pure function — tidak modify supply/demand. Multiplier dapat di-audit
+    via flag list (HORECA_BULK_BONUS, GOVERNMENT_TIER1_BONUS, dll), supaya
+    Pemda/juri dapat trace kenapa segment X menang atas RETAIL.
+    """
+    mult = 1.00
+    flags: list[str] = []
+
+    if d.segment == DemandSegment.RETAIL:
+        return mult, flags
+
+    if d.segment == DemandSegment.HORECA:
+        if s.volume_tons >= SEGMENT_BONUS_HORECA_BULK_VOLUME_T:
+            mult *= 1.05
+            flags.append("SEGMENT_HORECA_BULK_BONUS")
+        if s.volume_tons < SEGMENT_PENALTY_HORECA_MICRO_VOLUME_T:
+            mult *= 0.97
+            flags.append("SEGMENT_HORECA_MICRO_PENALTY")
+
+    elif d.segment == DemandSegment.GOVERNMENT:
+        if s.kabupaten.is_tier1:
+            mult *= 1.05
+            flags.append("SEGMENT_GOVERNMENT_TIER1_BONUS")
+        if s.harvest_age_days == 0:
+            mult *= 1.03
+            flags.append("SEGMENT_GOVERNMENT_FRESH_BONUS")
+
+    elif d.segment == DemandSegment.INDUSTRIAL:
+        if s.volume_tons >= SEGMENT_BONUS_INDUSTRIAL_BULK_VOLUME_T:
+            mult *= 1.08
+            flags.append("SEGMENT_INDUSTRIAL_BULK_BONUS")
+        if not s.kabupaten.is_tier1:
+            # Industrial dapat terima supply Tier 2 (processing-grade) lebih flexibly
+            mult *= 1.02
+            flags.append("SEGMENT_INDUSTRIAL_TIER2_OK")
+
+    return mult, flags
 
 
 def determine_confidence(s: SupplyNode, d: DemandNode) -> Confidence:
@@ -111,13 +200,16 @@ def stable_match_tier1(
     # Step 1: Hitung skor untuk semua candidate
     score_cache: Dict[Tuple[str, str], Tuple[ScoreBreakdown, float, float]] = {}
     final_scores: Dict[Tuple[str, str], float] = {}
+    segment_cache: Dict[Tuple[str, str], Tuple[float, list[str]]] = {}
 
     for s, d in candidates:
         key = (s.kabupaten.id + "_" + s.commodity.code, d.kabupaten.id)
         breakdown, base, dist = score_fn(s, d)
         score_cache[key] = (breakdown, base, dist)
         eq_mult = equity_multiplier_value(d.kabupaten.ipm)
-        final_scores[key] = base * eq_mult
+        seg_mult, _seg_flags = segment_multiplier_value(s, d)
+        segment_cache[key] = (seg_mult, _seg_flags)
+        final_scores[key] = base * eq_mult * seg_mult
 
     # Step 2: Build preference per deficit (surplus diranking by FinalScore desc)
     deficit_prefs: Dict[str, List[Tuple[float, SupplyNode, DemandNode]]] = defaultdict(list)
@@ -202,15 +294,18 @@ def stable_match_tier1(
             continue
         breakdown, base_score, dist_km = score_cache[cache_key]
         eq_mult = equity_multiplier_value(d.kabupaten.ipm)
+        seg_mult, seg_flags = segment_cache.get(cache_key, (1.0, []))
         results.append(MatchResult(
             surplus=s, deficit=d,
             matched_volume_tons=min(s.volume_tons, d.volume_tons),
             distance_km=dist_km,
             base_score=base_score,
             equity_multiplier=eq_mult,
+            segment_multiplier=seg_mult,
             final_score=fscore,
             confidence=determine_confidence(s, d),
             breakdown=breakdown,
+            flags=list(seg_flags),  # segment audit flags
         ))
     # Sort by final_score descending
     results.sort(key=lambda r: -r.final_score)
@@ -248,18 +343,25 @@ def greedy_match_tier2(
         if key not in score_cache:
             score_cache[key] = score_fn(s, d)
 
-    # Group candidates by deficit
+    # Group candidates by deficit. v11 fix #2: include segment in key so
+    # HORECA + RETAIL demands at same (kab, commodity) don't collapse —
+    # tiap segment di-allocate independent.
     by_deficit: Dict[str, Tuple[DemandNode, List[SupplyNode]]] = {}
     for s, d in candidates:
-        d_key = d.kabupaten.id + "_" + d.commodity.code
+        d_key = d.kabupaten.id + "_" + d.commodity.code + "_" + d.segment.value
         if d_key not in by_deficit:
             by_deficit[d_key] = (d, [])
         by_deficit[d_key][1].append(s)
 
-    # Sort deficits by equity multiplier descending
+    # Sort deficits by (equity × segment_upper_bound) descending.
+    # v11 fix #2: ensures HORECA/INDUSTRIAL/GOVERNMENT get earlier pick at
+    # contested supply when their segment bonus would tip them over RETAIL.
     deficits_sorted = sorted(
         by_deficit.items(),
-        key=lambda kv: -equity_multiplier_value(kv[1][0].kabupaten.ipm),
+        key=lambda kv: -(
+            equity_multiplier_value(kv[1][0].kabupaten.ipm)
+            * _segment_priority_upper_bound(kv[1][0].segment)
+        ),
     )
 
     # Track remaining volume per surplus (surplus bisa di-split untuk many deficits)
@@ -281,19 +383,21 @@ def greedy_match_tier2(
         if not available:
             continue
 
-        # Pick best by FinalScore (= base × equity multiplier deficit)
+        # Pick best by FinalScore (= base × equity × segment multiplier)
         eq_mult = equity_multiplier_value(d.kabupaten.ipm)
 
         def final_score_for(s: SupplyNode) -> float:
             cache_key = (s.kabupaten.id + "_" + s.commodity.code, d.kabupaten.id)
             _br, base, _dist = score_cache[cache_key]
-            return base * eq_mult
+            seg_mult, _ = segment_multiplier_value(s, d)
+            return base * eq_mult * seg_mult
 
         best_s = max(available, key=final_score_for)
         s_key = best_s.kabupaten.id + "_" + best_s.commodity.code
         cache_key = (s_key, d.kabupaten.id)
         breakdown, base_score, dist_km = score_cache[cache_key]
-        final_score = base_score * eq_mult
+        seg_mult, seg_flags = segment_multiplier_value(best_s, d)
+        final_score = base_score * eq_mult * seg_mult
         matched_vol = min(remaining_volume[s_key], d.volume_tons)
 
         results.append(MatchResult(
@@ -302,9 +406,11 @@ def greedy_match_tier2(
             distance_km=dist_km,
             base_score=base_score,
             equity_multiplier=eq_mult,
+            segment_multiplier=seg_mult,
             final_score=final_score,
             confidence=determine_confidence(best_s, d),
             breakdown=breakdown,
+            flags=list(seg_flags),  # segment audit flags
         ))
         remaining_volume[s_key] -= matched_vol
 

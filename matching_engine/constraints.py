@@ -144,6 +144,38 @@ def get_commodity(code: str) -> Commodity:
 
 
 # =============================================================================
+# F1 — GRADE SUBSTITUTION
+# =============================================================================
+
+# Skenario F1: surplus beras_premium dapat memenuhi demand beras_medium
+# (premium ke medium = upgrade, buyer tidak rugi). Direction-asymmetric:
+# medium → premium TIDAK diizinkan (buyer harapkan grade lebih tinggi).
+# Engine fires this branch HANYA jika `allow_grade_substitution=True` di
+# generate_candidates() — default False supaya 106 test baseline tidak
+# berubah perilaku.
+GRADE_SUBSTITUTION: dict[str, list[str]] = {
+    "beras_premium": ["beras_medium"],
+    # Future expansions (untuk roadmap): minyak_goreng_premium → minyak_curah,
+    # gula_pasir_premium → gula_pasir_lokal, dst.
+}
+
+
+def grade_compatible(surplus_code: str, demand_code: str) -> bool:
+    """
+    Apakah surplus dengan code A dapat memenuhi demand dengan code B?
+
+    True jika:
+      - A == B (commodity sama, default behavior)
+      - A ada di GRADE_SUBSTITUTION dan B ∈ GRADE_SUBSTITUTION[A] (premium → medium)
+
+    False sebaliknya — medium → premium TIDAK kompatibel.
+    """
+    if surplus_code == demand_code:
+        return True
+    return demand_code in GRADE_SUBSTITUTION.get(surplus_code, [])
+
+
+# =============================================================================
 # DISTANCE CALCULATION
 # =============================================================================
 
@@ -192,6 +224,7 @@ def is_viable_pair(
     surplus: SupplyNode,
     deficit: DemandNode,
     logistics: LogisticsContext | None = None,
+    allow_grade_substitution: bool = False,
 ) -> Tuple[bool, str]:
     """
     Layer 1: Cek apakah pair surplus-deficit lolos hard constraints.
@@ -204,12 +237,18 @@ def is_viable_pair(
         E2 Pemda Override — do_not_export flag → REJECT
         E3 Bulog Priority — bulog_priority flag → REJECT
         A3 Volume Mismatch Drastis — supply >= MIN tetap PASS (di-flag di scoring)
+        F1 Grade Substitution — premium → medium acceptable jika allow_grade_substitution
     """
     logistics = logistics or LogisticsContext()
 
-    # Match komoditas
+    # Match komoditas — F1: izinkan grade substitution kalau di-opt-in
     if surplus.commodity.code != deficit.commodity.code:
-        return False, ConstraintReason.DIFFERENT_COMMODITY
+        if allow_grade_substitution and grade_compatible(
+            surplus.commodity.code, deficit.commodity.code
+        ):
+            pass  # acceptable cross-grade match
+        else:
+            return False, ConstraintReason.DIFFERENT_COMMODITY
 
     # Hindari self-match
     if surplus.kabupaten.id == deficit.kabupaten.id:
@@ -288,6 +327,7 @@ def generate_candidates(
     deficit_nodes: List[DemandNode],
     logistics: LogisticsContext | None = None,
     top_k_per_surplus: int = 20,
+    allow_grade_substitution: bool = False,
 ) -> List[Tuple[SupplyNode, DemandNode]]:
     """
     Layer 1 main entrypoint:
@@ -298,6 +338,8 @@ def generate_candidates(
         deficit_nodes: list semua kabupaten deficit
         logistics: konteks logistik global (BBM, BBM baseline, dll)
         top_k_per_surplus: maksimum candidate per surplus (default 20)
+        allow_grade_substitution: F1 — premium dapat memenuhi medium demand
+            (default False supaya backward-compatible)
 
     Returns:
         List of (surplus, deficit) pairs yang viable, sudah di-prune top-K.
@@ -306,19 +348,26 @@ def generate_candidates(
     """
     logistics = logistics or LogisticsContext()
 
-    # Group deficits by commodity untuk efisiensi
+    # Group deficits by commodity untuk efisiensi (untuk substitution: juga
+    # pertimbangkan deficit dengan grade yang lebih rendah)
     deficits_by_commodity: dict[str, List[DemandNode]] = {}
     for d in deficit_nodes:
         deficits_by_commodity.setdefault(d.commodity.code, []).append(d)
 
     candidates: List[Tuple[SupplyNode, DemandNode]] = []
     for s in surplus_nodes:
-        # cari deficit dengan komoditas sama
-        same_commodity_deficits = deficits_by_commodity.get(s.commodity.code, [])
+        # Cari deficit dengan komoditas sama
+        candidate_deficits = list(deficits_by_commodity.get(s.commodity.code, []))
+        # F1: tambah deficit dengan komoditas yang dapat di-substitute oleh surplus ini
+        if allow_grade_substitution:
+            for sub_code in GRADE_SUBSTITUTION.get(s.commodity.code, []):
+                candidate_deficits.extend(deficits_by_commodity.get(sub_code, []))
 
         viable_for_s: List[Tuple[float, DemandNode]] = []
-        for d in same_commodity_deficits:
-            ok, _reason = is_viable_pair(s, d, logistics)
+        for d in candidate_deficits:
+            ok, _reason = is_viable_pair(
+                s, d, logistics, allow_grade_substitution=allow_grade_substitution
+            )
             if ok:
                 dist = distance_between(s, d)
                 viable_for_s.append((dist, d))

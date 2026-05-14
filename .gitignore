@@ -76,9 +76,21 @@ v9_extracted.txt
 AgriFlow_v8.docx
 AgriFlow_v9.docx
 AgriFlow_v10.docx
+docs/AgriFlow_v8.docx
+docs/AgriFlow_v9.docx
 docs/AgriFlow_v10.docx
 docs/AgriFlow_v11.docx
 
 # Proposal PDF intermediates (rendered from docx for wiki ingest)
+docs/AgriFlow_v8.pdf
+docs/AgriFlow_v9.pdf
 docs/AgriFlow_v10.pdf
 docs/AgriFlow_v11.pdf
+
+# Proposal opendataloader-pdf-converted markdown (derived from gitignored docx;
+# wiki copy lives at D:/Research/Project Data/k1/raw/documents/agriflow/).
+# Same privacy stance as the .docx originals — internal team artifact.
+docs/AgriFlow_v8.md
+docs/AgriFlow_v9.md
+docs/AgriFlow_v10.md
+docs/AgriFlow_v11.md

@@ -18,7 +18,14 @@ pytest>=7.4.0
 requests>=2.31.0
 beautifulsoup4>=4.12.0   # HTML parsing untuk PIHPS scraper
 
-# Optional: API server (uncomment untuk production)
-# fastapi>=0.115.0
-# pydantic>=2.5.0
-# uvicorn>=0.30.0
+# API server — required by whatsapp_bot/
+fastapi>=0.115.0
+pydantic>=2.5.0
+uvicorn>=0.30.0
+httpx>=0.27.0            # required by fastapi.testclient
+
+# WhatsApp bot (M2 milestone — Twilio webhook + Gemini RAG)
+twilio>=9.0.0
+google-genai>=1.0.0      # NEW SDK (google-generativeai deprecated 2025)
+python-dotenv>=1.0.0
+python-multipart>=0.0.9  # FastAPI form parsing for Twilio webhook

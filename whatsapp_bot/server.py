@@ -71,12 +71,14 @@ app = FastAPI(
 # CORS so the Next.js dashboard can hit /api/v1/* from dev (localhost)
 # and from any *.vercel.app preview / production URL. Regex covers branch
 # previews like agriflow-git-feature-x.vercel.app without re-deploys.
+# Also allows *.hf.space (Hugging Face Spaces) for direct curl/browser testing
+# against the API itself when it's hosted there.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000", "http://127.0.0.1:3000",
     ],
-    allow_origin_regex=r"https://.*\.vercel\.app",
+    allow_origin_regex=r"https://.*\.(vercel\.app|hf\.space)",
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )

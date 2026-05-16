@@ -84,6 +84,15 @@ docs/AgriFlow_v9.docx
 docs/AgriFlow_v10.docx
 docs/AgriFlow_v11.docx
 
+# Proposal docx generator scripts — internal toolchain, paired with the
+# gitignored .docx outputs above (kept consistent: if the artefact is private,
+# the script that builds it stays private too).
+docs/generate_v10_docx.py
+docs/generate_v11_docx.py
+
+# Internal audit notes (frank code↔doc consistency check; not for public repo)
+docs/AUDIT_v10.md
+
 # Proposal PDF intermediates (rendered from docx for wiki ingest)
 docs/AgriFlow_v8.pdf
 docs/AgriFlow_v9.pdf

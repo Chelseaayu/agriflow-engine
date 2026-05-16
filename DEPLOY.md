@@ -7,7 +7,11 @@ Read once, then click through. Total time: ~20 minutes.
 > for identity verification (added late-2024 for abuse prevention). If your card
 > doesn't go through — or you don't want to hand one over — HF Spaces is the
 > cleanest no-card alternative. 16 GB RAM, no aggressive 15-min sleep, Docker-based.
-> See `render.yaml.disabled` in the repo if you ever want to switch back.
+>
+> **Want to try Render anyway?** Full Render walkthrough lives at
+> [`DEPLOY_RENDER.md`](DEPLOY_RENDER.md) (with tips for retrying with a virtual
+> card if your main card was declined). The `render.yaml` is preserved as
+> `render.yaml.disabled` in the repo — that doc shows how to re-enable it.
 
 ## Architecture
 

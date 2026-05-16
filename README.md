@@ -1,3 +1,14 @@
+---
+title: AgriFlow API
+emoji: "🌾"
+colorFrom: green
+colorTo: yellow
+sdk: docker
+app_port: 7860
+pinned: false
+license: mit
+---
+
 # AgriFlow Matching Engine
 
 > **v11.0 release notes (Mei 2026)** — this README has been updated for v11. The previous v10 README is preserved at [`README_v10.md`](README_v10.md) for reference / diff.

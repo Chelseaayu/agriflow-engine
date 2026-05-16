@@ -1,0 +1,33 @@
+# Render blueprint for AgriFlow FastAPI backend.
+# - Serves /api/v1/* for the Next.js dashboard (deployed to Vercel)
+# - Serves /whatsapp + /chat for Twilio WhatsApp webhook
+#
+# Render free tier: web service spins down after ~15 min idle. First request
+# after sleep takes ~30s to wake. Tolerable for hackathon demo.
+#
+# After importing this blueprint in Render dashboard:
+#   1. Service auto-builds + starts on every push to main
+#   2. Copy the .onrender.com URL → paste into Vercel as NEXT_PUBLIC_API_URL
+#   3. Update Twilio webhook to point to <onrender-url>/whatsapp
+
+services:
+  - type: web
+    name: agriflow-api
+    runtime: python
+    plan: free
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn whatsapp_bot.server:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: MOCK_MODE
+        value: "true"
+      # When you're ready to leave mock mode, set these in the Render
+      # dashboard (NOT here — keep secrets out of git):
+      #   GEMINI_API_KEY        — from aistudio.google.com
+      #   TWILIO_ACCOUNT_SID    — from Twilio console
+      #   TWILIO_AUTH_TOKEN     — from Twilio console
+      #   TWILIO_WHATSAPP_FROM  — whatsapp:+14155238886 (sandbox) or your number

@@ -26,26 +26,46 @@ INTENT_SYSTEM_PROMPT = """\
 Anda adalah klasifikator intent untuk WhatsApp bot AgriFlow — platform
 matching surplus-defisit pangan antar kabupaten Jawa Timur.
 
+Pengguna mungkin menulis dalam Bahasa Indonesia ATAU Bahasa Jawa
+(ngoko/krama). Normalisasikan ke kode kanonik Indonesia:
+- "lombok" / "lombok abang" → cabai_merah
+- "brambang" → bawang_merah
+- "sega" / "wos" → beras
+- "endhog" / "endog" → telur_ayam
+- "pitik" → daging_ayam
+- "jagong" → jagung
+- "lengo" → minyak_goreng
+- "gendis" → gula_pasir
+- "glepung" → tepung_terigu
+Kata kerja Jawa: "pira/regane/piro" ≈ "berapa/harga",
+"adol/dodol" ≈ "jual", "tuku/tumbas" ≈ "beli", "duwe" ≈ "punya",
+"golek" ≈ "cari".
+
 Klasifikasikan pesan pengguna ke salah satu intent:
 
 1. harga_lookup — Tanya harga komoditas di kabupaten tertentu
    slots: {"commodity": str, "kabupaten": str}
-   contoh: "Harga cabai di Malang?", "Berapa beras Kediri sekarang?"
+   contoh: "Harga cabai di Malang?", "Berapa beras Kediri sekarang?",
+           "Pira regane lombok ing Malang?"
 
 2. cari_pembeli — User punya supply, ingin menjual
    slots: {"commodity": str, "kabupaten_origin": str, "volume_tons": float|null}
    contoh: "Saya punya 50 ton cabai di Kediri, cari pembeli"
            "Cari pasar untuk bawang Probolinggo"
+           "Aku duwe 50 ton lombok ing Kediri, golek pembeli"
 
 3. cari_penjual — User butuh supply, ingin membeli
    slots: {"commodity": str, "kabupaten_dest": str, "volume_tons": float|null}
    contoh: "Butuh 100 ton beras untuk Surabaya"
            "Cari supplier cabai untuk Sidoarjo"
+           "Butuh 100 ton sega kanggo Surabaya"
 
 4. fallback — Pertanyaan umum, sapaan, atau tidak masuk kategori di atas
    slots: {}
 
-Output HANYA JSON valid satu baris, tanpa markdown atau penjelasan:
+Output HANYA JSON valid satu baris, tanpa markdown atau penjelasan.
+Untuk 'commodity' selalu kembalikan kode kanonik Indonesia (cabai_merah,
+bawang_merah, beras, dst.) meskipun pengguna menulis dalam Jawa.
 {"intent": "...", "slots": {...}}
 """
 
@@ -142,23 +162,25 @@ class GeminiClient:
 # =============================================================================
 
 _COMMODITY_KEYWORDS = {
-    "cabai_merah": ["cabai merah", "cabe merah", "cabai", "cabe"],
-    "cabai_rawit": ["cabai rawit", "cabe rawit", "rawit"],
-    "bawang_merah": ["bawang merah", "bawang"],
-    "bawang_putih": ["bawang putih"],
-    "beras_premium": ["beras premium", "beras"],
+    # Each list mixes Bahasa Indonesia + Bahasa Jawa ngoko (basic colloquial)
+    # so a single keyword pass handles both languages.
+    "cabai_merah": ["cabai merah", "cabe merah", "cabai", "cabe", "lombok abang", "lombok"],
+    "cabai_rawit": ["cabai rawit", "cabe rawit", "rawit", "lombok cilik"],
+    "bawang_merah": ["bawang merah", "bawang", "brambang"],
+    "bawang_putih": ["bawang putih", "bawang putih", "bawang bodas"],
+    "beras_premium": ["beras premium", "beras", "sega", "wos"],
     "beras_medium": ["beras medium"],
-    "jagung": ["jagung"],
-    "kedelai": ["kedelai", "kedele"],
-    "tomat": ["tomat"],
+    "jagung": ["jagung", "jagong"],
+    "kedelai": ["kedelai", "kedele", "dele"],
+    "tomat": ["tomat", "rangkem"],
     "kentang": ["kentang"],
-    "telur_ayam": ["telur"],
-    "daging_ayam": ["ayam"],
+    "telur_ayam": ["telur", "endhog", "endog"],
+    "daging_ayam": ["daging ayam", "ayam", "pitik"],
     "daging_sapi": ["daging sapi", "sapi"],
-    "ikan_tongkol": ["tongkol"],
-    "minyak_goreng": ["minyak goreng", "minyak"],
-    "gula_pasir": ["gula"],
-    "tepung_terigu": ["tepung", "terigu"],
+    "ikan_tongkol": ["tongkol", "iwak tongkol"],
+    "minyak_goreng": ["minyak goreng", "minyak", "lengo"],
+    "gula_pasir": ["gula", "gendis"],
+    "tepung_terigu": ["tepung", "terigu", "glepung"],
 }
 
 _KABUPATEN_KEYWORDS = [
@@ -214,13 +236,24 @@ def _mock_classify(message: str) -> Dict[str, Any]:
     kabupaten = _detect_kabupaten(message)
     volume = _detect_volume_tons(message)
 
-    # Order matters: more specific patterns first
-    if any(kw in msg for kw in ["harga", "berapa", "price"]):
+    # Order matters: more specific patterns first.
+    # Each list mixes Bahasa Indonesia + Bahasa Jawa ngoko so the same
+    # heuristic handles both. Examples:
+    #   "pira" / "regane" / "piro" / "rega" / "pinten" — Jawa for "berapa/harga"
+    #   "adol" / "dodol" / "duwe" — Jawa for "jual/punya"
+    #   "tuku" / "tumbas" — Jawa for "beli"
+    if any(kw in msg for kw in [
+        "harga", "berapa", "price",
+        "pira", "piro", "regane", "rega", "pinten",  # jawa
+    ]):
         return {
             "intent": "harga_lookup",
             "slots": {"commodity": commodity, "kabupaten": kabupaten},
         }
-    if any(kw in msg for kw in ["cari pembeli", "jual", "punya", "surplus", "pasar untuk"]):
+    if any(kw in msg for kw in [
+        "cari pembeli", "jual", "punya", "surplus", "pasar untuk",
+        "golek tuku", "golek pembeli", "adol", "dodol", "duwe",  # jawa
+    ]):
         return {
             "intent": "cari_pembeli",
             "slots": {
@@ -229,7 +262,10 @@ def _mock_classify(message: str) -> Dict[str, Any]:
                 "volume_tons": volume,
             },
         }
-    if any(kw in msg for kw in ["butuh", "beli", "supplier", "cari penjual", "cari supplier"]):
+    if any(kw in msg for kw in [
+        "butuh", "beli", "supplier", "cari penjual", "cari supplier",
+        "tuku", "tumbas", "golek penjual", "butuhe", "perlu",  # jawa
+    ]):
         return {
             "intent": "cari_penjual",
             "slots": {

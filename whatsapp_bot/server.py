@@ -23,13 +23,15 @@ if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
 try:
-    from fastapi import FastAPI, Form, Header, HTTPException, Request
+    from fastapi import FastAPI, Form, Header, HTTPException, Query, Request
+    from fastapi.middleware.cors import CORSMiddleware
     from fastapi.responses import JSONResponse, Response
 except ImportError as e:
     raise RuntimeError(
         "fastapi not installed. Run: pip install -r requirements.txt"
     ) from e
 
+from matching_engine import LogisticsContext, run_matching
 from sample_data.loader import load_all_sample_data
 
 from .config import settings
@@ -64,6 +66,19 @@ app = FastAPI(
     version="0.1.0",
     description="Twilio webhook + Gemini RAG over the AgriFlow matching engine.",
     lifespan=lifespan,
+)
+
+# CORS so the Next.js dashboard can hit /api/v1/* from dev (localhost)
+# and from any *.vercel.app preview / production URL. Regex covers branch
+# previews like agriflow-git-feature-x.vercel.app without re-deploys.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000", "http://127.0.0.1:3000",
+    ],
+    allow_origin_regex=r"https://.*\.vercel\.app",
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
 )
 
 
@@ -141,6 +156,145 @@ async def chat_debug(payload: Dict[str, str]) -> JSONResponse:
         raise HTTPException(status_code=400, detail="message field required")
     reply = handle_message(message)
     return JSONResponse({"reply": reply})
+
+
+# =============================================================================
+# DASHBOARD API — /api/v1/* (consumed by Next.js dashboard)
+# =============================================================================
+
+def _ensure_engine() -> EngineData:
+    if state.data is None:
+        state.data = EngineData(load_all_sample_data())
+    return state.data
+
+
+@app.get("/api/v1/commodities")
+async def api_commodities() -> JSONResponse:
+    data = _ensure_engine()
+    out = [
+        {"code": c.code, "nama": c.nama}
+        for c in sorted(data.komoditas.values(), key=lambda c: c.nama)
+    ]
+    return JSONResponse(out)
+
+
+@app.get("/api/v1/kabupaten")
+async def api_kabupaten() -> JSONResponse:
+    data = _ensure_engine()
+    out = [
+        {
+            "id": k.id, "nama": k.nama,
+            "lat": k.latitude, "lng": k.longitude,
+            "tier": k.tier.value, "ipm": k.ipm,
+            "population": k.population,
+        }
+        for k in sorted(data.kabupaten.values(), key=lambda k: k.nama)
+    ]
+    return JSONResponse(out)
+
+
+@app.get("/api/v1/surplus-deficit")
+async def api_surplus_deficit(
+    commodity: str = Query(..., description="Commodity code, e.g. cabai_merah"),
+) -> JSONResponse:
+    """Per-kab surplus/deficit volume for one commodity — powers the map bubbles."""
+    data = _ensure_engine()
+    if commodity not in data.komoditas:
+        raise HTTPException(status_code=404, detail=f"unknown commodity: {commodity}")
+    commo = data.komoditas[commodity]
+
+    rows = []
+    for s in data.surplus:
+        if s.commodity.code != commodity:
+            continue
+        rows.append({
+            "kab_id": s.kabupaten.id, "kab_nama": s.kabupaten.nama,
+            "lat": s.kabupaten.latitude, "lng": s.kabupaten.longitude,
+            "tier": s.kabupaten.tier.value,
+            "role": "surplus",
+            "volume_tons": s.volume_tons,
+            "price_per_kg": s.price_per_kg,
+        })
+    for d in data.deficit:
+        if d.commodity.code != commodity:
+            continue
+        rows.append({
+            "kab_id": d.kabupaten.id, "kab_nama": d.kabupaten.nama,
+            "lat": d.kabupaten.latitude, "lng": d.kabupaten.longitude,
+            "tier": d.kabupaten.tier.value,
+            "role": "deficit",
+            "volume_tons": d.volume_tons,
+            "price_per_kg": d.price_per_kg,
+        })
+
+    total_surplus = sum(r["volume_tons"] for r in rows if r["role"] == "surplus")
+    total_deficit = sum(r["volume_tons"] for r in rows if r["role"] == "deficit")
+    return JSONResponse({
+        "commodity": {"code": commo.code, "nama": commo.nama},
+        "rows": rows,
+        "totals": {
+            "surplus_tons": total_surplus,
+            "deficit_tons": total_deficit,
+            "balance_tons": total_surplus - total_deficit,
+        },
+    })
+
+
+def _serialize_match(m) -> Dict[str, Any]:
+    return {
+        "surplus": {
+            "kab_id": m.surplus.kabupaten.id,
+            "kab_nama": m.surplus.kabupaten.nama,
+            "lat": m.surplus.kabupaten.latitude,
+            "lng": m.surplus.kabupaten.longitude,
+            "price_per_kg": m.surplus.price_per_kg,
+        },
+        "deficit": {
+            "kab_id": m.deficit.kabupaten.id,
+            "kab_nama": m.deficit.kabupaten.nama,
+            "lat": m.deficit.kabupaten.latitude,
+            "lng": m.deficit.kabupaten.longitude,
+            "price_per_kg": m.deficit.price_per_kg,
+        },
+        "commodity_code": m.surplus.commodity.code,
+        "commodity_nama": m.surplus.commodity.nama,
+        "matched_volume_tons": m.matched_volume_tons,
+        "distance_km": m.distance_km,
+        "final_score": m.final_score,
+        "confidence": m.confidence.value,
+        "flags": list(m.flags),
+    }
+
+
+@app.get("/api/v1/matches")
+async def api_matches(
+    commodity: str | None = Query(None, description="Filter by commodity code"),
+    kab_id: str | None = Query(None, description="Filter where this kab is surplus OR deficit side"),
+    limit: int = Query(50, ge=1, le=500),
+) -> JSONResponse:
+    """Run engine then filter. Returns scored matches for map flow lines + side panel."""
+    data = _ensure_engine()
+    report = run_matching(
+        surplus_nodes=data.surplus,
+        deficit_nodes=data.deficit,
+        logistics=LogisticsContext(),
+        weather_forecasts=data.weather,
+        historical_prices=data.historical,
+    )
+    matches = report.matches
+    if commodity:
+        matches = [m for m in matches if m.surplus.commodity.code == commodity]
+    if kab_id:
+        matches = [
+            m for m in matches
+            if m.surplus.kabupaten.id == kab_id or m.deficit.kabupaten.id == kab_id
+        ]
+    matches.sort(key=lambda m: m.final_score, reverse=True)
+    matches = matches[:limit]
+    return JSONResponse({
+        "count": len(matches),
+        "matches": [_serialize_match(m) for m in matches],
+    })
 
 
 # =============================================================================

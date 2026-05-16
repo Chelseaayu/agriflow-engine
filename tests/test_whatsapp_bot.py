@@ -82,6 +82,43 @@ class TestIntentClassification:
 
 
 # =============================================================================
+# Bahasa Jawa ngoko — keyword shim (pre-Sahabat-AI / M4)
+# =============================================================================
+
+class TestJavaneseShim:
+    def test_jawa_harga_lookup(self, gemini, data):
+        # "Pira regane lombok ing Malang?" = "Berapa harga cabai di Malang?"
+        intent = classify(
+            "Pira regane lombok ing Malang?",
+            gemini, data.kabupaten, data.komoditas,
+        )
+        assert intent.name == INTENT_HARGA_LOOKUP
+        assert intent.commodity == "cabai_merah"
+        assert "malang" in intent.kabupaten_name.lower()
+
+    def test_jawa_cari_pembeli(self, gemini, data):
+        # "Aku duwe 50 ton brambang ing Probolinggo, golek pembeli"
+        # = "Saya punya 50 ton bawang merah di Probolinggo, cari pembeli"
+        intent = classify(
+            "Aku duwe 50 ton brambang ing Probolinggo, golek pembeli",
+            gemini, data.kabupaten, data.komoditas,
+        )
+        assert intent.name == INTENT_CARI_PEMBELI
+        assert intent.commodity == "bawang_merah"
+        assert intent.volume_tons == 50.0
+
+    def test_jawa_cari_penjual(self, gemini, data):
+        # "Butuh 100 ton sega kanggo Surabaya" = "...beras untuk Surabaya"
+        intent = classify(
+            "Butuh 100 ton sega kanggo Surabaya",
+            gemini, data.kabupaten, data.komoditas,
+        )
+        assert intent.name == INTENT_CARI_PENJUAL
+        assert intent.commodity == "beras_premium"
+        assert intent.volume_tons == 100.0
+
+
+# =============================================================================
 # Handler dispatch — full pipeline
 # =============================================================================
 

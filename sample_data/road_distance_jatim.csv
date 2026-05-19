@@ -1,0 +1,1445 @@
+from_id,from_nama,to_id,to_nama,road_km,duration_hr
+3578,Kota Surabaya,3578,Kota Surabaya,0.000,0.0000
+3578,Kota Surabaya,3573,Kota Malang,88.054,1.1634
+3578,Kota Surabaya,3571,Kota Kediri,119.543,1.4518
+3578,Kota Surabaya,3577,Kota Madiun,166.613,2.1773
+3578,Kota Surabaya,3574,Kota Probolinggo,98.883,1.3161
+3578,Kota Surabaya,3510,Banyuwangi,301.249,3.7817
+3578,Kota Surabaya,3529,Sumenep,166.871,2.1134
+3578,Kota Surabaya,3509,Jember,197.157,2.4678
+3578,Kota Surabaya,3501,Pacitan,283.867,3.4699
+3578,Kota Surabaya,3502,Ponorogo,197.270,2.5437
+3578,Kota Surabaya,3503,Trenggalek,182.686,2.2467
+3578,Kota Surabaya,3504,Tulungagung,150.128,1.8486
+3578,Kota Surabaya,3505,Blitar,166.404,2.1158
+3578,Kota Surabaya,3506,Kediri,117.089,1.5522
+3578,Kota Surabaya,3507,Malang,119.058,1.6200
+3578,Kota Surabaya,3508,Lumajang,144.896,1.8655
+3578,Kota Surabaya,3511,Bondowoso,195.049,2.5698
+3578,Kota Surabaya,3512,Situbondo,199.220,2.5328
+3578,Kota Surabaya,3513,Probolinggo,145.888,2.1060
+3578,Kota Surabaya,3514,Pasuruan,74.195,1.1307
+3578,Kota Surabaya,3515,Sidoarjo,23.877,0.3643
+3578,Kota Surabaya,3516,Mojokerto,53.287,0.6872
+3578,Kota Surabaya,3517,Jombang,80.735,1.0182
+3578,Kota Surabaya,3518,Nganjuk,115.045,1.4583
+3578,Kota Surabaya,3519,Madiun,142.961,1.8029
+3578,Kota Surabaya,3520,Magetan,190.674,2.5310
+3578,Kota Surabaya,3521,Ngawi,180.985,2.3747
+3578,Kota Surabaya,3522,Bojonegoro,110.171,1.3693
+3578,Kota Surabaya,3523,Tuban,111.067,1.4137
+3578,Kota Surabaya,3524,Lamongan,44.706,0.5831
+3578,Kota Surabaya,3525,Gresik,21.218,0.3302
+3578,Kota Surabaya,3526,Bangkalan,32.382,0.4473
+3578,Kota Surabaya,3527,Sampang,80.776,1.0067
+3578,Kota Surabaya,3528,Pamekasan,113.668,1.3996
+3578,Kota Surabaya,3572,Kota Blitar,167.089,2.1139
+3578,Kota Surabaya,3575,Kota Pasuruan,62.267,0.8712
+3578,Kota Surabaya,3576,Kota Mojokerto,53.843,0.6993
+3578,Kota Surabaya,3579,Kota Batu,99.711,1.3423
+3573,Kota Malang,3578,Kota Surabaya,88.006,1.1602
+3573,Kota Malang,3573,Kota Malang,0.000,0.0000
+3573,Kota Malang,3571,Kota Kediri,104.553,1.7105
+3573,Kota Malang,3577,Kota Madiun,203.313,2.6681
+3573,Kota Malang,3574,Kota Probolinggo,87.252,1.1789
+3573,Kota Malang,3510,Banyuwangi,288.990,3.6384
+3573,Kota Malang,3529,Sumenep,254.454,3.2394
+3573,Kota Malang,3509,Jember,184.899,2.3246
+3573,Kota Malang,3501,Pacitan,248.380,3.0379
+3573,Kota Malang,3502,Ponorogo,196.285,2.4082
+3573,Kota Malang,3503,Trenggalek,147.199,1.8147
+3573,Kota Malang,3504,Tulungagung,116.407,1.4407
+3573,Kota Malang,3505,Blitar,79.923,1.0188
+3573,Kota Malang,3506,Kediri,85.327,1.4185
+3573,Kota Malang,3507,Malang,32.578,0.5230
+3573,Kota Malang,3508,Lumajang,121.228,1.5537
+3573,Kota Malang,3511,Bondowoso,183.417,2.4327
+3573,Kota Malang,3512,Situbondo,187.588,2.3956
+3573,Kota Malang,3513,Probolinggo,134.257,1.9689
+3573,Kota Malang,3514,Pasuruan,54.825,0.8754
+3573,Kota Malang,3515,Sidoarjo,65.385,0.8127
+3573,Kota Malang,3516,Mojokerto,85.435,1.0671
+3573,Kota Malang,3517,Jombang,112.426,1.3946
+3573,Kota Malang,3518,Nganjuk,151.745,1.9491
+3573,Kota Malang,3519,Madiun,179.661,2.2937
+3573,Kota Malang,3520,Magetan,227.373,3.0218
+3573,Kota Malang,3521,Ngawi,217.134,2.9051
+3573,Kota Malang,3522,Bojonegoro,195.171,2.4089
+3573,Kota Malang,3523,Tuban,196.066,2.4533
+3573,Kota Malang,3524,Lamongan,129.705,1.6227
+3573,Kota Malang,3525,Gresik,106.217,1.3698
+3573,Kota Malang,3526,Bangkalan,119.965,1.5733
+3573,Kota Malang,3527,Sampang,168.360,2.1327
+3573,Kota Malang,3528,Pamekasan,201.251,2.5256
+3573,Kota Malang,3572,Kota Blitar,80.609,1.0169
+3573,Kota Malang,3575,Kota Pasuruan,51.051,0.7541
+3573,Kota Malang,3576,Kota Mojokerto,85.991,1.0792
+3573,Kota Malang,3579,Kota Batu,21.238,0.3849
+3571,Kota Kediri,3578,Kota Surabaya,119.174,1.4480
+3571,Kota Kediri,3573,Kota Malang,103.445,1.6832
+3571,Kota Kediri,3571,Kota Kediri,0.000,0.0000
+3571,Kota Kediri,3577,Kota Madiun,82.057,1.3071
+3571,Kota Kediri,3574,Kota Probolinggo,173.316,2.1666
+3571,Kota Kediri,3510,Banyuwangi,375.682,4.6322
+3571,Kota Kediri,3529,Sumenep,285.622,3.5272
+3571,Kota Kediri,3509,Jember,271.590,3.3184
+3571,Kota Kediri,3501,Pacitan,164.604,2.0472
+3571,Kota Kediri,3502,Ponorogo,112.509,1.4176
+3571,Kota Kediri,3503,Trenggalek,63.423,0.8241
+3571,Kota Kediri,3504,Tulungagung,30.865,0.4260
+3571,Kota Kediri,3505,Blitar,44.542,0.7280
+3571,Kota Kediri,3506,Kediri,22.867,0.4356
+3571,Kota Kediri,3507,Malang,101.024,1.5360
+3571,Kota Kediri,3508,Lumajang,219.329,2.7161
+3571,Kota Kediri,3511,Bondowoso,269.482,3.4204
+3571,Kota Kediri,3512,Situbondo,273.653,3.3833
+3571,Kota Kediri,3513,Probolinggo,220.321,2.9566
+3571,Kota Kediri,3514,Pasuruan,148.628,1.9813
+3571,Kota Kediri,3515,Sidoarjo,121.008,1.4812
+3571,Kota Kediri,3516,Mojokerto,77.151,0.9890
+3571,Kota Kediri,3517,Jombang,44.904,0.6010
+3571,Kota Kediri,3518,Nganjuk,32.442,0.5643
+3571,Kota Kediri,3519,Madiun,58.405,0.9326
+3571,Kota Kediri,3520,Magetan,106.117,1.6607
+3571,Kota Kediri,3521,Ngawi,95.877,1.5440
+3571,Kota Kediri,3522,Bojonegoro,99.064,1.6199
+3571,Kota Kediri,3523,Tuban,138.494,1.9188
+3571,Kota Kediri,3524,Lamongan,130.821,1.5974
+3571,Kota Kediri,3525,Gresik,117.876,1.4424
+3571,Kota Kediri,3526,Bangkalan,151.133,1.8611
+3571,Kota Kediri,3527,Sampang,199.527,2.4205
+3571,Kota Kediri,3528,Pamekasan,232.418,2.8134
+3571,Kota Kediri,3572,Kota Blitar,44.592,0.7291
+3571,Kota Kediri,3575,Kota Pasuruan,136.700,1.7218
+3571,Kota Kediri,3576,Kota Mojokerto,76.770,0.9971
+3571,Kota Kediri,3579,Kota Batu,85.725,1.3675
+3577,Kota Madiun,3578,Kota Surabaya,164.601,1.9644
+3577,Kota Madiun,3573,Kota Malang,210.914,2.6168
+3577,Kota Madiun,3571,Kota Kediri,90.390,1.2926
+3577,Kota Madiun,3577,Kota Madiun,0.000,0.0000
+3577,Kota Madiun,3574,Kota Probolinggo,223.104,2.7856
+3577,Kota Madiun,3510,Banyuwangi,425.469,5.2511
+3577,Kota Madiun,3529,Sumenep,331.048,4.0436
+3577,Kota Madiun,3509,Jember,321.378,3.9373
+3577,Kota Madiun,3501,Pacitan,107.254,1.5623
+3577,Kota Madiun,3502,Ponorogo,31.409,0.4158
+3577,Kota Madiun,3503,Trenggalek,80.769,0.9969
+3577,Kota Madiun,3504,Tulungagung,111.906,1.3754
+3577,Kota Madiun,3505,Blitar,147.131,1.8083
+3577,Kota Madiun,3506,Kediri,105.511,1.5378
+3577,Kota Madiun,3507,Malang,202.805,2.5714
+3577,Kota Madiun,3508,Lumajang,269.116,3.3350
+3577,Kota Madiun,3511,Bondowoso,319.269,4.0393
+3577,Kota Madiun,3512,Situbondo,323.440,4.0022
+3577,Kota Madiun,3513,Probolinggo,270.109,3.5755
+3577,Kota Madiun,3514,Pasuruan,198.416,2.6002
+3577,Kota Madiun,3515,Sidoarjo,166.435,1.9976
+3577,Kota Madiun,3516,Mojokerto,122.055,1.5379
+3577,Kota Madiun,3517,Jombang,94.692,1.2199
+3577,Kota Madiun,3518,Nganjuk,50.446,0.7556
+3577,Kota Madiun,3519,Madiun,25.341,0.4451
+3577,Kota Madiun,3520,Magetan,27.030,0.4609
+3577,Kota Madiun,3521,Ngawi,32.542,0.6031
+3577,Kota Madiun,3522,Bojonegoro,99.137,1.5107
+3577,Kota Madiun,3523,Tuban,128.400,2.2439
+3577,Kota Madiun,3524,Lamongan,176.248,2.1139
+3577,Kota Madiun,3525,Gresik,163.303,1.9589
+3577,Kota Madiun,3526,Bangkalan,196.559,2.3776
+3577,Kota Madiun,3527,Sampang,244.954,2.9369
+3577,Kota Madiun,3528,Pamekasan,277.845,3.3299
+3577,Kota Madiun,3572,Kota Blitar,146.710,1.7970
+3577,Kota Madiun,3575,Kota Pasuruan,186.488,2.3407
+3577,Kota Madiun,3576,Kota Mojokerto,122.610,1.5499
+3577,Kota Madiun,3579,Kota Batu,165.114,2.3723
+3574,Kota Probolinggo,3578,Kota Surabaya,99.734,1.3266
+3574,Kota Probolinggo,3573,Kota Malang,88.126,1.1917
+3574,Kota Probolinggo,3571,Kota Kediri,172.497,2.1418
+3574,Kota Probolinggo,3577,Kota Madiun,219.567,2.8673
+3574,Kota Probolinggo,3574,Kota Probolinggo,0.000,0.0000
+3574,Kota Probolinggo,3510,Banyuwangi,202.887,2.5349
+3574,Kota Probolinggo,3529,Sumenep,266.182,3.4058
+3574,Kota Probolinggo,3509,Jember,98.795,1.2210
+3574,Kota Probolinggo,3501,Pacitan,336.821,4.1598
+3574,Kota Probolinggo,3502,Ponorogo,250.224,3.2337
+3574,Kota Probolinggo,3503,Trenggalek,235.641,2.9367
+3574,Kota Probolinggo,3504,Tulungagung,203.083,2.5386
+3574,Kota Probolinggo,3505,Blitar,166.476,2.1441
+3574,Kota Probolinggo,3506,Kediri,160.726,2.1232
+3574,Kota Probolinggo,3507,Malang,119.130,1.6483
+3574,Kota Probolinggo,3508,Lumajang,46.534,0.6188
+3574,Kota Probolinggo,3511,Bondowoso,92.820,1.2748
+3574,Kota Probolinggo,3512,Situbondo,96.991,1.2377
+3574,Kota Probolinggo,3513,Probolinggo,43.659,0.8110
+3574,Kota Probolinggo,3514,Pasuruan,39.600,0.6420
+3574,Kota Probolinggo,3515,Sidoarjo,77.113,0.9791
+3574,Kota Probolinggo,3516,Mojokerto,101.689,1.2663
+3574,Kota Probolinggo,3517,Jombang,128.680,1.5938
+3574,Kota Probolinggo,3518,Nganjuk,167.999,2.1483
+3574,Kota Probolinggo,3519,Madiun,195.915,2.4929
+3574,Kota Probolinggo,3520,Magetan,243.628,3.2209
+3574,Kota Probolinggo,3521,Ngawi,233.388,3.1042
+3574,Kota Probolinggo,3522,Bojonegoro,208.135,2.5992
+3574,Kota Probolinggo,3523,Tuban,209.030,2.6436
+3574,Kota Probolinggo,3524,Lamongan,142.669,1.8130
+3574,Kota Probolinggo,3525,Gresik,119.181,1.5601
+3574,Kota Probolinggo,3526,Bangkalan,131.693,1.7397
+3574,Kota Probolinggo,3527,Sampang,180.088,2.2991
+3574,Kota Probolinggo,3528,Pamekasan,212.979,2.6920
+3574,Kota Probolinggo,3572,Kota Blitar,167.162,2.1422
+3574,Kota Probolinggo,3575,Kota Pasuruan,38.544,0.5073
+3574,Kota Probolinggo,3576,Kota Mojokerto,102.245,1.2783
+3574,Kota Probolinggo,3579,Kota Batu,99.783,1.3706
+3510,Banyuwangi,3578,Kota Surabaya,302.720,3.7786
+3510,Banyuwangi,3573,Kota Malang,288.631,3.6506
+3510,Banyuwangi,3571,Kota Kediri,371.237,4.5991
+3510,Banyuwangi,3577,Kota Madiun,418.307,5.3246
+3510,Banyuwangi,3574,Kota Probolinggo,203.366,2.5595
+3510,Banyuwangi,3510,Banyuwangi,0.000,0.0000
+3510,Banyuwangi,3529,Sumenep,469.168,5.8579
+3510,Banyuwangi,3509,Jember,103.825,1.3567
+3510,Banyuwangi,3501,Pacitan,504.097,6.1627
+3510,Banyuwangi,3502,Ponorogo,452.002,5.5331
+3510,Banyuwangi,3503,Trenggalek,402.916,4.9396
+3510,Banyuwangi,3504,Tulungagung,372.123,4.5655
+3510,Banyuwangi,3505,Blitar,335.640,4.1436
+3510,Banyuwangi,3506,Kediri,359.465,4.5805
+3510,Banyuwangi,3507,Malang,288.294,3.6479
+3510,Banyuwangi,3508,Lumajang,168.548,2.1360
+3510,Banyuwangi,3511,Bondowoso,97.607,1.6843
+3510,Banyuwangi,3512,Situbondo,95.836,1.3248
+3510,Banyuwangi,3513,Probolinggo,181.982,2.6167
+3510,Banyuwangi,3514,Pasuruan,239.912,3.1016
+3510,Banyuwangi,3515,Sidoarjo,278.082,3.4375
+3510,Banyuwangi,3516,Mojokerto,300.429,3.7236
+3510,Banyuwangi,3517,Jombang,327.419,4.0511
+3510,Banyuwangi,3518,Nganjuk,366.738,4.6056
+3510,Banyuwangi,3519,Madiun,394.655,4.9501
+3510,Banyuwangi,3520,Magetan,442.367,5.6782
+3510,Banyuwangi,3521,Ngawi,432.127,5.5615
+3510,Banyuwangi,3522,Bojonegoro,406.969,5.0184
+3510,Banyuwangi,3523,Tuban,407.864,5.0628
+3510,Banyuwangi,3524,Lamongan,341.503,4.2322
+3510,Banyuwangi,3525,Gresik,318.015,3.9793
+3510,Banyuwangi,3526,Bangkalan,334.679,4.1918
+3510,Banyuwangi,3527,Sampang,383.073,4.7512
+3510,Banyuwangi,3528,Pamekasan,415.964,5.1441
+3510,Banyuwangi,3572,Kota Blitar,336.326,4.1418
+3510,Banyuwangi,3575,Kota Pasuruan,238.857,2.9668
+3510,Banyuwangi,3576,Kota Mojokerto,300.985,3.7356
+3510,Banyuwangi,3579,Kota Batu,300.288,3.8294
+3529,Sumenep,3578,Kota Surabaya,167.143,2.1312
+3529,Sumenep,3573,Kota Malang,254.480,3.2569
+3529,Sumenep,3571,Kota Kediri,285.969,3.5453
+3529,Sumenep,3577,Kota Madiun,333.040,4.2708
+3529,Sumenep,3574,Kota Probolinggo,265.310,3.4096
+3529,Sumenep,3510,Banyuwangi,467.675,5.8752
+3529,Sumenep,3529,Sumenep,0.000,0.0000
+3529,Sumenep,3509,Jember,363.583,4.5613
+3529,Sumenep,3501,Pacitan,450.293,5.5634
+3529,Sumenep,3502,Ponorogo,363.697,4.6372
+3529,Sumenep,3503,Trenggalek,349.113,4.3402
+3529,Sumenep,3504,Tulungagung,316.555,3.9421
+3529,Sumenep,3505,Blitar,332.830,4.2093
+3529,Sumenep,3506,Kediri,283.516,3.6457
+3529,Sumenep,3507,Malang,285.484,3.7135
+3529,Sumenep,3508,Lumajang,311.322,3.9590
+3529,Sumenep,3511,Bondowoso,361.475,4.6633
+3529,Sumenep,3512,Situbondo,365.646,4.6262
+3529,Sumenep,3513,Probolinggo,312.314,4.1995
+3529,Sumenep,3514,Pasuruan,240.621,3.2242
+3529,Sumenep,3515,Sidoarjo,190.304,2.4578
+3529,Sumenep,3516,Mojokerto,219.714,2.7807
+3529,Sumenep,3517,Jombang,247.162,3.1117
+3529,Sumenep,3518,Nganjuk,281.471,3.5518
+3529,Sumenep,3519,Madiun,309.387,3.8964
+3529,Sumenep,3520,Magetan,357.100,4.6245
+3529,Sumenep,3521,Ngawi,345.818,4.4485
+3529,Sumenep,3522,Bojonegoro,275.004,3.4431
+3529,Sumenep,3523,Tuban,275.900,3.4875
+3529,Sumenep,3524,Lamongan,209.539,2.6569
+3529,Sumenep,3525,Gresik,187.535,2.3807
+3529,Sumenep,3526,Bangkalan,148.862,1.7859
+3529,Sumenep,3527,Sampang,86.707,1.1381
+3529,Sumenep,3528,Pamekasan,54.826,0.7419
+3529,Sumenep,3572,Kota Blitar,333.515,4.2074
+3529,Sumenep,3575,Kota Pasuruan,228.693,2.9647
+3529,Sumenep,3576,Kota Mojokerto,220.269,2.7928
+3529,Sumenep,3579,Kota Batu,266.137,3.4358
+3509,Jember,3578,Kota Surabaya,200.675,2.4782
+3509,Jember,3573,Kota Malang,186.586,2.3501
+3509,Jember,3571,Kota Kediri,269.192,3.2987
+3509,Jember,3577,Kota Madiun,316.262,4.0242
+3509,Jember,3574,Kota Probolinggo,101.321,1.2591
+3509,Jember,3510,Banyuwangi,103.775,1.3396
+3509,Jember,3529,Sumenep,367.123,4.5574
+3509,Jember,3509,Jember,0.000,0.0000
+3509,Jember,3501,Pacitan,402.052,4.8623
+3509,Jember,3502,Ponorogo,349.957,4.2326
+3509,Jember,3503,Trenggalek,300.871,3.6391
+3509,Jember,3504,Tulungagung,270.079,3.2651
+3509,Jember,3505,Blitar,233.595,2.8432
+3509,Jember,3506,Kediri,257.420,3.2801
+3509,Jember,3507,Malang,186.249,2.3474
+3509,Jember,3508,Lumajang,66.503,0.8356
+3509,Jember,3511,Bondowoso,33.618,0.5405
+3509,Jember,3512,Situbondo,68.243,1.0862
+3509,Jember,3513,Probolinggo,116.717,1.7808
+3509,Jember,3514,Pasuruan,137.867,1.8011
+3509,Jember,3515,Sidoarjo,176.037,2.1371
+3509,Jember,3516,Mojokerto,198.384,2.4231
+3509,Jember,3517,Jombang,225.375,2.7506
+3509,Jember,3518,Nganjuk,264.693,3.3052
+3509,Jember,3519,Madiun,292.610,3.6497
+3509,Jember,3520,Magetan,340.322,4.3778
+3509,Jember,3521,Ngawi,330.082,4.2611
+3509,Jember,3522,Bojonegoro,304.924,3.7180
+3509,Jember,3523,Tuban,305.819,3.7624
+3509,Jember,3524,Lamongan,239.458,2.9318
+3509,Jember,3525,Gresik,215.970,2.6789
+3509,Jember,3526,Bangkalan,232.634,2.8914
+3509,Jember,3527,Sampang,281.028,3.4508
+3509,Jember,3528,Pamekasan,313.919,3.8437
+3509,Jember,3572,Kota Blitar,234.281,2.8413
+3509,Jember,3575,Kota Pasuruan,136.812,1.6664
+3509,Jember,3576,Kota Mojokerto,198.940,2.4352
+3509,Jember,3579,Kota Batu,198.243,2.5290
+3501,Pacitan,3578,Kota Surabaya,282.217,3.4337
+3501,Pacitan,3573,Kota Malang,249.753,3.0395
+3501,Pacitan,3571,Kota Kediri,165.127,2.0684
+3501,Pacitan,3577,Kota Madiun,107.480,1.6024
+3501,Pacitan,3574,Kota Probolinggo,336.360,4.1523
+3501,Pacitan,3510,Banyuwangi,506.562,6.1547
+3501,Pacitan,3529,Sumenep,448.665,5.5129
+3501,Pacitan,3509,Jember,402.471,4.8408
+3501,Pacitan,3501,Pacitan,0.000,0.0000
+3501,Pacitan,3502,Ponorogo,76.635,1.1926
+3501,Pacitan,3503,Trenggalek,106.920,1.3005
+3501,Pacitan,3504,Tulungagung,132.910,1.6143
+3501,Pacitan,3505,Blitar,168.135,2.0472
+3501,Pacitan,3506,Kediri,185.911,2.4188
+3501,Pacitan,3507,Malang,223.809,2.8102
+3501,Pacitan,3508,Lumajang,336.922,4.0562
+3501,Pacitan,3511,Bondowoso,435.525,5.3403
+3501,Pacitan,3512,Situbondo,436.696,5.3690
+3501,Pacitan,3513,Probolinggo,383.365,4.9422
+3501,Pacitan,3514,Pasuruan,303.565,3.8533
+3501,Pacitan,3515,Sidoarjo,284.051,3.4669
+3501,Pacitan,3516,Mojokerto,240.195,2.9747
+3501,Pacitan,3517,Jombang,207.948,2.5867
+3501,Pacitan,3518,Nganjuk,158.683,2.2942
+3501,Pacitan,3519,Madiun,133.578,1.9836
+3501,Pacitan,3520,Magetan,96.055,1.6137
+3501,Pacitan,3521,Ngawi,140.780,2.1416
+3501,Pacitan,3522,Bojonegoro,207.374,3.0493
+3501,Pacitan,3523,Tuban,236.637,3.7825
+3501,Pacitan,3524,Lamongan,293.865,3.5831
+3501,Pacitan,3525,Gresik,280.919,3.4281
+3501,Pacitan,3526,Bangkalan,314.176,3.8468
+3501,Pacitan,3527,Sampang,362.571,4.4062
+3501,Pacitan,3528,Pamekasan,395.462,4.7991
+3501,Pacitan,3572,Kota Blitar,167.713,2.0359
+3501,Pacitan,3575,Kota Pasuruan,299.744,3.7075
+3501,Pacitan,3576,Kota Mojokerto,239.814,2.9828
+3501,Pacitan,3579,Kota Batu,264.986,3.3251
+3502,Ponorogo,3578,Kota Surabaya,196.983,2.3546
+3502,Ponorogo,3573,Kota Malang,198.108,2.4305
+3502,Ponorogo,3571,Kota Kediri,113.482,1.4594
+3502,Ponorogo,3577,Kota Madiun,31.625,0.4541
+3502,Ponorogo,3574,Kota Probolinggo,255.486,3.1758
+3502,Ponorogo,3510,Banyuwangi,454.918,5.5457
+3502,Ponorogo,3529,Sumenep,363.431,4.4339
+3502,Ponorogo,3509,Jember,350.826,4.2319
+3502,Ponorogo,3501,Pacitan,76.613,1.1922
+3502,Ponorogo,3502,Ponorogo,0.000,0.0000
+3502,Ponorogo,3503,Trenggalek,50.128,0.6269
+3502,Ponorogo,3504,Tulungagung,81.265,1.0054
+3502,Ponorogo,3505,Blitar,116.490,1.4382
+3502,Ponorogo,3506,Kediri,134.266,1.8099
+3502,Ponorogo,3507,Malang,172.164,2.2013
+3502,Ponorogo,3508,Lumajang,285.277,3.4472
+3502,Ponorogo,3511,Bondowoso,351.652,4.4295
+3502,Ponorogo,3512,Situbondo,355.822,4.3924
+3502,Ponorogo,3513,Probolinggo,302.491,3.9657
+3502,Ponorogo,3514,Pasuruan,230.798,2.9904
+3502,Ponorogo,3515,Sidoarjo,198.817,2.3879
+3502,Ponorogo,3516,Mojokerto,154.437,1.9281
+3502,Ponorogo,3517,Jombang,127.074,1.6101
+3502,Ponorogo,3518,Nganjuk,82.828,1.1458
+3502,Ponorogo,3519,Madiun,57.723,0.8353
+3502,Ponorogo,3520,Magetan,34.884,0.7488
+3502,Ponorogo,3521,Ngawi,64.925,0.9933
+3502,Ponorogo,3522,Bojonegoro,131.519,1.9009
+3502,Ponorogo,3523,Tuban,160.782,2.6341
+3502,Ponorogo,3524,Lamongan,208.630,2.5041
+3502,Ponorogo,3525,Gresik,195.685,2.3491
+3502,Ponorogo,3526,Bangkalan,228.941,2.7678
+3502,Ponorogo,3527,Sampang,277.336,3.3272
+3502,Ponorogo,3528,Pamekasan,310.227,3.7201
+3502,Ponorogo,3572,Kota Blitar,116.068,1.4270
+3502,Ponorogo,3575,Kota Pasuruan,218.870,2.7309
+3502,Ponorogo,3576,Kota Mojokerto,154.992,1.9401
+3502,Ponorogo,3579,Kota Batu,213.342,2.7161
+3503,Trenggalek,3578,Kota Surabaya,181.460,2.2245
+3503,Trenggalek,3573,Kota Malang,148.995,1.8303
+3503,Trenggalek,3571,Kota Kediri,64.369,0.8592
+3503,Trenggalek,3577,Kota Madiun,80.973,1.0319
+3503,Trenggalek,3574,Kota Probolinggo,235.603,2.9432
+3503,Trenggalek,3510,Banyuwangi,405.805,4.9455
+3503,Trenggalek,3529,Sumenep,347.908,4.3037
+3503,Trenggalek,3509,Jember,301.713,3.6316
+3503,Trenggalek,3501,Pacitan,108.242,1.3125
+3503,Trenggalek,3502,Ponorogo,50.127,0.6221
+3503,Trenggalek,3503,Trenggalek,0.000,0.0000
+3503,Trenggalek,3504,Tulungagung,32.153,0.4051
+3503,Trenggalek,3505,Blitar,67.377,0.8380
+3503,Trenggalek,3506,Kediri,85.154,1.2096
+3503,Trenggalek,3507,Malang,123.052,1.6011
+3503,Trenggalek,3508,Lumajang,236.165,2.8470
+3503,Trenggalek,3511,Bondowoso,334.768,4.1311
+3503,Trenggalek,3512,Situbondo,335.939,4.1598
+3503,Trenggalek,3513,Probolinggo,282.607,3.7331
+3503,Trenggalek,3514,Pasuruan,202.808,2.6441
+3503,Trenggalek,3515,Sidoarjo,183.294,2.2577
+3503,Trenggalek,3516,Mojokerto,139.438,1.7655
+3503,Trenggalek,3517,Jombang,107.191,1.3775
+3503,Trenggalek,3518,Nganjuk,94.427,1.3314
+3503,Trenggalek,3519,Madiun,107.071,1.4131
+3503,Trenggalek,3520,Magetan,84.232,1.3267
+3503,Trenggalek,3521,Ngawi,114.272,1.5711
+3503,Trenggalek,3522,Bojonegoro,161.048,2.3870
+3503,Trenggalek,3523,Tuban,200.780,2.6953
+3503,Trenggalek,3524,Lamongan,193.107,2.3740
+3503,Trenggalek,3525,Gresik,180.162,2.2189
+3503,Trenggalek,3526,Bangkalan,213.419,2.6376
+3503,Trenggalek,3527,Sampang,261.813,3.1970
+3503,Trenggalek,3528,Pamekasan,294.704,3.5899
+3503,Trenggalek,3572,Kota Blitar,66.956,0.8268
+3503,Trenggalek,3575,Kota Pasuruan,198.986,2.4983
+3503,Trenggalek,3576,Kota Mojokerto,139.057,1.7737
+3503,Trenggalek,3579,Kota Batu,164.229,2.1159
+3504,Tulungagung,3578,Kota Surabaya,148.923,1.8315
+3504,Tulungagung,3573,Kota Malang,118.224,1.4613
+3504,Tulungagung,3571,Kota Kediri,31.833,0.4662
+3504,Tulungagung,3577,Kota Madiun,112.102,1.4124
+3504,Tulungagung,3574,Kota Probolinggo,203.066,2.5502
+3504,Tulungagung,3510,Banyuwangi,375.034,4.5765
+3504,Tulungagung,3529,Sumenep,315.372,3.9108
+3504,Tulungagung,3509,Jember,270.942,3.2626
+3504,Tulungagung,3501,Pacitan,133.351,1.6322
+3504,Tulungagung,3502,Ponorogo,81.256,1.0026
+3504,Tulungagung,3503,Trenggalek,32.170,0.4091
+3504,Tulungagung,3504,Tulungagung,0.000,0.0000
+3504,Tulungagung,3505,Blitar,36.606,0.4690
+3504,Tulungagung,3506,Kediri,52.617,0.8167
+3504,Tulungagung,3507,Malang,92.281,1.2321
+3504,Tulungagung,3508,Lumajang,205.394,2.4780
+3504,Tulungagung,3511,Bondowoso,303.997,3.7621
+3504,Tulungagung,3512,Situbondo,303.402,3.7669
+3504,Tulungagung,3513,Probolinggo,250.071,3.3401
+3504,Tulungagung,3514,Pasuruan,172.037,2.2751
+3504,Tulungagung,3515,Sidoarjo,150.757,1.8648
+3504,Tulungagung,3516,Mojokerto,106.901,1.3726
+3504,Tulungagung,3517,Jombang,74.654,0.9845
+3504,Tulungagung,3518,Nganjuk,61.890,0.9384
+3504,Tulungagung,3519,Madiun,87.852,1.3067
+3504,Tulungagung,3520,Magetan,115.360,1.7072
+3504,Tulungagung,3521,Ngawi,125.325,1.9181
+3504,Tulungagung,3522,Bojonegoro,128.512,1.9940
+3504,Tulungagung,3523,Tuban,168.244,2.3023
+3504,Tulungagung,3524,Lamongan,160.571,1.9810
+3504,Tulungagung,3525,Gresik,147.625,1.8260
+3504,Tulungagung,3526,Bangkalan,180.882,2.2447
+3504,Tulungagung,3527,Sampang,229.277,2.8041
+3504,Tulungagung,3528,Pamekasan,262.168,3.1970
+3504,Tulungagung,3572,Kota Blitar,36.185,0.4578
+3504,Tulungagung,3575,Kota Pasuruan,166.450,2.1053
+3504,Tulungagung,3576,Kota Mojokerto,106.520,1.3807
+3504,Tulungagung,3579,Kota Batu,133.458,1.7469
+3505,Blitar,3578,Kota Surabaya,162.615,2.1325
+3505,Blitar,3573,Kota Malang,81.715,1.0391
+3505,Blitar,3571,Kota Kediri,45.175,0.7406
+3505,Blitar,3577,Kota Madiun,146.649,1.8345
+3505,Blitar,3574,Kota Probolinggo,167.954,2.1564
+3505,Blitar,3510,Banyuwangi,338.525,4.1543
+3505,Blitar,3529,Sumenep,329.063,4.2117
+3505,Blitar,3509,Jember,234.433,2.8404
+3505,Blitar,3501,Pacitan,167.898,2.0543
+3505,Blitar,3502,Ponorogo,115.804,1.4247
+3505,Blitar,3503,Trenggalek,66.718,0.8312
+3505,Blitar,3504,Tulungagung,35.925,0.4571
+3505,Blitar,3505,Blitar,0.000,0.0000
+3505,Blitar,3506,Kediri,48.133,0.9164
+3505,Blitar,3507,Malang,55.771,0.8099
+3505,Blitar,3508,Lumajang,168.885,2.0558
+3505,Blitar,3511,Bondowoso,267.488,3.3399
+3505,Blitar,3512,Situbondo,268.290,3.3730
+3505,Blitar,3513,Probolinggo,214.959,2.9463
+3505,Blitar,3514,Pasuruan,135.528,1.8529
+3505,Blitar,3515,Sidoarjo,146.088,1.7901
+3505,Blitar,3516,Mojokerto,120.592,1.6736
+3505,Blitar,3517,Jombang,88.345,1.2855
+3505,Blitar,3518,Nganjuk,75.581,1.2394
+3505,Blitar,3519,Madiun,101.544,1.6077
+3505,Blitar,3520,Magetan,149.908,2.1292
+3505,Blitar,3521,Ngawi,139.016,2.2191
+3505,Blitar,3522,Bojonegoro,142.203,2.2950
+3505,Blitar,3523,Tuban,181.935,2.6033
+3505,Blitar,3524,Lamongan,174.262,2.2820
+3505,Blitar,3525,Gresik,161.317,2.1270
+3505,Blitar,3526,Bangkalan,194.574,2.5457
+3505,Blitar,3527,Sampang,242.968,3.1051
+3505,Blitar,3528,Pamekasan,275.859,3.4980
+3505,Blitar,3572,Kota Blitar,0.742,0.0158
+3505,Blitar,3575,Kota Pasuruan,131.754,1.7315
+3505,Blitar,3576,Kota Mojokerto,120.211,1.6817
+3505,Blitar,3579,Kota Batu,96.949,1.3247
+3506,Kediri,3578,Kota Surabaya,117.403,1.5479
+3506,Kediri,3573,Kota Malang,84.087,1.3909
+3506,Kediri,3571,Kota Kediri,22.087,0.4221
+3506,Kediri,3577,Kota Madiun,102.512,1.5789
+3506,Kediri,3574,Kota Probolinggo,153.721,2.1492
+3506,Kediri,3510,Banyuwangi,356.086,4.6148
+3506,Kediri,3529,Sumenep,283.851,3.6271
+3506,Kediri,3509,Jember,251.994,3.3009
+3506,Kediri,3501,Pacitan,186.411,2.4401
+3506,Kediri,3502,Ponorogo,134.317,1.8104
+3506,Kediri,3503,Trenggalek,85.231,1.2169
+3506,Kediri,3504,Tulungagung,52.673,0.8189
+3506,Kediri,3505,Blitar,48.132,0.9135
+3506,Kediri,3506,Kediri,0.000,0.0000
+3506,Kediri,3507,Malang,96.129,1.6480
+3506,Kediri,3508,Lumajang,199.733,2.6987
+3506,Kediri,3511,Bondowoso,249.886,3.4030
+3506,Kediri,3512,Situbondo,254.057,3.3659
+3506,Kediri,3513,Probolinggo,200.725,2.9391
+3506,Kediri,3514,Pasuruan,129.032,1.9639
+3506,Kediri,3515,Sidoarjo,101.159,1.4678
+3506,Kediri,3516,Mojokerto,57.556,0.9716
+3506,Kediri,3517,Jombang,35.105,0.6068
+3506,Kediri,3518,Nganjuk,50.944,0.8599
+3506,Kediri,3519,Madiun,78.860,1.2044
+3506,Kediri,3520,Magetan,126.572,1.9325
+3506,Kediri,3521,Ngawi,116.333,1.8158
+3506,Kediri,3522,Bojonegoro,122.063,1.8627
+3506,Kediri,3523,Tuban,129.625,1.9601
+3506,Kediri,3524,Lamongan,129.050,1.6974
+3506,Kediri,3525,Gresik,116.105,1.5423
+3506,Kediri,3526,Bangkalan,149.362,1.9610
+3506,Kediri,3527,Sampang,197.756,2.5204
+3506,Kediri,3528,Pamekasan,230.647,2.9133
+3506,Kediri,3572,Kota Blitar,48.261,0.9196
+3506,Kediri,3575,Kota Pasuruan,117.104,1.7044
+3506,Kediri,3576,Kota Mojokerto,57.175,0.9797
+3506,Kediri,3579,Kota Batu,66.367,1.0752
+3507,Malang,3578,Kota Surabaya,119.526,1.6307
+3507,Malang,3573,Kota Malang,32.533,0.5322
+3507,Malang,3571,Kota Kediri,99.459,1.5286
+3507,Malang,3577,Kota Madiun,201.123,2.5985
+3507,Malang,3574,Kota Probolinggo,118.772,1.6495
+3507,Malang,3510,Banyuwangi,289.343,3.6474
+3507,Malang,3529,Sumenep,285.974,3.7099
+3507,Malang,3509,Jember,185.251,2.3336
+3507,Malang,3501,Pacitan,222.372,2.8183
+3507,Malang,3502,Ponorogo,170.277,2.1887
+3507,Malang,3503,Trenggalek,121.191,1.5952
+3507,Malang,3504,Tulungagung,90.399,1.2212
+3507,Malang,3505,Blitar,53.915,0.7993
+3507,Malang,3506,Kediri,94.274,1.6381
+3507,Malang,3507,Malang,0.000,0.0000
+3507,Malang,3508,Lumajang,119.703,1.5489
+3507,Malang,3511,Bondowoso,218.305,2.8330
+3507,Malang,3512,Situbondo,219.108,2.8662
+3507,Malang,3513,Probolinggo,165.777,2.4394
+3507,Malang,3514,Pasuruan,86.346,1.3460
+3507,Malang,3515,Sidoarjo,96.905,1.2833
+3507,Malang,3516,Mojokerto,116.955,1.5377
+3507,Malang,3517,Jombang,143.946,1.8652
+3507,Malang,3518,Nganjuk,129.865,2.0274
+3507,Malang,3519,Madiun,155.827,2.3957
+3507,Malang,3520,Magetan,204.382,2.8933
+3507,Malang,3521,Ngawi,193.300,3.0071
+3507,Malang,3522,Bojonegoro,226.691,2.8795
+3507,Malang,3523,Tuban,227.586,2.9239
+3507,Malang,3524,Lamongan,161.225,2.0933
+3507,Malang,3525,Gresik,137.737,1.8403
+3507,Malang,3526,Bangkalan,151.485,2.0439
+3507,Malang,3527,Sampang,199.880,2.6033
+3507,Malang,3528,Pamekasan,232.771,2.9962
+3507,Malang,3572,Kota Blitar,54.601,0.7974
+3507,Malang,3575,Kota Pasuruan,82.572,1.2246
+3507,Malang,3576,Kota Mojokerto,117.511,1.5497
+3507,Malang,3579,Kota Batu,47.767,0.8178
+3508,Lumajang,3578,Kota Surabaya,150.071,1.8906
+3508,Lumajang,3573,Kota Malang,121.915,1.5782
+3508,Lumajang,3571,Kota Kediri,218.587,2.7110
+3508,Lumajang,3577,Kota Madiun,265.658,3.4365
+3508,Lumajang,3574,Kota Probolinggo,50.717,0.6714
+3508,Lumajang,3510,Banyuwangi,172.320,2.1677
+3508,Lumajang,3529,Sumenep,316.519,3.9698
+3508,Lumajang,3509,Jember,68.229,0.8539
+3508,Lumajang,3501,Pacitan,336.247,4.0821
+3508,Lumajang,3502,Ponorogo,284.153,3.4525
+3508,Lumajang,3503,Trenggalek,235.067,2.8590
+3508,Lumajang,3504,Tulungagung,204.274,2.4850
+3508,Lumajang,3505,Blitar,167.791,2.0631
+3508,Lumajang,3506,Kediri,206.816,2.6924
+3508,Lumajang,3507,Malang,120.445,1.5673
+3508,Lumajang,3508,Lumajang,0.000,0.0000
+3508,Lumajang,3511,Bondowoso,101.283,1.3534
+3508,Lumajang,3512,Situbondo,137.655,1.7229
+3508,Lumajang,3513,Probolinggo,66.113,1.1932
+3508,Lumajang,3514,Pasuruan,87.262,1.2135
+3508,Lumajang,3515,Sidoarjo,125.433,1.5495
+3508,Lumajang,3516,Mojokerto,147.780,1.8355
+3508,Lumajang,3517,Jombang,174.770,2.1630
+3508,Lumajang,3518,Nganjuk,214.089,2.7175
+3508,Lumajang,3519,Madiun,242.005,3.0621
+3508,Lumajang,3520,Magetan,289.718,3.7902
+3508,Lumajang,3521,Ngawi,279.478,3.6734
+3508,Lumajang,3522,Bojonegoro,254.319,3.1304
+3508,Lumajang,3523,Tuban,255.215,3.1748
+3508,Lumajang,3524,Lamongan,188.854,2.3442
+3508,Lumajang,3525,Gresik,165.366,2.0912
+3508,Lumajang,3526,Bangkalan,182.030,2.3037
+3508,Lumajang,3527,Sampang,230.424,2.8631
+3508,Lumajang,3528,Pamekasan,263.315,3.2560
+3508,Lumajang,3572,Kota Blitar,168.476,2.0612
+3508,Lumajang,3575,Kota Pasuruan,86.207,1.0788
+3508,Lumajang,3576,Kota Mojokerto,148.335,1.8476
+3508,Lumajang,3579,Kota Batu,140.188,1.8901
+3511,Bondowoso,3578,Kota Surabaya,191.885,2.5583
+3511,Bondowoso,3573,Kota Malang,180.276,2.4234
+3511,Bondowoso,3571,Kota Kediri,264.648,3.3735
+3511,Bondowoso,3577,Kota Madiun,311.718,4.0990
+3511,Bondowoso,3574,Kota Probolinggo,94.209,1.2883
+3511,Bondowoso,3510,Banyuwangi,97.163,1.6730
+3511,Bondowoso,3529,Sumenep,358.333,4.6375
+3511,Bondowoso,3509,Jember,34.920,0.5604
+3511,Bondowoso,3501,Pacitan,435.192,5.3664
+3511,Bondowoso,3502,Ponorogo,342.375,4.4654
+3511,Bondowoso,3503,Trenggalek,334.012,4.1433
+3511,Bondowoso,3504,Tulungagung,303.219,3.7692
+3511,Bondowoso,3505,Blitar,266.736,3.3474
+3511,Bondowoso,3506,Kediri,252.876,3.3549
+3511,Bondowoso,3507,Malang,219.390,2.8516
+3511,Bondowoso,3508,Lumajang,99.644,1.3397
+3511,Bondowoso,3511,Bondowoso,0.000,0.0000
+3511,Bondowoso,3512,Situbondo,34.639,0.5485
+3511,Bondowoso,3513,Probolinggo,82.462,1.3477
+3511,Bondowoso,3514,Pasuruan,131.750,1.8737
+3511,Bondowoso,3515,Sidoarjo,169.264,2.2108
+3511,Bondowoso,3516,Mojokerto,193.840,2.4979
+3511,Bondowoso,3517,Jombang,220.831,2.8254
+3511,Bondowoso,3518,Nganjuk,260.149,3.3800
+3511,Bondowoso,3519,Madiun,288.066,3.7245
+3511,Bondowoso,3520,Magetan,335.778,4.4526
+3511,Bondowoso,3521,Ngawi,325.538,4.3359
+3511,Bondowoso,3522,Bojonegoro,300.285,3.8309
+3511,Bondowoso,3523,Tuban,301.181,3.8753
+3511,Bondowoso,3524,Lamongan,234.820,3.0447
+3511,Bondowoso,3525,Gresik,211.332,2.7917
+3511,Bondowoso,3526,Bangkalan,223.844,2.9714
+3511,Bondowoso,3527,Sampang,272.238,3.5308
+3511,Bondowoso,3528,Pamekasan,305.129,3.9237
+3511,Bondowoso,3572,Kota Blitar,267.421,3.3455
+3511,Bondowoso,3575,Kota Pasuruan,130.695,1.7390
+3511,Bondowoso,3576,Kota Mojokerto,194.396,2.5100
+3511,Bondowoso,3579,Kota Batu,191.934,2.6023
+3512,Situbondo,3578,Kota Surabaya,196.079,2.5292
+3512,Situbondo,3573,Kota Malang,184.471,2.3944
+3512,Situbondo,3571,Kota Kediri,268.842,3.3444
+3512,Situbondo,3577,Kota Madiun,315.912,4.0699
+3512,Situbondo,3574,Kota Probolinggo,98.403,1.2592
+3512,Situbondo,3510,Banyuwangi,95.381,1.3099
+3512,Situbondo,3529,Sumenep,362.527,4.6084
+3512,Situbondo,3509,Jember,69.274,1.1064
+3512,Situbondo,3501,Pacitan,433.166,5.3625
+3512,Situbondo,3502,Ponorogo,346.569,4.4363
+3512,Situbondo,3503,Trenggalek,331.985,4.1393
+3512,Situbondo,3504,Tulungagung,299.427,3.7412
+3512,Situbondo,3505,Blitar,262.821,3.3467
+3512,Situbondo,3506,Kediri,257.070,3.3259
+3512,Situbondo,3507,Malang,215.475,2.8510
+3512,Situbondo,3508,Lumajang,135.143,1.7143
+3512,Situbondo,3511,Bondowoso,34.926,0.5583
+3512,Situbondo,3512,Situbondo,0.000,0.0000
+3512,Situbondo,3513,Probolinggo,86.656,1.3186
+3512,Situbondo,3514,Pasuruan,135.944,1.8447
+3512,Situbondo,3515,Sidoarjo,173.458,2.1818
+3512,Situbondo,3516,Mojokerto,198.034,2.4689
+3512,Situbondo,3517,Jombang,225.025,2.7964
+3512,Situbondo,3518,Nganjuk,264.344,3.3509
+3512,Situbondo,3519,Madiun,292.260,3.6955
+3512,Situbondo,3520,Magetan,339.972,4.4236
+3512,Situbondo,3521,Ngawi,329.733,4.3069
+3512,Situbondo,3522,Bojonegoro,304.479,3.8019
+3512,Situbondo,3523,Tuban,305.375,3.8463
+3512,Situbondo,3524,Lamongan,239.014,3.0157
+3512,Situbondo,3525,Gresik,215.526,2.7627
+3512,Situbondo,3526,Bangkalan,228.038,2.9424
+3512,Situbondo,3527,Sampang,276.432,3.5017
+3512,Situbondo,3528,Pamekasan,309.323,3.8947
+3512,Situbondo,3572,Kota Blitar,263.506,3.3449
+3512,Situbondo,3575,Kota Pasuruan,134.889,1.7099
+3512,Situbondo,3576,Kota Mojokerto,198.590,2.4810
+3512,Situbondo,3579,Kota Batu,196.128,2.5732
+3513,Probolinggo,3578,Kota Surabaya,142.886,2.1069
+3513,Probolinggo,3573,Kota Malang,131.278,1.9721
+3513,Probolinggo,3571,Kota Kediri,215.649,2.9221
+3513,Probolinggo,3577,Kota Madiun,262.719,3.6476
+3513,Probolinggo,3574,Kota Probolinggo,45.211,0.8369
+3513,Probolinggo,3510,Banyuwangi,180.940,2.5887
+3513,Probolinggo,3529,Sumenep,309.334,4.1861
+3513,Probolinggo,3509,Jember,115.741,1.7693
+3513,Probolinggo,3501,Pacitan,379.973,4.9402
+3513,Probolinggo,3502,Ponorogo,293.376,4.0140
+3513,Probolinggo,3503,Trenggalek,278.792,3.7170
+3513,Probolinggo,3504,Tulungagung,246.234,3.3189
+3513,Probolinggo,3505,Blitar,209.628,2.9244
+3513,Probolinggo,3506,Kediri,203.877,2.9036
+3513,Probolinggo,3507,Malang,162.282,2.4287
+3513,Probolinggo,3508,Lumajang,63.480,1.1671
+3513,Probolinggo,3511,Bondowoso,82.636,1.3584
+3513,Probolinggo,3512,Situbondo,86.807,1.3213
+3513,Probolinggo,3513,Probolinggo,0.000,0.0000
+3513,Probolinggo,3514,Pasuruan,82.751,1.4224
+3513,Probolinggo,3515,Sidoarjo,120.265,1.7595
+3513,Probolinggo,3516,Mojokerto,144.841,2.0466
+3513,Probolinggo,3517,Jombang,171.832,2.3741
+3513,Probolinggo,3518,Nganjuk,211.151,2.9286
+3513,Probolinggo,3519,Madiun,239.067,3.2732
+3513,Probolinggo,3520,Magetan,286.779,4.0013
+3513,Probolinggo,3521,Ngawi,276.540,3.8846
+3513,Probolinggo,3522,Bojonegoro,251.287,3.3796
+3513,Probolinggo,3523,Tuban,252.182,3.4240
+3513,Probolinggo,3524,Lamongan,185.821,2.5934
+3513,Probolinggo,3525,Gresik,162.333,2.3404
+3513,Probolinggo,3526,Bangkalan,174.845,2.5201
+3513,Probolinggo,3527,Sampang,223.239,3.0794
+3513,Probolinggo,3528,Pamekasan,256.130,3.4724
+3513,Probolinggo,3572,Kota Blitar,210.314,2.9226
+3513,Probolinggo,3575,Kota Pasuruan,81.696,1.2876
+3513,Probolinggo,3576,Kota Mojokerto,145.397,2.0587
+3513,Probolinggo,3579,Kota Batu,142.935,2.1509
+3514,Pasuruan,3578,Kota Surabaya,74.465,1.1320
+3514,Pasuruan,3573,Kota Malang,55.204,0.8836
+3514,Pasuruan,3571,Kota Kediri,147.227,1.9473
+3514,Pasuruan,3577,Kota Madiun,194.298,2.6727
+3514,Pasuruan,3574,Kota Probolinggo,39.058,0.6316
+3514,Pasuruan,3510,Banyuwangi,241.005,3.0979
+3514,Pasuruan,3529,Sumenep,240.912,3.2113
+3514,Pasuruan,3509,Jember,136.913,1.7840
+3514,Pasuruan,3501,Pacitan,302.010,3.8551
+3514,Pasuruan,3502,Ponorogo,224.955,3.0391
+3514,Pasuruan,3503,Trenggalek,200.830,2.6319
+3514,Pasuruan,3504,Tulungagung,170.037,2.2579
+3514,Pasuruan,3505,Blitar,133.554,1.8360
+3514,Pasuruan,3506,Kediri,135.456,1.9287
+3514,Pasuruan,3507,Malang,86.208,1.3402
+3514,Pasuruan,3508,Lumajang,84.652,1.1817
+3514,Pasuruan,3511,Bondowoso,135.224,1.8853
+3514,Pasuruan,3512,Situbondo,139.394,1.8482
+3514,Pasuruan,3513,Probolinggo,86.063,1.4215
+3514,Pasuruan,3514,Pasuruan,0.000,0.0000
+3514,Pasuruan,3515,Sidoarjo,51.843,0.7846
+3514,Pasuruan,3516,Mojokerto,76.420,1.0717
+3514,Pasuruan,3517,Jombang,103.410,1.3992
+3514,Pasuruan,3518,Nganjuk,142.729,1.9538
+3514,Pasuruan,3519,Madiun,170.646,2.2983
+3514,Pasuruan,3520,Magetan,218.358,3.0264
+3514,Pasuruan,3521,Ngawi,208.118,2.9097
+3514,Pasuruan,3522,Bojonegoro,182.865,2.4047
+3514,Pasuruan,3523,Tuban,183.761,2.4491
+3514,Pasuruan,3524,Lamongan,117.400,1.6185
+3514,Pasuruan,3525,Gresik,93.912,1.3655
+3514,Pasuruan,3526,Bangkalan,106.423,1.5452
+3514,Pasuruan,3527,Sampang,154.818,2.1046
+3514,Pasuruan,3528,Pamekasan,187.709,2.4975
+3514,Pasuruan,3572,Kota Blitar,134.240,1.8341
+3514,Pasuruan,3575,Kota Pasuruan,15.755,0.3599
+3514,Pasuruan,3576,Kota Mojokerto,76.975,1.0838
+3514,Pasuruan,3579,Kota Batu,66.861,1.0625
+3515,Sidoarjo,3578,Kota Surabaya,25.262,0.3834
+3515,Sidoarjo,3573,Kota Malang,64.176,0.7991
+3515,Sidoarjo,3571,Kota Kediri,121.906,1.4935
+3515,Sidoarjo,3577,Kota Madiun,168.976,2.2190
+3515,Sidoarjo,3574,Kota Probolinggo,75.006,0.9518
+3515,Sidoarjo,3510,Banyuwangi,277.372,3.4173
+3515,Sidoarjo,3529,Sumenep,191.709,2.4626
+3515,Sidoarjo,3509,Jember,173.280,2.1035
+3515,Sidoarjo,3501,Pacitan,286.230,3.5116
+3515,Sidoarjo,3502,Ponorogo,199.633,2.5854
+3515,Sidoarjo,3503,Trenggalek,185.049,2.2884
+3515,Sidoarjo,3504,Tulungagung,152.491,1.8903
+3515,Sidoarjo,3505,Blitar,142.526,1.7515
+3515,Sidoarjo,3506,Kediri,109.454,1.4795
+3515,Sidoarjo,3507,Malang,95.181,1.2557
+3515,Sidoarjo,3508,Lumajang,121.019,1.5012
+3515,Sidoarjo,3511,Bondowoso,171.172,2.2055
+3515,Sidoarjo,3512,Situbondo,175.342,2.1684
+3515,Sidoarjo,3513,Probolinggo,122.011,1.7417
+3515,Sidoarjo,3514,Pasuruan,50.318,0.7664
+3515,Sidoarjo,3515,Sidoarjo,0.000,0.0000
+3515,Sidoarjo,3516,Mojokerto,50.418,0.6226
+3515,Sidoarjo,3517,Jombang,77.409,0.9501
+3515,Sidoarjo,3518,Nganjuk,117.408,1.5000
+3515,Sidoarjo,3519,Madiun,145.324,1.8446
+3515,Sidoarjo,3520,Magetan,193.037,2.5727
+3515,Sidoarjo,3521,Ngawi,182.797,2.4559
+3515,Sidoarjo,3522,Bojonegoro,133.908,1.6585
+3515,Sidoarjo,3523,Tuban,134.804,1.7029
+3515,Sidoarjo,3524,Lamongan,68.442,0.8722
+3515,Sidoarjo,3525,Gresik,44.954,0.6193
+3515,Sidoarjo,3526,Bangkalan,57.220,0.7965
+3515,Sidoarjo,3527,Sampang,105.615,1.3559
+3515,Sidoarjo,3528,Pamekasan,138.506,1.7488
+3515,Sidoarjo,3572,Kota Blitar,143.212,1.7496
+3515,Sidoarjo,3575,Kota Pasuruan,38.390,0.5069
+3515,Sidoarjo,3576,Kota Mojokerto,50.974,0.6346
+3515,Sidoarjo,3579,Kota Batu,75.833,0.9779
+3516,Mojokerto,3578,Kota Surabaya,49.818,0.6725
+3516,Mojokerto,3573,Kota Malang,88.923,1.1198
+3516,Mojokerto,3571,Kota Kediri,75.868,0.9918
+3516,Mojokerto,3577,Kota Madiun,122.938,1.7173
+3516,Mojokerto,3574,Kota Probolinggo,101.113,1.2885
+3516,Mojokerto,3510,Banyuwangi,303.479,3.7541
+3516,Mojokerto,3529,Sumenep,216.266,2.7517
+3516,Mojokerto,3509,Jember,199.387,2.4402
+3516,Mojokerto,3501,Pacitan,240.192,3.0098
+3516,Mojokerto,3502,Ponorogo,153.595,2.0836
+3516,Mojokerto,3503,Trenggalek,139.011,1.7866
+3516,Mojokerto,3504,Tulungagung,106.453,1.3886
+3516,Mojokerto,3505,Blitar,120.130,1.6906
+3516,Mojokerto,3506,Kediri,64.096,0.9732
+3516,Mojokerto,3507,Malang,119.927,1.5764
+3516,Mojokerto,3508,Lumajang,147.126,1.8379
+3516,Mojokerto,3511,Bondowoso,197.279,2.5423
+3516,Mojokerto,3512,Situbondo,201.450,2.5052
+3516,Mojokerto,3513,Probolinggo,148.118,2.0784
+3516,Mojokerto,3514,Pasuruan,76.425,1.1031
+3516,Mojokerto,3515,Sidoarjo,48.552,0.6071
+3516,Mojokerto,3516,Mojokerto,0.000,0.0000
+3516,Mojokerto,3517,Jombang,32.051,0.4437
+3516,Mojokerto,3518,Nganjuk,71.370,0.9982
+3516,Mojokerto,3519,Madiun,99.286,1.3428
+3516,Mojokerto,3520,Magetan,146.998,2.0709
+3516,Mojokerto,3521,Ngawi,136.759,1.9542
+3516,Mojokerto,3522,Bojonegoro,100.870,1.5911
+3516,Mojokerto,3523,Tuban,130.589,1.6597
+3516,Mojokerto,3524,Lamongan,64.228,0.8291
+3516,Mojokerto,3525,Gresik,51.282,0.6740
+3516,Mojokerto,3526,Bangkalan,81.777,1.0856
+3516,Mojokerto,3527,Sampang,130.171,1.6450
+3516,Mojokerto,3528,Pamekasan,163.062,2.0379
+3516,Mojokerto,3572,Kota Blitar,120.180,1.6916
+3516,Mojokerto,3575,Kota Pasuruan,64.497,0.8436
+3516,Mojokerto,3576,Kota Mojokerto,0.556,0.0121
+3516,Mojokerto,3579,Kota Batu,100.580,1.2986
+3517,Jombang,3578,Kota Surabaya,78.585,0.9749
+3517,Jombang,3573,Kota Malang,115.398,1.4428
+3517,Jombang,3571,Kota Kediri,44.484,0.5951
+3517,Jombang,3577,Kota Madiun,91.554,1.3206
+3517,Jombang,3574,Kota Probolinggo,127.588,1.6115
+3517,Jombang,3510,Banyuwangi,329.954,4.0771
+3517,Jombang,3529,Sumenep,245.033,3.0541
+3517,Jombang,3509,Jember,225.862,2.7633
+3517,Jombang,3501,Pacitan,208.808,2.6131
+3517,Jombang,3502,Ponorogo,122.211,1.6870
+3517,Jombang,3503,Trenggalek,107.627,1.3900
+3517,Jombang,3504,Tulungagung,75.069,0.9919
+3517,Jombang,3505,Blitar,88.746,1.2940
+3517,Jombang,3506,Kediri,34.012,0.6036
+3517,Jombang,3507,Malang,146.402,1.8994
+3517,Jombang,3508,Lumajang,173.601,2.1610
+3517,Jombang,3511,Bondowoso,223.754,2.8653
+3517,Jombang,3512,Situbondo,227.924,2.8282
+3517,Jombang,3513,Probolinggo,174.593,2.4014
+3517,Jombang,3514,Pasuruan,102.900,1.4262
+3517,Jombang,3515,Sidoarjo,75.027,0.9301
+3517,Jombang,3516,Mojokerto,31.423,0.4339
+3517,Jombang,3517,Jombang,0.000,0.0000
+3517,Jombang,3518,Nganjuk,39.986,0.6016
+3517,Jombang,3519,Madiun,67.902,0.9462
+3517,Jombang,3520,Magetan,115.614,1.6743
+3517,Jombang,3521,Ngawi,105.375,1.5575
+3517,Jombang,3522,Bojonegoro,87.336,1.2877
+3517,Jombang,3523,Tuban,94.899,1.3851
+3517,Jombang,3524,Lamongan,90.232,1.1244
+3517,Jombang,3525,Gresik,77.287,0.9693
+3517,Jombang,3526,Bangkalan,110.544,1.3880
+3517,Jombang,3527,Sampang,158.938,1.9474
+3517,Jombang,3528,Pamekasan,191.829,2.3403
+3517,Jombang,3572,Kota Blitar,88.796,1.2950
+3517,Jombang,3575,Kota Pasuruan,90.972,1.1667
+3517,Jombang,3576,Kota Mojokerto,31.042,0.4420
+3517,Jombang,3579,Kota Batu,78.334,1.2431
+3518,Nganjuk,3578,Kota Surabaya,115.431,1.3907
+3518,Nganjuk,3573,Kota Malang,156.242,1.9988
+3518,Nganjuk,3571,Kota Kediri,32.342,0.5628
+3518,Nganjuk,3577,Kota Madiun,50.411,0.7555
+3518,Nganjuk,3574,Kota Probolinggo,168.432,2.1675
+3518,Nganjuk,3510,Banyuwangi,370.797,4.6331
+3518,Nganjuk,3529,Sumenep,281.879,3.4699
+3518,Nganjuk,3509,Jember,266.706,3.3192
+3518,Nganjuk,3501,Pacitan,156.913,2.2684
+3518,Nganjuk,3502,Ponorogo,81.068,1.1219
+3518,Nganjuk,3503,Trenggalek,94.600,1.3379
+3518,Nganjuk,3504,Tulungagung,62.042,0.9398
+3518,Nganjuk,3505,Blitar,75.698,1.2419
+3518,Nganjuk,3506,Kediri,49.947,0.8562
+3518,Nganjuk,3507,Malang,132.180,2.0498
+3518,Nganjuk,3508,Lumajang,214.444,2.7170
+3518,Nganjuk,3511,Bondowoso,264.598,3.4213
+3518,Nganjuk,3512,Situbondo,268.768,3.3842
+3518,Nganjuk,3513,Probolinggo,215.437,2.9574
+3518,Nganjuk,3514,Pasuruan,143.744,1.9822
+3518,Nganjuk,3515,Sidoarjo,117.265,1.4239
+3518,Nganjuk,3516,Mojokerto,72.885,0.9642
+3518,Nganjuk,3517,Jombang,40.020,0.6019
+3518,Nganjuk,3518,Nganjuk,0.000,0.0000
+3518,Nganjuk,3519,Madiun,26.759,0.3811
+3518,Nganjuk,3520,Magetan,74.471,1.1092
+3518,Nganjuk,3521,Ngawi,64.231,0.9924
+3518,Nganjuk,3522,Bojonegoro,68.974,1.0811
+3518,Nganjuk,3523,Tuban,109.108,1.8642
+3518,Nganjuk,3524,Lamongan,127.079,1.5402
+3518,Nganjuk,3525,Gresik,114.133,1.3852
+3518,Nganjuk,3526,Bangkalan,147.390,1.8039
+3518,Nganjuk,3527,Sampang,195.784,2.3633
+3518,Nganjuk,3528,Pamekasan,228.675,2.7562
+3518,Nganjuk,3572,Kota Blitar,75.748,1.2429
+3518,Nganjuk,3575,Kota Pasuruan,131.816,1.7227
+3518,Nganjuk,3576,Kota Mojokerto,73.441,0.9762
+3518,Nganjuk,3579,Kota Batu,108.856,1.7292
+3519,Madiun,3578,Kota Surabaya,139.621,1.6947
+3519,Madiun,3573,Kota Malang,184.054,2.3425
+3519,Madiun,3571,Kota Kediri,58.285,0.9307
+3519,Madiun,3577,Kota Madiun,25.304,0.4454
+3519,Madiun,3574,Kota Probolinggo,196.244,2.5112
+3519,Madiun,3510,Banyuwangi,398.610,4.9768
+3519,Madiun,3529,Sumenep,306.069,3.7739
+3519,Madiun,3509,Jember,294.518,3.6630
+3519,Madiun,3501,Pacitan,131.806,1.9582
+3519,Madiun,3502,Ponorogo,55.961,0.8118
+3519,Madiun,3503,Trenggalek,105.321,1.3929
+3519,Madiun,3504,Tulungagung,87.985,1.3076
+3519,Madiun,3505,Blitar,101.641,1.6097
+3519,Madiun,3506,Kediri,77.760,1.1999
+3519,Madiun,3507,Malang,158.123,2.4176
+3519,Madiun,3508,Lumajang,242.257,3.0607
+3519,Madiun,3511,Bondowoso,292.410,3.7650
+3519,Madiun,3512,Situbondo,296.581,3.7279
+3519,Madiun,3513,Probolinggo,243.249,3.3012
+3519,Madiun,3514,Pasuruan,171.556,2.3259
+3519,Madiun,3515,Sidoarjo,141.455,1.7279
+3519,Madiun,3516,Mojokerto,97.075,1.2681
+3519,Madiun,3517,Jombang,67.832,0.9456
+3519,Madiun,3518,Nganjuk,26.756,0.3801
+3519,Madiun,3519,Madiun,0.000,0.0000
+3519,Madiun,3520,Magetan,49.364,0.7990
+3519,Madiun,3521,Ngawi,39.124,0.6823
+3519,Madiun,3522,Bojonegoro,78.830,1.3259
+3519,Madiun,3523,Tuban,118.963,2.1090
+3519,Madiun,3524,Lamongan,151.269,1.8441
+3519,Madiun,3525,Gresik,138.323,1.6891
+3519,Madiun,3526,Bangkalan,171.580,2.1078
+3519,Madiun,3527,Sampang,219.974,2.6672
+3519,Madiun,3528,Pamekasan,252.865,3.0601
+3519,Madiun,3572,Kota Blitar,101.691,1.6107
+3519,Madiun,3575,Kota Pasuruan,159.628,2.0664
+3519,Madiun,3576,Kota Mojokerto,97.631,1.2802
+3519,Madiun,3579,Kota Batu,136.668,2.0730
+3520,Magetan,3578,Kota Surabaya,188.849,2.3212
+3520,Magetan,3573,Kota Malang,235.162,2.9736
+3520,Magetan,3571,Kota Kediri,114.638,1.6494
+3520,Magetan,3577,Kota Madiun,25.699,0.4392
+3520,Magetan,3574,Kota Probolinggo,247.352,3.1424
+3520,Magetan,3510,Banyuwangi,449.718,5.6079
+3520,Magetan,3529,Sumenep,355.297,4.4004
+3520,Magetan,3509,Jember,345.626,4.2941
+3520,Magetan,3501,Pacitan,96.365,1.6267
+3520,Magetan,3502,Ponorogo,35.067,0.7506
+3520,Magetan,3503,Trenggalek,84.427,1.3317
+3520,Magetan,3504,Tulungagung,115.564,1.7102
+3520,Magetan,3505,Blitar,150.789,2.1431
+3520,Magetan,3506,Kediri,129.760,1.8946
+3520,Magetan,3507,Malang,206.463,2.9061
+3520,Magetan,3508,Lumajang,293.365,3.6918
+3520,Magetan,3511,Bondowoso,343.518,4.3961
+3520,Magetan,3512,Situbondo,347.689,4.3590
+3520,Magetan,3513,Probolinggo,294.357,3.9323
+3520,Magetan,3514,Pasuruan,222.664,2.9570
+3520,Magetan,3515,Sidoarjo,190.683,2.3544
+3520,Magetan,3516,Mojokerto,146.303,1.8947
+3520,Magetan,3517,Jombang,118.940,1.5767
+3520,Magetan,3518,Nganjuk,74.694,1.1124
+3520,Magetan,3519,Madiun,49.590,0.8019
+3520,Magetan,3520,Magetan,0.000,0.0000
+3520,Magetan,3521,Ngawi,34.746,0.6686
+3520,Magetan,3522,Bojonegoro,107.642,1.6291
+3520,Magetan,3523,Tuban,136.905,2.3623
+3520,Magetan,3524,Lamongan,172.274,2.3894
+3520,Magetan,3525,Gresik,187.551,2.3157
+3520,Magetan,3526,Bangkalan,220.808,2.7344
+3520,Magetan,3527,Sampang,269.202,3.2938
+3520,Magetan,3528,Pamekasan,302.093,3.6867
+3520,Magetan,3572,Kota Blitar,150.367,2.1318
+3520,Magetan,3575,Kota Pasuruan,210.736,2.6975
+3520,Magetan,3576,Kota Mojokerto,146.859,1.9067
+3520,Magetan,3579,Kota Batu,189.363,2.7291
+3521,Ngawi,3578,Kota Surabaya,184.442,2.2073
+3521,Ngawi,3573,Kota Malang,230.756,2.8597
+3521,Ngawi,3571,Kota Kediri,110.232,1.5355
+3521,Ngawi,3577,Kota Madiun,40.407,0.6060
+3521,Ngawi,3574,Kota Probolinggo,242.946,3.0284
+3521,Ngawi,3510,Banyuwangi,445.311,5.4940
+3521,Ngawi,3529,Sumenep,350.890,4.2865
+3521,Ngawi,3509,Jember,341.220,4.1801
+3521,Ngawi,3501,Pacitan,146.910,2.1189
+3521,Ngawi,3502,Ponorogo,71.064,0.9724
+3521,Ngawi,3503,Trenggalek,120.425,1.5535
+3521,Ngawi,3504,Tulungagung,139.931,1.9124
+3521,Ngawi,3505,Blitar,153.588,2.2145
+3521,Ngawi,3506,Kediri,125.353,1.7806
+3521,Ngawi,3507,Malang,210.070,3.0225
+3521,Ngawi,3508,Lumajang,288.958,3.5779
+3521,Ngawi,3511,Bondowoso,339.111,4.2822
+3521,Ngawi,3512,Situbondo,343.282,4.2451
+3521,Ngawi,3513,Probolinggo,289.951,3.8183
+3521,Ngawi,3514,Pasuruan,218.258,2.8431
+3521,Ngawi,3515,Sidoarjo,186.276,2.2405
+3521,Ngawi,3516,Mojokerto,141.897,1.7807
+3521,Ngawi,3517,Jombang,114.534,1.4627
+3521,Ngawi,3518,Nganjuk,64.095,0.9930
+3521,Ngawi,3519,Madiun,38.990,0.6824
+3521,Ngawi,3520,Magetan,34.537,0.6673
+3521,Ngawi,3521,Ngawi,0.000,0.0000
+3521,Ngawi,3522,Bojonegoro,72.330,1.0495
+3521,Ngawi,3523,Tuban,101.593,1.7827
+3521,Ngawi,3524,Lamongan,136.962,1.8099
+3521,Ngawi,3525,Gresik,165.081,2.1459
+3521,Ngawi,3526,Bangkalan,216.401,2.6204
+3521,Ngawi,3527,Sampang,264.796,3.1798
+3521,Ngawi,3528,Pamekasan,297.687,3.5727
+3521,Ngawi,3572,Kota Blitar,153.638,2.2156
+3521,Ngawi,3575,Kota Pasuruan,206.330,2.5836
+3521,Ngawi,3576,Kota Mojokerto,142.452,1.7928
+3521,Ngawi,3579,Kota Batu,184.956,2.6151
+3522,Bojonegoro,3578,Kota Surabaya,111.999,1.4051
+3522,Bojonegoro,3573,Kota Malang,196.692,2.4376
+3522,Bojonegoro,3571,Kota Kediri,98.917,1.6024
+3522,Bojonegoro,3577,Kota Madiun,99.148,1.5114
+3522,Bojonegoro,3574,Kota Probolinggo,207.522,2.5902
+3522,Bojonegoro,3510,Banyuwangi,409.035,5.0348
+3522,Bojonegoro,3529,Sumenep,275.370,3.4427
+3522,Bojonegoro,3509,Jember,304.943,3.7209
+3522,Bojonegoro,3501,Pacitan,205.650,3.0242
+3522,Bojonegoro,3502,Ponorogo,129.804,1.8778
+3522,Bojonegoro,3503,Trenggalek,161.174,2.3774
+3522,Bojonegoro,3504,Tulungagung,128.617,1.9793
+3522,Bojonegoro,3505,Blitar,142.273,2.2814
+3522,Bojonegoro,3506,Kediri,114.038,1.8475
+3522,Bojonegoro,3507,Malang,227.696,2.8942
+3522,Bojonegoro,3508,Lumajang,252.682,3.1187
+3522,Bojonegoro,3511,Bondowoso,306.787,3.8356
+3522,Bojonegoro,3512,Situbondo,310.957,3.7985
+3522,Bojonegoro,3513,Probolinggo,254.526,3.3802
+3522,Bojonegoro,3514,Pasuruan,182.833,2.4049
+3522,Bojonegoro,3515,Sidoarjo,132.516,1.6385
+3522,Bojonegoro,3516,Mojokerto,100.898,1.5900
+3522,Bojonegoro,3517,Jombang,88.321,1.3087
+3522,Bojonegoro,3518,Nganjuk,68.974,1.0800
+3522,Bojonegoro,3519,Madiun,78.836,1.3257
+3522,Bojonegoro,3520,Magetan,107.440,1.6254
+3522,Bojonegoro,3521,Ngawi,72.337,1.0459
+3522,Bojonegoro,3522,Bojonegoro,0.000,0.0000
+3522,Bojonegoro,3523,Tuban,40.196,0.7872
+3522,Bojonegoro,3524,Lamongan,66.133,0.8006
+3522,Bojonegoro,3525,Gresik,94.252,1.1367
+3522,Bojonegoro,3526,Bangkalan,140.881,1.7767
+3522,Bojonegoro,3527,Sampang,189.275,2.3361
+3522,Bojonegoro,3528,Pamekasan,222.167,2.7290
+3522,Bojonegoro,3572,Kota Blitar,142.323,2.2824
+3522,Bojonegoro,3575,Kota Pasuruan,170.905,2.1454
+3522,Bojonegoro,3576,Kota Mojokerto,99.518,1.6028
+3522,Bojonegoro,3579,Kota Batu,166.954,2.5039
+3523,Tuban,3578,Kota Surabaya,112.920,1.4480
+3523,Tuban,3573,Kota Malang,197.613,2.4805
+3523,Tuban,3571,Kota Kediri,138.293,1.9289
+3523,Tuban,3577,Kota Madiun,128.391,2.2432
+3523,Tuban,3574,Kota Probolinggo,208.443,2.6331
+3523,Tuban,3510,Banyuwangi,409.956,5.0777
+3523,Tuban,3529,Sumenep,276.291,3.4856
+3523,Tuban,3509,Jember,305.864,3.7638
+3523,Tuban,3501,Pacitan,234.893,3.7560
+3523,Tuban,3502,Ponorogo,159.048,2.6096
+3523,Tuban,3503,Trenggalek,201.436,2.7238
+3523,Tuban,3504,Tulungagung,168.878,2.3257
+3523,Tuban,3505,Blitar,182.555,2.6278
+3523,Tuban,3506,Kediri,130.163,1.9624
+3523,Tuban,3507,Malang,228.617,2.9371
+3523,Tuban,3508,Lumajang,253.603,3.1616
+3523,Tuban,3511,Bondowoso,307.708,3.8785
+3523,Tuban,3512,Situbondo,311.879,3.8414
+3523,Tuban,3513,Probolinggo,255.448,3.4231
+3523,Tuban,3514,Pasuruan,183.755,2.4478
+3523,Tuban,3515,Sidoarjo,133.437,1.6814
+3523,Tuban,3516,Mojokerto,117.288,1.6710
+3523,Tuban,3517,Jombang,95.851,1.4067
+3523,Tuban,3518,Nganjuk,109.139,1.8607
+3523,Tuban,3519,Madiun,119.001,2.1064
+3523,Tuban,3520,Magetan,136.683,2.3572
+3523,Tuban,3521,Ngawi,101.580,1.7776
+3523,Tuban,3522,Bojonegoro,40.382,0.7898
+3523,Tuban,3523,Tuban,0.000,0.0000
+3523,Tuban,3524,Lamongan,67.054,0.8435
+3523,Tuban,3525,Gresik,95.174,1.1796
+3523,Tuban,3526,Bangkalan,141.802,1.8196
+3523,Tuban,3527,Sampang,190.196,2.3789
+3523,Tuban,3528,Pamekasan,223.088,2.7719
+3523,Tuban,3572,Kota Blitar,182.605,2.6288
+3523,Tuban,3575,Kota Pasuruan,171.827,2.1883
+3523,Tuban,3576,Kota Mojokerto,117.844,1.6831
+3523,Tuban,3579,Kota Batu,174.484,2.6019
+3524,Lamongan,3578,Kota Surabaya,46.596,0.6206
+3524,Lamongan,3573,Kota Malang,131.289,1.6531
+3524,Lamongan,3571,Kota Kediri,114.140,1.5849
+3524,Lamongan,3577,Kota Madiun,163.752,2.2728
+3524,Lamongan,3574,Kota Probolinggo,142.119,1.8057
+3524,Lamongan,3510,Banyuwangi,343.631,4.2503
+3524,Lamongan,3529,Sumenep,209.967,2.6583
+3524,Lamongan,3509,Jember,239.540,2.9364
+3524,Lamongan,3501,Pacitan,278.464,3.6029
+3524,Lamongan,3502,Ponorogo,194.409,2.6392
+3524,Lamongan,3503,Trenggalek,177.283,2.3798
+3524,Lamongan,3504,Tulungagung,144.725,1.9817
+3524,Lamongan,3505,Blitar,158.402,2.2838
+3524,Lamongan,3506,Kediri,111.686,1.6853
+3524,Lamongan,3507,Malang,162.293,2.1097
+3524,Lamongan,3508,Lumajang,187.279,2.3342
+3524,Lamongan,3511,Bondowoso,241.384,3.0511
+3524,Lamongan,3512,Situbondo,245.554,3.0140
+3524,Lamongan,3513,Probolinggo,189.123,2.5957
+3524,Lamongan,3514,Pasuruan,117.430,1.6204
+3524,Lamongan,3515,Sidoarjo,67.112,0.8540
+3524,Lamongan,3516,Mojokerto,50.249,0.8297
+3524,Lamongan,3517,Jombang,75.332,1.1513
+3524,Lamongan,3518,Nganjuk,109.642,1.5914
+3524,Lamongan,3519,Madiun,137.558,1.9360
+3524,Lamongan,3520,Magetan,172.044,2.3869
+3524,Lamongan,3521,Ngawi,136.941,1.8073
+3524,Lamongan,3522,Bojonegoro,66.128,0.8019
+3524,Lamongan,3523,Tuban,67.023,0.8463
+3524,Lamongan,3524,Lamongan,0.000,0.0000
+3524,Lamongan,3525,Gresik,28.849,0.3522
+3524,Lamongan,3526,Bangkalan,75.478,0.9922
+3524,Lamongan,3527,Sampang,123.872,1.5516
+3524,Lamongan,3528,Pamekasan,156.763,1.9445
+3524,Lamongan,3572,Kota Blitar,158.452,2.2848
+3524,Lamongan,3575,Kota Pasuruan,105.502,1.3609
+3524,Lamongan,3576,Kota Mojokerto,50.805,0.8418
+3524,Lamongan,3579,Kota Batu,142.946,1.8319
+3525,Gresik,3578,Kota Surabaya,22.015,0.3296
+3525,Gresik,3573,Kota Malang,107.181,1.3871
+3525,Gresik,3571,Kota Kediri,118.554,1.4508
+3525,Gresik,3577,Kota Madiun,165.625,2.1763
+3525,Gresik,3574,Kota Probolinggo,118.011,1.5397
+3525,Gresik,3510,Banyuwangi,319.524,3.9843
+3525,Gresik,3529,Sumenep,184.612,2.3582
+3525,Gresik,3509,Jember,215.432,2.6704
+3525,Gresik,3501,Pacitan,282.878,3.4689
+3525,Gresik,3502,Ponorogo,196.281,2.5427
+3525,Gresik,3503,Trenggalek,181.698,2.2457
+3525,Gresik,3504,Tulungagung,149.140,1.8476
+3525,Gresik,3505,Blitar,162.816,2.1497
+3525,Gresik,3506,Kediri,116.101,1.5512
+3525,Gresik,3507,Malang,138.185,1.8437
+3525,Gresik,3508,Lumajang,163.171,2.0681
+3525,Gresik,3511,Bondowoso,217.276,2.7851
+3525,Gresik,3512,Situbondo,221.447,2.7480
+3525,Gresik,3513,Probolinggo,165.016,2.3296
+3525,Gresik,3514,Pasuruan,93.323,1.3544
+3525,Gresik,3515,Sidoarjo,43.005,0.5880
+3525,Gresik,3516,Mojokerto,52.299,0.6862
+3525,Gresik,3517,Jombang,79.747,1.0172
+3525,Gresik,3518,Nganjuk,114.056,1.4573
+3525,Gresik,3519,Madiun,141.972,1.8019
+3525,Gresik,3520,Magetan,189.685,2.5300
+3525,Gresik,3521,Ngawi,165.394,2.1456
+3525,Gresik,3522,Bojonegoro,94.581,1.1402
+3525,Gresik,3523,Tuban,95.477,1.1846
+3525,Gresik,3524,Lamongan,29.115,0.3540
+3525,Gresik,3525,Gresik,0.000,0.0000
+3525,Gresik,3526,Bangkalan,50.123,0.6921
+3525,Gresik,3527,Sampang,98.517,1.2515
+3525,Gresik,3528,Pamekasan,131.408,1.6444
+3525,Gresik,3572,Kota Blitar,162.867,2.1507
+3525,Gresik,3575,Kota Pasuruan,81.394,1.0949
+3525,Gresik,3576,Kota Mojokerto,52.854,0.6983
+3525,Gresik,3579,Kota Batu,118.838,1.5659
+3526,Bangkalan,3578,Kota Surabaya,33.181,0.4626
+3526,Bangkalan,3573,Kota Malang,120.518,1.5884
+3526,Bangkalan,3571,Kota Kediri,152.008,1.8768
+3526,Bangkalan,3577,Kota Madiun,199.078,2.6023
+3526,Bangkalan,3574,Kota Probolinggo,131.348,1.7411
+3526,Bangkalan,3510,Banyuwangi,333.714,4.2066
+3526,Bangkalan,3529,Sumenep,148.107,1.7830
+3526,Bangkalan,3509,Jember,229.622,2.8928
+3526,Bangkalan,3501,Pacitan,316.332,3.8948
+3526,Bangkalan,3502,Ponorogo,229.735,2.9687
+3526,Bangkalan,3503,Trenggalek,215.151,2.6717
+3526,Bangkalan,3504,Tulungagung,182.593,2.2736
+3526,Bangkalan,3505,Blitar,198.868,2.5408
+3526,Bangkalan,3506,Kediri,149.554,1.9772
+3526,Bangkalan,3507,Malang,151.523,2.0450
+3526,Bangkalan,3508,Lumajang,177.361,2.2905
+3526,Bangkalan,3511,Bondowoso,227.514,2.9948
+3526,Bangkalan,3512,Situbondo,231.684,2.9577
+3526,Bangkalan,3513,Probolinggo,178.353,2.5310
+3526,Bangkalan,3514,Pasuruan,106.660,1.5557
+3526,Bangkalan,3515,Sidoarjo,56.342,0.7893
+3526,Bangkalan,3516,Mojokerto,85.752,1.1122
+3526,Bangkalan,3517,Jombang,113.200,1.4432
+3526,Bangkalan,3518,Nganjuk,147.510,1.8833
+3526,Bangkalan,3519,Madiun,175.426,2.2279
+3526,Bangkalan,3520,Magetan,223.138,2.9559
+3526,Bangkalan,3521,Ngawi,211.857,2.7800
+3526,Bangkalan,3522,Bojonegoro,141.043,1.7746
+3526,Bangkalan,3523,Tuban,141.939,1.8190
+3526,Bangkalan,3524,Lamongan,75.577,0.9884
+3526,Bangkalan,3525,Gresik,53.574,0.7122
+3526,Bangkalan,3526,Bangkalan,0.000,0.0000
+3526,Bangkalan,3527,Sampang,63.601,0.7796
+3526,Bangkalan,3528,Pamekasan,96.492,1.1725
+3526,Bangkalan,3572,Kota Blitar,199.554,2.5389
+3526,Bangkalan,3575,Kota Pasuruan,94.732,1.2962
+3526,Bangkalan,3576,Kota Mojokerto,86.308,1.1242
+3526,Bangkalan,3579,Kota Batu,132.175,1.7673
+3527,Sampang,3578,Kota Surabaya,80.817,1.0135
+3527,Sampang,3573,Kota Malang,168.154,2.1393
+3527,Sampang,3571,Kota Kediri,199.643,2.4277
+3527,Sampang,3577,Kota Madiun,246.714,3.1532
+3527,Sampang,3574,Kota Probolinggo,178.984,2.2919
+3527,Sampang,3510,Banyuwangi,381.349,4.7575
+3527,Sampang,3529,Sumenep,86.687,1.1306
+3527,Sampang,3509,Jember,277.257,3.4436
+3527,Sampang,3501,Pacitan,363.967,4.4457
+3527,Sampang,3502,Ponorogo,277.371,3.5196
+3527,Sampang,3503,Trenggalek,262.787,3.2226
+3527,Sampang,3504,Tulungagung,230.229,2.8245
+3527,Sampang,3505,Blitar,246.504,3.0916
+3527,Sampang,3506,Kediri,197.190,2.5281
+3527,Sampang,3507,Malang,199.158,2.5959
+3527,Sampang,3508,Lumajang,224.996,2.8414
+3527,Sampang,3511,Bondowoso,275.149,3.5457
+3527,Sampang,3512,Situbondo,279.320,3.5086
+3527,Sampang,3513,Probolinggo,225.988,3.0818
+3527,Sampang,3514,Pasuruan,154.295,2.1066
+3527,Sampang,3515,Sidoarjo,103.978,1.3402
+3527,Sampang,3516,Mojokerto,133.388,1.6631
+3527,Sampang,3517,Jombang,160.836,1.9941
+3527,Sampang,3518,Nganjuk,195.145,2.4342
+3527,Sampang,3519,Madiun,223.062,2.7787
+3527,Sampang,3520,Magetan,270.774,3.5068
+3527,Sampang,3521,Ngawi,259.492,3.3309
+3527,Sampang,3522,Bojonegoro,188.678,2.3255
+3527,Sampang,3523,Tuban,189.574,2.3699
+3527,Sampang,3524,Lamongan,123.213,1.5393
+3527,Sampang,3525,Gresik,101.209,1.2630
+3527,Sampang,3526,Bangkalan,62.978,0.7718
+3527,Sampang,3527,Sampang,0.000,0.0000
+3527,Sampang,3528,Pamekasan,33.483,0.4168
+3527,Sampang,3572,Kota Blitar,247.190,3.0897
+3527,Sampang,3575,Kota Pasuruan,142.367,1.8471
+3527,Sampang,3576,Kota Mojokerto,133.944,1.6751
+3527,Sampang,3579,Kota Batu,179.811,2.3181
+3528,Pamekasan,3578,Kota Surabaya,114.061,1.4256
+3528,Pamekasan,3573,Kota Malang,201.399,2.5514
+3528,Pamekasan,3571,Kota Kediri,232.888,2.8398
+3528,Pamekasan,3577,Kota Madiun,279.959,3.5653
+3528,Pamekasan,3574,Kota Probolinggo,212.228,2.7041
+3528,Pamekasan,3510,Banyuwangi,414.594,5.1696
+3528,Pamekasan,3529,Sumenep,54.649,0.7421
+3528,Pamekasan,3509,Jember,310.502,3.8558
+3528,Pamekasan,3501,Pacitan,397.212,4.8578
+3528,Pamekasan,3502,Ponorogo,310.615,3.9317
+3528,Pamekasan,3503,Trenggalek,296.032,3.6347
+3528,Pamekasan,3504,Tulungagung,263.474,3.2366
+3528,Pamekasan,3505,Blitar,279.749,3.5038
+3528,Pamekasan,3506,Kediri,230.435,2.9402
+3528,Pamekasan,3507,Malang,232.403,3.0080
+3528,Pamekasan,3508,Lumajang,258.241,3.2535
+3528,Pamekasan,3511,Bondowoso,308.394,3.9578
+3528,Pamekasan,3512,Situbondo,312.565,3.9207
+3528,Pamekasan,3513,Probolinggo,259.233,3.4940
+3528,Pamekasan,3514,Pasuruan,187.540,2.5187
+3528,Pamekasan,3515,Sidoarjo,137.222,1.7523
+3528,Pamekasan,3516,Mojokerto,166.633,2.0752
+3528,Pamekasan,3517,Jombang,194.081,2.4062
+3528,Pamekasan,3518,Nganjuk,228.390,2.8463
+3528,Pamekasan,3519,Madiun,256.306,3.1909
+3528,Pamekasan,3520,Magetan,304.019,3.9189
+3528,Pamekasan,3521,Ngawi,292.737,3.7430
+3528,Pamekasan,3522,Bojonegoro,221.923,2.7376
+3528,Pamekasan,3523,Tuban,222.819,2.7820
+3528,Pamekasan,3524,Lamongan,156.458,1.9514
+3528,Pamekasan,3525,Gresik,134.454,1.6752
+3528,Pamekasan,3526,Bangkalan,96.223,1.1840
+3528,Pamekasan,3527,Sampang,33.626,0.4326
+3528,Pamekasan,3528,Pamekasan,0.000,0.0000
+3528,Pamekasan,3572,Kota Blitar,280.434,3.5019
+3528,Pamekasan,3575,Kota Pasuruan,175.612,2.2592
+3528,Pamekasan,3576,Kota Mojokerto,167.188,2.0873
+3528,Pamekasan,3579,Kota Batu,213.056,2.7302
+3572,Kota Blitar,3578,Kota Surabaya,162.778,2.1349
+3572,Kota Blitar,3573,Kota Malang,82.395,1.0384
+3572,Kota Blitar,3571,Kota Kediri,45.338,0.7429
+3572,Kota Blitar,3577,Kota Madiun,146.812,1.8368
+3572,Kota Blitar,3574,Kota Probolinggo,168.634,2.1557
+3572,Kota Blitar,3510,Banyuwangi,339.205,4.1536
+3572,Kota Blitar,3529,Sumenep,329.226,4.2141
+3572,Kota Blitar,3509,Jember,235.113,2.8398
+3572,Kota Blitar,3501,Pacitan,168.061,2.0566
+3572,Kota Blitar,3502,Ponorogo,115.967,1.4270
+3572,Kota Blitar,3503,Trenggalek,66.881,0.8335
+3572,Kota Blitar,3504,Tulungagung,36.088,0.4595
+3572,Kota Blitar,3505,Blitar,0.560,0.0161
+3572,Kota Blitar,3506,Kediri,48.262,0.9206
+3572,Kota Blitar,3507,Malang,56.452,0.8092
+3572,Kota Blitar,3508,Lumajang,169.565,2.0552
+3572,Kota Blitar,3511,Bondowoso,268.168,3.3392
+3572,Kota Blitar,3512,Situbondo,268.971,3.3724
+3572,Kota Blitar,3513,Probolinggo,215.639,2.9456
+3572,Kota Blitar,3514,Pasuruan,136.208,1.8522
+3572,Kota Blitar,3515,Sidoarjo,146.768,1.7895
+3572,Kota Blitar,3516,Mojokerto,120.755,1.6759
+3572,Kota Blitar,3517,Jombang,88.508,1.2879
+3572,Kota Blitar,3518,Nganjuk,75.744,1.2418
+3572,Kota Blitar,3519,Madiun,101.706,1.6101
+3572,Kota Blitar,3520,Magetan,150.071,2.1316
+3572,Kota Blitar,3521,Ngawi,139.179,2.2214
+3572,Kota Blitar,3522,Bojonegoro,142.366,2.2974
+3572,Kota Blitar,3523,Tuban,182.098,2.6057
+3572,Kota Blitar,3524,Lamongan,174.425,2.2843
+3572,Kota Blitar,3525,Gresik,161.480,2.1293
+3572,Kota Blitar,3526,Bangkalan,194.736,2.5480
+3572,Kota Blitar,3527,Sampang,243.131,3.1074
+3572,Kota Blitar,3528,Pamekasan,276.022,3.5003
+3572,Kota Blitar,3572,Kota Blitar,0.000,0.0000
+3572,Kota Blitar,3575,Kota Pasuruan,132.434,1.7308
+3572,Kota Blitar,3576,Kota Mojokerto,120.374,1.6840
+3572,Kota Blitar,3579,Kota Batu,97.629,1.3240
+3575,Kota Pasuruan,3578,Kota Surabaya,62.577,0.8768
+3575,Kota Pasuruan,3573,Kota Malang,51.012,0.7569
+3575,Kota Pasuruan,3571,Kota Kediri,135.340,1.6921
+3575,Kota Pasuruan,3577,Kota Madiun,182.410,2.4176
+3575,Kota Pasuruan,3574,Kota Probolinggo,38.020,0.5008
+3575,Kota Pasuruan,3510,Banyuwangi,239.966,2.9671
+3575,Kota Pasuruan,3529,Sumenep,229.025,2.9561
+3575,Kota Pasuruan,3509,Jember,135.875,1.6532
+3575,Kota Pasuruan,3501,Pacitan,299.664,3.7101
+3575,Kota Pasuruan,3502,Ponorogo,213.067,2.7839
+3575,Kota Pasuruan,3503,Trenggalek,198.483,2.4869
+3575,Kota Pasuruan,3504,Tulungagung,165.925,2.0889
+3575,Kota Pasuruan,3505,Blitar,129.362,1.7093
+3575,Kota Pasuruan,3506,Kediri,123.568,1.6735
+3575,Kota Pasuruan,3507,Malang,82.016,1.2135
+3575,Kota Pasuruan,3508,Lumajang,83.613,1.0510
+3575,Kota Pasuruan,3511,Bondowoso,134.185,1.7546
+3575,Kota Pasuruan,3512,Situbondo,138.356,1.7175
+3575,Kota Pasuruan,3513,Probolinggo,85.024,1.2907
+3575,Kota Pasuruan,3514,Pasuruan,15.337,0.3561
+3575,Kota Pasuruan,3515,Sidoarjo,39.956,0.5294
+3575,Kota Pasuruan,3516,Mojokerto,64.532,0.8165
+3575,Kota Pasuruan,3517,Jombang,91.523,1.1440
+3575,Kota Pasuruan,3518,Nganjuk,130.842,1.6986
+3575,Kota Pasuruan,3519,Madiun,158.758,2.0431
+3575,Kota Pasuruan,3520,Magetan,206.470,2.7712
+3575,Kota Pasuruan,3521,Ngawi,196.231,2.6545
+3575,Kota Pasuruan,3522,Bojonegoro,170.978,2.1495
+3575,Kota Pasuruan,3523,Tuban,171.873,2.1939
+3575,Kota Pasuruan,3524,Lamongan,105.512,1.3633
+3575,Kota Pasuruan,3525,Gresik,82.024,1.1103
+3575,Kota Pasuruan,3526,Bangkalan,94.536,1.2900
+3575,Kota Pasuruan,3527,Sampang,142.930,1.8494
+3575,Kota Pasuruan,3528,Pamekasan,175.821,2.2423
+3575,Kota Pasuruan,3572,Kota Blitar,130.048,1.7074
+3575,Kota Pasuruan,3575,Kota Pasuruan,0.000,0.0000
+3575,Kota Pasuruan,3576,Kota Mojokerto,65.088,0.8286
+3575,Kota Pasuruan,3579,Kota Batu,62.669,0.9357
+3576,Kota Mojokerto,3578,Kota Surabaya,50.373,0.6836
+3576,Kota Mojokerto,3573,Kota Malang,89.413,1.1299
+3576,Kota Mojokerto,3571,Kota Kediri,75.010,0.9839
+3576,Kota Mojokerto,3577,Kota Madiun,122.080,1.7094
+3576,Kota Mojokerto,3574,Kota Probolinggo,101.603,1.2986
+3576,Kota Mojokerto,3510,Banyuwangi,303.969,3.7642
+3576,Kota Mojokerto,3529,Sumenep,216.821,2.7628
+3576,Kota Mojokerto,3509,Jember,199.877,2.4504
+3576,Kota Mojokerto,3501,Pacitan,239.334,3.0019
+3576,Kota Mojokerto,3502,Ponorogo,152.737,2.0758
+3576,Kota Mojokerto,3503,Trenggalek,138.154,1.7788
+3576,Kota Mojokerto,3504,Tulungagung,105.596,1.3807
+3576,Kota Mojokerto,3505,Blitar,119.272,1.6828
+3576,Kota Mojokerto,3506,Kediri,63.239,0.9653
+3576,Kota Mojokerto,3507,Malang,120.418,1.5865
+3576,Kota Mojokerto,3508,Lumajang,147.616,1.8481
+3576,Kota Mojokerto,3511,Bondowoso,197.769,2.5524
+3576,Kota Mojokerto,3512,Situbondo,201.940,2.5153
+3576,Kota Mojokerto,3513,Probolinggo,148.608,2.0886
+3576,Kota Mojokerto,3514,Pasuruan,76.915,1.1133
+3576,Kota Mojokerto,3515,Sidoarjo,49.042,0.6172
+3576,Kota Mojokerto,3516,Mojokerto,0.556,0.0111
+3576,Kota Mojokerto,3517,Jombang,31.193,0.4359
+3576,Kota Mojokerto,3518,Nganjuk,70.512,0.9904
+3576,Kota Mojokerto,3519,Madiun,98.428,1.3350
+3576,Kota Mojokerto,3520,Magetan,146.141,2.0631
+3576,Kota Mojokerto,3521,Ngawi,135.901,1.9463
+3576,Kota Mojokerto,3522,Bojonegoro,99.243,1.5972
+3576,Kota Mojokerto,3523,Tuban,131.145,1.6708
+3576,Kota Mojokerto,3524,Lamongan,64.783,0.8402
+3576,Kota Mojokerto,3525,Gresik,51.838,0.6852
+3576,Kota Mojokerto,3526,Bangkalan,82.332,1.0968
+3576,Kota Mojokerto,3527,Sampang,130.727,1.6561
+3576,Kota Mojokerto,3528,Pamekasan,163.618,2.0491
+3576,Kota Mojokerto,3572,Kota Blitar,119.322,1.6838
+3576,Kota Mojokerto,3575,Kota Pasuruan,64.987,0.8538
+3576,Kota Mojokerto,3576,Kota Mojokerto,0.000,0.0000
+3576,Kota Mojokerto,3579,Kota Batu,101.070,1.3088
+3579,Kota Batu,3578,Kota Surabaya,98.954,1.3412
+3579,Kota Batu,3573,Kota Malang,19.095,0.3579
+3579,Kota Batu,3571,Kota Kediri,83.927,1.3410
+3579,Kota Batu,3577,Kota Madiun,159.309,2.4333
+3579,Kota Batu,3574,Kota Probolinggo,98.199,1.3600
+3579,Kota Batu,3510,Banyuwangi,299.937,3.8195
+3579,Kota Batu,3529,Sumenep,265.401,3.4204
+3579,Kota Batu,3509,Jember,195.846,2.5056
+3579,Kota Batu,3501,Pacitan,263.226,3.3466
+3579,Kota Batu,3502,Ponorogo,211.132,2.7169
+3579,Kota Batu,3503,Trenggalek,162.046,2.1234
+3579,Kota Batu,3504,Tulungagung,114.512,1.7378
+3579,Kota Batu,3505,Blitar,94.770,1.3275
+3579,Kota Batu,3506,Kediri,64.701,1.0490
+3579,Kota Batu,3507,Malang,47.424,0.8317
+3579,Kota Batu,3508,Lumajang,138.863,1.8752
+3579,Kota Batu,3511,Bondowoso,194.365,2.6138
+3579,Kota Batu,3512,Situbondo,198.535,2.5767
+3579,Kota Batu,3513,Probolinggo,145.204,2.1499
+3579,Kota Batu,3514,Pasuruan,65.773,1.0565
+3579,Kota Batu,3515,Sidoarjo,76.332,0.9938
+3579,Kota Batu,3516,Mojokerto,96.382,1.2482
+3579,Kota Batu,3517,Jombang,77.178,1.2251
+3579,Kota Batu,3518,Nganjuk,107.741,1.7143
+3579,Kota Batu,3519,Madiun,135.657,2.0588
+3579,Kota Batu,3520,Magetan,183.369,2.7869
+3579,Kota Batu,3521,Ngawi,173.130,2.6702
+3579,Kota Batu,3522,Bojonegoro,164.136,2.4810
+3579,Kota Batu,3523,Tuban,171.698,2.5784
+3579,Kota Batu,3524,Lamongan,140.652,1.8038
+3579,Kota Batu,3525,Gresik,117.164,1.5508
+3579,Kota Batu,3526,Bangkalan,130.912,1.7544
+3579,Kota Batu,3527,Sampang,179.307,2.3138
+3579,Kota Batu,3528,Pamekasan,212.198,2.7067
+3579,Kota Batu,3572,Kota Blitar,95.455,1.3256
+3579,Kota Batu,3575,Kota Pasuruan,61.999,0.9351
+3579,Kota Batu,3576,Kota Mojokerto,96.938,1.2602
+3579,Kota Batu,3579,Kota Batu,0.000,0.0000

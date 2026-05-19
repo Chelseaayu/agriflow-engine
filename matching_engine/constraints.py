@@ -12,9 +12,11 @@ Version: 9.0
 """
 
 from __future__ import annotations
+import csv
 import math
 from datetime import timedelta
-from typing import Iterable, List, Set, Tuple
+from pathlib import Path
+from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 from .models import (
     Commodity, DemandNode, EmergencyMode, Kabupaten,
@@ -183,7 +185,7 @@ def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     """
     Hitung jarak great-circle dalam km antara 2 koordinat.
     Approximation untuk Layer 1 filtering (cepat, tidak akurat untuk routing).
-    Layer 2 nanti pakai Google Maps Routes API untuk jarak jalan real.
+    Dipakai sebagai fallback ketika tidak ada road-distance cache hit.
     """
     R = 6371.0  # radius bumi km
     lat1_rad, lat2_rad = math.radians(lat1), math.radians(lat2)
@@ -195,8 +197,61 @@ def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     return R * c
 
 
+# =============================================================================
+# OSRM ROAD-DISTANCE CACHE (precomputed via tools/fetch_osrm_distance.py)
+# =============================================================================
+# Empirical finding (Jatim 38 kab, 1402 pairs):
+#   median ratio road/haversine = 1.35x, p95 = 1.87x, max = 4.59x.
+# Outliers concentrated in Madura crossings (Sumenep<->Situbondo haversine
+# 80km, road 366km via Suramadu). For MAX_DISTANCE=200km commodities
+# (cabai/bawang/tomat/ikan_segar), haversine is over-permissive by 18.6%
+# of pairs — engine matches that were actually infeasible.
+#
+# This cache eliminates that gap for kabupaten present in the matrix.
+# Pairs not in the cache (e.g. inter-provinsi expansion) fall back to
+# haversine transparently.
+
+_ROAD_DISTANCE_CSV = (
+    Path(__file__).resolve().parent.parent
+    / "sample_data" / "road_distance_jatim.csv"
+)
+_ROAD_DISTANCE_CACHE: Optional[Dict[Tuple[str, str], float]] = None
+
+
+def _load_road_distance_cache() -> Dict[Tuple[str, str], float]:
+    """Lazy-load + memoize the OSRM precompute on first lookup."""
+    global _ROAD_DISTANCE_CACHE
+    if _ROAD_DISTANCE_CACHE is not None:
+        return _ROAD_DISTANCE_CACHE
+    cache: Dict[Tuple[str, str], float] = {}
+    if _ROAD_DISTANCE_CSV.exists():
+        with open(_ROAD_DISTANCE_CSV, newline="", encoding="utf-8") as f:
+            r = csv.DictReader(f)
+            for row in r:
+                cache[(row["from_id"], row["to_id"])] = float(row["road_km"])
+    _ROAD_DISTANCE_CACHE = cache
+    return cache
+
+
+def road_distance_km(kab_a_id: str, kab_b_id: str) -> Optional[float]:
+    """
+    Lookup OSRM road distance (km) between two kabupaten by ID.
+    Returns None when the pair is not in the precomputed matrix —
+    callers should fall back to haversine.
+    """
+    return _load_road_distance_cache().get((kab_a_id, kab_b_id))
+
+
 def distance_between(s: SupplyNode, d: DemandNode) -> float:
-    """Wrapper untuk haversine_km menggunakan SupplyNode/DemandNode."""
+    """
+    Distance dalam km untuk Layer 1 viability + Layer 2 scoring.
+    Prefer OSRM road precompute (sample_data/road_distance_jatim.csv);
+    fallback ke haversine ketika pair tidak ada di cache (ekspansi
+    luar Jatim, atau koordinat baru yang belum di-refresh).
+    """
+    road = road_distance_km(s.kabupaten.id, d.kabupaten.id)
+    if road is not None:
+        return road
     return haversine_km(
         s.kabupaten.latitude, s.kabupaten.longitude,
         d.kabupaten.latitude, d.kabupaten.longitude,

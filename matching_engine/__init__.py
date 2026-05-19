@@ -26,7 +26,8 @@ from .models import (
 from .constraints import (
     BULOG_PROCUREMENT_KAB, COMMODITY_SPECS, TIER_1_KOTA_IHK,
     determine_tier, generate_candidates, get_commodity, haversine_km,
-    is_viable_pair, set_bulog_procurement, reset_bulog_procurement,
+    is_viable_pair, road_distance_km,
+    set_bulog_procurement, reset_bulog_procurement,
 )
 from .scoring import (
     DEFAULT_WEIGHTS, IMPORT_POLICY_WEIGHTS, RAMADAN_WEIGHTS,
@@ -50,7 +51,8 @@ __all__ = [
     # Constraints
     "BULOG_PROCUREMENT_KAB", "COMMODITY_SPECS", "TIER_1_KOTA_IHK",
     "determine_tier", "generate_candidates", "get_commodity", "haversine_km",
-    "is_viable_pair", "set_bulog_procurement", "reset_bulog_procurement",
+    "is_viable_pair", "road_distance_km",
+    "set_bulog_procurement", "reset_bulog_procurement",
     # Scoring
     "DEFAULT_WEIGHTS", "IMPORT_POLICY_WEIGHTS", "RAMADAN_WEIGHTS",
     "compute_score", "distance_score", "volume_score", "price_score",

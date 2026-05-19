@@ -106,3 +106,6 @@ docs/AgriFlow_v8.md
 docs/AgriFlow_v9.md
 docs/AgriFlow_v10.md
 docs/AgriFlow_v11.md
+
+# Local scratch space (experiments, transient logs, run trackers)
+.tmp/

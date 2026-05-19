@@ -16,16 +16,25 @@ from matching_engine.engine import run_matching
 # =============================================================================
 
 class TestA1_OneToMany:
-    """Skenario A1: surplus 100t Kediri bisa di-split ke 3 deficit (Sampang, Bondowoso, Sumenep)."""
+    """
+    Skenario A1: surplus 120t Kediri bisa di-split ke 3 deficit yang
+    road-feasible (Sampang via Suramadu 198km, Tulungagung 53km,
+    Trenggalek 85km — semua < cabai MAX_DISTANCE 200km).
+
+    Originally Sampang/Bondowoso/Sumenep, but Kediri->Bondowoso (250km)
+    and Kediri->Sumenep (284km) exceed cabai MAX 200km when OSRM road
+    distance replaces haversine — engine correctly filters them. Test
+    now uses kabupaten that are physically reachable for cabai.
+    """
 
     def test_one_surplus_satisfies_multiple_deficits(
-        self, kediri_kab, sampang, bondowoso, sumenep, cabai_merah,
+        self, kediri_kab, sampang, tulungagung, trenggalek, cabai_merah,
         make_supply, make_demand, logistics_normal
     ):
         s = make_supply(kediri_kab, cabai_merah, volume=120, price=30000)
         d1 = make_demand(sampang, cabai_merah, volume=30, price=55000)
-        d2 = make_demand(bondowoso, cabai_merah, volume=40, price=55000)
-        d3 = make_demand(sumenep, cabai_merah, volume=40, price=55000)
+        d2 = make_demand(tulungagung, cabai_merah, volume=40, price=55000)
+        d3 = make_demand(trenggalek, cabai_merah, volume=40, price=55000)
 
         report = run_matching([s], [d1, d2, d3], logistics=logistics_normal)
         # Semua 3 deficit harus matched (greedy menggunakan remaining_volume)

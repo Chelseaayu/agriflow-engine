@@ -7,6 +7,8 @@ E3 — Bulog priority: 60% surplus reserve untuk Bulog, sisanya private
 E4 — Import policy aktif: bobot price diturunkan
 E5 — BBM naik: max_distance shrink, biaya logistik naik
 """
+import concurrent.futures
+
 import pytest
 
 from matching_engine.engine import run_matching
@@ -122,6 +124,95 @@ class TestE3_BulogPriority:
         # Match terjadi normal — Bulog hanya untuk padi/jagung/kedelai
         assert len(report.matches) == 1
         assert report.matches[0].matched_volume_tons == 50
+
+
+# =============================================================================
+# E3 — BULOG CONCURRENCY (regression test untuk module-global race)
+# =============================================================================
+
+class TestE3_BulogConcurrency:
+    """
+    Regression: BULOG_PROCUREMENT_KAB dulu hanya bisa di-set lewat
+    set_bulog_procurement() yang mutate module-level set. Dua run_matching()
+    paralel (FastAPI multi-worker, batch threadpool, dst.) saling
+    overwrite state-nya.
+
+    Fix: run_matching menerima parameter eksplisit bulog_procurement_kab.
+    Caller paralel pass nilai sendiri-sendiri → tidak ada shared state.
+    Param None tetap fallback ke global (back-compat untuk tes lama).
+    """
+
+    def setup_method(self):
+        reset_bulog_procurement()
+
+    def teardown_method(self):
+        reset_bulog_procurement()
+
+    def test_parallel_disjoint_bulog_sets_do_not_race(
+        self, surabaya, kediri_kab, beras_premium,
+        make_supply, make_demand, logistics_normal,
+    ):
+        s = make_supply(kediri_kab, beras_premium, volume=100, price=11000)
+        d = make_demand(surabaya, beras_premium, volume=100, price=14000)
+
+        def run_with(active_kab):
+            report = run_matching(
+                [s], [d], logistics=logistics_normal,
+                bulog_procurement_kab=active_kab,
+            )
+            return any("bulog" in w.lower() for w in report.warnings)
+
+        # 50 trial per skenario, di-interleave di 4 worker. Tanpa fix,
+        # global akan ke-overwrite dan satu sisi assertion-nya gagal random.
+        N = 50
+        jobs = []
+        for _ in range(N):
+            jobs.append((True, {kediri_kab.id}))
+            jobs.append((False, set()))
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:
+            futures = [
+                (expected, ex.submit(run_with, active))
+                for expected, active in jobs
+            ]
+            for expected_warn, fut in futures:
+                got_warn = fut.result()
+                assert got_warn is expected_warn, (
+                    f"Race: expected_warn={expected_warn}, got={got_warn} — "
+                    "parallel run_matching leaked Bulog state across calls."
+                )
+
+    def test_explicit_param_does_not_pollute_module_global(
+        self, surabaya, kediri_kab, beras_premium,
+        make_supply, make_demand, logistics_normal,
+    ):
+        # Global kosong di awal (setup_method memanggil reset).
+        assert len(BULOG_PROCUREMENT_KAB) == 0
+
+        s = make_supply(kediri_kab, beras_premium, volume=100, price=11000)
+        d = make_demand(surabaya, beras_premium, volume=100, price=14000)
+        report = run_matching(
+            [s], [d], logistics=logistics_normal,
+            bulog_procurement_kab={kediri_kab.id},
+        )
+        assert any("bulog" in w.lower() for w in report.warnings)
+
+        # Param eksplisit TIDAK memutasi global → run berikutnya yang
+        # tidak pass param tetap melihat empty set.
+        assert len(BULOG_PROCUREMENT_KAB) == 0
+
+    def test_none_falls_back_to_module_global(
+        self, surabaya, kediri_kab, beras_premium,
+        make_supply, make_demand, logistics_normal,
+    ):
+        # Back-compat: kalau bulog_procurement_kab=None (default), tetap
+        # baca dari module global yang di-set via set_bulog_procurement.
+        set_bulog_procurement({kediri_kab.id})
+        s = make_supply(kediri_kab, beras_premium, volume=100, price=11000)
+        d = make_demand(surabaya, beras_premium, volume=100, price=14000)
+
+        report = run_matching([s], [d], logistics=logistics_normal)
+        assert any("bulog" in w.lower() for w in report.warnings)
 
 
 # =============================================================================

@@ -267,12 +267,9 @@ def _check_viable_pair(
     if surplus.kabupaten.emergency_mode == EmergencyMode.PEMDA_LOCKED:
         return False, ConstraintReason.PEMDA_OVERRIDE, 0.0
 
-    # Skenario E3 — Bulog priority (komoditas reserved untuk Bulog procurement)
-    # Note: di-handle pula di engine.py untuk allow partial matching pada sisa volume
-    if spec.bulog_priority and surplus.kabupaten.id in BULOG_PROCUREMENT_KAB:
-        # Akan di-handle di engine.py: reserve 60% volume untuk Bulog,
-        # sisanya tetap available. Di sini constraint pass — engine yang split.
-        pass
+    # Skenario E3 — Bulog priority di-handle penuh di engine.apply_bulog_split
+    # (reserve 60% volume, sisanya tetap available). Layer 1 tidak perlu tahu
+    # state-nya, jadi tidak ada lookup ke BULOG_PROCUREMENT_KAB di sini.
 
     # Skenario B2 — distance exceeds max
     # Dynamic adjustment untuk skenario E5 (BBM naik → MAX_DISTANCE shrink)

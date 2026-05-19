@@ -111,19 +111,34 @@ CLUSTER_MADURA: Set[str] = {
 BULOG_RESERVE_PCT = 0.60   # 60% reserve untuk Bulog procurement
 
 
-def apply_bulog_split(surplus_nodes: List[SupplyNode]) -> tuple[List[SupplyNode], List[str]]:
+def apply_bulog_split(
+    surplus_nodes: List[SupplyNode],
+    bulog_procurement_kab: Optional[Set[str]] = None,
+) -> tuple[List[SupplyNode], List[str]]:
     """
     Skenario E3 Bulog Priority:
     Untuk surplus di kab procurement aktif, reserve 60% volume untuk Bulog,
     sisanya available untuk private matching.
 
+    Args:
+        surplus_nodes: list of supply nodes
+        bulog_procurement_kab: explicit set of kab IDs with active Bulog
+            procurement. Eksplisit > implicit — kalau None, fallback ke
+            module global BULOG_PROCUREMENT_KAB (untuk back-compat dengan
+            set_bulog_procurement()). Caller paralel HARUS pass eksplisit
+            untuk hindari race pada global.
+
     Return (adjusted_surplus_nodes, warning_messages).
     """
+    active_kab = (
+        bulog_procurement_kab if bulog_procurement_kab is not None
+        else BULOG_PROCUREMENT_KAB
+    )
     adjusted = []
     warnings = []
     for s in surplus_nodes:
         if (s.commodity.code in {"beras_premium", "beras_medium", "jagung", "kedelai"}
-                and s.kabupaten.id in BULOG_PROCUREMENT_KAB):
+                and s.kabupaten.id in active_kab):
             reserved = s.volume_tons * BULOG_RESERVE_PCT
             available = s.volume_tons - reserved
             if available <= 0:
@@ -341,6 +356,7 @@ def run_matching(
     route_blackouts: Optional[List[RouteBlackout]] = None,
     contracts: Optional[Dict[tuple, float]] = None,
     allow_grade_substitution: bool = False,
+    bulog_procurement_kab: Optional[Set[str]] = None,
 ) -> MatchingReport:
     """
     AgriFlow Matching Engine — main entrypoint.
@@ -354,6 +370,11 @@ def run_matching(
         import_policy_active: skenario E4 — bobot price diturunkan
         reference_date: untuk Ramadan detection (default: now)
         force_strategy: "stable" | "greedy" untuk testing override
+        bulog_procurement_kab: set of kab IDs dengan Bulog procurement aktif
+            untuk run ini. Pass eksplisit kalau memanggil run_matching secara
+            paralel (mis. FastAPI multi-worker) supaya tidak race pada module
+            global. None → fallback ke BULOG_PROCUREMENT_KAB module-level
+            (di-set via set_bulog_procurement, back-compat untuk tests).
 
     Returns:
         MatchingReport dengan matches, unmatched, warnings, metadata.
@@ -414,7 +435,9 @@ def run_matching(
         deficit_nodes = clean_demand
 
     # Skenario E3 — Bulog procurement split
-    surplus_nodes, bulog_warnings = apply_bulog_split(surplus_nodes)
+    surplus_nodes, bulog_warnings = apply_bulog_split(
+        surplus_nodes, bulog_procurement_kab=bulog_procurement_kab
+    )
     warnings.extend(bulog_warnings)
 
     # Skenario E6 — Contract reserve (generalisasi Bulog untuk MoU swasta)

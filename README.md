@@ -11,6 +11,8 @@ license: mit
 
 # AgriFlow Matching Engine
 
+[![tests](https://github.com/masterA88/agriflow_engine/actions/workflows/test.yml/badge.svg)](https://github.com/masterA88/agriflow_engine/actions/workflows/test.yml)
+
 > **v11.0 release notes (Mei 2026)** — this README has been updated for v11. The previous v10 README is preserved at [`README_v10.md`](README_v10.md) for reference / diff.
 >
 > **v11 contains 3 layers of change vs v10** (engine + scenarios + claims):

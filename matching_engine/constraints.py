@@ -220,6 +220,81 @@ class ConstraintReason(str):
     BULOG_RESERVED = "BULOG_PROCUREMENT_PRIORITY"
 
 
+def _check_viable_pair(
+    surplus: SupplyNode,
+    deficit: DemandNode,
+    logistics: LogisticsContext | None = None,
+    allow_grade_substitution: bool = False,
+) -> Tuple[bool, str, float]:
+    """
+    Internal Layer 1 check — same semantics as is_viable_pair but also returns
+    the haversine distance so callers can reuse it (avoid recomputing).
+    Returns (viable, reason, distance_km). distance_km is 0.0 when the pair is
+    rejected before the distance check fires.
+    """
+    logistics = logistics or LogisticsContext()
+
+    # Match komoditas — F1: izinkan grade substitution kalau di-opt-in
+    if surplus.commodity.code != deficit.commodity.code:
+        if allow_grade_substitution and grade_compatible(
+            surplus.commodity.code, deficit.commodity.code
+        ):
+            pass  # acceptable cross-grade match
+        else:
+            return False, ConstraintReason.DIFFERENT_COMMODITY, 0.0
+
+    # Hindari self-match
+    if surplus.kabupaten.id == deficit.kabupaten.id:
+        return False, ConstraintReason.SAME_KABUPATEN, 0.0
+
+    # Volume minimum (skenario A3)
+    spec = surplus.commodity
+    if surplus.volume_tons < spec.min_viable_tons:
+        return False, ConstraintReason.SUPPLY_BELOW_MIN, 0.0
+    if deficit.volume_tons < spec.min_viable_tons:
+        return False, ConstraintReason.DEMAND_BELOW_MIN, 0.0
+
+    # Skenario D4, D5 — kabupaten unreachable
+    if surplus.kabupaten.emergency_mode == EmergencyMode.UNREACHABLE:
+        return False, ConstraintReason.SUPPLY_UNREACHABLE, 0.0
+    if deficit.kabupaten.emergency_mode == EmergencyMode.UNREACHABLE:
+        return False, ConstraintReason.SUPPLY_UNREACHABLE, 0.0
+
+    # Skenario E2 — Pemda override
+    override_key = f"do_not_export_{spec.code}"
+    if surplus.kabupaten.pemda_overrides.get(override_key, False):
+        return False, ConstraintReason.PEMDA_OVERRIDE, 0.0
+    if surplus.kabupaten.emergency_mode == EmergencyMode.PEMDA_LOCKED:
+        return False, ConstraintReason.PEMDA_OVERRIDE, 0.0
+
+    # Skenario E3 — Bulog priority (komoditas reserved untuk Bulog procurement)
+    # Note: di-handle pula di engine.py untuk allow partial matching pada sisa volume
+    if spec.bulog_priority and surplus.kabupaten.id in BULOG_PROCUREMENT_KAB:
+        # Akan di-handle di engine.py: reserve 60% volume untuk Bulog,
+        # sisanya tetap available. Di sini constraint pass — engine yang split.
+        pass
+
+    # Skenario B2 — distance exceeds max
+    # Dynamic adjustment untuk skenario E5 (BBM naik → MAX_DISTANCE shrink)
+    effective_max_distance = spec.max_distance_km
+    if logistics.bbm_change_pct > 0.10:
+        # BBM naik >10% → long-haul jadi tidak ekonomis
+        effective_max_distance *= (1 - min(0.20, logistics.bbm_change_pct * 0.5))
+
+    distance_km = distance_between(surplus, deficit)
+    if distance_km > effective_max_distance:
+        return False, ConstraintReason.DISTANCE_EXCEEDS_MAX, distance_km
+
+    # Perishability — tidak akan sampai segar
+    transit_days = math.ceil(
+        distance_km / logistics.avg_speed_km_per_hour / logistics.transit_hours_per_day
+    )
+    if surplus.harvest_age_days + transit_days > spec.max_fresh_age_days:
+        return False, ConstraintReason.SUPPLY_TOO_OLD, distance_km
+
+    return True, "", distance_km
+
+
 def is_viable_pair(
     surplus: SupplyNode,
     deficit: DemandNode,
@@ -239,67 +314,10 @@ def is_viable_pair(
         A3 Volume Mismatch Drastis — supply >= MIN tetap PASS (di-flag di scoring)
         F1 Grade Substitution — premium → medium acceptable jika allow_grade_substitution
     """
-    logistics = logistics or LogisticsContext()
-
-    # Match komoditas — F1: izinkan grade substitution kalau di-opt-in
-    if surplus.commodity.code != deficit.commodity.code:
-        if allow_grade_substitution and grade_compatible(
-            surplus.commodity.code, deficit.commodity.code
-        ):
-            pass  # acceptable cross-grade match
-        else:
-            return False, ConstraintReason.DIFFERENT_COMMODITY
-
-    # Hindari self-match
-    if surplus.kabupaten.id == deficit.kabupaten.id:
-        return False, ConstraintReason.SAME_KABUPATEN
-
-    # Volume minimum (skenario A3)
-    spec = surplus.commodity
-    if surplus.volume_tons < spec.min_viable_tons:
-        return False, ConstraintReason.SUPPLY_BELOW_MIN
-    if deficit.volume_tons < spec.min_viable_tons:
-        return False, ConstraintReason.DEMAND_BELOW_MIN
-
-    # Skenario D4, D5 — kabupaten unreachable
-    if surplus.kabupaten.emergency_mode == EmergencyMode.UNREACHABLE:
-        return False, ConstraintReason.SUPPLY_UNREACHABLE
-    if deficit.kabupaten.emergency_mode == EmergencyMode.UNREACHABLE:
-        return False, ConstraintReason.SUPPLY_UNREACHABLE
-
-    # Skenario E2 — Pemda override
-    override_key = f"do_not_export_{spec.code}"
-    if surplus.kabupaten.pemda_overrides.get(override_key, False):
-        return False, ConstraintReason.PEMDA_OVERRIDE
-    if surplus.kabupaten.emergency_mode == EmergencyMode.PEMDA_LOCKED:
-        return False, ConstraintReason.PEMDA_OVERRIDE
-
-    # Skenario E3 — Bulog priority (komoditas reserved untuk Bulog procurement)
-    # Note: di-handle pula di engine.py untuk allow partial matching pada sisa volume
-    if spec.bulog_priority and surplus.kabupaten.id in BULOG_PROCUREMENT_KAB:
-        # Akan di-handle di engine.py: reserve 60% volume untuk Bulog,
-        # sisanya tetap available. Di sini constraint pass — engine yang split.
-        pass
-
-    # Skenario B2 — distance exceeds max
-    # Dynamic adjustment untuk skenario E5 (BBM naik → MAX_DISTANCE shrink)
-    effective_max_distance = spec.max_distance_km
-    if logistics.bbm_change_pct > 0.10:
-        # BBM naik >10% → long-haul jadi tidak ekonomis
-        effective_max_distance *= (1 - min(0.20, logistics.bbm_change_pct * 0.5))
-
-    distance_km = distance_between(surplus, deficit)
-    if distance_km > effective_max_distance:
-        return False, ConstraintReason.DISTANCE_EXCEEDS_MAX
-
-    # Perishability — tidak akan sampai segar
-    transit_days = math.ceil(
-        distance_km / logistics.avg_speed_km_per_hour / logistics.transit_hours_per_day
+    viable, reason, _ = _check_viable_pair(
+        surplus, deficit, logistics, allow_grade_substitution
     )
-    if surplus.harvest_age_days + transit_days > spec.max_fresh_age_days:
-        return False, ConstraintReason.SUPPLY_TOO_OLD
-
-    return True, ""
+    return viable, reason
 
 
 # Kab dengan Bulog procurement aktif (skenario E3)
@@ -365,11 +383,14 @@ def generate_candidates(
 
         viable_for_s: List[Tuple[float, DemandNode]] = []
         for d in candidate_deficits:
-            ok, _reason = is_viable_pair(
+            # _check_viable_pair returns the haversine distance it already
+            # computed during the B2/perishability checks — reusing it here
+            # avoids a second haversine call per viable pair (~30% Layer 1
+            # speedup per AUDIT_v10.md).
+            ok, _reason, dist = _check_viable_pair(
                 s, d, logistics, allow_grade_substitution=allow_grade_substitution
             )
             if ok:
-                dist = distance_between(s, d)
                 viable_for_s.append((dist, d))
 
         # ambil top-K terdekat (proxy untuk priority — Layer 2 yang akan re-rank)

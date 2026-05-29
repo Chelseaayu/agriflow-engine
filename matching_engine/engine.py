@@ -20,7 +20,7 @@ Version: 9.0
 from __future__ import annotations
 import time
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Set
+from typing import Callable, Dict, List, Optional, Set
 
 from . import scoring
 from .allocation import allocate, equity_multiplier_value
@@ -357,6 +357,7 @@ def run_matching(
     contracts: Optional[Dict[tuple, float]] = None,
     allow_grade_substitution: bool = False,
     bulog_procurement_kab: Optional[Set[str]] = None,
+    equity_fn: Optional[Callable[[float], float]] = None,
 ) -> MatchingReport:
     """
     AgriFlow Matching Engine — main entrypoint.
@@ -549,7 +550,9 @@ def run_matching(
     # =========================================================================
     # LAYER 3 — ALLOCATION
     # =========================================================================
-    matches = allocate(candidates, score_fn=score_fn, force_strategy=force_strategy)
+    _equity_fn = equity_fn if equity_fn is not None else equity_multiplier_value
+    matches = allocate(candidates, score_fn=score_fn, force_strategy=force_strategy,
+                       equity_fn=_equity_fn)
 
     # =========================================================================
     # POST-PROCESSING

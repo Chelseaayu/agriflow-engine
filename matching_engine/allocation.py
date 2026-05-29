@@ -26,6 +26,11 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import Callable, Dict, List, Optional, Tuple
 
+# Type alias for an injectable equity policy function.
+# Signature: ipm (float) -> multiplier (float).
+# The production default is equity_multiplier_value defined below.
+EquityFn = Callable[[float], float]
+
 from .models import (
     Confidence, DemandNode, DemandSegment, MatchResult, ScoreBreakdown,
     SupplyNode, Tier,
@@ -173,6 +178,8 @@ def determine_confidence(s: SupplyNode, d: DemandNode) -> Confidence:
 def stable_match_tier1(
     candidates: List[Tuple[SupplyNode, DemandNode]],
     score_fn: Callable[[SupplyNode, DemandNode], Tuple[ScoreBreakdown, float, float]],
+    *,
+    equity_fn: EquityFn = equity_multiplier_value,
 ) -> List[MatchResult]:
     """
     Modified Gale-Shapley untuk Tier 1.
@@ -206,7 +213,7 @@ def stable_match_tier1(
         key = (s.kabupaten.id + "_" + s.commodity.code, d.kabupaten.id)
         breakdown, base, dist = score_fn(s, d)
         score_cache[key] = (breakdown, base, dist)
-        eq_mult = equity_multiplier_value(d.kabupaten.ipm)
+        eq_mult = equity_fn(d.kabupaten.ipm)
         seg_mult, _seg_flags = segment_multiplier_value(s, d)
         segment_cache[key] = (seg_mult, _seg_flags)
         final_scores[key] = base * eq_mult * seg_mult
@@ -227,7 +234,7 @@ def stable_match_tier1(
         unique_deficits[d.kabupaten.id + "_" + d.commodity.code] = d
     proposers = sorted(
         unique_deficits.items(),
-        key=lambda kv: -equity_multiplier_value(kv[1].kabupaten.ipm),
+        key=lambda kv: -equity_fn(kv[1].kabupaten.ipm),
     )
 
     # Step 4: Gale-Shapley iteration
@@ -293,7 +300,7 @@ def stable_match_tier1(
         if cache_key not in score_cache:
             continue
         breakdown, base_score, dist_km = score_cache[cache_key]
-        eq_mult = equity_multiplier_value(d.kabupaten.ipm)
+        eq_mult = equity_fn(d.kabupaten.ipm)
         seg_mult, seg_flags = segment_cache.get(cache_key, (1.0, []))
         results.append(MatchResult(
             surplus=s, deficit=d,
@@ -319,6 +326,8 @@ def stable_match_tier1(
 def greedy_match_tier2(
     candidates: List[Tuple[SupplyNode, DemandNode]],
     score_fn: Callable[[SupplyNode, DemandNode], Tuple[ScoreBreakdown, float, float]],
+    *,
+    equity_fn: EquityFn = equity_multiplier_value,
 ) -> List[MatchResult]:
     """
     Greedy multi-objective dengan equity priority untuk Tier 2.
@@ -359,7 +368,7 @@ def greedy_match_tier2(
     deficits_sorted = sorted(
         by_deficit.items(),
         key=lambda kv: -(
-            equity_multiplier_value(kv[1][0].kabupaten.ipm)
+            equity_fn(kv[1][0].kabupaten.ipm)
             * _segment_priority_upper_bound(kv[1][0].segment)
         ),
     )
@@ -384,7 +393,7 @@ def greedy_match_tier2(
             continue
 
         # Pick best by FinalScore (= base × equity × segment multiplier)
-        eq_mult = equity_multiplier_value(d.kabupaten.ipm)
+        eq_mult = equity_fn(d.kabupaten.ipm)
 
         def final_score_for(s: SupplyNode) -> float:
             cache_key = (s.kabupaten.id + "_" + s.commodity.code, d.kabupaten.id)
@@ -426,6 +435,8 @@ def allocate(
     candidates: List[Tuple[SupplyNode, DemandNode]],
     score_fn: Callable[[SupplyNode, DemandNode], Tuple[ScoreBreakdown, float, float]],
     force_strategy: Optional[str] = None,
+    *,
+    equity_fn: EquityFn = equity_multiplier_value,
 ) -> List[MatchResult]:
     """
     Pilih strategy allocation:
@@ -437,11 +448,14 @@ def allocate(
     Args:
         force_strategy: "stable" | "greedy" | None
                         untuk testing override.
+        equity_fn: injectable equity policy, ipm -> multiplier.
+                   Default: equity_multiplier_value (production step-function).
+                   Override only in benchmarks/tests — do not monkeypatch.
     """
     if force_strategy == "stable":
-        return stable_match_tier1(candidates, score_fn)
+        return stable_match_tier1(candidates, score_fn, equity_fn=equity_fn)
     if force_strategy == "greedy":
-        return greedy_match_tier2(candidates, score_fn)
+        return greedy_match_tier2(candidates, score_fn, equity_fn=equity_fn)
 
     # Auto-detect: kalau semua kab Tier 1 → pakai stable matching
     all_tier1 = all(
@@ -449,5 +463,5 @@ def allocate(
         for s, d in candidates
     )
     if all_tier1 and len(candidates) > 0:
-        return stable_match_tier1(candidates, score_fn)
-    return greedy_match_tier2(candidates, score_fn)
+        return stable_match_tier1(candidates, score_fn, equity_fn=equity_fn)
+    return greedy_match_tier2(candidates, score_fn, equity_fn=equity_fn)

@@ -32,7 +32,27 @@ except ImportError as e:
     ) from e
 
 from matching_engine import LogisticsContext, run_matching
-from sample_data.loader import load_all_sample_data
+from sample_data.loader import load_all_sample_data as _load_csv
+
+
+def _load_data_backend() -> dict:
+    """
+    Select the data backend via the DATA_BACKEND env var.
+
+    DATA_BACKEND=csv      (default) — load from sample CSV files (offline-safe).
+    DATA_BACKEND=postgres            — load from Supabase/Postgres via db.db_loader.
+
+    The CSV path is always available; the Postgres path raises RuntimeError if
+    SUPABASE_DB_URL is not set, so misconfiguration is loud rather than silent.
+    """
+    import os
+    backend = os.environ.get("DATA_BACKEND", "csv").strip().lower()
+    if backend == "postgres":
+        from db.db_loader import load_all as _load_pg
+        return _load_pg()
+    # Default: csv (offline-safe, demo mode)
+    return _load_csv()
+
 
 from .config import settings
 from .gemini_client import GeminiClient
@@ -55,7 +75,7 @@ state = AppState()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    state.data = EngineData(load_all_sample_data())
+    state.data = EngineData(_load_data_backend())
     state.gemini = GeminiClient()
     yield
     # No teardown needed
@@ -92,7 +112,7 @@ def handle_message(message: str) -> str:
     """Pure pipeline: text in → text out. Easy to unit-test."""
     if state.data is None or state.gemini is None:
         # Eager init for non-FastAPI callers (CLI, tests not using TestClient)
-        state.data = EngineData(load_all_sample_data())
+        state.data = EngineData(_load_data_backend())
         state.gemini = GeminiClient()
     intent = classify(
         message, state.gemini,
@@ -166,7 +186,7 @@ async def chat_debug(payload: Dict[str, str]) -> JSONResponse:
 
 def _ensure_engine() -> EngineData:
     if state.data is None:
-        state.data = EngineData(load_all_sample_data())
+        state.data = EngineData(_load_data_backend())
     return state.data
 
 

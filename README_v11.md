@@ -13,24 +13,22 @@ license: mit
 
 [![tests](https://github.com/masterA88/agriflow_engine/actions/workflows/test.yml/badge.svg)](https://github.com/masterA88/agriflow_engine/actions/workflows/test.yml)
 
-> **v12.0 release notes (Mei 2026)** — engine hardening + empirical equity validation di atas v11. README v11 diarsipkan di [`README_v11.md`](README_v11.md) (scoring/scenario history v11 disimpan di sana).
+> **v11.0 release notes (Mei 2026)** — this README has been updated for v11. The previous v10 README is preserved at [`README_v10.md`](README_v10.md) for reference / diff.
 >
-> **v12 = engine-hardening + empirical-validation pass vs v11:**
-> 1. **OSRM road-distance precompute** — Layer 1 sekarang prefer OSRM road distance (`sample_data/road_distance_jatim.csv`, 38×38=1444 pairs) di atas haversine. Haversine over-permissive: **18.6% pair false-positive viable** untuk komoditas MAX_DISTANCE=200km (detour Selat Madura). Fallback haversine untuk pair tak dikenal.
-> 2. **Concurrency hardening** — `BULOG_PROCUREMENT_KAB` tidak lagi race; `run_matching`/`apply_bulog_split` terima param eksplisit `bulog_procurement_kab` (regression test 100 parallel run × 4 worker).
-> 3. **Layer 1 perf** — duplicate haversine dieliminasi; ~30% Layer 1 speedup, end-to-end mean −7–13%.
-> 4. **CI** — GitHub Actions pytest matrix (Ubuntu+Windows × Python 3.11/3.12) + benchmark publish.
-> 5. **Empirical equity validation** — baseline comparison vs pure-greedy / uniform / proportional, dua rezim pasokan (lihat [Validasi Empiris Equity](#validasi-empiris-equity-baseline-comparison)). **Temuan kunci (jujur):** di pasokan melimpah, equity nyaris tak terlihat (kab termiskin sudah terlayani; Gini AgriFlow ≈ greedy). Saat langka (shock La Nina), greedy menelantarkan Sampang (0%)/Bangkalan (20%) sedangkan **AgriFlow jamin keduanya 100% dengan biaya coverage agregat NOL** — inilah nilai equity yang sebenarnya, terukur. Klaim presisi: "memprioritaskan kab terlemah saat pasokan langka", bukan "menurunkan Gini secara umum".
-> 6. **Claim reframe** — "Gale-Shapley stable matching (Nobel 2012)" → **centralized bipartite assignment dengan equity weighting** (preferences kedua sisi berasal dari shared welfare score; Gale-Shapley dipakai sebagai operational primitive, cf. Galichon 2021).
+> **v11 contains 3 layers of change vs v10** (engine + scenarios + claims):
+> 1. **Engine fix #1** — `volume_score` now uses **coverage-of-demand** (`min(s,d) / demand.volume_tons`) instead of the old `min/max` ratio. Big-producer-to-small-deficit matches (Tuban 800t→Surabaya 100t beras) no longer get unfairly penalized. Demo impact: equity-boost matches (Lamongan→Bangkalan/Sampang beras) now rank **#1 and #2** with FinalScore 100.0 and 98.4 (was #8 in v10).
+> 2. **Engine fix #2** — `MatchResult.segment_multiplier` added. HORECA/GOVERNMENT/INDUSTRIAL demand now get segment-aware adjustments (±10%) based on supply characteristics; final_score = `base × equity × segment`. Fully auditable via per-match flags (`SEGMENT_HORECA_BULK_BONUS`, `SEGMENT_GOVERNMENT_TIER1_BONUS`, etc.). Greedy deficit-ordering also segment-aware.
+> 3. **Scenario expansion 19 → 24** — added C4 multi-holiday calendar (Imlek/Natal/school-start), D6 route blackout (mudik/demo/maintenance), E6 contract reserve (generalisasi Bulog), F1 grade substitution (premium → medium), F2 demand segmentation. New Kategori F: Kualitas & Segmentasi Komersial.
+> 4. **Claim-precision pass** — every diferensiator claim now references `file:line` in `matching_engine/`. Dropped "World-First" / "first-in-world" marketing; replaced with verifiable specifics. Two-tier confidence, +30% equity boost, stable matching — all now scoped to when they actually fire in production.
 >
-> **Test suite: 205/205 pytest pass** (naik dari v11's 134; +baseline-comparison +constrained-scenario +road-distance +concurrency). Engine backward-compatible: param baru `equity_fn` default ke fungsi shipped, `road_distance_km` fallback ke haversine.
+> **Test suite: 134/134 pytest pass in 0.42s** (up from v10's 106/106). See [Status & Roadmap](#status--roadmap) for full details. Engine code remains backward-compatible: RETAIL default segment + opt-in `allow_grade_substitution` flag mean existing callers see identical behavior.
 
 ---
 
 > **Sub-national pangan matching engine pertama di Indonesia.**
-> Algoritma 4-lapis purpose-built untuk konteks pangan sub-nasional Indonesia. Layer 3 menggabungkan **Gale-Shapley sebagai operational primitive** untuk centralized bipartite assignment dengan equity weighting (aktif saat kedua kabupaten Tier 1; cf. Galichon 2021) dengan **greedy multi-objective + equity priority** (aktif saat ada Tier 2 — produksi Jatim saat ini), multi-objective scoring 5 dimensi, dan equity multiplier untuk kabupaten tertinggal IPM <68 saat menjadi deficit — semua untuk komoditas pangan tingkat kabupaten.
+> Algoritma 4-lapis purpose-built untuk konteks pangan sub-nasional Indonesia. Layer 3 menggabungkan **Modified Gale-Shapley stable matching** (aktif saat kedua kabupaten Tier 1) dengan **greedy multi-objective + equity priority** (aktif saat ada Tier 2 — produksi Jatim saat ini), multi-objective scoring 5 dimensi, dan equity multiplier untuk kabupaten tertinggal IPM <68 saat menjadi deficit — semua untuk komoditas pangan tingkat kabupaten.
 
-[![Tests](https://img.shields.io/badge/tests-205%2F205%20passing-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-106%2F106%20passing-brightgreen)]()
 [![Latency](https://img.shields.io/badge/p99%20latency-1.4ms%20%E2%86%92%2055.5ms-blue)]()
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)]()
 [![Status](https://img.shields.io/badge/status-provincial--ready-success)]()
@@ -49,7 +47,6 @@ Problem Statement #2: Platform Matching Demand-Supply Antarwilayah.
 - [19 Skenario Edge Case](#19-skenario-edge-case)
 - [API Usage](#api-usage)
 - [Performance & Validation](#performance--validation)
-- [Validasi Empiris Equity](#validasi-empiris-equity-baseline-comparison)
 - [Data Sources](#data-sources)
 - [Project Structure](#project-structure)
 - [Development Guide](#development-guide)
@@ -73,16 +70,16 @@ AgriFlow Matching Engine memecahkan ini dengan 6 dimensi yang Uber tidak punya:
 | **Equity** | Kabupaten tertinggal IPM <68 dapat boost +30% **saat menjadi deficit/penerima** (allocation.py:38–65). Demo Jatim: Sampang (66.72) + Bangkalan (67.70) trigger `EQUITY_BOOST_30` di 2 dari 32 match (Ngawi→Bangkalan/Sampang beras). Rare-but-correct di Jatim; impact tumbuh dengan rollout nasional (Papua IPM ~50). |
 | **Climate** | Banjir di rute = re-route otomatis |
 | **Volume** | 1 surplus bisa di-split ke banyak deficit |
-| **Centralized Assignment** | Gale-Shapley sebagai *operational primitive* untuk centralized bipartite assignment dengan equity weighting — fires saat kedua kabupaten Tier 1 (`allocation.py:341–347`). Preferences kedua sisi berasal dari shared welfare score, jadi ini bukan two-sided matching market dengan preferensi independen (cf. Galichon 2021). Untuk Jatim 8-IHK / 30-non-IHK saat ini, supply originate dari Tier 2 → production path = greedy-with-equity-priority. |
+| **Stable Matching** | Modified Gale-Shapley (Nobel Prize Economics 2012) — fires saat kedua kabupaten Tier 1 (`allocation.py:341–347`). Untuk Jatim 8-IHK / 30-non-IHK saat ini, supply originate dari Tier 2 → production path = greedy-with-equity-priority. Stable matching jadi load-bearing setelah Tier 1 coverage expand nasional (~90 kota IHK). |
 | **Two-tier Confidence** | Setiap match return label `HIGH` / `MEDIUM` / `LOW` (`allocation.py:68–77`). Di Jatim saat ini MEDIUM adalah label default (semua surplus dari non-IHK kab); HIGH require kedua kab Tier 1 (rare di Jatim, achievable nasional); LOW fires saat data >24h stale. Transparant ke user. |
 | **Climate** | Score penalty saat BMKG/Open-Meteo forecast hujan deras di rute (`scoring.py:130–153`): >50mm/day → 0.3, >20mm → 0.6, ≤20mm → 1.0. Fallback neutral 0.7 untuk rute tanpa forecast data (demo: 10 rute weather seeded). Scoring penalty, bukan re-routing logic. |
 
-**Status:** Production-ready untuk skala provinsial (38 kab Jatim) — **205/205 tests pass** dalam ~1.4s, latency p99 1.4ms (sample) - 55.5ms (stress 361×361). **v12.0 (Mei 2026)** adalah *engine-hardening + empirical-equity-validation update* di atas v11 (claim-precision + scoring-quality):
-1. **OSRM road-distance** menggantikan haversine di Layer 1 (haversine over-permissive: 18.6% false-positive viable untuk komoditas 200km).
-2. **Concurrency + perf + CI** — BULOG race fixed, double-haversine dieliminasi (~30% Layer 1 speedup), GitHub Actions matrix.
-3. **Empirical equity validation** — baseline comparison membuktikan nilai equity AgriFlow muncul saat pasokan **langka** (greedy telantarkan Sampang 0%/Bangkalan 20%; AgriFlow jamin 100% biaya nol), bukan saat melimpah. Klaim Gale-Shapley di-reframe ke *centralized bipartite assignment* (cf. Galichon 2021). Lihat [Validasi Empiris Equity](#validasi-empiris-equity-baseline-comparison).
+**Status:** Production-ready untuk skala provinsial (38 kab Jatim) — **134/134 tests pass** dalam 0.24s, latency p99 1.4ms (sample) - 55.5ms (stress 361×361). **v11.0 (Mei 2026)** adalah *claim-precision + scoring-quality update*:
+1. Claim-precision: setiap klaim diferensiator di proposal sekarang punya referensi spesifik ke `file:line` di `matching_engine/`
+2. **Scoring fix #1** — `volume_score` direvisi dari `min/max` ke `coverage-of-demand`. Big-producer matches (mis. Tuban 800t → Surabaya 100t beras) tidak lagi di-penalize. Hasil demo: equity-boost matches (Lamongan → Bangkalan/Sampang beras) sekarang ranking **#1 dan #2** dengan FinalScore 100.0 dan 98.4 (sebelumnya ranking #8).
+3. **Scoring fix #2** — `segment_multiplier` baru: HORECA/GOVERNMENT/INDUSTRIAL demand sekarang dapat segment-aware bonus (range ±10%) berdasarkan supply characteristics, plus deficit ordering segment-aware. `final_score = base × equity × segment`. Test acid: HORECA wins atas RETAIL di contested-bulk-supply scenario.
 
-205/205 = 134 (v11) + baseline-comparison + constrained-scenario + road-distance + concurrency tests.
+24 scenarios coverage tetap 126/126 + 8 new segment/coverage tests = 134/134.
 
 ---
 
@@ -115,9 +112,9 @@ python sample_data/generate_sample_data.py
 # Expected: 5 CSV generated (kabupaten_jatim.csv, komoditas_constraints.csv,
 #           surplus_deficit.csv, weather_forecast.csv, historical_price_stats.csv)
 
-# 2. Run all tests (205 tests)
+# 2. Run all tests (106 tests)
 pytest tests/ -v
-# Expected: 205 passed in ~1.4s
+# Expected: 106 passed in <1s
 
 # 3. Run end-to-end demo
 python examples/run_demo.py
@@ -204,7 +201,7 @@ Threshold dikalibrasi sesuai distribusi IPM 2024 BPS Jatim sehingga klaim "+30% 
 
 ## 24 Skenario Edge Case
 
-6 kategori, 24 skenario, semua tervalidasi pytest (bagian dari 205/205 total). Detail lengkap di [`docs/AUDIT_v10.md`](docs/AUDIT_v10.md) dan `AgriFlow_v11.docx` Section 5.5.5. **v11 menambahkan 5 commercial-reality scenarios** (C4 multi-holiday, D6 route blackout, E6 contract reserve, F1 grade substitution, F2 demand segmentation) di atas 19 skenario engineering edge case asli v10.
+6 kategori, 24 skenario, semua tervalidasi pytest (126/126). Detail lengkap di [`docs/AUDIT_v10.md`](docs/AUDIT_v10.md) dan `AgriFlow_v11.docx` Section 5.5.5. **v11 menambahkan 5 commercial-reality scenarios** (C4 multi-holiday, D6 route blackout, E6 contract reserve, F1 grade substitution, F2 demand segmentation) di atas 19 skenario engineering edge case asli v10.
 
 ### Kategori A — Volume (4 skenario)
 
@@ -432,40 +429,6 @@ $ python benchmarks/national_scale.py
 
 ---
 
-## Validasi Empiris Equity (Baseline Comparison)
-
-v12 menambah validasi kuantitatif klaim equity: membandingkan AgriFlow vs 4 strategi alternatif (pure-greedy, uniform, proportional-to-deficit, agriflow-smoothed) pada data Jatim yang sama, di dua rezim pasokan. Reproducible: `python benchmarks/equity_comparison_constrained.py` (output di `benchmarks/output/equity_comparison_constrained.md`).
-
-Metrik (volume-weighted): Coverage, Gini (Lorenz), Atkinson(ε=1), fulfillment Sampang (IPM 66.72) + Bangkalan (67.70).
-
-### Rezim A — pasokan MELIMPAH (surplus 8612t > defisit 5249t)
-
-| Strategi | Coverage | Gini | Atk(1.0) | Sampang | Bangkalan |
-|---|---|---|---|---|---|
-| pure_greedy | 0.890 | 0.093 | 0.113 | 1.00 | 1.00 |
-| **agriflow** | 0.880 | 0.099 | 0.114 | 1.00 | 1.00 |
-| uniform | 0.993 | 0.008 | 0.094 | 1.00 | 1.00 |
-| proportional | 0.993 | 0.007 | 0.094 | 1.00 | 1.00 |
-
-> **Jujur:** saat pasokan melimpah, equity nyaris tak terlihat — Sampang/Bangkalan sudah penuh terlayani di semua strategi, dan Gini AgriFlow (0.099) bahkan sedikit > greedy (0.093). Equity tidak punya panggung saat barang cukup untuk semua.
-
-### Rezim B — pasokan LANGKA (shock La Nina banjir Ngawi+Madiun+Bojonegoro, surplus 3962t < defisit 5249t, −32.5%)
-
-| Strategi | Coverage | Gini | Atk(1.0) | Sampang | Bangkalan |
-|---|---|---|---|---|---|
-| pure_greedy | 0.665 | 0.302 | 0.984 | **0.00** | **0.20** |
-| **agriflow** | 0.665 | 0.290 | 0.938 | **1.00** | **1.00** |
-| uniform | 0.627 | 0.252 | 0.186 | 1.00 | 1.00 |
-| proportional | 0.702 | 0.159 | 0.137 | 0.78 | 0.78 |
-
-> **Inti:** saat langka — ketika paling penting — greedy menelantarkan Sampang (0%) & Bangkalan (20%); **AgriFlow jamin keduanya 100% dengan biaya coverage agregat NOL** (0.665 = 0.665), Gini turun 0.302 → 0.290. Inilah nilai equity AgriFlow yang terukur. Klaim presisi: *"memprioritaskan kab terlemah saat pasokan langka"*, bukan *"menurunkan Gini secara umum"*.
-
-**Cliff tidak material:** `agriflow_smoothed` (linear-interp) ≈ step-function di kedua rezim; menggeser threshold IPM +1 poin hanya memindahkan 2 dari 38 kab antar tier.
-
-**Limitasi (roadmap v2):** alokasi binary di level demand-node (penuh/tidak), bukan proporsional → sensitivity threshold degenerate begitu kab terlindungi; belum ada provable bound (cf. Food Drop / Diaby 2024); equity multiplier masih heuristic post-score (cf. Firouz 2021).
-
----
-
 ## Data Sources
 
 8 connector dengan dual-mode (mock CSV + live API), graceful fallback:
@@ -598,7 +561,7 @@ pip install python-docx  # untuk regenerate proposal docx
 
 - [x] 4-layer architecture implemented
 - [x] 19 skenario edge case handled
-- [x] 205/205 tests passing
+- [x] 106/106 tests passing
 - [x] Latency p99 1.4ms (sample) - 55.5ms (stress)
 - [x] Equity multiplier kalibrasi BPS 2024 — Sampang & Bangkalan menerima +30% boost
 - [x] 8 data source connector dual-mode
@@ -703,7 +666,7 @@ pytest tests/
 **Lisensi:** Hackathon submission. Code internal AgriFlow team.
 
 **Credits:**
-- **Algoritma:** Gale-Shapley sebagai operational primitive untuk centralized bipartite assignment dengan equity weighting (Gale & Shapley 1962; cf. Galichon 2021) — fires saat kedua kab Tier 1; Greedy multi-objective + equity priority untuk Tier 2 dan cross-tier
+- **Algoritma:** Modified Gale-Shapley Stable Matching (Nobel Prize Economics 2012, Roth & Shapley) — fires saat kedua kab Tier 1; Greedy multi-objective + equity priority untuk Tier 2 dan cross-tier
 - **Inspirasi platform:** eNAM (India), MealConnect (Feeding America), FEWS NET (USAID), Uber matching pattern, Food Drop Indiana
 - **Data sumber:** Bank Indonesia (PIHPS), Bapanas (Panel Harga), BPS (BRS Desember 2024 IPM), BMKG, PVMBG MAGMA, BNPB DIBI
 

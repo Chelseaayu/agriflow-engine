@@ -71,9 +71,20 @@ def load_komoditas() -> Dict[str, Commodity]:
 def load_surplus_deficit(
     kabupaten: Dict[str, Kabupaten],
     komoditas: Dict[str, Commodity],
+    *,
+    csv_filename: str = "surplus_deficit.csv",
 ) -> Tuple[List[SupplyNode], List[DemandNode]]:
-    """Load surplus & deficit dari surplus_deficit.csv."""
-    path = os.path.join(SAMPLE_DIR, "surplus_deficit.csv")
+    """Load surplus & deficit dari surplus_deficit.csv (or a named override).
+
+    Args:
+        kabupaten:    dict of Kabupaten objects keyed by kab_id.
+        komoditas:    dict of Commodity objects keyed by code.
+        csv_filename: filename within SAMPLE_DIR to load.
+                      Defaults to the canonical "surplus_deficit.csv".
+                      Pass "surplus_deficit_constrained.csv" for the
+                      La Nina supply-shock scenario.
+    """
+    path = os.path.join(SAMPLE_DIR, csv_filename)
     surplus: List[SupplyNode] = []
     deficit: List[DemandNode] = []
     now = datetime.now()
@@ -143,11 +154,18 @@ def load_historical_prices() -> Dict[str, Tuple[float, float]]:
     return out
 
 
-def load_all_sample_data():
-    """One-shot loader untuk semua sample data."""
+def load_all_sample_data(*, surplus_deficit_csv: str = "surplus_deficit.csv"):
+    """One-shot loader untuk semua sample data.
+
+    Args:
+        surplus_deficit_csv: filename within SAMPLE_DIR for supply/deficit rows.
+                             Defaults to canonical "surplus_deficit.csv".
+                             Pass "surplus_deficit_constrained.csv" for the
+                             La Nina supply-shock scenario fixture.
+    """
     kab = load_kabupaten()
     komo = load_komoditas()
-    surplus, deficit = load_surplus_deficit(kab, komo)
+    surplus, deficit = load_surplus_deficit(kab, komo, csv_filename=surplus_deficit_csv)
     weather = load_weather()
     historical = load_historical_prices()
     return {

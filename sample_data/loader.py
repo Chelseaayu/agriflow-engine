@@ -162,6 +162,7 @@ def load_all_sample_data(*, surplus_deficit_csv: str = "surplus_deficit.csv"):
                              Defaults to canonical "surplus_deficit.csv".
                              Pass "surplus_deficit_constrained.csv" for the
                              La Nina supply-shock scenario fixture.
+                             Pass "surplus_deficit_real.csv" for BPS real data.
     """
     kab = load_kabupaten()
     komo = load_komoditas()
@@ -176,6 +177,19 @@ def load_all_sample_data(*, surplus_deficit_csv: str = "surplus_deficit.csv"):
         "weather": weather,
         "historical_prices": historical,
     }
+
+
+def load_real_data():
+    """Load BPS Jawa Timur 2022 real data (6 komoditas: beras_premium, beras_medium,
+    cabai_merah, cabai_rawit, bawang_merah, bawang_putih).
+
+    Convenience wrapper around load_all_sample_data(surplus_deficit_csv=...).
+    Muat HANYA komoditas yang ada di surplus_deficit_real.csv — tidak ada
+    data sintetis di-merge.
+
+    Returns same dict shape as load_all_sample_data().
+    """
+    return load_all_sample_data(surplus_deficit_csv="surplus_deficit_real.csv")
 
 
 if __name__ == "__main__":

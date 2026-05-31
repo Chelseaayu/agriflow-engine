@@ -15,7 +15,7 @@ Coverage:
   6. Sanity: known surplus lumbung (Ngawi, Lamongan, Bojonegoro) are SURPLUS.
   7. Sanity: known dense urban kota (Surabaya, Kota Malang) are DEFICIT.
   8. Grade split: premium 60 % / medium 40 % of total volume per kabupaten.
-  9. harvest_age_days = 28 for SURPLUS, 0 for DEFICIT (per methodology).
+  9. harvest_age_days = 20 for SURPLUS beras, 0 for DEFICIT (demo assumption: ~20 days since harvest).
   10. All kab_ids in the real CSV exist in kabupaten_jatim.csv.
 """
 import os
@@ -41,7 +41,9 @@ POP_CSV    = BPS_DIR / "year_populasi_jatim.csv"
 YEAR = 2022  # Reference year: consistent 2022 snapshot across all 6 commodities
 PREMIUM_SPLIT = 0.60
 MEDIUM_SPLIT  = 0.40
-HARVEST_AGE_SURPLUS = 28
+# harvest_age_days for SURPLUS beras nodes (demo assumption: 20 days since harvest,
+# "freshly arrived at collection point". Production: from real-time scraper.)
+HARVEST_AGE_SURPLUS = 20
 HARVEST_AGE_DEFICIT = 0
 
 
@@ -265,7 +267,7 @@ def test_grade_split_ratio(real_csv):
 # ---------------------------------------------------------------------------
 
 def test_harvest_age_surplus_rows(real_csv):
-    """All SURPLUS rows (beras slice) must have harvest_age_days == 28."""
+    """All SURPLUS rows (beras slice) must have harvest_age_days == 20 (demo assumption)."""
     beras = real_csv[real_csv["commodity_code"].isin(["beras_premium", "beras_medium"])]
     surplus = beras[beras["role"] == "SURPLUS"]
     bad = surplus[surplus["harvest_age_days"] != HARVEST_AGE_SURPLUS]

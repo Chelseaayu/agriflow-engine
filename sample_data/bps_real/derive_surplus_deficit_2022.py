@@ -26,14 +26,25 @@ Per-capita consumption sources:
   Bawang putih      : same PDF, Tabel 4.2a, p.26
                       Bawang putih (Garlic) 2022 = 2.016 kg/kapita/tahun  [NATIONAL PROXY]
 
-Prices (2022 median from sample_data/price_history/ PIHPS data):
-  beras_premium : median(super1, super2) 2022 = 11,500 IDR/kg
-  beras_medium  : median(medium1, medium2) 2022 = 10,325 IDR/kg
-  cabai_merah   : NOT in PIHPS dataset (cabai besar/keriting absent).
-                  Using komoditas_constraints.csv baseline = 45,000 IDR/kg [FLAGGED]
-  cabai_rawit   : cabe_rawit_cleaned.csv 2022 median = 41,000 IDR/kg [PIHPS real]
-  bawang_merah  : bawang_merah_cleaned.csv 2022 median = 32,500 IDR/kg [PIHPS real]
-  bawang_putih  : bawang_putih_cleaned.csv 2022 median = 20,750 IDR/kg [PIHPS real]
+Prices - DEFICIT (consumer/wholesale) prices (2022 median from PIHPS / baseline):
+  Surplus (producer/farmgate) price = 0.75 x deficit price [DEMO ASSUMPTION:
+  standard producer-to-consumer distribution margin ~25%. In production, per-kab
+  BPS farmgate prices would replace this ratio.]
+
+  beras_premium: deficit 11,500 / surplus  8,625 IDR/kg
+  beras_medium : deficit 10,325 / surplus  7,744 IDR/kg (rounded 10325*0.75)
+  cabai_merah  : deficit 45,000 / surplus 33,750 IDR/kg [NOT in PIHPS; baseline FLAGGED]
+  cabai_rawit  : deficit 41,000 / surplus 30,750 IDR/kg [PIHPS 2022]
+  bawang_merah : deficit 32,500 / surplus 24,375 IDR/kg [PIHPS 2022]
+  bawang_putih : deficit 20,750 / surplus 15,563 IDR/kg [PIHPS 2022, rounded]
+
+Harvest age (days since harvest for SURPLUS nodes) - DEMO ASSUMPTION:
+  Represents "freshly arrived at collection point, ready for dispatch".
+  In production: from real-time scraper (field to collection point transit).
+  cabai_merah & cabai_rawit  :  1 day  (very perishable; max_fresh_age_days=5)
+  bawang_merah & bawang_putih: 3 days  (semi-perishable; max_fresh_age_days=30/60)
+  beras_premium & beras_medium: 20 days (stable grain; max_fresh_age_days=180)
+  DEFICIT nodes: harvest_age_days=0 (not applicable for demand side).
 
 Excluded:
   daging_ayam, telur_ayam -- broiler hilang; telur petelur hanya 2 kab. PENDING.
@@ -60,7 +71,7 @@ OUT_CSV = ROOT / "sample_data" / "surplus_deficit_real.csv"
 YEAR = 2022
 
 # ---------------------------------------------------------------------------
-# Per-capita consumption (NATIONAL PROXY — Kementan PDF, Tabel 4.6a/4.1a/4.2a)
+# Per-capita consumption (NATIONAL PROXY - Kementan PDF, Tabel 4.6a/4.1a/4.2a)
 # Source: Statistik Konsumsi Pangan 2024, Pusat Data Kementan, Desember 2024
 # URL: https://satudata.pertanian.go.id/assets/docs/publikasi/Buku_Statistik_Konsumsi_2024.pdf
 # ---------------------------------------------------------------------------
@@ -72,19 +83,40 @@ PERKAPITA_KG_PER_TAHUN = {
 }
 
 # ---------------------------------------------------------------------------
-# Prices IDR/kg (2022 median from PIHPS or flagged baseline)
+# DEFICIT prices IDR/kg (2022 median from PIHPS or flagged baseline)
+# These represent consumer/wholesale market prices.
 # ---------------------------------------------------------------------------
-PRICES = {
+PRICES_DEFICIT = {
     "beras_premium": 11_500,  # median(super1=12000, super2=11000), PIHPS 2022
     "beras_medium":  10_325,  # median(medium1=10650, medium2=10000), PIHPS 2022
-    "cabai_merah":   45_000,  # komoditas_constraints.csv baseline — NOT in PIHPS [FLAGGED]
+    "cabai_merah":   45_000,  # komoditas_constraints.csv baseline - NOT in PIHPS [FLAGGED]
     "cabai_rawit":   41_000,  # cabe_rawit_cleaned.csv 2022 median, PIHPS
     "bawang_merah":  32_500,  # bawang_merah_cleaned.csv 2022 median, PIHPS
     "bawang_putih":  20_750,  # bawang_putih_cleaned.csv 2022 median, PIHPS
 }
 
-# harvest_age_days by role
-HARVEST_AGE = {"SURPLUS": 28, "DEFICIT": 0}
+# SURPLUS prices IDR/kg = 0.75 x DEFICIT price (producer/farmgate estimate)
+# DEMO ASSUMPTION: 25% distribution margin (producer to consumer). Rounded to
+# nearest 1 IDR. In production, replace with per-kab BPS farmgate price data.
+PRICES_SURPLUS = {
+    code: round(price * 0.75)
+    for code, price in PRICES_DEFICIT.items()
+}
+
+# ---------------------------------------------------------------------------
+# Harvest age (days since harvest) - per commodity, SURPLUS nodes only
+# DEMO ASSUMPTION: "freshly arrived at collection point, ready for dispatch"
+# Production system: replace with real-time scraper data (typically 0-2 days).
+# ---------------------------------------------------------------------------
+HARVEST_AGE_SURPLUS = {
+    "cabai_merah":   1,   # very perishable; max_fresh_age_days=5
+    "cabai_rawit":   1,   # very perishable; max_fresh_age_days=5
+    "bawang_merah":  3,   # semi-perishable; max_fresh_age_days=30
+    "bawang_putih":  3,   # semi-perishable; max_fresh_age_days=60
+    "beras_premium": 20,  # stable grain; max_fresh_age_days=180
+    "beras_medium":  20,  # stable grain; max_fresh_age_days=180
+}
+HARVEST_AGE_DEFICIT = 0  # not applicable for demand side
 
 # Grade split for beras
 PREMIUM_SPLIT = 0.60
@@ -130,7 +162,7 @@ def load_kab_ids_ordered() -> list[int]:
 # ---------------------------------------------------------------------------
 def load_horti_csv(filename: str) -> pd.Series:
     df = pd.read_csv(HORTI_DIR / filename, encoding="utf-8-sig")
-    # Row 38 (or last row) is "Total" — drop it
+    # Row 38 (or last row) is "Total" - drop it
     df = df[df["Kabupaten"] != "Total"].copy()
     assert len(df) == 38, (
         f"{filename}: expected 38 data rows after excluding Total, got {len(df)}"
@@ -176,13 +208,19 @@ def derive_beras(kab_map: dict[str, int], kab_ids_38: list[int]) -> list[dict]:
         vol          = abs(net_ton)
 
         for code, split in [("beras_premium", PREMIUM_SPLIT), ("beras_medium", MEDIUM_SPLIT)]:
+            if role == "SURPLUS":
+                price = PRICES_SURPLUS[code]
+                age   = HARVEST_AGE_SURPLUS[code]
+            else:
+                price = PRICES_DEFICIT[code]
+                age   = HARVEST_AGE_DEFICIT
             rows.append({
                 "kab_id":           kab_id,
                 "commodity_code":   code,
                 "role":             role,
                 "volume_tons":      round(vol * split, 2),
-                "price_idr_per_kg": PRICES[code],
-                "harvest_age_days": HARVEST_AGE[role],
+                "price_idr_per_kg": price,
+                "harvest_age_days": age,
             })
 
     return rows
@@ -197,11 +235,11 @@ def derive_horti(kab_ids_38: list[int], pop22_series: pd.Series) -> list[dict]:
     pop22_series: pd.Series of 38 populasi values in same row order
     """
     # Load production files (ton after conversion)
-    cabai_besar   = load_horti_csv("cabai_besar.csv")
+    cabai_besar    = load_horti_csv("cabai_besar.csv")
     cabai_keriting = load_horti_csv("cabai_keriting.csv")
-    cabai_rawit   = load_horti_csv("cabai_rawit.csv")
-    bawang_merah  = load_horti_csv("bawang_merah.csv")
-    bawang_putih  = load_horti_csv("bawang_putih.csv")
+    cabai_rawit    = load_horti_csv("cabai_rawit.csv")
+    bawang_merah   = load_horti_csv("bawang_merah.csv")
+    bawang_putih   = load_horti_csv("bawang_putih.csv")
 
     # cabai_merah = besar + keriting
     cabai_merah_prod = cabai_besar + cabai_keriting
@@ -216,16 +254,22 @@ def derive_horti(kab_ids_38: list[int], pop22_series: pd.Series) -> list[dict]:
     rows: list[dict] = []
     for code, prod_series in commodities.items():
         per_kapita = PERKAPITA_KG_PER_TAHUN[code]  # kg/kapita/tahun (national)
-        price      = PRICES[code]
 
         for i in range(38):
-            kab_id      = kab_ids_38[i]
-            produksi    = float(prod_series.iloc[i])     # ton
-            populasi    = float(pop22_series.iloc[i])    # jiwa
+            kab_id       = kab_ids_38[i]
+            produksi     = float(prod_series.iloc[i])     # ton
+            populasi     = float(pop22_series.iloc[i])    # jiwa
             konsumsi_ton = per_kapita * populasi / 1000.0
             net_ton      = produksi - konsumsi_ton
             role         = "SURPLUS" if net_ton > 0 else "DEFICIT"
             vol          = abs(net_ton)
+
+            if role == "SURPLUS":
+                price = PRICES_SURPLUS[code]
+                age   = HARVEST_AGE_SURPLUS[code]
+            else:
+                price = PRICES_DEFICIT[code]
+                age   = HARVEST_AGE_DEFICIT
 
             rows.append({
                 "kab_id":           kab_id,
@@ -233,7 +277,7 @@ def derive_horti(kab_ids_38: list[int], pop22_series: pd.Series) -> list[dict]:
                 "role":             role,
                 "volume_tons":      round(vol, 2),
                 "price_idr_per_kg": price,
-                "harvest_age_days": HARVEST_AGE[role],
+                "harvest_age_days": age,
             })
 
     return rows
@@ -279,9 +323,11 @@ def build_pop22_series(kab_ids_38: list[int]) -> pd.Series:
 # ---------------------------------------------------------------------------
 def main() -> None:
     print(f"Deriving surplus_deficit_real.csv @ year {YEAR} ...")
+    print("  Fix 1: per-commodity harvest_age (cabai=1, bawang=3, beras=20)")
+    print("  Fix 2: surplus price = 0.75 x deficit price (distribution margin)")
 
-    kab_map     = load_kab_map()
-    kab_ids_38  = load_kab_ids_ordered()
+    kab_map      = load_kab_map()
+    kab_ids_38   = load_kab_ids_ordered()
     pop22_series = build_pop22_series(kab_ids_38)
 
     beras_rows = derive_beras(kab_map, kab_ids_38)
@@ -294,11 +340,6 @@ def main() -> None:
     ])
 
     # Sort: surplus first (descending volume), then deficit, grouped by commodity
-    df = df.sort_values(
-        ["commodity_code", "role", "volume_tons"],
-        ascending=[True, True, False],  # role: DEFICIT < SURPLUS alphabetically; flip
-    )
-    # Re-sort: SURPLUS first within each commodity
     df["_role_order"] = df["role"].map({"SURPLUS": 0, "DEFICIT": 1})
     df = df.sort_values(["commodity_code", "_role_order", "volume_tons"],
                         ascending=[True, True, False])
@@ -308,9 +349,18 @@ def main() -> None:
     print(f"Written {len(df)} rows to {OUT_CSV}")
 
     # Sanity report
+    print("\n--- Price check: surplus vs deficit prices ---")
+    for code in sorted(PRICES_DEFICIT.keys()):
+        print(f"  {code:<22}  deficit={PRICES_DEFICIT[code]:>7,}  "
+              f"surplus={PRICES_SURPLUS[code]:>7,}  "
+              f"spread={PRICES_DEFICIT[code]-PRICES_SURPLUS[code]:>7,}")
+
+    print("\n--- Harvest age check (SURPLUS nodes) ---")
+    for code in sorted(HARVEST_AGE_SURPLUS.keys()):
+        print(f"  {code:<22}  harvest_age={HARVEST_AGE_SURPLUS[code]} days")
+
     print("\n--- Sanity check: top-3 producers per commodity (production ton) ---")
-    # Recompute production for display
-    for code in ["cabai_merah","cabai_rawit","bawang_merah","bawang_putih"]:
+    for code in ["cabai_merah", "cabai_rawit", "bawang_merah", "bawang_putih"]:
         sub = df[df["commodity_code"] == code].copy()
         kab_ref = pd.read_csv(KAB_CSV)
         id_to_name = dict(zip(kab_ref["kab_id"].astype(int), kab_ref["nama"]))
@@ -318,9 +368,10 @@ def main() -> None:
         print(f"\n{code}:")
         for _, r in surplus.iterrows():
             print(f"  kab_id={r['kab_id']} ({id_to_name.get(r['kab_id'],'?')}) "
-                  f"surplus={r['volume_tons']:,.0f} ton")
+                  f"surplus={r['volume_tons']:,.0f} ton  "
+                  f"price_surplus={r['price_idr_per_kg']:,}")
 
-    for code in ["beras_premium","beras_medium"]:
+    for code in ["beras_premium", "beras_medium"]:
         sub = df[df["commodity_code"] == code]
         kab_ref = pd.read_csv(KAB_CSV)
         id_to_name = dict(zip(kab_ref["kab_id"].astype(int), kab_ref["nama"]))
@@ -328,10 +379,11 @@ def main() -> None:
         print(f"\n{code}:")
         for _, r in surplus.iterrows():
             print(f"  kab_id={r['kab_id']} ({id_to_name.get(r['kab_id'],'?')}) "
-                  f"surplus={r['volume_tons']:,.0f} ton")
+                  f"surplus={r['volume_tons']:,.0f} ton  "
+                  f"price_surplus={r['price_idr_per_kg']:,}")
 
     print("\n--- Commodity row counts ---")
-    print(df.groupby(["commodity_code","role"]).size().to_string())
+    print(df.groupby(["commodity_code", "role"]).size().to_string())
     print(f"\nTotal rows: {len(df)}")
 
 

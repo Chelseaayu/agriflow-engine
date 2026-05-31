@@ -208,20 +208,18 @@ def test_bawang_putih_zero_matches(real_report):
 
 
 def test_bawang_putih_handled_gracefully(real_report):
-    """bawang_putih (all-deficit, real price 20,750 vs synth median 40,000 => z~3.2σ):
-    Engine harus handle gracefully — tidak crash, dan melaporkan hasil lewat
-    warnings (price-anomaly exclusion) atau external_opportunities (zero-demand).
+    """bawang_putih (all-deficit): semua 38 kab Jatim 2022 deficit.
+    Engine harus handle gracefully — tidak crash, dan melaporkan bawang_putih
+    melalui salah satu channel: warnings, external_opportunities, ATAU
+    unmatched_deficit (ketika tidak ada surplus domestik sama sekali).
 
-    Perilaku aktual: historical_price_stats.csv berisi data sintetis (median
-    40,000, std 6,000). Real PIHPS 2022 price 20,750 jatuh > 3σ di bawah median
-    sintetis → semua 38 deficit nodes ter-exclude oleh price anomaly detector
-    sebelum masuk ke matching. Engine melaporkan ini via warnings, bukan crash.
+    Perilaku aktual (post data-prep fix): historical_price_stats.csv menggunakan
+    real PIHPS 2022 median (20,750, std 3,518). Harga deficit node 20,750 = median
+    -> z=0, tidak ada anomaly exclusion. Tidak ada surplus, jadi engine meletakkan
+    semua 38 bawang_putih deficit nodes ke unmatched_deficit.
 
-    Kalau historical_prices diganti dengan data real, perilaku akan berubah ke
-    external_opportunity (no surplus) + unmatched_deficit. Test ini memvalidasi
-    perilaku graceful engine, bukan endpoint output spesifik.
+    Test ini memvalidasi perilaku graceful engine, bukan endpoint output spesifik.
     """
-    # Semua 38 bawang_putih deficit nodes di-exclude oleh price anomaly detector
     bp_warnings = [
         w for w in real_report.warnings
         if "bawang_putih" in w.lower() or "Bawang Putih" in w
@@ -230,19 +228,24 @@ def test_bawang_putih_handled_gracefully(real_report):
         o for o in real_report.external_opportunities
         if "bawang_putih" in o
     ]
-    # Engine harus melaporkan bawang_putih di salah satu channel (warning ATAU opp)
-    assert len(bp_warnings) > 0 or len(bp_opps) > 0, (
-        "Engine harus melaporkan bawang_putih melalui warnings atau "
-        "external_opportunities — tidak boleh diam. "
-        f"warnings={[w for w in real_report.warnings if 'bawang' in w.lower()]}, "
-        f"opps={real_report.external_opportunities}"
+    bp_unmatched = [
+        d for d in real_report.unmatched_deficit
+        if d.commodity.code == "bawang_putih"
+    ]
+    # Engine harus melaporkan bawang_putih di salah satu channel
+    # (warning, external_opp, atau unmatched_deficit — tergantung path engine)
+    assert len(bp_warnings) > 0 or len(bp_opps) > 0 or len(bp_unmatched) > 0, (
+        "Engine harus melaporkan bawang_putih melalui warnings, "
+        "external_opportunities, atau unmatched_deficit — tidak boleh diam. "
+        f"warnings={bp_warnings}, opps={bp_opps}, "
+        f"unmatched_deficit_count={len(bp_unmatched)}"
     )
 
 
 def test_bawang_putih_zero_matches_and_no_crash(real_report, real_data):
     """bawang_putih: 0 matches, engine tidak crash.
-    Node di-exclude oleh price anomaly (real price 20,750 < synth median 40,000 - 3σ).
-    Ini dokumentasi engine behavior — bukan test yang ingin diubah tanpa sadar.
+    Sebab: tidak ada surplus domestik (all-deficit, 38 nodes). Engine reports
+    via external_opportunities. Ini dokumentasi engine behavior.
     """
     bp_matches = [
         m for m in real_report.matches

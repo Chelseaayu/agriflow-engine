@@ -236,36 +236,29 @@ def main():
             d = match_by_comm[code]
             print(f"  {code:<22}  {d['count']:3d} matches, {d['volume']:>12,.1f} ton matched")
         elif code == "bawang_putih":
-            # Two constraints compound: no domestic surplus + price anomaly exclusion
-            print(f"  {code:<22}    0 matches (no domestic surplus; real price Rp 20,750"
-                  f" vs synth median Rp 40,000 => z~3.2σ → price anomaly exclusion)")
-        elif code in ("cabai_merah", "cabai_rawit"):
-            # Real CSV sets harvest_age_days=28 uniformly; cabai max_fresh_age_days=5
-            print(f"  {code:<22}    0 matches (harvest_age_days=28 > max_fresh_age_days=5"
-                  f" → Layer 1 freshness constraint; real-time data would use age=0..2)")
+            # All-deficit: no domestic surplus in Jatim 2022
+            print(f"  {code:<22}    0 matches (no domestic surplus — all 38 kab deficit;"
+                  f" engine routes to external_opportunities: saran impor)")
         else:
             print(f"  {code:<22}    0 matches")
     print()
 
-    # 11. Constraint summary — honest reporting
-    print("-> CONSTRAINT NOTES (DATA REAL vs ENGINE DEFAULTS)")
+    # 11. Constraint summary — honest reporting (updated post data-prep fixes)
+    print("-> DEMO DATA ASSUMPTIONS (DATA REAL vs PRODUCTION)")
     print("-" * 80)
     print("  [1] bawang_putih: Jatim 2022 produksi ~855 ton, konsumsi ~80.640 ton.")
     print("      Semua 38 kab DEFICIT. Tidak ada surplus domestik.")
-    print("      TAMBAHAN: real PIHPS 2022 price (Rp 20.750) vs historical_price_stats")
-    print("      sintetis (median Rp 40.000, std 6.000) → z=3.21 → price anomaly excludes")
-    print("      semua 38 deficit nodes. Engine graceful: 38 warnings, 0 matches, 0 crash.")
+    print("      Engine handles gracefully: 0 matches, external_opportunity (saran impor).")
+    print("      historical_price_stats: median Rp 20.750 (PIHPS 2022, real) — no anomaly.")
     print()
-    print("  [2] cabai_merah, cabai_rawit: harvest_age_days=28 di real CSV (uniform")
-    print("      untuk semua SURPLUS). Constraint max_fresh_age_days=5 (cabai sangat")
-    print("      perishable). Layer 1 rejects semua pair → 0 candidates → 0 matches.")
-    print("      Di produksi: harvest_age harus dari scraper real-time (0..2 hari),")
-    print("      bukan nilai statis. Unmatched deficit (39 nodes) mencerminkan hal ini.")
+    print("  [2] cabai_merah, cabai_rawit: harvest_age_days=1 (demo assumption: 'baru")
+    print("      tiba di collection point'). max_fresh_age_days=5 → Layer 1 passes.")
+    print("      Produksi: harvest_age dari scraper real-time (0-2 hari per batch).")
     print()
-    print("  [3] Gross arbitrage = 0: surplus dan deficit dalam komoditas yang sama")
-    print("      menggunakan harga referensi yang identik (PIHPS/BPS 2022 uniform).")
-    print("      Dalam produksi, harga akan berbeda antar kabupaten (spread arbitrage")
-    print("      muncul dari variasi harga lokal BPS per kab).")
+    print("  [3] Harga surplus = 0.75 x harga deficit (demo assumption: margin")
+    print("      distribusi produsen-konsumen ~25%). Gross arbitrage mencerminkan")
+    print("      nilai redistribusi, bukan keuntungan bersih (belum kurangi logistik).")
+    print("      Produksi: harga per-kab dari BPS/PIHPS farmgate.")
     print()
 
 

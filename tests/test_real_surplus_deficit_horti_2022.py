@@ -13,7 +13,7 @@ Test checklist:
   H7.  Sanity: bawang_putih ALL DEFICIT (Jatim produces ~855 ton vs ~600k+ ton consumption).
   H8.  Sanity: cabai_rawit top-3 in {Banyuwangi 3510, Malang 3507, Kediri 3506, Sampang 3527}.
   H9.  Sanity: Kota Surabaya DEFICIT for all 4 hortikultura commodities.
-  H10. harvest_age_days = 28 for SURPLUS, 0 for DEFICIT across hortikultura rows.
+  H10. harvest_age_days per-commodity for SURPLUS (cabai=1, bawang=3), 0 for DEFICIT.
   H11. price_idr_per_kg is positive and matches expected PIHPS/baseline values.
   H12. volume_tons > 0 for all rows.
   H13. Total rows in file = 228 (38 kab * 6 commodities — beras has 2 grades).
@@ -51,11 +51,26 @@ PERKAPITA_KG_YR = {
     "bawang_putih": 2.016,
 }
 
-EXPECTED_PRICES = {
+# Deficit prices (consumer/wholesale, PIHPS 2022 or baseline)
+EXPECTED_PRICES_DEFICIT = {
     "cabai_merah":  45_000,   # komoditas_constraints baseline [NOT in PIHPS — flagged]
     "cabai_rawit":  41_000,   # PIHPS 2022 median
     "bawang_merah": 32_500,   # PIHPS 2022 median
     "bawang_putih": 20_750,   # PIHPS 2022 median
+}
+# Surplus prices (producer/farmgate = 0.75 x deficit — demo assumption)
+EXPECTED_PRICES_SURPLUS = {
+    "cabai_merah":  33_750,   # round(45000 * 0.75)
+    "cabai_rawit":  30_750,   # round(41000 * 0.75)
+    "bawang_merah": 24_375,   # round(32500 * 0.75)
+    "bawang_putih": 15_562,   # round(20750 * 0.75)  [bawang_putih has no surplus rows]
+}
+# Per-commodity harvest_age_days for SURPLUS rows (demo assumption)
+EXPECTED_HARVEST_AGE_SURPLUS = {
+    "cabai_merah":  1,   # very perishable; max_fresh_age_days=5
+    "cabai_rawit":  1,
+    "bawang_merah": 3,   # semi-perishable; max_fresh_age_days=30
+    "bawang_putih": 3,   # no surplus rows; value for documentation only
 }
 
 HORTI_CODES = list(PERKAPITA_KG_YR.keys())
@@ -328,14 +343,25 @@ def test_surabaya_all_horti_deficit(horti_csv):
 
 
 # ---------------------------------------------------------------------------
-# H10. harvest_age_days = 28 for SURPLUS, 0 for DEFICIT
+# H10. harvest_age_days per-commodity for SURPLUS, 0 for DEFICIT
 # ---------------------------------------------------------------------------
 
 def test_horti_harvest_age_surplus(horti_csv):
-    """All hortikultura SURPLUS rows must have harvest_age_days == 28."""
+    """Hortikultura SURPLUS rows must have per-commodity harvest_age_days.
+    cabai_merah/cabai_rawit = 1 day (very perishable),
+    bawang_merah/bawang_putih = 3 days (semi-perishable).
+    Demo assumption: freshly arrived at collection point.
+    """
     surplus = horti_csv[horti_csv["role"] == "SURPLUS"]
-    bad = surplus[surplus["harvest_age_days"] != 28]
-    assert bad.empty, f"Horti SURPLUS rows with wrong harvest_age_days:\n{bad}"
+    for code, expected_age in EXPECTED_HARVEST_AGE_SURPLUS.items():
+        sub = surplus[surplus["commodity_code"] == code]
+        if sub.empty:
+            continue  # bawang_putih has no surplus rows; skip
+        bad = sub[sub["harvest_age_days"] != expected_age]
+        assert bad.empty, (
+            f"{code}: expected harvest_age_days={expected_age}, "
+            f"got wrong rows:\n{bad}"
+        )
 
 
 def test_horti_harvest_age_deficit(horti_csv):
@@ -346,18 +372,40 @@ def test_horti_harvest_age_deficit(horti_csv):
 
 
 # ---------------------------------------------------------------------------
-# H11. Prices match expected PIHPS/baseline values
+# H11. Prices match expected PIHPS/baseline values (per role)
 # ---------------------------------------------------------------------------
 
 def test_horti_prices(horti_csv):
-    """Prices must match PIHPS 2022 medians (or flagged baseline for cabai_merah)."""
-    for code, expected_price in EXPECTED_PRICES.items():
-        sub = horti_csv[horti_csv["commodity_code"] == code]
-        prices = sub["price_idr_per_kg"].unique()
-        assert len(prices) == 1, f"{code}: expected single price, got {prices}"
-        assert int(prices[0]) == expected_price, (
-            f"{code}: price = {prices[0]}, expected {expected_price}"
-        )
+    """Prices must match PIHPS 2022 medians per role.
+    DEFICIT price = consumer/wholesale (PIHPS 2022 or flagged baseline).
+    SURPLUS price = 0.75 x deficit price (demo assumption: farmgate margin).
+    """
+    for code, expected_deficit_price in EXPECTED_PRICES_DEFICIT.items():
+        # Check deficit rows
+        deficit_rows = horti_csv[
+            (horti_csv["commodity_code"] == code) & (horti_csv["role"] == "DEFICIT")
+        ]
+        if not deficit_rows.empty:
+            prices = deficit_rows["price_idr_per_kg"].unique()
+            assert len(prices) == 1, (
+                f"{code} DEFICIT: expected single price, got {prices}"
+            )
+            assert int(prices[0]) == expected_deficit_price, (
+                f"{code} DEFICIT: price={prices[0]}, expected={expected_deficit_price}"
+            )
+        # Check surplus rows
+        expected_surplus_price = EXPECTED_PRICES_SURPLUS[code]
+        surplus_rows = horti_csv[
+            (horti_csv["commodity_code"] == code) & (horti_csv["role"] == "SURPLUS")
+        ]
+        if not surplus_rows.empty:
+            prices = surplus_rows["price_idr_per_kg"].unique()
+            assert len(prices) == 1, (
+                f"{code} SURPLUS: expected single price, got {prices}"
+            )
+            assert int(prices[0]) == expected_surplus_price, (
+                f"{code} SURPLUS: price={prices[0]}, expected={expected_surplus_price}"
+            )
 
 
 # ---------------------------------------------------------------------------

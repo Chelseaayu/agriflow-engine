@@ -1,14 +1,3 @@
----
-title: AgriFlow API
-emoji: "🌾"
-colorFrom: green
-colorTo: yellow
-sdk: docker
-app_port: 7860
-pinned: false
-license: mit
----
-
 <h1 align="center">AgriFlow</h1>
 
 <p align="center">

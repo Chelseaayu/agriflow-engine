@@ -49,6 +49,13 @@ produksi/konsumsi/populasi BPS per-kabupaten):
 Ketiganya terhubung: prediksi dan deteksi memberi sinyal dini, distribusi menindaklanjuti dengan
 alokasi yang efisien sekaligus adil.
 
+\paragraph{Positioning.} AgriFlow adalah \emph{alat bantu keputusan untuk pemerintah}
+(Bapanas/Pemda), \textbf{bukan} marketplace komersial. Ini membedakannya dari platform seperti
+eNAM~\cite{enam} (lelang harga India) atau MealConnect~\cite{mealconnect} (penyelamatan pangan AS),
+dan dari B2B agritech Indonesia yang gagal karena margin tipis (mis. TaniHub~\cite{tanihub}). Karena
+insentif kami adalah KPI ketahanan pangan + stabilitas harga + keadilan --- bukan margin per-transaksi
+--- dimensi \emph{equity} antar-kabupaten menjadi tujuan utama, bukan afterthought.
+
 % =====================================================================
 \section{Distribusi --- Matching Engine}
 
@@ -89,22 +96,29 @@ arah v2.
 
 \subsection{Efektivitas, evaluasi, dan validasi}
 Kami memvalidasi nilai keadilan secara \textbf{empiris} dengan membandingkan AgriFlow terhadap
-empat baseline (pure-greedy, uniform, proportional-to-deficit, smoothed) pada data Jawa Timur yang
-sama, di dua rezim pasokan, dengan metrik: cakupan (volume-weighted), Gini (Lorenz), Atkinson, dan
-\emph{leximin} (fulfillment kab terburuk).
+empat baseline (\emph{pure-greedy} = efisiensi, \emph{uniform} \& \emph{proportional-to-deficit}
+= acuan pemerataan, dan varian \emph{smoothed}) pada \textbf{dua skenario terkontrol} yang sengaja
+dirancang untuk mengisolasi efek keadilan: satu \emph{pasokan melimpah} dan satu \emph{pasokan
+langka} (\emph{shock} La Ni\~na yang menghapus surplus tiga sentra beras). Metrik: cakupan
+(volume-weighted), Gini (dari kurva Lorenz, weighted), Atkinson ($\varepsilon{=}1$), dan
+\emph{leximin} (fulfillment kabupaten terburuk).
 
 \begin{center}
 \begin{tabular}{lccccc}
 \toprule
-\textbf{Rezim / Strategi} & Coverage & Gini & Atkinson($\varepsilon{=}1$) & Sampang & Bangkalan \\
+\textbf{Skenario / Strategi} & Coverage & Gini & Atkinson($\varepsilon{=}1$) & Sampang & Bangkalan \\
 \midrule
 \multicolumn{6}{l}{\emph{Pasokan melimpah (surplus $>$ defisit)}}\\
-\quad pure\_greedy  & 0.890 & 0.093 & 0.113 & 1.00 & 1.00 \\
-\quad \textbf{AgriFlow} & 0.880 & 0.099 & 0.114 & 1.00 & 1.00 \\
+\quad pure\_greedy      & 0.890 & 0.093 & 0.113 & 1.00 & 1.00 \\
+\quad uniform           & 0.993 & 0.008 & 0.094 & 1.00 & 1.00 \\
+\quad proportional      & 0.993 & 0.007 & 0.094 & 1.00 & 1.00 \\
+\quad \textbf{AgriFlow}  & 0.880 & 0.099 & 0.114 & 1.00 & 1.00 \\
 \midrule
 \multicolumn{6}{l}{\emph{Pasokan langka (shock La Ni\~na; defisit $>$ surplus)}}\\
-\quad pure\_greedy  & 0.665 & 0.302 & 0.984 & \textbf{0.00} & \textbf{0.20} \\
-\quad \textbf{AgriFlow} & 0.665 & 0.290 & 0.938 & \textbf{1.00} & \textbf{1.00} \\
+\quad pure\_greedy      & 0.665 & 0.302 & 0.984 & \textbf{0.00} & \textbf{0.20} \\
+\quad uniform           & 0.627 & 0.252 & 0.186 & 1.00 & 1.00 \\
+\quad proportional      & 0.702 & 0.159 & 0.137 & 0.78 & 0.78 \\
+\quad \textbf{AgriFlow}  & 0.665 & 0.290 & 0.938 & \textbf{1.00} & \textbf{1.00} \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -114,8 +128,14 @@ termiskin sudah terlayani; Gini AgriFlow $\approx$ greedy). \emph{Nilai sebenarn
 langka}: greedy menelantarkan Sampang (0\%) dan Bangkalan (20\%), sedangkan \textbf{AgriFlow
 menjamin keduanya 100\% dengan biaya cakupan agregat nol} (0.665 = 0.665), Gini turun
 $0.302\!\rightarrow\!0.290$. Klaim presisi kami: \emph{"AgriFlow memprioritaskan kabupaten
-terlemah saat pasokan langka,"} bukan \emph{"menurunkan ketimpangan secara umum."} Validasi
-dijalankan ulang pada \textbf{data produksi/konsumsi BPS asli per-kabupaten (2022)}.
+terlemah saat pasokan langka,"} bukan \emph{"menurunkan ketimpangan secara umum."}
+
+\paragraph{Dua jenis validasi (tidak dicampur).} (i) \emph{Perbandingan baseline} di atas
+dijalankan pada skenario terkontrol untuk mengisolasi efek keadilan secara apples-to-apples.
+(ii) Secara \emph{terpisah}, engine dijalankan \emph{end-to-end} pada \textbf{data BPS/PIHPS Jawa
+Timur asli per-kabupaten (tahun acuan 2022)} untuk 5 komoditas (beras, cabai merah \& rawit, bawang
+merah \& putih) --- membuktikan pipeline bekerja pada angka nyata, bukan sintetis. Seluruh hasil
+reproducible dan teruji otomatis (364 tes).
 
 \subsection{Mengapa metode ini tepat}
 Untuk konteks perencana terpusat dengan satu fungsi kesejahteraan, assignment terbobot lebih tepat
@@ -198,6 +218,34 @@ tahun acuan konsisten 2022. Seluruh pipeline reproducible dan diuji otomatis (36
 \end{itemize}
 
 % =====================================================================
+\section*{Lampiran A --- Ringkasan Matematis}
+\addcontentsline{toc}{section}{Lampiran A --- Ringkasan Matematis}
+Seluruh formula yang \emph{load-bearing} di sistem, untuk acuan cepat (turunan lengkap di luar
+cakupan dokumen ini):
+
+\begin{center}
+\begin{longtable}{p{3.2cm}p{6.4cm}p{4.6cm}}
+\toprule
+\textbf{Komponen} & \textbf{Formula} & \textbf{Peran} \\
+\midrule
+\endhead
+Skor Layer 2 & $\text{Base} = 100\sum_i w_i\,s_i$, \; $w=(0.22,0.22,0.22,0.18,0.16)$ & weighted-sum: Distance, Volume, Price, Perishability, Climate \\
+Alokasi Layer 3 & $\text{Final} = \text{Base}\times m(\text{IPM})$ & equity-weighted assignment \\
+Equity multiplier $m$ & $\text{IPM}{<}68\!\rightarrow\!1.30$; $68\text{--}72\!\rightarrow\!1.15$; $72\text{--}78\!\rightarrow\!1.05$; $\geq 78\!\rightarrow\!1.00$ & tier keadilan (kuartil IPM Jatim 2024) \\
+Flag anomali & $|r-\tilde{r}| > k\cdot 1.4826\cdot \mathrm{MAD}(r)$, \; $k{=}3$, residual $r$ & S-H-ESD pada residual deseasonalized \\
+Food balance & $\text{surplus/defisit} = \text{produksi} - \text{konsumsi}$ & turunan node surplus \& defisit \\
+Konversi satuan & kuintal $\div 10 =$ ton; \; padi GKG $\times 0.6286 =$ beras giling & normalisasi data BPS \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+\noindent\emph{Catatan:} metrik evaluasi (Gini dari kurva Lorenz, Atkinson dengan parameter
+inequality-aversion $\varepsilon$, leximin, serta MAPE/MASE untuk forecasting) memakai definisi
+standar; pemilihannya dibahas di seksi terkait. Equity multiplier saat ini \emph{step-function}
+(interpretable bagi audiens kebijakan); migrasi ke bentuk \emph{smooth}/in-objective adalah arah v2
+(\S Keterbatasan).
+
+% =====================================================================
 \begin{thebibliography}{99}
 \bibitem{galichon2021} A.~Galichon. \emph{The unreasonable effectiveness of optimal transport in economics.} arXiv:2102.03875, 2021.
 \bibitem{roth1990} A.~E.~Roth, M.~Sotomayor. \emph{Two-Sided Matching: A Study in Game-Theoretic Modeling and Analysis.} Cambridge University Press, 1990.
@@ -213,6 +261,9 @@ tahun acuan konsisten 2022. Seluruh pipeline reproducible dan diuji otomatis (36
 \bibitem{eidpihps2026} \emph{Multi-Commodity Food Price Forecasting Ahead of Eid Al-Fitr in Indonesia.} MALCOM Indonesian J. of ML \& CS, 2026.
 \bibitem{liu2024} Q.~Liu, J.~Paparrizos. \emph{The Elephant in the Room: Towards A Reliable Time-Series Anomaly Detection Benchmark.} NeurIPS 2024 (Datasets \& Benchmarks).
 \bibitem{shesd2017} J.~Hochenbaum, O.~Vallis, A.~Kejariwal. \emph{Automatic Anomaly Detection in the Cloud Via Statistical Learning (Seasonal-Hybrid ESD).} arXiv:1704.07706, 2017.
+\bibitem{enam} \emph{e-NAM (Electronic National Agriculture Market), India} --- pasar lelang terpadu; tinjauan dampak \& tantangan (systematic literature review).
+\bibitem{mealconnect} \emph{MealConnect (Feeding America)} --- platform pencocokan penyelamatan pangan donor--bank, AS.
+\bibitem{tanihub} \emph{TaniHub Group collapse} --- pelajaran dari kegagalan agritech B2B terbesar Indonesia (margin tipis, ekspansi berlebih).
 \end{thebibliography}
 
 \end{document}

@@ -280,10 +280,35 @@ _CITY_ID_MAP: Dict[str, str] = {
     "kota surabaya":   "3578",
 }
 
-# Canonical commodity codes available in price_history
+# Canonical commodity codes available in price_history (IHK dataset)
 _FORECAST_COMMODITIES = {
     "cabai_rawit", "bawang_merah", "bawang_putih",
     "beras_medium", "beras_premium", "daging_ayam", "telur_ayam",
+}
+
+# Map engine commodity codes to the closest IHK price-history equivalent.
+# The engine dataset has cabai_merah/jagung/etc; the IHK price_history uses
+# cabai_rawit as the available cabai series.
+_ENGINE_TO_IHK: Dict[str, str] = {
+    "cabai_merah":   "cabai_rawit",   # no IHK cabai_merah; rawit is the closest
+    "cabai_rawit":   "cabai_rawit",
+    "bawang_merah":  "bawang_merah",
+    "bawang_putih":  "bawang_putih",
+    "beras_premium": "beras_premium",
+    "beras_medium":  "beras_medium",
+    "daging_ayam":   "daging_ayam",
+    "telur_ayam":    "telur_ayam",
+    "beras":         "beras_medium",  # generic
+    "jagung":        None,
+    "kedelai":       None,
+    "tomat":         None,
+    "kentang":       None,
+    "kol":           None,
+    "wortel":        None,
+    "ikan_tongkol":  None,
+    "minyak_goreng": None,
+    "gula_pasir":    None,
+    "tepung_terigu": None,
 }
 
 # Human-readable commodity names
@@ -322,6 +347,10 @@ def handle_forecast(intent: Intent, data: EngineData) -> str:
     commodity = intent.commodity
     kab_name  = intent.kabupaten_name
     kab_id    = intent.kabupaten_id
+
+    # Map engine commodity code → IHK price-history code (may differ)
+    if commodity:
+        commodity = _ENGINE_TO_IHK.get(commodity, commodity)
 
     # Commodity must be present and in the forecast dataset
     if not commodity or commodity not in _FORECAST_COMMODITIES:
@@ -395,6 +424,9 @@ def handle_anomali(intent: Intent, data: EngineData) -> str:
     """Return a summary of the most recent detected price anomalies."""
     commodity = intent.commodity
     kab_name  = intent.kabupaten_name
+    # Map engine commodity code → IHK price-history code
+    if commodity:
+        commodity = _ENGINE_TO_IHK.get(commodity, commodity)
 
     records = _load_json_file(_ANOMALIES_PATH)
     if not records:

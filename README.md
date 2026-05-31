@@ -1,3 +1,5 @@
+Language / Bahasa: [English](./README.en.md) · **Bahasa Indonesia**
+
 <h1 align="center">AgriFlow</h1>
 
 <p align="center">
@@ -138,5 +140,11 @@ pytest tests/                      # 364 tes
 ```
 
 Detail engineering lengkap ada di [`README_v12.md`](README_v12.md).
+
+---
+
+## Lisensi
+
+MIT License — &copy; 2026 Hilmi. Lihat [`LICENSE`](LICENSE).
 
 <p align="center"><em>Deteksi · Prediksi · Distribusi — untuk ketahanan pangan Indonesia.</em></p>

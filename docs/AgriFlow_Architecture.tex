@@ -1,0 +1,218 @@
+% AgriFlow — Detailed Architecture & Methodology
+% Compile: xelatex AgriFlow_Architecture.tex  (or pdflatex)
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+
+\titleformat{\section}{\Large\bfseries\color{black!85}}{\thesection}{0.6em}{}
+\setlist{nosep,leftmargin=1.3em}
+\newcommand{\code}[1]{\texttt{#1}}
+
+\title{\textbf{AgriFlow --- Detailed Architecture \& Methodology}\\[2pt]
+\large Food Security Intelligence Platform for Sub-National Indonesia}
+\author{AgriFlow Team --- PIDI DIGDAYA $\times$ Hackathon 2026, Bank Indonesia}
+\date{Revisi: Mei 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+AgriFlow adalah platform intelijen ketahanan pangan sub-nasional dengan tiga fungsi inti:
+\textbf{Deteksi} (anomali harga), \textbf{Prediksi} (peramalan harga), dan \textbf{Distribusi}
+(pencocokan surplus--defisit antar-kabupaten). Dokumen ini menjelaskan, untuk setiap fungsi:
+metodologi yang dipakai, alasan pemilihan metode, cara kerja, efektivitas, serta evaluasi dan
+validasi terhadap data nyata BPS/PIHPS Jawa Timur. Setiap pilihan metode didukung literatur
+terkini (2021--2026). Prinsip rancangan kami: \emph{honest engineering} --- memilih metode yang
+tepat untuk skala saat ini (38 kabupaten Jawa Timur), bukan yang paling rumit, dan menyatakan
+keterbatasan secara eksplisit.
+\end{abstract}
+
+\section{Ikhtisar Sistem}
+AgriFlow memproses tiga lapis nilai di atas satu sumber data bersama (harga PIHPS harian,
+produksi/konsumsi/populasi BPS per-kabupaten):
+\begin{enumerate}
+  \item \textbf{Deteksi} --- mengidentifikasi anomali harga (lonjakan/anjlok) dari deret harga harian.
+  \item \textbf{Prediksi} --- meramalkan harga 30 hari ke depan dengan foundation model time-series.
+  \item \textbf{Distribusi} --- mencocokkan kabupaten surplus dengan kabupaten defisit melalui
+        \emph{matching engine} 4-lapis yang sadar masa-simpan, jarak jalan nyata, dan keadilan.
+\end{enumerate}
+Ketiganya terhubung: prediksi dan deteksi memberi sinyal dini, distribusi menindaklanjuti dengan
+alokasi yang efisien sekaligus adil.
+
+% =====================================================================
+\section{Distribusi --- Matching Engine}
+
+\subsection{Formulasi masalah}
+Diberikan himpunan node \emph{surplus} $S$ dan \emph{defisit} $D$ per komoditas, kami mencari
+alokasi yang memaksimalkan kesejahteraan agregat dengan bobot keadilan. Karena \emph{kedua sisi
+menilai pasangan melalui satu fungsi skor bersama} (bukan preferensi ordinal independen seperti
+pasar dua-sisi), setting yang tepat adalah \textbf{centralized bipartite assignment dengan equity
+weighting} --- seorang perencana terpusat (Bapanas/Pemda), bukan pasar terdesentralisasi.
+Pandangan ini sejalan dengan kerangka \emph{optimal transport}/assignment di mana preferensi
+berasal dari surplus bersama~\cite{galichon2021}. Kami secara sadar \emph{tidak} mengklaim
+"stable matching Gale--Shapley pemenang Nobel": teorema stabilitas Roth--Sotomayor~\cite{roth1990}
+mensyaratkan preferensi ordinal independen, yang tidak berlaku di sini.
+
+\subsection{Cara kerja: arsitektur 4-lapis}
+\begin{itemize}
+  \item \textbf{Layer 0 --- Tier classification.} Tiap kabupaten ditandai Tier~1 (8 kota IHK,
+        harga harian PIHPS, confidence \emph{HIGH}) atau Tier~2 (kab non-IHK, mingguan, \emph{MEDIUM}).
+  \item \textbf{Layer 1 --- Hard constraints.} Filter cepat: kecocokan komoditas, jarak $\leq$
+        maksimum (jarak jalan nyata OSRM, fallback haversine), umur panen $\leq$ masa-simpan,
+        volume minimum, no self-match, mode darurat, override Pemda, prioritas Bulog.
+  \item \textbf{Layer 2 --- Multi-objective scoring.} Skor 0--100 dari 5 dimensi berbobot:
+        Distance 22\%, Volume 22\%, Price 22\%, Perishability 18\%, Climate 16\%
+        (\emph{weighted-sum scalarization}).
+  \item \textbf{Layer 3 --- Equity-weighted allocation.} $\text{Final} = \text{Base} \times
+        m(\text{IPM})$, dengan $m$ \emph{equity multiplier} untuk kabupaten ber-IPM rendah; alokasi
+        via modified Gale--Shapley (Tier~1$\leftrightarrow$Tier~1) atau greedy berprioritas-equity.
+\end{itemize}
+
+\subsection{Alasan pemilihan metode}
+\textbf{Weighted-sum scalarization} dipilih karena interpretable dan murah secara komputasi; kami
+menyadari ia hanya menjangkau solusi Pareto \emph{supported}~\cite{bazgan2021}, dan menyediakan
+3 skema bobot (default/Ramadan/import) sebagai mitigasi parsial. \textbf{Equity multiplier}
+post-score dipilih demi transparansi bagi audiens kebijakan; literatur menunjukkan formulasi
+in-objective (penalty factor~\cite{firouz2021}) atau Gini-derived~\cite{alem2021} dan leximin
+maximin~\cite{hakimifar2022} lebih \emph{principled} secara teori --- ini kami tetapkan sebagai
+arah v2.
+
+\subsection{Efektivitas, evaluasi, dan validasi}
+Kami memvalidasi nilai keadilan secara \textbf{empiris} dengan membandingkan AgriFlow terhadap
+empat baseline (pure-greedy, uniform, proportional-to-deficit, smoothed) pada data Jawa Timur yang
+sama, di dua rezim pasokan, dengan metrik: cakupan (volume-weighted), Gini (Lorenz), Atkinson, dan
+\emph{leximin} (fulfillment kab terburuk).
+
+\begin{center}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Rezim / Strategi} & Coverage & Gini & Atkinson($\varepsilon{=}1$) & Sampang & Bangkalan \\
+\midrule
+\multicolumn{6}{l}{\emph{Pasokan melimpah (surplus $>$ defisit)}}\\
+\quad pure\_greedy  & 0.890 & 0.093 & 0.113 & 1.00 & 1.00 \\
+\quad \textbf{AgriFlow} & 0.880 & 0.099 & 0.114 & 1.00 & 1.00 \\
+\midrule
+\multicolumn{6}{l}{\emph{Pasokan langka (shock La Ni\~na; defisit $>$ surplus)}}\\
+\quad pure\_greedy  & 0.665 & 0.302 & 0.984 & \textbf{0.00} & \textbf{0.20} \\
+\quad \textbf{AgriFlow} & 0.665 & 0.290 & 0.938 & \textbf{1.00} & \textbf{1.00} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Temuan kunci (jujur).} Saat pasokan melimpah, equity nyaris tak berdampak (kab
+termiskin sudah terlayani; Gini AgriFlow $\approx$ greedy). \emph{Nilai sebenarnya muncul saat
+langka}: greedy menelantarkan Sampang (0\%) dan Bangkalan (20\%), sedangkan \textbf{AgriFlow
+menjamin keduanya 100\% dengan biaya cakupan agregat nol} (0.665 = 0.665), Gini turun
+$0.302\!\rightarrow\!0.290$. Klaim presisi kami: \emph{"AgriFlow memprioritaskan kabupaten
+terlemah saat pasokan langka,"} bukan \emph{"menurunkan ketimpangan secara umum."} Validasi
+dijalankan ulang pada \textbf{data produksi/konsumsi BPS asli per-kabupaten (2022)}.
+
+\subsection{Mengapa metode ini tepat}
+Untuk konteks perencana terpusat dengan satu fungsi kesejahteraan, assignment terbobot lebih tepat
+dan dapat diaudit daripada mekanisme pasar dua-sisi. Pendekatan Food~Drop berbasis
+\emph{power-of-two-choices} dengan jaminan aproksimasi~\cite{diaby2024} adalah arah pelengkap v2
+(menambah \emph{provable bound} yang saat ini belum ada).
+
+% =====================================================================
+\section{Prediksi --- Peramalan Harga (TimesFM)}
+
+\subsection{Metode dan cara kerja}
+Peramalan harga 30 hari memakai \textbf{TimesFM 2.0}~\cite{timesfm2023}, \emph{decoder-only
+foundation model} time-series Google yang dilatih pada $\sim$100 miliar titik data dan mampu
+\emph{zero-shot} (tanpa pelatihan per-komoditas). Input: deret harga harian PIHPS per kota/komoditas;
+output: titik ramalan + interval prediksi (P10/P90). Prophet dan XGBoost dipakai sebagai
+\emph{baseline} pembanding.
+
+\subsection{Alasan pemilihan \& efektivitas}
+Bukti agri-spesifik terkini menunjukkan foundation model time-series \textbf{secara konsisten
+mengungguli} metode klasik (ARIMA/Prophet) maupun ML (XGBoost) untuk harga komoditas
+pertanian~\cite{wangzhang2026}, membalik anggapan lama bahwa "metode sederhana menang untuk
+komoditas." Pada leaderboard zero-shot independen (GIFT-Eval), keluarga TimesFM berada di tier
+teratas baik untuk akurasi titik (MASE) maupun probabilistik (CRPS)~\cite{timesfm2023}. Kami
+\emph{tidak} mengklaim TimesFM mutlak terbaik --- Chronos-2/Moirai-2.0 bersaing ketat.
+
+\subsection{Evaluasi dan validasi}
+Evaluasi memakai \emph{rolling-origin backtest} dengan MAPE \& MASE serta kalibrasi cakupan
+interval P10/P90. Keterbatasan jujur: konfigurasi \emph{univariate} melewatkan variabel eksogen.
+Untuk beras/cabai Indonesia, literatur menunjukkan indikator ENSO/iklim~\cite{alanshari2025} dan
+musim hari raya~\cite{eidpihps2026} \emph{material} terhadap akurasi --- karenanya v2 akan
+menambahkan kovariat (kalender Ramadan, indeks ENSO) yang secara teknis dapat di-\emph{retrofit}
+ke foundation model~\cite{chronosx2025}.
+
+% =====================================================================
+\section{Deteksi --- Anomali Harga}
+
+\subsection{Metode dan cara kerja}
+Deteksi anomali memakai pendekatan \textbf{Seasonal-Hybrid ESD (S-H-ESD)}~\cite{shesd2017}:
+(1) \emph{deseasonalize} deret (buang trend + komponen musiman), lalu (2) terapkan statistik
+\emph{robust} median + MAD pada \emph{residual}, dengan flag
+$|r - \tilde{r}| > k \cdot 1.4826 \cdot \mathrm{MAD}$. Ditambahkan \emph{persistence threshold}
+(flag hanya jika bertahan $\geq 2$ observasi) dan \emph{floor} skala untuk komoditas
+bervolatilitas-rendah (beras).
+
+\subsection{Alasan pemilihan: mengapa BUKAN deep learning}
+Benchmark TSAD yang andal (NeurIPS~2024) menunjukkan bahwa di bawah evaluasi yang adil, detektor
+transformer (mis. AnomalyTransformer/TranAD) \emph{tidak} secara reliabel mengungguli metode
+statistik sederhana --- keunggulan mereka sebagian artefak metrik \emph{point-adjustment} yang
+bias~\cite{liu2024}. Untuk konteks kebijakan di mana \emph{interpretability} menentukan, memilih
+S-H-ESD adalah keputusan yang \emph{defensible}, bukan malas.
+
+\subsection{Efektivitas dan validasi}
+Pada harga PIHPS Jawa Timur 2021--2025, upgrade ke S-H-ESD memangkas jumlah flag
+$\sim$\textbf{60\%} (14.261 $\rightarrow$ 5.686) dengan menyaring \emph{noise} musiman rutin
+sambil \textbf{mempertahankan kejadian nyata}: lonjakan bawang merah Probolinggo $+$73--81\%
+pada April 2024 (pasca-Idul Fitri) tetap terdeteksi sebagai event \emph{sustained}. Validasi
+kontekstual: anomali teratas konsisten dengan kalender hari raya dan pola pasar nyata.
+Keterbatasan: \emph{binning} musiman bulanan mengaburkan pergeseran kalender Hijriah ($\sim$11
+hari/tahun); trend rolling-median tertinggal $\sim$15 observasi saat \emph{regime shift}.
+
+% =====================================================================
+\section{Data \& Validasi Empiris}
+Engine berjalan pada \textbf{data nyata BPS/PIHPS Jawa Timur per-kabupaten}: produksi
+(BPS Jatim), konsumsi per-kapita (Susenas BPS --- untuk beras bahkan \emph{per-kabupaten}, bukan
+asumsi nasional), populasi (BPS), dan harga harian PIHPS 2021--2025. Surplus/defisit diturunkan
+sebagai \emph{food balance}: $\text{surplus\_deficit} = \text{produksi} - \text{konsumsi}$, dengan
+satuan/konversi terdokumentasi (kuintal $\div 10$ = ton; padi GKG $\times 0.6286$ = beras giling).
+Lima komoditas inti tervalidasi nyata (beras, cabai merah \& rawit, bawang merah \& putih) pada
+tahun acuan konsisten 2022. Seluruh pipeline reproducible dan diuji otomatis (364 tes).
+
+\section{Keterbatasan \& Roadmap (Phase 3)}
+\begin{itemize}
+  \item Data nyata 5 komoditas, tahun 2022; daging \& telur menunggu data produksi per-kab lengkap.
+  \item Konsumsi cabai/bawang memakai rata-rata nasional $\times$ populasi (proxy); beras sudah per-kab.
+  \item Equity multiplier post-score (heuristik) $\rightarrow$ migrasi ke penalty/leximin
+        in-objective~\cite{firouz2021,hakimifar2022}.
+  \item Tanpa \emph{provable bound} $\rightarrow$ adopsi power-of-two-choices~\cite{diaby2024}.
+  \item Prediksi univariate $\rightarrow$ tambah kovariat eksogen (ENSO/Ramadan)~\cite{alanshari2025,chronosx2025}.
+  \item Skala provinsi (Jatim) siap; nasional 514 kab perlu spatial partitioning + precompute.
+\end{itemize}
+
+% =====================================================================
+\begin{thebibliography}{99}
+\bibitem{galichon2021} A.~Galichon. \emph{The unreasonable effectiveness of optimal transport in economics.} arXiv:2102.03875, 2021.
+\bibitem{roth1990} A.~E.~Roth, M.~Sotomayor. \emph{Two-Sided Matching: A Study in Game-Theoretic Modeling and Analysis.} Cambridge University Press, 1990.
+\bibitem{bazgan2021} C.~Bazgan et al. \emph{The power of the weighted sum scalarization for approximating multiobjective optimization problems.} arXiv:1908.01181, 2021.
+\bibitem{firouz2021} M.~Firouz et al. \emph{On the equity-efficiency trade-off in food-bank network operations.} arXiv:2111.05839, 2021.
+\bibitem{alem2021} D.~Alem, A.~Caunhye, A.~Moreno. \emph{Revisiting Gini for equitable humanitarian logistics.} 2021.
+\bibitem{hakimifar2022} M.~Hakimifar, V.~Hemmelmayr, F.~Tricoire. \emph{A lexicographic maximin approach to the selective assessment routing problem.} arXiv:2201.09599, 2022.
+\bibitem{diaby2024} M.~Diaby et al. \emph{Automating Food Drop: The Power of Two Choices for Dynamic and Fair Food Allocation.} ACM EC, arXiv:2406.06363, 2024.
+\bibitem{wangzhang2026} Wang, Zhang. \emph{The Promise of Time-Series Foundation Models for Agricultural Forecasting: Evidence from Commodity Prices.} arXiv:2601.06371, 2026.
+\bibitem{timesfm2023} A.~Das et al. \emph{A decoder-only foundation model for time-series forecasting (TimesFM).} arXiv:2310.10688, 2023 (TimesFM-2.5, GIFT-Eval 2026).
+\bibitem{chronosx2025} \emph{ChronosX / TFMAdapter: extending time-series foundation models with exogenous covariates.} arXiv:2509.13906, 2025.
+\bibitem{alanshari2025} Al~Anshari. \emph{Forecasting Rice Price Volatility in Indonesia: Integrating ENSO Indicators with Machine Learning.} IJSDP, 2025.
+\bibitem{eidpihps2026} \emph{Multi-Commodity Food Price Forecasting Ahead of Eid Al-Fitr in Indonesia.} MALCOM Indonesian J. of ML \& CS, 2026.
+\bibitem{liu2024} Q.~Liu, J.~Paparrizos. \emph{The Elephant in the Room: Towards A Reliable Time-Series Anomaly Detection Benchmark.} NeurIPS 2024 (Datasets \& Benchmarks).
+\bibitem{shesd2017} J.~Hochenbaum, O.~Vallis, A.~Kejariwal. \emph{Automatic Anomaly Detection in the Cloud Via Statistical Learning (Seasonal-Hybrid ESD).} arXiv:1704.07706, 2017.
+\end{thebibliography}
+
+\end{document}

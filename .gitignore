@@ -84,6 +84,8 @@ docs/AgriFlow_v9.docx
 docs/AgriFlow_v10.docx
 docs/AgriFlow_v11.docx
 docs/AgriFlow_v12.docx
+docs/AgriFlow_v13.docx
+docs/AgriFlow_v13_clean.docx
 
 # Proposal docx generator scripts — internal toolchain, paired with the
 # gitignored .docx outputs above (kept consistent: if the artefact is private,

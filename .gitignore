@@ -114,3 +114,19 @@ docs/AgriFlow_v12.md
 
 # Local scratch space (experiments, transient logs, run trackers)
 .tmp/
+
+# Internal deployment notes — not for public repo
+DEPLOY.md
+DEPLOY_RENDER.md
+render.yaml.disabled
+
+# Internal data-acquisition guidelines — operational how-to, not for public repo
+*_GUIDE.md
+sample_data/bps_real/DATA_ACQUISITION_GUIDE.md
+
+# Draft/scratch READMEs — stale or redundant
+docs/README_v12_DRAFT.md
+
+# Handoff documents — session artifacts, internal only
+HANDOFF.md
+HANDOFF.pdf

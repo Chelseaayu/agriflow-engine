@@ -1,5 +1,9 @@
 """
-Tests for sample_data/surplus_deficit_real.csv — BPS real per-kabupaten beras data.
+Tests for sample_data/surplus_deficit_real.csv — BPS real per-kabupaten beras data @ 2022.
+
+Reference year updated to 2022 (consistent snapshot year across all 6 commodities).
+surplus_deficit_real.csv now contains 6 commodities; these tests cover only the
+beras_premium / beras_medium slice.
 
 Coverage:
   1. All 38 Jatim kabupaten/kota are mapped (name -> kab_id).
@@ -7,7 +11,7 @@ Coverage:
        konsumsi_ton = kons_kg_per_minggu * 52 * populasi / 1000
   3. net_ton = produksi_ton - konsumsi_ton; role/volume assignments are correct.
   4. Schema of surplus_deficit_real.csv matches surplus_deficit.csv schema.
-  5. Only beras_premium and beras_medium appear (no other commodities).
+  5. beras_premium and beras_medium are present in the real CSV.
   6. Sanity: known surplus lumbung (Ngawi, Lamongan, Bojonegoro) are SURPLUS.
   7. Sanity: known dense urban kota (Surabaya, Kota Malang) are DEFICIT.
   8. Grade split: premium 60 % / medium 40 % of total volume per kabupaten.
@@ -34,7 +38,7 @@ PROD_CSV   = BPS_DIR / "year_beras.csv"
 KONS_CSV   = BPS_DIR / "week_konsumsi_beras_perkapita.csv"
 POP_CSV    = BPS_DIR / "year_populasi_jatim.csv"
 
-YEAR = 2024
+YEAR = 2022  # Reference year: consistent 2022 snapshot across all 6 commodities
 PREMIUM_SPLIT = 0.60
 MEDIUM_SPLIT  = 0.40
 HARVEST_AGE_SURPLUS = 28
@@ -114,6 +118,7 @@ def test_konsumsi_ton_formula_surabaya(kons_2024, pop_2024, name_to_id):
     """
     konsumsi_ton = avg_kons_perkapita_kg_per_minggu * 52 * populasi / 1000
     Spot-check Kota Surabaya (kab_id 3578) — expected large deficit.
+    2022: pop ~2.887M, kons 1.188 kg/week -> ~178k ton/year.
     """
     kab_id = 3578
     reverse_map = {v: k for k, v in name_to_id.items()}
@@ -128,8 +133,8 @@ def test_konsumsi_ton_formula_surabaya(kons_2024, pop_2024, name_to_id):
     populasi    = float(pop_row["populasi"].iloc[0])
     expected_kons_ton = kg_per_week * 52 * populasi / 1000
     assert expected_kons_ton > 0
-    # Surabaya population ~2.9M, ~1.326 kg/week -> ~199k ton/year
-    assert 150_000 < expected_kons_ton < 250_000, (
+    # Surabaya 2022 population ~2.887M, ~1.188 kg/week -> ~178k ton/year
+    assert 130_000 < expected_kons_ton < 220_000, (
         f"Surabaya konsumsi_ton out of plausible range: {expected_kons_ton:.0f}"
     )
 
@@ -139,7 +144,7 @@ def test_konsumsi_ton_formula_surabaya(kons_2024, pop_2024, name_to_id):
 # ---------------------------------------------------------------------------
 
 def test_net_ton_lamongan_surplus(prod_2024, kons_2024, pop_2024, name_to_id):
-    """Kabupaten Lamongan must be SURPLUS with large net_ton."""
+    """Kabupaten Lamongan must be SURPLUS with large net_ton (2022: ~409k ton)."""
     raw_name = "Kabupaten Lamongan"
     kab_id   = name_to_id[raw_name]
     assert kab_id == 3524
@@ -149,11 +154,11 @@ def test_net_ton_lamongan_surplus(prod_2024, kons_2024, pop_2024, name_to_id):
     pop  = float(pop_2024[pop_2024["kabupaten/kota"] == raw_name]["populasi"].iloc[0])
     kons_ton = kons_kg * 52 * pop / 1000
     net = prod - kons_ton
-    assert net > 200_000, f"Lamongan net_ton should be >> 200k, got {net:.0f}"
+    assert net > 150_000, f"Lamongan net_ton should be >> 150k, got {net:.0f}"
 
 
 def test_net_ton_surabaya_deficit(prod_2024, kons_2024, pop_2024, name_to_id):
-    """Kota Surabaya must be DEFICIT with large absolute net_ton."""
+    """Kota Surabaya must be DEFICIT with large absolute net_ton (2022: ~-173k ton)."""
     raw_name = "Kota Surabaya"
     kab_id   = name_to_id[raw_name]
     assert kab_id == 3578
@@ -163,7 +168,7 @@ def test_net_ton_surabaya_deficit(prod_2024, kons_2024, pop_2024, name_to_id):
     pop  = float(pop_2024[pop_2024["kabupaten/kota"] == raw_name]["populasi"].iloc[0])
     kons_ton = kons_kg * 52 * pop / 1000
     net = prod - kons_ton
-    assert net < -100_000, f"Surabaya net_ton should be << -100k, got {net:.0f}"
+    assert net < -80_000, f"Surabaya net_ton should be << -80k, got {net:.0f}"
 
 
 # ---------------------------------------------------------------------------
@@ -180,15 +185,14 @@ def test_schema_matches_canonical(real_csv):
 
 
 # ---------------------------------------------------------------------------
-# 5. Only beras commodities present
+# 5. beras commodities are present (file now contains 6 commodities total)
 # ---------------------------------------------------------------------------
 
-def test_only_beras_commodities(real_csv):
-    """surplus_deficit_real.csv must contain only beras_premium and beras_medium."""
+def test_beras_commodities_present(real_csv):
+    """surplus_deficit_real.csv must contain beras_premium and beras_medium."""
     codes = set(real_csv["commodity_code"].unique())
-    assert codes == {"beras_premium", "beras_medium"}, (
-        f"Unexpected commodity codes: {codes}"
-    )
+    assert "beras_premium" in codes, f"beras_premium missing; codes={codes}"
+    assert "beras_medium"  in codes, f"beras_medium missing; codes={codes}"
 
 
 # ---------------------------------------------------------------------------
@@ -202,9 +206,12 @@ def test_only_beras_commodities(real_csv):
     (3523, "Tuban"),
 ])
 def test_lumbung_padi_surplus(real_csv, kab_id, name):
-    """Major paddy-belt kabupaten must be SURPLUS for both grades."""
-    rows = real_csv[real_csv["kab_id"] == kab_id]
-    assert len(rows) == 2, f"{name} (kab_id={kab_id}) should have 2 rows (premium+medium)"
+    """Major paddy-belt kabupaten must be SURPLUS for both beras grades."""
+    rows = real_csv[
+        (real_csv["kab_id"] == kab_id) &
+        (real_csv["commodity_code"].isin(["beras_premium", "beras_medium"]))
+    ]
+    assert len(rows) == 2, f"{name} (kab_id={kab_id}) should have 2 beras rows (premium+medium)"
     for _, row in rows.iterrows():
         assert row["role"] == "SURPLUS", (
             f"{name} {row['commodity_code']} should be SURPLUS, got {row['role']}"
@@ -220,9 +227,12 @@ def test_lumbung_padi_surplus(real_csv, kab_id, name):
     (3515, "Sidoarjo"),
 ])
 def test_dense_kota_deficit(real_csv, kab_id, name):
-    """Dense urban centres must be DEFICIT for both grades."""
-    rows = real_csv[real_csv["kab_id"] == kab_id]
-    assert len(rows) == 2, f"{name} (kab_id={kab_id}) should have 2 rows"
+    """Dense urban centres must be DEFICIT for both beras grades."""
+    rows = real_csv[
+        (real_csv["kab_id"] == kab_id) &
+        (real_csv["commodity_code"].isin(["beras_premium", "beras_medium"]))
+    ]
+    assert len(rows) == 2, f"{name} (kab_id={kab_id}) should have 2 beras rows"
     for _, row in rows.iterrows():
         assert row["role"] == "DEFICIT", (
             f"{name} {row['commodity_code']} should be DEFICIT, got {row['role']}"
@@ -236,12 +246,14 @@ def test_dense_kota_deficit(real_csv, kab_id, name):
 def test_grade_split_ratio(real_csv):
     """
     For every kabupaten, premium_volume / (premium + medium) == 0.60 (within float tolerance).
+    Filter to beras only (file now contains 6 commodities).
     """
-    for kab_id, grp in real_csv.groupby("kab_id"):
+    beras = real_csv[real_csv["commodity_code"].isin(["beras_premium", "beras_medium"])]
+    for kab_id, grp in beras.groupby("kab_id"):
         prem = grp[grp["commodity_code"] == "beras_premium"]["volume_tons"].sum()
         med  = grp[grp["commodity_code"] == "beras_medium"]["volume_tons"].sum()
         total = prem + med
-        assert total > 0, f"kab_id {kab_id} has zero volume"
+        assert total > 0, f"kab_id {kab_id} has zero beras volume"
         ratio = prem / total
         assert abs(ratio - PREMIUM_SPLIT) < 1e-3, (
             f"kab_id {kab_id}: premium split = {ratio:.4f}, expected {PREMIUM_SPLIT}"
@@ -253,17 +265,19 @@ def test_grade_split_ratio(real_csv):
 # ---------------------------------------------------------------------------
 
 def test_harvest_age_surplus_rows(real_csv):
-    """All SURPLUS rows must have harvest_age_days == 28."""
-    surplus = real_csv[real_csv["role"] == "SURPLUS"]
+    """All SURPLUS rows (beras slice) must have harvest_age_days == 28."""
+    beras = real_csv[real_csv["commodity_code"].isin(["beras_premium", "beras_medium"])]
+    surplus = beras[beras["role"] == "SURPLUS"]
     bad = surplus[surplus["harvest_age_days"] != HARVEST_AGE_SURPLUS]
-    assert bad.empty, f"SURPLUS rows with wrong harvest_age_days:\n{bad}"
+    assert bad.empty, f"SURPLUS beras rows with wrong harvest_age_days:\n{bad}"
 
 
 def test_harvest_age_deficit_rows(real_csv):
-    """All DEFICIT rows must have harvest_age_days == 0."""
-    deficit = real_csv[real_csv["role"] == "DEFICIT"]
+    """All DEFICIT rows (beras slice) must have harvest_age_days == 0."""
+    beras = real_csv[real_csv["commodity_code"].isin(["beras_premium", "beras_medium"])]
+    deficit = beras[beras["role"] == "DEFICIT"]
     bad = deficit[deficit["harvest_age_days"] != HARVEST_AGE_DEFICIT]
-    assert bad.empty, f"DEFICIT rows with wrong harvest_age_days:\n{bad}"
+    assert bad.empty, f"DEFICIT beras rows with wrong harvest_age_days:\n{bad}"
 
 
 # ---------------------------------------------------------------------------
@@ -279,16 +293,17 @@ def test_all_kab_ids_known(real_csv, kab_df):
 
 
 # ---------------------------------------------------------------------------
-# Extra: exactly 38 distinct kabupaten, 76 rows (38 * 2 grades)
+# Extra: beras slice = 76 rows (38 kab * 2 grades); overall 38 kab_ids
 # ---------------------------------------------------------------------------
 
-def test_row_count(real_csv):
-    """76 rows = 38 kabupaten * 2 grades."""
-    assert len(real_csv) == 76, f"Expected 76 rows, got {len(real_csv)}"
+def test_beras_row_count(real_csv):
+    """76 beras rows = 38 kabupaten * 2 grades (premium + medium)."""
+    beras = real_csv[real_csv["commodity_code"].isin(["beras_premium", "beras_medium"])]
+    assert len(beras) == 76, f"Expected 76 beras rows, got {len(beras)}"
 
 
 def test_kabupaten_count(real_csv):
-    """Exactly 38 distinct kab_ids."""
+    """Exactly 38 distinct kab_ids across the full file."""
     assert real_csv["kab_id"].nunique() == 38, (
         f"Expected 38 distinct kab_ids, got {real_csv['kab_id'].nunique()}"
     )

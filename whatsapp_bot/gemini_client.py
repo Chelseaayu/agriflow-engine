@@ -60,7 +60,20 @@ Klasifikasikan pesan pengguna ke salah satu intent:
            "Cari supplier cabai untuk Sidoarjo"
            "Butuh 100 ton sega kanggo Surabaya"
 
-4. fallback — Pertanyaan umum, sapaan, atau tidak masuk kategori di atas
+4. forecast — Prediksi/ramalan harga komoditas ke depan di suatu kota
+   slots: {"commodity": str, "kabupaten": str|null}
+   contoh: "Prediksi harga cabai Surabaya bulan depan"
+           "Ramalan bawang merah Malang", "Prakiraan harga beras Jember"
+           "Kira-kira harga telur Kediri minggu depan?"
+           "Forecast cabai rawit Madiun", "Berapa harga beras ke depan?"
+
+5. anomali — Anomali/lonjakan/penurunan harga tidak wajar suatu komoditas
+   slots: {"commodity": str, "kabupaten": str|null}
+   contoh: "Anomali harga cabai", "Lonjakan bawang Surabaya"
+           "Ada spike harga beras?", "Harga telur Malang aneh"
+           "Kenapa harga bawang tiba-tiba naik?", "Penurunan harga tidak wajar"
+
+6. fallback — Pertanyaan umum, sapaan, atau tidak masuk kategori di atas
    slots: {}
 
 Output HANYA JSON valid satu baris, tanpa markdown atau penjelasan.
@@ -242,6 +255,31 @@ def _mock_classify(message: str) -> Dict[str, Any]:
     #   "pira" / "regane" / "piro" / "rega" / "pinten" — Jawa for "berapa/harga"
     #   "adol" / "dodol" / "duwe" — Jawa for "jual/punya"
     #   "tuku" / "tumbas" — Jawa for "beli"
+
+    # anomali intent — checked first so "lonjakan harga" → anomali not harga_lookup
+    if any(kw in msg for kw in [
+        "anomali", "anomaly", "spike", "lonjakan", "aneh",
+        "tidak wajar", "naik tiba-tiba", "turun tiba-tiba",
+        "penurunan tidak wajar", "kenaikan tidak wajar",
+        "deteksi harga",
+    ]):
+        return {
+            "intent": "anomali",
+            "slots": {"commodity": commodity, "kabupaten": kabupaten},
+        }
+
+    # forecast intent — check before harga_lookup (shares "harga" keyword)
+    # Note: "akan" removed — it is a suffix in many Indonesian words (lonjakan, etc.)
+    if any(kw in msg for kw in [
+        "prediksi", "forecast", "ramalan", "prakiraan",
+        "kira-kira", "perkiraan", "ke depan", "bulan depan",
+        "minggu depan",
+    ]):
+        return {
+            "intent": "forecast",
+            "slots": {"commodity": commodity, "kabupaten": kabupaten},
+        }
+
     if any(kw in msg for kw in [
         "harga", "berapa", "price",
         "pira", "piro", "regane", "rega", "pinten",  # jawa

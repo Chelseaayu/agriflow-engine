@@ -21,11 +21,14 @@ from .gemini_client import GeminiClient
 INTENT_HARGA_LOOKUP = "harga_lookup"
 INTENT_CARI_PEMBELI = "cari_pembeli"
 INTENT_CARI_PENJUAL = "cari_penjual"
-INTENT_FALLBACK = "fallback"
+INTENT_FORECAST     = "forecast"
+INTENT_ANOMALI      = "anomali"
+INTENT_FALLBACK     = "fallback"
 
 VALID_INTENTS = {
     INTENT_HARGA_LOOKUP, INTENT_CARI_PEMBELI,
-    INTENT_CARI_PENJUAL, INTENT_FALLBACK,
+    INTENT_CARI_PENJUAL, INTENT_FORECAST,
+    INTENT_ANOMALI,      INTENT_FALLBACK,
 }
 
 

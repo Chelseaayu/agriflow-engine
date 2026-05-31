@@ -1,0 +1,26 @@
+# requirements-forecast.txt
+#
+# Dependencies for the OFFLINE forecast precompute script only:
+#   python analysis/forecast_timesfm.py
+#
+# IMPORTANT: This file is NOT used by the server or HF Space Dockerfile.
+# The server (requirements.txt) does NOT import timesfm at runtime.
+#
+# Python version constraint: timesfm requires Python 3.10 or 3.11.
+# Current project venv (Python 3.12/3.14) cannot install this directly.
+#
+# To use:
+#   1. Create a Python 3.11 venv:  py -3.11 -m venv .venv-forecast
+#   2. Install:  .venv-forecast/Scripts/pip install -r requirements-forecast.txt
+#   3. Run:      .venv-forecast/Scripts/python analysis/forecast_timesfm.py
+#
+# Once forecast_all.json is generated, commit it to the repo so the server
+# can serve it without TimesFM at runtime.
+
+# TimesFM 2.0 (PyTorch backend, Python 3.10/3.11 only)
+# Pin to the last known-good version at time of writing.
+# Check https://pypi.org/project/timesfm for updates.
+timesfm>=1.0.0
+
+# Core deps already in requirements.txt (repeated here for the isolated venv)
+numpy>=2.0.0

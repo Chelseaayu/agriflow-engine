@@ -132,3 +132,13 @@ HANDOFF.md
 HANDOFF.pdf
 
 .vercel
+
+# TimesFM model cache — model is ~2GB, never commit
+# (model auto-downloads to HF cache dir on first run)
+~/.cache/huggingface/
+.cache/huggingface/
+timesfm_model_cache/
+
+# pip temp dirs (disk-full workaround)
+/d/pip-tmp/
+/d/pip-cache/

@@ -34,6 +34,13 @@ except ImportError as e:
 from matching_engine import LogisticsContext, run_matching
 from sample_data.loader import load_all_sample_data as _load_csv
 
+# Precomputed data paths (resolved relative to project root so they work
+# both locally and inside the Docker container)
+_HERE_SERVER = os.path.dirname(os.path.abspath(__file__))
+_PROJECT_ROOT = os.path.dirname(_HERE_SERVER)
+_ANOMALIES_PATH = os.path.join(_PROJECT_ROOT, "sample_data", "anomalies", "anomalies_all.json")
+_FORECASTS_PATH = os.path.join(_PROJECT_ROOT, "sample_data", "forecasts", "forecast_all.json")
+
 
 def _load_data_backend() -> dict:
     """
@@ -316,6 +323,152 @@ async def api_matches(
     return JSONResponse({
         "count": len(matches),
         "matches": [_serialize_match(m) for m in matches],
+    })
+
+
+# =============================================================================
+# FORECAST + ANOMALY API  --  /api/v1/forecast  and  /api/v1/anomalies
+#
+# Both endpoints serve precomputed JSON files that were generated offline by:
+#   python analysis/precompute_anomalies.py
+#   python analysis/forecast_timesfm.py
+#
+# The server NEVER imports timesfm at runtime (HF Space OOM guard).
+# =============================================================================
+
+import json as _json
+import functools
+
+
+@functools.lru_cache(maxsize=1)
+def _load_forecasts() -> list:
+    """Load forecast_all.json once and cache in-process."""
+    if not os.path.exists(_FORECASTS_PATH):
+        return []
+    with open(_FORECASTS_PATH, encoding="utf-8") as fh:
+        return _json.load(fh)
+
+
+@functools.lru_cache(maxsize=1)
+def _load_anomalies() -> list:
+    """Load anomalies_all.json once and cache in-process."""
+    if not os.path.exists(_ANOMALIES_PATH):
+        return []
+    with open(_ANOMALIES_PATH, encoding="utf-8") as fh:
+        return _json.load(fh)
+
+
+@app.get("/api/v1/forecast")
+async def api_forecast(
+    commodity: str = Query(..., description="Commodity code, e.g. cabai_rawit"),
+    city: str = Query(..., description="IHK city_id, e.g. 3578 (Surabaya)"),
+) -> JSONResponse:
+    """
+    30-day price forecast (point + P10/P90) for one commodity × city pair.
+
+    Data is precomputed offline (seasonal-naive baseline unless TimesFM was
+    available at precompute time).  The 'method' field in the response tells
+    you which model was used.
+
+    Query params:
+        commodity  AgriFlow commodity code (e.g. cabai_rawit, bawang_merah)
+        city       IHK city_id  (e.g. 3578 for Kota Surabaya)
+
+    Response schema:
+        commodity_code   str
+        city_id          str
+        city_name        str
+        method           str  ("timesfm_2.0" | "seasonal_naive_baseline")
+        generated_at     str  ISO 8601
+        horizon_days     int
+        history_end_date str  ISO 8601
+        forecasts        list of {date, point, p10, p90}
+    """
+    records = _load_forecasts()
+    if not records:
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "Forecast data not yet precomputed.  "
+                "Run: python analysis/forecast_timesfm.py"
+            ),
+        )
+    match = next(
+        (r for r in records if r["commodity_code"] == commodity and r["city_id"] == city),
+        None,
+    )
+    if match is None:
+        # List available (commodity, city) pairs so caller can self-correct
+        available = sorted({(r["commodity_code"], r["city_id"]) for r in records})
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "error": f"No forecast for commodity={commodity!r} city={city!r}",
+                "available_pairs": [{"commodity": c, "city": ci} for c, ci in available[:20]],
+            },
+        )
+    return JSONResponse(match)
+
+
+@app.get("/api/v1/anomalies")
+async def api_anomalies(
+    commodity: str | None = Query(None, description="Filter by commodity code"),
+    city: str | None = Query(None, description="Filter by IHK city_id"),
+    limit: int = Query(50, ge=1, le=500, description="Max records returned (sorted by score desc)"),
+    since: str | None = Query(None, description="ISO date lower-bound, e.g. 2024-01-01"),
+) -> JSONResponse:
+    """
+    Detected price anomalies from the S-H-ESD scanner (precomputed offline).
+
+    All filters are optional.  Without filters returns top-N anomalies by score.
+
+    Query params:
+        commodity  optional commodity code filter
+        city       optional IHK city_id filter
+        limit      max records (default 50, max 500)
+        since      ISO date — only return anomalies on or after this date
+
+    Response schema:
+        count     int
+        method    str  ("shesd_v2")
+        anomalies list of {
+            date           str  ISO 8601
+            price          float  IDR/kg
+            rolling_median float
+            deviation_pct  float  (positive = spike, negative = drop)
+            type           str    SPIKE | DROP
+            score          float  (higher = more anomalous)
+            commodity_code str
+            city_id        str
+            city_name      str
+            persistent     bool
+        }
+    """
+    records = _load_anomalies()
+    if not records:
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "Anomaly data not yet precomputed.  "
+                "Run: python analysis/precompute_anomalies.py"
+            ),
+        )
+
+    filtered = records
+    if commodity:
+        filtered = [r for r in filtered if r["commodity_code"] == commodity]
+    if city:
+        filtered = [r for r in filtered if r["city_id"] == city]
+    if since:
+        filtered = [r for r in filtered if r["date"] >= since]
+
+    # Already sorted by score desc in the precomputed file; slice to limit
+    filtered = filtered[:limit]
+
+    return JSONResponse({
+        "count":     len(filtered),
+        "method":    "shesd_v2",
+        "anomalies": filtered,
     })
 
 

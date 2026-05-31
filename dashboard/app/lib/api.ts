@@ -59,6 +59,55 @@ export type Match = {
 
 export type MatchesResponse = { count: number; matches: Match[] };
 
+// ---------------------------------------------------------------------------
+// Forecast types
+// ---------------------------------------------------------------------------
+
+export type ForecastPoint = {
+  date: string;   // ISO 8601
+  point: number;  // IDR/kg
+  p10: number;
+  p90: number;
+};
+
+export type ForecastResponse = {
+  commodity_code:   string;
+  city_id:          string;
+  city_name:        string;
+  method:           string;  // "timesfm_2.0" | "seasonal_naive_baseline"
+  generated_at:     string;
+  horizon_days:     number;
+  history_end_date: string;
+  forecasts:        ForecastPoint[];
+};
+
+// ---------------------------------------------------------------------------
+// Anomaly types
+// ---------------------------------------------------------------------------
+
+export type AnomalyRecord = {
+  date:           string;   // ISO 8601
+  price:          number;   // IDR/kg
+  rolling_median: number;
+  deviation_pct:  number;   // signed; positive = spike
+  type:           "SPIKE" | "DROP";
+  score:          number;
+  commodity_code: string;
+  city_id:        string;
+  city_name:      string;
+  persistent:     boolean;
+};
+
+export type AnomaliesResponse = {
+  count:     number;
+  method:    string;
+  anomalies: AnomalyRecord[];
+};
+
+// ---------------------------------------------------------------------------
+// Fetch helper + API object
+// ---------------------------------------------------------------------------
+
 async function fetchJson<T>(path: string): Promise<T> {
   const r = await fetch(`${API_BASE}${path}`, { cache: "no-store" });
   if (!r.ok) throw new Error(`${path} failed: ${r.status}`);
@@ -78,5 +127,22 @@ export const api = {
     if (params.kab_id) q.set("kab_id", params.kab_id);
     if (params.limit) q.set("limit", String(params.limit));
     return fetchJson<MatchesResponse>(`/api/v1/matches?${q.toString()}`);
+  },
+  forecast: (params: { commodity: string; city: string }) =>
+    fetchJson<ForecastResponse>(
+      `/api/v1/forecast?commodity=${encodeURIComponent(params.commodity)}&city=${encodeURIComponent(params.city)}`,
+    ),
+  anomalies: (params: {
+    commodity?: string;
+    city?: string;
+    limit?: number;
+    since?: string;
+  }) => {
+    const q = new URLSearchParams();
+    if (params.commodity) q.set("commodity", params.commodity);
+    if (params.city) q.set("city", params.city);
+    if (params.limit) q.set("limit", String(params.limit));
+    if (params.since) q.set("since", params.since);
+    return fetchJson<AnomaliesResponse>(`/api/v1/anomalies?${q.toString()}`);
   },
 };

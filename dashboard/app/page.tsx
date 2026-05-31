@@ -3,27 +3,81 @@
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import {
-  api, type Commodity, type Kabupaten, type Match, type SurplusDeficitResponse,
+  api,
+  type AnomalyRecord,
+  type Commodity,
+  type ForecastResponse,
+  type Kabupaten,
+  type Match,
+  type SurplusDeficitResponse,
 } from "./lib/api";
+import AnomalyPanel from "./components/AnomalyPanel";
+import ForecastPanel from "./components/ForecastPanel";
 
 // Leaflet touches window — must be client-only.
 const MapView = dynamic(() => import("./components/MapView"), { ssr: false });
+
+// ---------------------------------------------------------------------------
+// Format helpers
+// ---------------------------------------------------------------------------
 
 function fmtIdr(n: number): string {
   return "Rp " + n.toLocaleString("id-ID", { maximumFractionDigits: 0 });
 }
 
-export default function Home() {
-  const [commodities, setCommodities] = useState<Commodity[]>([]);
-  const [kabupaten, setKabupaten] = useState<Kabupaten[]>([]);
-  const [commodity, setCommodity] = useState<string>("cabai_merah");
-  const [sd, setSd] = useState<SurplusDeficitResponse | null>(null);
-  const [matches, setMatches] = useState<Match[]>([]);
-  const [selectedKabId, setSelectedKabId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState<string | null>(null);
+// ---------------------------------------------------------------------------
+// IHK city list — cities for which price_history data exists
+// ---------------------------------------------------------------------------
 
-  // Bootstrap: commodities + kabupaten (static across the session)
+const IHK_CITIES = [
+  { id: "3509", name: "Jember" },
+  { id: "3510", name: "Banyuwangi" },
+  { id: "3529", name: "Sumenep" },
+  { id: "3571", name: "Kota Kediri" },
+  { id: "3573", name: "Kota Malang" },
+  { id: "3574", name: "Kota Probolinggo" },
+  { id: "3577", name: "Kota Madiun" },
+  { id: "3578", name: "Kota Surabaya" },
+];
+
+// Commodities available in price_history (anomaly + forecast dataset)
+const ANALYSIS_COMMODITIES = [
+  { code: "cabai_rawit",   nama: "Cabai Rawit" },
+  { code: "bawang_merah",  nama: "Bawang Merah" },
+  { code: "bawang_putih",  nama: "Bawang Putih" },
+  { code: "beras_medium",  nama: "Beras Medium" },
+  { code: "beras_premium", nama: "Beras Premium" },
+  { code: "daging_ayam",   nama: "Daging Ayam" },
+  { code: "telur_ayam",    nama: "Telur Ayam" },
+];
+
+// ---------------------------------------------------------------------------
+// Main page
+// ---------------------------------------------------------------------------
+
+export default function Home() {
+  // --- Distribution state ---
+  const [commodities, setCommodities] = useState<Commodity[]>([]);
+  const [kabupaten, setKabupaten]     = useState<Kabupaten[]>([]);
+  const [commodity, setCommodity]     = useState<string>("cabai_merah");
+  const [sd, setSd]                   = useState<SurplusDeficitResponse | null>(null);
+  const [matches, setMatches]         = useState<Match[]>([]);
+  const [selectedKabId, setSelectedKabId] = useState<string | null>(null);
+  const [loading, setLoading]         = useState(false);
+  const [err, setErr]                 = useState<string | null>(null);
+
+  // --- Analysis state ---
+  const [analysisCommodity, setAnalysisCommodity] = useState("cabai_rawit");
+  const [analysisCity, setAnalysisCity]           = useState("3578"); // Surabaya default
+  const [forecast, setForecast]                   = useState<ForecastResponse | null>(null);
+  const [forecastLoading, setForecastLoading]     = useState(false);
+  const [forecastErr, setForecastErr]             = useState<string | null>(null);
+  const [anomalies, setAnomalies]                 = useState<AnomalyRecord[]>([]);
+  const [anomalyTotal, setAnomalyTotal]           = useState(0);
+  const [anomalyLoading, setAnomalyLoading]       = useState(false);
+  const [anomalyErr, setAnomalyErr]               = useState<string | null>(null);
+
+  // Bootstrap: commodities + kabupaten
   useEffect(() => {
     Promise.all([api.commodities(), api.kabupaten()])
       .then(([c, k]) => {
@@ -33,18 +87,14 @@ export default function Home() {
       .catch((e) => setErr(String(e)));
   }, []);
 
-  // Refresh when commodity OR selected kab changes
+  // Refresh distribution when commodity OR selected kab changes
   useEffect(() => {
     if (!commodity) return;
     setLoading(true);
     setErr(null);
     Promise.all([
       api.surplusDeficit(commodity),
-      api.matches({
-        commodity,
-        kab_id: selectedKabId ?? undefined,
-        limit: 20,
-      }),
+      api.matches({ commodity, kab_id: selectedKabId ?? undefined, limit: 20 }),
     ])
       .then(([sdRes, mRes]) => {
         setSd(sdRes);
@@ -54,15 +104,51 @@ export default function Home() {
       .finally(() => setLoading(false));
   }, [commodity, selectedKabId]);
 
+  // Refresh forecast when analysis selectors change
+  useEffect(() => {
+    setForecastLoading(true);
+    setForecastErr(null);
+    api.forecast({ commodity: analysisCommodity, city: analysisCity })
+      .then(setForecast)
+      .catch((e) => {
+        setForecastErr(String(e));
+        setForecast(null);
+      })
+      .finally(() => setForecastLoading(false));
+  }, [analysisCommodity, analysisCity]);
+
+  // Refresh anomalies when analysis selectors change
+  useEffect(() => {
+    setAnomalyLoading(true);
+    setAnomalyErr(null);
+    api.anomalies({
+      commodity: analysisCommodity,
+      city:      analysisCity,
+      limit:     20,
+      since:     "2023-01-01",
+    })
+      .then((res) => {
+        setAnomalies(res.anomalies);
+        setAnomalyTotal(res.count);
+      })
+      .catch((e) => {
+        setAnomalyErr(String(e));
+        setAnomalies([]);
+      })
+      .finally(() => setAnomalyLoading(false));
+  }, [analysisCommodity, analysisCity]);
+
   const selectedKab = useMemo(
     () => kabupaten.find((k) => k.id === selectedKabId) ?? null,
     [kabupaten, selectedKabId],
   );
 
   return (
-    <div className="h-screen flex flex-col bg-zinc-50 text-zinc-900">
-      {/* Header */}
-      <header className="border-b border-zinc-200 bg-white px-6 py-3 flex items-center justify-between">
+    <div className="min-h-screen flex flex-col bg-zinc-50 text-zinc-900">
+      {/* ================================================================ */}
+      {/* Header                                                           */}
+      {/* ================================================================ */}
+      <header className="border-b border-zinc-200 bg-white px-6 py-3 flex items-center justify-between sticky top-0 z-50">
         <div>
           <h1 className="text-xl font-semibold tracking-tight">
             AgriFlow <span className="text-emerald-600">·</span> Dashboard
@@ -88,7 +174,9 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Stats strip */}
+      {/* ================================================================ */}
+      {/* Stats strip                                                      */}
+      {/* ================================================================ */}
       <div className="border-b border-zinc-200 bg-white px-6 py-2 flex gap-6 text-sm">
         <Stat label="Kabupaten/Kota" value={`${kabupaten.length}`} />
         <Stat
@@ -111,8 +199,10 @@ export default function Home() {
         {err && <span className="text-rose-600 text-xs self-center">{err}</span>}
       </div>
 
-      {/* Main split — map + sidebar */}
-      <div className="flex-1 flex overflow-hidden">
+      {/* ================================================================ */}
+      {/* PILAR 1 — Distribusi (map + sidebar)                            */}
+      {/* ================================================================ */}
+      <div className="h-[420px] flex overflow-hidden border-b border-zinc-200">
         <div className="flex-1 relative">
           <MapView
             kabupaten={kabupaten}
@@ -142,8 +232,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Sidebar */}
-        <aside className="w-96 border-l border-zinc-200 bg-white overflow-y-auto">
+        {/* Sidebar — top matches */}
+        <aside className="w-80 border-l border-zinc-200 bg-white overflow-y-auto">
           <div className="px-4 py-3 border-b border-zinc-200">
             {selectedKab ? (
               <>
@@ -215,9 +305,80 @@ export default function Home() {
           </ul>
         </aside>
       </div>
+
+      {/* ================================================================ */}
+      {/* PILAR 2 & 3 — Forecast + Anomaly (section below the map)       */}
+      {/* ================================================================ */}
+      <section className="bg-zinc-50 px-6 py-4">
+        {/* Section header + selectors */}
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h2 className="text-sm font-semibold text-zinc-800">
+              Analisis Harga · Forecast & Anomali
+            </h2>
+            <p className="text-xs text-zinc-500">
+              Data IHK 8 kota Jawa Timur · 2021–2025
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-xs text-zinc-600">Komoditas:</label>
+            <select
+              className="border border-zinc-300 rounded px-2 py-1 text-xs bg-white"
+              value={analysisCommodity}
+              onChange={(e) => setAnalysisCommodity(e.target.value)}
+            >
+              {ANALYSIS_COMMODITIES.map((c) => (
+                <option key={c.code} value={c.code}>{c.nama}</option>
+              ))}
+            </select>
+            <label className="text-xs text-zinc-600">Kota:</label>
+            <select
+              className="border border-zinc-300 rounded px-2 py-1 text-xs bg-white"
+              value={analysisCity}
+              onChange={(e) => setAnalysisCity(e.target.value)}
+            >
+              {IHK_CITIES.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Two-column grid: Forecast (left) + Anomaly (right) */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Forecast panel */}
+          <div>
+            <p className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-1.5">
+              Prediksi 30 Hari
+            </p>
+            <ForecastPanel
+              forecast={forecast}
+              loading={forecastLoading}
+              error={forecastErr}
+            />
+          </div>
+
+          {/* Anomaly panel */}
+          <div>
+            <p className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-1.5">
+              Anomali Harga (sejak Jan 2023)
+            </p>
+            <AnomalyPanel
+              anomalies={anomalies}
+              loading={anomalyLoading}
+              error={anomalyErr}
+              totalCount={anomalyTotal}
+            />
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Stat component (unchanged)
+// ---------------------------------------------------------------------------
 
 function Stat({ label, value, color }: { label: string; value: string; color?: string }) {
   return (

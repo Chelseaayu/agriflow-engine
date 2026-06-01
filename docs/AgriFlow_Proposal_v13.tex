@@ -1,0 +1,266 @@
+% AgriFlow — Proposal v13
+% Compile: pdflatex AgriFlow_Proposal_v13.tex  (twice for refs)
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper,margin=2.3cm]{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+
+\definecolor{agrigreen}{RGB}{27,94,32}
+\titleformat{\section}{\Large\bfseries\color{agrigreen}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.5em}{}
+\setlist{nosep,leftmargin=1.3em}
+\newcommand{\rp}{Rp\,}
+
+\title{\textbf{\color{agrigreen}AGRIFLOW} \\[2pt]
+\large Platform Intelijen Ketahanan Pangan Sub-Nasional \\[4pt]
+\normalsize \emph{Deteksi · Prediksi · Distribusi}}
+\author{Tim AgriFlow --- Chelsea, Hilmi, Monika, Irpan}
+\date{Proposal v13 --- PIDI DIGDAYA $\times$ Hackathon 2026, Bank Indonesia \\
+Problem Statement \#2: Platform Matching Demand--Supply Antarwilayah}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+\begin{abstract}
+\noindent
+AgriFlow adalah platform intelijen ketahanan pangan yang mencocokkan kabupaten \emph{surplus}
+dengan kabupaten \emph{defisit} pangan secara cerdas dan adil. Berbeda dari proposal awal yang
+masih berupa rancangan, versi ini melaporkan \textbf{sistem yang sudah berjalan}: tiga fungsi
+inti (Deteksi anomali harga, Prediksi harga, Distribusi/matching) berjalan di atas \textbf{data
+BPS \& PIHPS Jawa Timur asli per-kabupaten}, dengan \textbf{364 tes otomatis lulus}, dashboard
+\& chatbot WhatsApp yang \textbf{live}. Prinsip kami adalah \emph{honest engineering} --- setiap
+klaim dapat diverifikasi terhadap kode dan data, dan keterbatasan dinyatakan apa adanya. Yang
+membatasi cakupan saat ini bukan kemampuan sistem, melainkan \emph{ketersediaan data publik
+per-kabupaten}; begitu data tersedia, pipeline yang sama langsung memprosesnya.
+\end{abstract}
+
+\section{Ringkasan Eksekutif}
+Setiap tahun Indonesia kehilangan \rp 213--551 triliun pangan akibat \emph{food loss \& waste}
+(4--5\% PDB), dan \textbf{40\% kerugian terjadi di distribusi, bukan produksi} (Bappenas 2021;
+FAO 2019). Di satu kabupaten petani membuang cabai karena harga jatuh; di kabupaten sebelah
+harga melonjak 100--200\% karena kelangkaan (PIHPS BI). Pemda kerap baru tahu krisis 2--3 minggu
+kemudian.
+
+AgriFlow memecahkan ini sebagai \textbf{alat bantu keputusan untuk pemerintah} (Bapanas/Pemda),
+\emph{bukan} marketplace komersial. Inti platform adalah \emph{matching engine} 4-lapis yang
+sadar masa-simpan, jarak jalan nyata, dan \textbf{keadilan untuk daerah tertinggal} --- dilengkapi
+deteksi anomali harga dan peramalan harga, serta akses lewat dashboard dan WhatsApp (termasuk
+Bahasa Jawa). AgriFlow dirancang sebagai \emph{operational layer} langsung untuk GPIPS 2026
+Bank Indonesia.
+
+\section{Masalah}
+\textbf{Paradoks pangan.} Indonesia produsen pangan besar, tetapi distribusi antar-wilayah belum
+efisien dan belum adil. Tabel berikut merangkum konteks yang mendasari AgriFlow.
+
+\begin{center}
+\begin{longtable}{p{9.5cm}p{5.5cm}}
+\toprule
+\textbf{Fakta} & \textbf{Sumber} \\
+\midrule
+\endhead
+Food loss \& waste \rp 213--551 triliun/tahun (4--5\% PDB) & Bappenas Kajian FLW 2021 \\
+40\% food loss di distribusi, bukan produksi & Bappenas 2021; FAO 2019 \\
+Jatim: 4,7 juta petani, PDRB pertanian tertinggi nasional & BPS Jatim 2024 \\
+Disparitas harga cabai antar-kab Jatim 100--200\% & PIHPS BI \\
+Food loss bisa memberi makan 61--125 juta orang & Badan Pangan Nasional 2022 \\
+BI meluncurkan GPIPS Februari 2026 & Bank Indonesia, 11 Feb 2026 \\
+Target swasembada (Asta Cita \#2) & Perpres 12/2025 RPJMN \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+\textbf{Paradoks aksesibilitas.} Solusi digital pangan yang ada umumnya menyasar petani muda
+melek-smartphone. Realitas Indonesia berbeda: jutaan petani lansia, pengguna \emph{feature phone}
+pedesaan, dan penyandang disabilitas. AgriFlow dirancang inklusif sejak awal --- akses lewat
+kanal yang sudah ada di tangan pengguna (WhatsApp teks, dan Bahasa daerah), bukan afterthought.
+
+\section{Solusi: Tiga Fungsi yang Sudah Berjalan}
+AgriFlow memproses satu sumber data bersama (harga PIHPS harian; produksi/konsumsi/populasi BPS
+per-kabupaten) menjadi tiga lapis nilai:
+
+\begin{itemize}
+  \item \textbf{Deteksi --- anomali harga.} Mengidentifikasi lonjakan/anjlok harga dari deret
+        harga harian 2021--2025 memakai metode robust \emph{Seasonal-Hybrid ESD} (deseasonalize
+        $\rightarrow$ statistik MAD pada residual). Memberi sinyal dini ke Pemda.
+  \item \textbf{Prediksi --- harga 30 hari.} Peramalan harga ke depan dengan interval ketidakpastian
+        (P10/P90). Saat ini berjalan pada \emph{baseline} statistik; varian foundation-model
+        (TimesFM 2.0) sedang dikemas sebagai peningkatan akurasi.
+  \item \textbf{Distribusi --- matching engine 4-lapis.} Mencocokkan kabupaten surplus dengan
+        defisit melalui penyaringan keras (komoditas, jarak jalan nyata, masa-simpan, volume),
+        penilaian multi-objektif 5 dimensi, dan alokasi terbobot-keadilan untuk kabupaten ber-IPM
+        rendah. Metodologi lengkap di \emph{Dokumen Arsitektur} terpisah.
+\end{itemize}
+
+\textbf{Aksesibilitas.} Dashboard web (peta + tabel + grafik) dan \textbf{chatbot WhatsApp} yang
+sudah live --- pengguna dapat menanyakan harga, mencari pembeli/pemasok, prediksi, dan anomali
+lewat chat, dalam \textbf{Bahasa Indonesia} maupun \textbf{Bahasa Jawa}.
+
+\subsection{Mengapa AgriFlow berbeda}
+AgriFlow adalah \emph{government decision-support}, bukan marketplace --- berbeda dari eNAM
+(India, lelang harga) atau MealConnect (AS, penyelamatan pangan), dan dari B2B agritech yang
+gagal karena margin tipis (mis. TaniHub). Karena insentif kami adalah KPI ketahanan pangan +
+stabilitas harga + keadilan, dimensi \emph{equity} antar-kabupaten menjadi tujuan utama.
+
+\section{Bukti \& Validasi --- Bukan Sekadar Klaim}
+\begin{itemize}
+  \item \textbf{Data asli.} Engine berjalan pada data BPS/PIHPS Jawa Timur per-kabupaten ---
+        produksi (BPS Jatim), konsumsi per-kapita (Susenas BPS; untuk beras bahkan
+        \emph{per-kabupaten}, bukan asumsi nasional), populasi (BPS), harga harian PIHPS
+        2021--2025. Lima komoditas inti tervalidasi nyata: beras, cabai merah \& rawit, bawang
+        merah \& putih.
+  \item \textbf{Teruji.} 364 tes otomatis lulus, lintas OS (CI GitHub Actions). Pipeline
+        reproducible.
+  \item \textbf{Live.} Dashboard (Vercel) + API \& chatbot WhatsApp (Hugging Face Spaces) berjalan.
+  \item \textbf{Jujur \& terukur.} Nilai keadilan divalidasi empiris vs baseline (greedy/uniform/
+        proporsional). Temuan kunci: saat pasokan langka, alokasi serakah menelantarkan kabupaten
+        termiskin (Sampang 0\%, Bangkalan 20\%), sedangkan AgriFlow menjamin keduanya 100\%
+        \emph{dengan biaya cakupan agregat nol}. Detail metodologi, evaluasi, dan 14 sitasi paper
+        ada di Dokumen Arsitektur.
+\end{itemize}
+
+\section{GPIPS 2026 Alignment --- Fondasi Strategis}
+11 Februari 2026 BI meluncurkan GPIPS (evolusi GNPIP) dengan penekanan penguatan pasokan
+struktural via 3 pilar. AgriFlow dirancang sebagai \emph{operational layer} langsung untuk
+ketiganya.
+
+\begin{center}
+\begin{longtable}{p{2.6cm}p{5.4cm}p{6.4cm}}
+\toprule
+\textbf{Pilar GPIPS} & \textbf{Mandat BI} & \textbf{Implementasi AgriFlow} \\
+\midrule
+\endhead
+Pilar 1 --- Produksi & Peningkatan produksi, koordinasi pola tanam antar-wilayah & Deteksi
+surplus/defisit per kabupaten; prediksi harga; dashboard koordinasi \\
+Pilar 2 --- Distribusi & Efisiensi distribusi via Kerja Sama Antar Daerah (KAD) \& BUMN logistik &
+Matching engine 4-lapis surplus $\leftrightarrow$ defisit; rekomendasi MOU antar-kab; smart routing \\
+Pilar 3 --- Sinergi Kebijakan & Pemanfaatan data neraca pangan akurat Pusat--Daerah & Single
+source of truth; export ke Bapanas/Bappeda/TPID; alert real-time \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+\noindent\textbf{Strategic insight.} AgriFlow bukan vendor, melainkan mitra eksekusi GPIPS.
+Sales cycle berubah dari ``beli produk kami'' menjadi ``kami menjalankan program yang sudah Anda
+canangkan, dengan algoritma yang dapat diverifikasi terhadap data BPS dan kode terbuka.''
+
+\subsection{Addressable Market (Pemerintah)}
+\begin{center}
+\begin{tabular}{lcr}
+\toprule
+\textbf{Segmen} & \textbf{Jumlah} & \textbf{Addressable Revenue/tahun} \\
+\midrule
+Kantor Perwakilan BI (KPw BI) & 46 & \rp 23--46 miliar \\
+TPID Provinsi & 38 & \rp 7,6--19 miliar \\
+TPID Kabupaten/Kota & 514 & \rp 38--77 miliar \\
+Dinas Pertanian Kab/Kota & 514 & \rp 51--103 miliar \\
+Bapanas Pusat & 1 & \rp 3--5 miliar \\
+\midrule
+\textbf{Total TAM Pemerintah} & --- & \textbf{\rp 120--250 miliar/tahun} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Keterbatasan \& Roadmap --- Yang Membatasi adalah Ketersediaan Data}
+Penting digarisbawahi: \textbf{mesin AgriFlow sudah siap memproses data apa pun yang diberikan
+kepadanya}. Yang membatasi cakupan saat ini adalah \emph{ketersediaan data publik
+per-kabupaten}, bukan kemampuan sistem. Begitu sumber datanya terbuka, pipeline yang sama
+langsung memprosesnya tanpa perubahan arsitektur.
+
+\begin{center}
+\begin{longtable}{p{6.2cm}p{8.6cm}}
+\toprule
+\textbf{Cakupan saat ini} & \textbf{Gerbangnya: ketersediaan data (bukan sistem)} \\
+\midrule
+\endhead
+5 komoditas inti & Engine menerima komoditas apa pun. Komoditas lain menunggu data
+\emph{produksi per-kabupaten} dipublikasikan BPS pada granularitas yang sama. \\
+Tahun acuan 2022 & Tahun konsisten terbaru yang lengkap di semua sumber per-kabupaten. Tahun
+lebih baru tinggal di-\emph{ingest} begitu BPS merilisnya. \\
+Daging ayam \& telur belum & Data produksi broiler/ayam-ras per-kabupaten belum tersedia di sumber
+publik; bukan keterbatasan engine. \\
+Konsumsi cabai/bawang via angka nasional & Konsumsi \emph{per-kabupaten} untuk komoditas ini belum
+dipublikasikan; konsumsi beras sudah per-kabupaten dan dipakai nyata. \\
+Harga Tier-2 (kab non-IHK) & Panel Harga Bapanas sedang dalam pemeliharaan; saat data feed pulih,
+30+ kabupaten tambahan langsung tercakup. \\
+Skala provinsi (Jatim) & Engine siap; perluasan nasional 514 kab menunggu \emph{data feed
+per-kabupaten nasional} terbuka, lalu optimasi skala (spatial partitioning). \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+\noindent\textbf{Scaling up.} Peningkatan skala --- nasional, multi-komoditas penuh, real-time ---
+\emph{dibatasi oleh laju keterbukaan data publik}, bukan oleh kesiapan teknis. Strategi kami:
+buktikan nilai dulu pada skala provinsi dengan data nyata, lalu perluas seiring data tersedia.
+Foundation-model forecasting (TimesFM 2.0) dan integrasi kanal suara/Bahasa daerah (Sahabat-AI,
+IVR) adalah peningkatan terjadwal di fase berikutnya.
+
+\section{Model Bisnis}
+AgriFlow bukan proyek sosial yang bergantung hibah --- pendapatan dari 6 segmen via 8 aliran.
+
+\begin{center}
+\begin{tabular}{lcr}
+\toprule
+\textbf{Aliran Pendapatan} & \textbf{Target} & \textbf{Fase} \\
+\midrule
+1. Lisensi GPIPS Nasional & Bank Indonesia Pusat & Y2--Y3 \\
+2. Langganan APBD Dinas & Dinas Pertanian + TPID & Y1--Y3 \\
+3. B2B Data API (DaaS) & Bank, asuransi, FMCG & Y2--Y3 \\
+4. White-Label Provinsi & Pemprov lain & Y2--Y3 \\
+5. Custom Intelligence Reports & Think tank, Bapanas & Y1--Y3 \\
+6. WhatsApp Premium Tier & Petani, pedagang & Y1--Y3 \\
+7. Grants (Impact Capital) & BI Institute, UNDP, GIZ & Y1--Y3 \\
+8. ESG \& Carbon Credit & Verra, Gold Standard & Y2--Y3 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Proyeksi 3 Tahun}
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+& \textbf{Y1 (2026)} & \textbf{Y2 (2027)} & \textbf{Y3 (2028)} \\
+\midrule
+Total Revenue & \rp 650 jt & \rp 5.980 jt & \rp 16.100 jt \\
+Net Income & \rp 450 jt & \rp 4.480 jt & \rp 11.100 jt \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Biaya operasional ramping: stack sengaja dipangkas (2 platform hosting; pgvector
+alih-alih Qdrant; Gemini langsung alih-alih LangChain) --- \emph{pakai yang cukup, bukan yang
+ramai}.
+
+\section{Tim}
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Nama} & \textbf{Peran} & \textbf{Fokus} \\
+\midrule
+Chelsea & Data Analyst & Forecasting (TimesFM), analisis harga \\
+Hilmi & Data Architect & Arsitektur sistem, matching engine, validasi \\
+Monika & UX Researcher & Riset pengguna, desain pengalaman, aksesibilitas \\
+Irpan & Data Engineer & Pipeline data, backend, deployment \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Penutup --- The Ask}
+Dengan dukungan PIDI DIGDAYA $\times$ Hackathon 2026, AgriFlow siap menjalankan \emph{operational
+layer} GPIPS 2026 BI: pilot 5 kabupaten Jawa Timur dengan matching engine, deteksi, dan prediksi
+yang sudah berjalan di atas data nyata; menjangkau pengguna yang selama ini tertinggal lewat
+WhatsApp dan Bahasa daerah; dan memperluas cakupan seiring data publik per-kabupaten terbuka.
+
+\begin{center}
+\emph{Deteksi · Prediksi · Distribusi --- untuk ketahanan pangan Indonesia.}
+\end{center}
+
+\end{document}

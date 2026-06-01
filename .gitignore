@@ -37,6 +37,14 @@ htmlcov/
 *.cover
 *.log
 
+# LaTeX build artifacts (never commit; .tex + .pdf are committed)
+*.aux
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
 # Word lock files (when Word has docx open)
 ~$*.docx
 ~$*.xlsx

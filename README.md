@@ -35,9 +35,8 @@ Language / Bahasa: [English](./README.en.md) · **Bahasa Indonesia**
 | Resource | Link |
 |----------|------|
 | Pitch Deck | [Canva](https://www.canva.com/design/DAHETj2ulzg/VIvgxVkQ6I9R24ucphy2mQ/view) |
-| Dashboard (Live Demo) | _(menyusul)_ |
-| WhatsApp Bot | _(menyusul)_ |
-| Video Demo | _(menyusul)_ |
+| Dashboard (Live Demo) | [agriflow-engine.vercel.app](https://agriflow-engine.vercel.app/) |
+| Proposal (v13) | [docs/AgriFlow_Proposal_v13.pdf](docs/AgriFlow_Proposal_v13.pdf) |
 
 ---
 
@@ -121,17 +120,21 @@ Komponen di bawah ini **sengaja kami tunda** karena *over-engineering* untuk ska
 | **Sahabat-AI (Bahasa Jawa/Madura) + IVR telepon** | Inklusi petani lansia & pengguna feature-phone |
 | **Daging ayam & telur (data real)** | Perlu data produksi broiler & telur-ras per-kab yang lengkap |
 
-## Limitasi (jujur, untuk dinilai apa adanya)
+## Cakupan saat ini (yang membatasi adalah ketersediaan data, bukan sistem)
 
-- **Data nyata: 5 komoditas, tahun 2022** — tahun terbaru yang konsisten tersedia per-kabupaten. Daging & telur belum (data produksi belum lengkap).
-- **Konsumsi cabai & bawang** memakai rata-rata nasional × populasi (proxy); konsumsi **beras sudah per-kabupaten nyata**.
-- **Komoditas sangat perishable (cabai)** butuh `harvest_age` real-time dari lapangan — di dataset demo statis, sebagian match terbatas oleh batas kesegaran.
-- **Skala**: sudah siap tingkat provinsi (Jatim); nasional 514 kab perlu optimasi — direncanakan di Phase 3.
-- **Prediksi (TimesFM)** masih modul terpisah; integrasi penuh ke dashboard menyusul.
+Mesin AgriFlow **sudah siap memproses data apa pun yang diberikan**. Cakupan sekarang ditentukan oleh **ketersediaan data publik per-kabupaten** — begitu sumber datanya terbuka, pipeline yang sama langsung memprosesnya tanpa ubah arsitektur.
+
+| Cakupan sekarang | Gerbangnya: ketersediaan data |
+|---|---|
+| 5 komoditas inti | Engine menerima komoditas apa pun; sisanya menunggu data **produksi per-kabupaten** dirilis BPS pada granularitas sama |
+| Tahun acuan 2022 | Tahun konsisten terbaru yang lengkap di semua sumber per-kab; tahun lebih baru tinggal di-*ingest* saat BPS merilis |
+| Daging ayam & telur belum | Data produksi broiler/ayam-ras per-kab belum tersedia di sumber publik |
+| Konsumsi cabai/bawang via angka nasional | Konsumsi *per-kabupaten* untuk komoditas ini belum dipublikasikan; konsumsi **beras sudah per-kab & dipakai nyata** |
+| Harga Tier-2 (kab non-IHK) | Panel Harga Bapanas sedang pemeliharaan; saat feed pulih, 30+ kab tambahan langsung tercakup |
 
 ## Scaling up
 
-Peningkatan skala (nasional, multi-komoditas penuh, data real-time) **dilakukan di Phase 3**, setelah MVP Phase 2 tervalidasi di lapangan. Pendekatan kami: **buktikan nilai dulu di skala kecil dengan data nyata, baru perbesar.**
+Peningkatan skala (nasional 514 kab, multi-komoditas penuh, real-time) **dibatasi oleh laju keterbukaan data publik per-kabupaten — bukan oleh kesiapan teknis.** Engine sudah siap; tinggal data feed-nya tersedia, lalu optimasi skala (spatial partitioning). Pendekatan kami: **buktikan nilai dulu di skala provinsi dengan data nyata, lalu perluas seiring data tersedia.** Foundation-model forecasting (TimesFM 2.0) dan kanal suara/Bahasa daerah adalah peningkatan terjadwal fase berikutnya.
 
 ---
 

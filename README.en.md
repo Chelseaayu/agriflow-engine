@@ -35,9 +35,8 @@ Language / Bahasa: **English** · [Bahasa Indonesia](./README.md)
 | Resource | Link |
 |----------|------|
 | Pitch Deck | [Canva](https://www.canva.com/design/DAHETj2ulzg/VIvgxVkQ6I9R24ucphy2mQ/view) |
-| Dashboard (Live Demo) | _(coming soon)_ |
-| WhatsApp Bot | _(coming soon)_ |
-| Video Demo | _(coming soon)_ |
+| Dashboard (Live Demo) | [agriflow-engine.vercel.app](https://agriflow-engine.vercel.app/) |
+| Proposal (v13) | [docs/AgriFlow_Proposal_v13.pdf](docs/AgriFlow_Proposal_v13.pdf) |
 
 ---
 
@@ -121,17 +120,21 @@ The components below were **intentionally deferred** because they would be *over
 | **Sahabat-AI (Javanese/Madurese) + IVR phone** | Inclusion for elderly farmers and feature-phone users |
 | **Broiler chicken & eggs (real data)** | Requires complete per-district broiler & layer egg production data |
 
-## Limitations (honest, for fair evaluation)
+## Current Coverage (the gate is data availability, not the system)
 
-- **Real data: 5 commodities, year 2022** — the most recent year with consistent per-district availability. Meat & eggs pending (incomplete production data).
-- **Chilli & onion consumption** uses national average × population (proxy); **rice consumption is already real per-district**.
-- **Highly perishable commodities (chilli)** need real-time `harvest_age` from the field — in the static demo dataset, some matches are constrained by the freshness limit.
-- **Scale**: ready for province level (East Java); national 514 districts needs optimization — planned for Phase 3.
-- **Prediction (TimesFM)** is still a separate module; full integration into the dashboard to follow.
+The AgriFlow engine is **ready to process whatever data it is given**. Today's coverage is set by the **availability of public per-district data** — once the source opens up, the same pipeline processes it with no architectural change.
+
+| Current coverage | The gate: data availability |
+|---|---|
+| 5 core commodities | Engine accepts any commodity; the rest await **per-district production data** published by BPS at the same granularity |
+| Reference year 2022 | The latest year consistently complete across all per-district sources; newer years are simply ingested as BPS releases them |
+| Meat & eggs pending | Per-district broiler/layer production data is not yet in public sources |
+| Chilli/onion consumption via national figures | *Per-district* consumption for these isn't published yet; **rice consumption is already per-district & used for real** |
+| Tier-2 prices (non-IHK districts) | Bapanas Panel Harga is under maintenance; once the feed is restored, 30+ more districts are covered |
 
 ## Scaling Up
 
-Scaling (national, full multi-commodity, real-time data) happens in **Phase 3**, after Phase 2 MVP is validated in the field. Our approach: **prove value at small scale with real data first, then expand.**
+Scaling (national 514 districts, full multi-commodity, real-time) is **gated by the pace of public per-district data opening up — not by technical readiness.** The engine is ready; it just needs the data feeds, then scale optimization (spatial partitioning). Our approach: **prove value at province scale with real data first, then expand as data becomes available.** Foundation-model forecasting (TimesFM 2.0) and voice/regional-language channels are scheduled enhancements for the next phase.
 
 ---
 

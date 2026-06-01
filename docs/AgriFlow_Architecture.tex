@@ -135,7 +135,7 @@ dijalankan pada skenario terkontrol untuk mengisolasi efek keadilan secara apple
 (ii) Secara \emph{terpisah}, engine dijalankan \emph{end-to-end} pada \textbf{data BPS/PIHPS Jawa
 Timur asli per-kabupaten (tahun acuan 2022)} untuk 5 komoditas (beras, cabai merah \& rawit, bawang
 merah \& putih) --- membuktikan pipeline bekerja pada angka nyata, bukan sintetis. Seluruh hasil
-reproducible dan teruji otomatis (364 tes).
+reproducible dan teruji otomatis (404 tes; 403 lulus, 1 di-skip --- lihat \S\ref{sec:pengujian}).
 
 \subsection{Mengapa metode ini tepat}
 Untuk konteks perencana terpusat dengan satu fungsi kesejahteraan, assignment terbobot lebih tepat
@@ -204,7 +204,7 @@ asumsi nasional), populasi (BPS), dan harga harian PIHPS 2021--2025. Surplus/def
 sebagai \emph{food balance}: $\text{surplus\_deficit} = \text{produksi} - \text{konsumsi}$, dengan
 satuan/konversi terdokumentasi (kuintal $\div 10$ = ton; padi GKG $\times 0.6286$ = beras giling).
 Lima komoditas inti tervalidasi nyata (beras, cabai merah \& rawit, bawang merah \& putih) pada
-tahun acuan konsisten 2022. Seluruh pipeline reproducible dan diuji otomatis (364 tes).
+tahun acuan konsisten 2022. Seluruh pipeline reproducible dan diuji otomatis (404 tes; 403 lulus, 1 di-skip).
 
 \section{Keterbatasan \& Roadmap (Phase 3)}
 \begin{itemize}
@@ -216,6 +216,143 @@ tahun acuan konsisten 2022. Seluruh pipeline reproducible dan diuji otomatis (36
   \item Prediksi univariate $\rightarrow$ tambah kovariat eksogen (ENSO/Ramadan)~\cite{alanshari2025,chronosx2025}.
   \item Skala provinsi (Jatim) siap; nasional 514 kab perlu spatial partitioning + precompute.
 \end{itemize}
+
+% =====================================================================
+\section{Pengujian \& Validasi}
+\label{sec:pengujian}
+
+\subsection{Kenapa: keputusan kebijakan butuh bukti yang dapat direproduksi}
+AgriFlow bukan rekomendasi belanja biasa; outputnya menggerakkan alokasi pangan
+antar-kabupaten yang menyentuh kabupaten IPM-rendah. Untuk sistem keputusan
+seperti ini, klaim ``adil'' dan ``robust'' tidak boleh berhenti di narasi. Tiga
+alasan teknis menuntut suite uji otomatis yang tebal. \emph{Pertama,
+reproducibility}: seluruh pipeline food-balance (produksi $-$ konsumsi, konversi
+satuan BPS, surplus/defisit per-kabupaten) harus menghasilkan angka yang sama di
+mesin yang berbeda, sehingga uji data-nyata mengunci angka acuan 2022 sebagai
+\emph{golden numbers}. \emph{Kedua, regression-safety}: equity multiplier,
+bobot skor Layer~2, dan ambang anomali adalah parameter kebijakan yang sensitif;
+perubahan kecil tanpa sengaja dapat membalik pemenang alokasi, sehingga setiap
+seam (mis. \code{equity\_fn}) diuji \emph{default-preserving} agar refactor tidak
+diam-diam menggeser hasil. \emph{Ketiga, robustness terhadap kondisi nyata
+Indonesia}: literatur evaluasi deteksi anomali menunjukkan bahwa metrik yang
+tampak baik pada benchmark sintetis sering runtuh pada data lapangan dan
+flagging musiman~\cite{liu2024}; karena itu deteksi anomali AgriFlow diuji
+secara adversarial, bukan hanya pada lonjakan buatan. Filosofi ini sejalan dengan
+\emph{honest-engineering}: kami menguji justru pada kasus yang paling mungkin
+mempermalukan sistem, mengikuti pelajaran dari kegagalan agritech yang
+mengabaikan kondisi tepi pasar~\cite{tanihub}.
+
+\subsection{Apa: enam kategori uji}
+Suite memuat \textbf{404 tes terkumpul} dalam tujuh kelompok fungsional, dijalankan
+lintas-OS pada CI (matriks pytest). Tabel~\ref{tab:kategori-uji} merangkum cakupan.
+
+\begin{center}
+\begin{longtable}{p{5.4cm}rp{6.2cm}}
+\caption{Kategori uji AgriFlow dan apa yang dijaga.}\label{tab:kategori-uji}\\
+\toprule
+\textbf{Kategori} & \textbf{\#} & \textbf{Yang divalidasi} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Kategori} & \textbf{\#} & \textbf{Yang divalidasi} \\
+\midrule
+\endhead
+Unit per-layer (L0--L3) & 73 & Tier IPM (16), constraint jarak/perishability (19), skor weighted-sum (24)~\cite{bazgan2021}, alokasi equity-weighted (14)~\cite{firouz2021} \\
+24 skenario edge-case (A--F) & 27+ & Volume, spasial, temporal, disrupsi, politis, kualitas; memetakan kejadian nyata Jatim (lihat Tabel~\ref{tab:skenario}) \\
+Validasi data nyata BPS/PIHPS & 57 & Food-balance beras (16) \& hortikultura 2022 (18), pipeline reproducible (23) \\
+Deteksi anomali harga & 49 & S-H-ESD pada residual deseasonalized~\cite{shesd2017}; adversarial musiman~\cite{liu2024} \\
+Forecast \& API & 40 & Endpoint forecast/anomali; fallback bila TimesFM/FastAPI absen~\cite{timesfm2023} \\
+Baseline \& equity & 39 & Perbandingan greedy/uniform/proporsional vs AgriFlow (24) + skenario supply-constrained (15)~\cite{alem2021,hakimifar2022} \\
+Ingest \& integrasi & 73 & Loader DB (11), ingest harga PIHPS (33), jarak jalan OSRM (9), bot WhatsApp (20) \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+\noindent
+Inti dari lapisan kedua adalah \textbf{24 skenario edge-case} (kelas
+\code{TestA1}\,$\ldots$\,\code{TestF2}), masing-masing memetakan satu kondisi
+operasional nyata Jawa Timur, bukan kasus buatan: lonjakan Ramadan, erupsi
+Semeru di Lumajang, banjir Madura, kenaikan BBM, dan kontrak Bulog. Tabel
+\ref{tab:skenario} memuat seluruhnya satu baris per skenario.
+
+\begin{center}
+\begin{longtable}{p{0.9cm}p{4.4cm}p{8.0cm}}
+\caption{24 skenario edge-case dan kondisi nyata yang dimodelkan.}\label{tab:skenario}\\
+\toprule
+\textbf{Kode} & \textbf{Nama} & \textbf{Yang divalidasi} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Kode} & \textbf{Nama} & \textbf{Yang divalidasi} \\
+\midrule
+\endhead
+A1 & One-to-many & Satu surplus memasok banyak defisit; split volume konsisten \\
+A2 & Many-to-one & Surabaya 200t cabai dipasok dari banyak sentra \\
+A3 & Volume mismatch drastis & Surplus 5t vs defisit 100t (ratio 5\%) $\rightarrow$ flag warning \\
+A4 & Zero demand & Surplus tanpa defisit komoditas $\rightarrow$ peluang ekspor eksternal \\
+B1 & Cross-tier & Tier~1 (Kota Kediri) surplus $\rightarrow$ Tier~2 (Sampang) defisit \\
+B2 & Long distance & Pacitan$\rightarrow$Banyuwangi $\sim$400km melampaui batas 200km $\rightarrow$ ditolak \\
+B3 & Cluster Madura & Empat kab Madura ditangani sebagai klaster spasial \\
+C1 & Ramadan spike & Pra-Idul~Fitri H$-$14, bobot temporal disesuaikan \\
+C2 & Post-harvest & Pasca-panen: margin perishability menyempit \\
+C3 & Stale data & Data $>$24 jam $\rightarrow$ flag \code{STALE\_DATA\_24H}, confidence turun \\
+C4 & Holiday calendar & Event spike non-Ramadan ter-deteksi engine (multi-holiday) \\
+D1 & Banjir rute & Hujan 75mm rute Kediri--Surabaya $\rightarrow$ climate score 0.3 \\
+D2 & Komoditas rusak & Cabai harvest\_age=4 (max 5) $\rightarrow$ perish score 0 \\
+D3 & Harga anomali & Outlier $>3\sigma$ dari rolling median $\rightarrow$ exclude~\cite{shesd2017} \\
+D4 & Erupsi gunung & Lumajang erupsi Semeru $\rightarrow$ unreachable, semua match ditolak \\
+D5 & Banjir multi-kab & Bojonegoro+Lamongan+Tuban (sentra padi) banjir bersamaan \\
+D6 & Route blackout & Rute ditutup (mudik/demo/maintenance) $\rightarrow$ re-route/reject \\
+E1 & Equity tie-break & Skor seri $\rightarrow$ IPM lebih rendah menang~\cite{firouz2021} \\
+E2 & Pemda override & \code{do\_not\_export\_cabai\_merah=True} dihormati \\
+E3 & Bulog priority & Surplus beras di kab procurement Bulog $\rightarrow$ 60\% reserve \\
+E4 & Import policy & Kebijakan impor bawang aktif $\rightarrow$ bobot price diturunkan \\
+E5 & BBM naik & BBM +20\% $\rightarrow$ biaya logistik naik, max\_distance menyusut \\
+E6 & Contract reserve & Kontrak swasta (MoU Carrefour, gula Indofood) dipotong dulu \\
+F1 & Grade substitution & Surplus premium boleh memenuhi demand medium (opt-in) \\
+F2 & Demand segmentation & HORECA \& RETAIL untuk komoditas+kab sama hidup berdampingan; \code{segment\_multiplier} mengubah ranking \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+\subsection{Hasil}
+Pada commit terakhir suite menjalankan \textbf{403 tes lulus, 1 di-skip}
+(404 terkumpul), konsisten lintas-OS di CI. Satu skip itu jujur kami catat:
+\code{test\_timesfm\_importorskip} memakai \code{pytest.importorskip} sehingga
+uji spesifik-TimesFM dilewati bila pustaka berat tersebut tidak terpasang di
+runner CI; jalur forecasting tetap diuji lewat fallback statistik dan kontrak
+API~\cite{timesfm2023}. Dua hasil validasi paling load-bearing:
+
+\paragraph{Equity hanya terbukti saat pasokan langka, dan diperoleh tanpa
+biaya efisiensi.} Pada skenario \emph{abundant} (surplus $>$ defisit), greedy
+maupun AgriFlow sama-sama menutup Sampang dan Bangkalan 100\%; tidak ada
+trade-off untuk diukur. Perbedaan baru muncul pada skenario \emph{supply-constrained}
+(La~Ni\~na: banjir simultan Ngawi+Madiun+Bojonegoro, surplus turun ke 3962t vs
+defisit 5249t, ratio 0.754). Di sana strategi greedy murni \textbf{menelantarkan
+Madura}: Sampang terlayani 0\% dan Bangkalan 20\%. AgriFlow mengangkat keduanya ke
+\textbf{100\%} sambil mempertahankan \emph{coverage agregat yang identik}
+(0.6649 untuk kedua strategi) dan menurunkan ketimpangan (Gini $0.3017
+\rightarrow 0.2905$). Artinya equity multiplier membeli keadilan pada
+\textbf{biaya efisiensi nol} dalam skenario ini, sebuah klaim yang diuji,
+bukan diasumsikan~\cite{firouz2021,alem2021,hakimifar2022}. Kami sengaja tidak
+mengklaim keunggulan equity pada kondisi pasokan melimpah, karena di sana
+tidak ada yang harus dikorbankan.
+
+\paragraph{Deteksi anomali sadar-musiman, bukan sekadar ambang $3\sigma$.}
+Detektor S-H-ESD menandai penurunan harga tajam (uji DROP, mis. anjlok
+$\sim$60\% terhadap rolling median) dan lonjakan ekstrem, namun yang lebih
+penting: \emph{pola musiman murni tidak ikut ter-flag}. Pada uji seasonal,
+sinus musiman beramplitudo $\sim$30\% (mis. siklus harga jelang Lebaran)
+menghasilkan residual mendekati nol setelah deseasonalisasi sehingga tidak
+memicu false positive, sementara anomali genuine yang ditumpangkan di atas
+pola musiman tetap terdeteksi~\cite{shesd2017}. Inilah sifat yang ditekankan
+literatur benchmark anomali sebagai pembeda detektor yang andal di lapangan
+dari yang hanya bagus di kertas~\cite{liu2024}.
+
+\noindent
+Singkatnya, suite ini mengubah klaim arsitektur menjadi properti yang dapat
+diaudit ulang: setiap angka equity dan setiap perilaku anomali di dokumen ini
+memiliki tes yang menjaganya tetap benar pada commit berikutnya.
 
 % =====================================================================
 \section*{Lampiran A --- Ringkasan Matematis}

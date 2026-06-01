@@ -12,7 +12,7 @@ Language / Bahasa: [English](./README.en.md) · **Bahasa Indonesia**
 <p align="center">
   <img src="https://img.shields.io/badge/PIDI-DIGDAYA%20%C3%97%20Hackathon%202026-1B5E20?style=for-the-badge" alt="Hackathon"/>
   <img src="https://img.shields.io/badge/Problem%20Statement-2%20Matching%20Demand–Supply-4CAF50?style=for-the-badge" alt="PS"/>
-  <img src="https://img.shields.io/badge/tests-364%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
+  <img src="https://img.shields.io/badge/tests-403%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
 </p>
 
 > **Roadmap proyek dibagi 3 Phase.** README teknis lengkap versi sebelumnya diarsipkan di [`README_v12.md`](README_v12.md) dan [`README_v11.md`](README_v11.md).
@@ -79,7 +79,7 @@ Tiga fungsi (Deteksi · Prediksi · Distribusi) berbagi satu sumber data nyata, 
 | **Aksesibilitas** | **Chatbot WhatsApp** (tanya harga & rekomendasi) + **Dashboard** peta interaktif | ✅ |
 | **Data nyata** | 5 komoditas real per-kab: beras, cabai merah & rawit, bawang merah & putih + harga 5 tahun | ✅ |
 
-> **Kualitas:** 364 tes otomatis lulus — engine teruji, dapat direproduksi, dan jujur soal keterbatasannya (lihat Phase 3).
+> **Kualitas:** 403 tes otomatis lulus (404 terkumpul, 1 di-skip) — engine teruji, dapat direproduksi, dan jujur soal keterbatasannya (lihat [Pengujian & Skenario](#pengujian--skenario) dan Phase 3).
 
 ### Cuplikan
 
@@ -92,6 +92,31 @@ Tiga fungsi (Deteksi · Prediksi · Distribusi) berbagi satu sumber data nyata, 
 | Bahasa Indonesia | Bahasa Jawa |
 |:---:|:---:|
 | ![WhatsApp Bahasa Indonesia](assets/whatsapp-id.png) | ![WhatsApp Bahasa Jawa](assets/whatsapp-jawa.png) |
+
+## Pengujian & Skenario
+
+Karena output AgriFlow menggerakkan alokasi pangan antar-kabupaten yang menyentuh daerah IPM-rendah, klaim "adil" dan "robust" harus dapat diaudit ulang — bukan sekadar narasi. Suite uji mengunci angka food-balance sebagai *golden numbers* (reproducibility), menjaga parameter kebijakan dari pergeseran tak sengaja (regression-safety), dan menguji deteksi anomali secara adversarial.
+
+**404 tes terkumpul · 403 lulus · 1 di-skip · lintas-OS di CI.**
+(Skip = `test_timesfm_importorskip`: dilewati jika pustaka TimesFM tak terpasang di runner; jalur forecasting tetap diuji via fallback + kontrak API.)
+
+| Kategori | Jumlah | Cakupan |
+|---|---|---|
+| Unit per-layer (L0–L3) | 73 | Tier IPM, constraint jarak/perishability, skor, alokasi equity |
+| 24 skenario edge-case (A–F) | 27+ | Volume, spasial, temporal, disrupsi, politis, kualitas |
+| Validasi data nyata BPS/PIHPS | 57 | Food-balance beras + hortikultura 2022, pipeline reproducible |
+| Deteksi anomali harga | 49 | S-H-ESD sadar-musiman pada residual deseasonalized |
+| Forecast & API | 40 | Endpoint forecast/anomali + fallback |
+| Baseline & equity | 39 | greedy/uniform/proporsional vs AgriFlow + skenario langka pasokan |
+| Ingest & integrasi | 73 | DB loader, ingest PIHPS, jarak OSRM, bot WhatsApp |
+
+**24 skenario edge-case** memetakan kejadian nyata Jawa Timur, contohnya: Ramadan spike (C1), erupsi Semeru di Lumajang → unreachable (D4), banjir multi-kabupaten sentra padi (D5), kenaikan BBM → biaya logistik naik (E5), dan prioritas reserve kontrak Bulog (E3).
+
+**Hasil kunci:**
+- **Equity terbukti saat pasokan langka, biaya efisiensi nol.** Pada skenario supply-constrained (La Niña, surplus 3962t vs defisit 5249t), greedy murni menelantarkan Madura — Sampang **0%**, Bangkalan **20%**. AgriFlow mengangkat keduanya ke **100%** dengan *coverage agregat identik* (0.6649) dan Gini turun (0.3017 → 0.2905). Kami tidak mengklaim keunggulan equity saat pasokan melimpah.
+- **Anomali sadar-musiman.** Penurunan harga ~60% ter-flag, tapi pola musiman murni (siklus jelang Lebaran) **tidak** memicu false positive; anomali genuine di atas pola musiman tetap terdeteksi.
+
+📄 Detail lengkap (kenapa, daftar 24 skenario, sitasi paper): [Dokumen Arsitektur](docs/AgriFlow_Architecture.pdf) §Pengujian & Validasi.
 
 ## Kenapa tech stack kami RINGKAS (bukan sebanyak proposal awal)?
 
@@ -143,7 +168,7 @@ Peningkatan skala (nasional 514 kab, multi-komoditas penuh, real-time) **dibatas
 ```bash
 pip install -r requirements.txt
 python examples/run_demo_real.py   # demo matching pada data BPS asli 2022
-pytest tests/                      # 364 tes
+pytest tests/                      # 403 lulus, 1 di-skip
 ```
 
 Detail engineering lengkap ada di [`README_v12.md`](README_v12.md).

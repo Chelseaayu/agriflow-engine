@@ -12,7 +12,7 @@ Language / Bahasa: **English** · [Bahasa Indonesia](./README.md)
 <p align="center">
   <img src="https://img.shields.io/badge/PIDI-DIGDAYA%20%C3%97%20Hackathon%202026-1B5E20?style=for-the-badge" alt="Hackathon"/>
   <img src="https://img.shields.io/badge/Problem%20Statement-2%20Matching%20Demand–Supply-4CAF50?style=for-the-badge" alt="PS"/>
-  <img src="https://img.shields.io/badge/tests-364%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
+  <img src="https://img.shields.io/badge/tests-403%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
 </p>
 
 > **Project roadmap spans 3 Phases.** Full technical documentation from previous versions is archived at [`README_v12.md`](README_v12.md) and [`README_v11.md`](README_v11.md).
@@ -79,7 +79,7 @@ All three functions (Detect · Predict · Distribute) share one real data source
 | **Accessibility** | **WhatsApp Chatbot** (ask price & recommendations) + **interactive map Dashboard** | ✅ |
 | **Real data** | 5 real commodities per-district: rice, large & cayenne chilli, red & garlic onion + 5 years of prices | ✅ |
 
-> **Quality:** 364 automated tests pass — the engine is tested, reproducible, and honest about its limitations (see Phase 3).
+> **Quality:** 403 automated tests pass (404 collected, 1 skipped) — the engine is tested, reproducible, and honest about its limitations (see [Testing & Scenarios](#testing--scenarios) and Phase 3).
 
 ### Snapshots
 
@@ -92,6 +92,31 @@ All three functions (Detect · Predict · Distribute) share one real data source
 | Indonesian | Javanese |
 |:---:|:---:|
 | ![WhatsApp Indonesian](assets/whatsapp-id.png) | ![WhatsApp Javanese](assets/whatsapp-jawa.png) |
+
+## Testing & Scenarios
+
+Because AgriFlow's output drives inter-district food allocation that touches low-HDI districts, claims of "fair" and "robust" must be re-auditable — not just narrative. The test suite locks food-balance figures as *golden numbers* (reproducibility), guards sensitive policy parameters against accidental drift (regression-safety), and tests anomaly detection adversarially.
+
+**404 tests collected · 403 pass · 1 skipped · cross-OS on CI.**
+(Skip = `test_timesfm_importorskip`: skipped when the heavy TimesFM library isn't installed on the runner; the forecasting path is still tested via fallback + API contract.)
+
+| Category | Count | Coverage |
+|---|---|---|
+| Per-layer unit (L0–L3) | 73 | IPM tier, distance/perishability constraints, scoring, equity allocation |
+| 24 edge-case scenarios (A–F) | 27+ | Volume, spatial, temporal, disruption, political, quality |
+| Real BPS/PIHPS data validation | 57 | Rice + horticulture 2022 food-balance, reproducible pipeline |
+| Price anomaly detection | 49 | Season-aware S-H-ESD on deseasonalized residuals |
+| Forecast & API | 40 | Forecast/anomaly endpoints + fallback |
+| Baseline & equity | 39 | greedy/uniform/proportional vs AgriFlow + supply-constrained scenario |
+| Ingest & integration | 73 | DB loader, PIHPS ingest, OSRM distance, WhatsApp bot |
+
+The **24 edge-case scenarios** map to real East Java events, e.g.: Ramadan spike (C1), Mt. Semeru eruption in Lumajang → unreachable (D4), multi-district flood of rice belts (D5), fuel-price hike → higher logistics cost (E5), and Bulog contract-reserve priority (E3).
+
+**Key results:**
+- **Equity proven under scarcity, at zero efficiency cost.** In the supply-constrained scenario (La Niña, surplus 3962t vs deficit 5249t), pure greedy abandons Madura — Sampang **0%**, Bangkalan **20%**. AgriFlow lifts both to **100%** at *identical aggregate coverage* (0.6649), with Gini dropping (0.3017 → 0.2905). We do not claim an equity advantage under abundance.
+- **Season-aware anomalies.** A ~60% price drop is flagged, but a pure seasonal pattern (pre-Eid cycle) does **not** trigger false positives; genuine anomalies riding on top of the seasonal pattern are still caught.
+
+📄 Full detail (why, the 24-scenario list, paper citations): [Architecture Document](docs/AgriFlow_Architecture.pdf) §Testing & Validation.
 
 ## Why Our Tech Stack Is LEAN (not as large as the original proposal)?
 
@@ -143,7 +168,7 @@ Scaling (national 514 districts, full multi-commodity, real-time) is **gated by 
 ```bash
 pip install -r requirements.txt
 python examples/run_demo_real.py   # matching demo on real BPS 2022 data
-pytest tests/                      # 364 tests
+pytest tests/                      # 403 pass, 1 skipped
 ```
 
 Full engineering detail in [`README_v12.md`](README_v12.md).

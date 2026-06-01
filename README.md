@@ -131,6 +131,27 @@ Proposal awal mencantumkan stack besar (Qdrant, LangChain, Redis, n8n, multi-clo
 
 **Prinsip kami: pakai yang cukup, bukan yang ramai.** Komponen besar baru bernilai saat skala membenarkannya — dan itulah **Phase 3**.
 
+## 🎙️ Validasi Lapangan — Wawancara Petani
+
+Kami mewawancarai **4 petani lintas komoditas & skala usaha** — dari petani mapan dengan jaringan pasar sampai petani kecil yang terkurung tengkulak — untuk memvalidasi kebutuhan nyata dan menemukan gap AgriFlow. Tiap baris menyertakan **rekaman audio sebagai bukti**.
+
+| Komoditas | Profil Narasumber | Pendapat Singkat | Rekaman |
+|---|---|---|---|
+| **Bawang Merah** | Denisa Septalian — petani penerus, Nganjuk (Ds. Ngudikan, Kec. Wilangan), 5 thn, lahan ±70 ru | **Setuju bersyarat.** Info harga saja "kurang efektif" karena 100% bergantung tengkulak & tak punya akses luar daerah — antusias bila AgriFlow membuka **akses pembeli luar kota**. | [🎧 Audio](https://drive.google.com/drive/folders/1kdF9KPqycrdN9GewRz6YKFUKWfzCaRVh) |
+| **Padi** | Petani 15 thn, lahan ±1 ha; jual gabah ~Rp5.800/kg ke tengkulak yang datang ke sawah | Info harga lintas daerah **membantu** sebagai gambaran; tertarik pembeli luar kota asal prosesnya aman; ragu "ribet" di awal & soal keamanan transaksi. | [🎧 Audio](https://drive.google.com/drive/folders/1-fpMk8UGg41wk1-RZufTyRBNNJwM7he7) |
+| **Cabai** | Petani baru (8 bln bertani, tanaman 50 HST), Solo/Karanganyar; sebelumnya jagung | **Sangat tertarik** harga real-time antar daerah untuk hitung kelayakan kirim; info FB/WA kini meleset Rp5.000–15.000/kg & hanya level provinsi. Menekankan UI sederhana untuk petani lansia. | [🎧 Audio](https://drive.google.com/drive/folders/1lStLTY4L_9NW-UXAWrfTXwNc0CuiUQT-) |
+| **Kentang** | Labib — Dieng, Banjarnegara, ±6 ha, 2 thn; jual ke Pasar Induk Kramat Jati | Info antar daerah berguna sebagai **pembanding & referensi keputusan**, tetap utamakan pedagang langganan. Kunci keberhasilan: **akurasi data + sumber jelas + update real-time**. | [🎧 Audio](https://drive.google.com/drive/folders/1mMVWLv6uQQzlD_KNrkI5eSARXHTlDK9K) |
+
+### Analisis & Kesimpulan — Nilai Plus AgriFlow yang Tervalidasi
+
+- **Masalah inti tervalidasi lintas komoditas.** Keempat petani menyebut keluhan yang sama: harga tidak stabil, panen raya serentak → harga anjlok, dan **butaan informasi harga antar daerah** — persis yang dijawab fungsi **Deteksi + Prediksi**.
+- **WhatsApp sebagai kanal — tervalidasi 4/4.** Semua memilih WhatsApp (bisa dibaca ulang, sudah dipakai semua petani) di atas SMS/aplikasi baru → memperkuat keputusan **WhatsApp bot**.
+- **Matching surplus→defisit menjawab keluhan paling tajam.** "Tidak ada akses keluar daerah" (bawang merah, padi) adalah problem yang langsung diselesaikan **matching engine 4-lapis**; begitu ditawari pembeli luar kota berharga lebih baik, **keempatnya tertarik**.
+- **Prediksi harga punya nilai konkret.** Semua pernah "kesusu" / salah memperkirakan harga (bawang merah sempat jual Rp10.000, dua hari kemudian Rp20.000) → **forecast 30 hari** menjawab kebutuhan ini.
+- **Kesediaan membayar ada** — bersyarat manfaat ekonomi terbukti & data akurat. Tak satu pun menolak model berbayar.
+
+> Temuan **gap fitur** dari wawancara (akses transaksi, granularitas harga, transparansi & keamanan) kami petakan secara jujur ke **Phase 3** di bawah.
+
 ---
 
 # 🌐 Phase 3 — Rencana Lanjutan & Scaling
@@ -144,6 +165,9 @@ Komponen di bawah ini **sengaja kami tunda** karena *over-engineering* untuk ska
 | **Qdrant / Redis / n8n** | Vector scale, caching, orkestrasi terjadwal — saat beban nyata muncul |
 | **Sahabat-AI (Bahasa Jawa/Madura) + IVR telepon** | Inklusi petani lansia & pengguna feature-phone |
 | **Daging ayam & telur (data real)** | Perlu data produksi broiler & telur-ras per-kab yang lengkap |
+| **Fasilitasi transaksi / akses pasar luar daerah** *(gap dari wawancara)* | Temuan bawang merah & padi: info harga saja "kurang efektif" tanpa saluran jual-beli yang memutus ketergantungan tengkulak |
+| **Harga granular per kota/pasar** *(gap dari wawancara)* | Temuan cabai: sumber kini hanya level provinsi; selisih harga riil bisa Rp5.000–15.000/kg |
+| **Transparansi sumber data & jaminan keamanan transaksi** *(gap dari wawancara)* | Syarat kepercayaan: Labib menanyakan sumber & mekanisme update; padi ragu keamanan transaksi + petani lansia butuh onboarding anti-"ribet" |
 
 ## Cakupan saat ini (yang membatasi adalah ketersediaan data, bukan sistem)
 

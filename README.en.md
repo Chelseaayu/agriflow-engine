@@ -84,11 +84,15 @@ All three functions (Detect · Predict · Distribute) share one real data source
 
 ### Snapshots
 
-**WhatsApp Bot** — _(screenshot coming soon)_
-<!-- ![WhatsApp Bot](assets/whatsapp_demo.png) -->
+**Dashboard** — East Java map with per-district surplus/deficit bubbles, a *top matches* list, plus a **price Forecast & Anomaly** panel (all three functions on one screen):
 
-**Dashboard** — _(screenshot coming soon)_
-<!-- ![Dashboard](assets/dashboard.png) -->
+![AgriFlow Dashboard](assets/dashboard.png)
+
+**WhatsApp Bot** — ask prices, find buyers/suppliers, get price forecasts & anomalies via chat. Supports **Indonesian** and **Javanese** (inclusion for rural farmers):
+
+| Indonesian | Javanese |
+|:---:|:---:|
+| ![WhatsApp Indonesian](assets/whatsapp-id.png) | ![WhatsApp Javanese](assets/whatsapp-jawa.png) |
 
 ## Why Our Tech Stack Is LEAN (not as large as the original proposal)?
 

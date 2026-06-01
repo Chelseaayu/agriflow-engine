@@ -84,11 +84,15 @@ Tiga fungsi (Deteksi · Prediksi · Distribusi) berbagi satu sumber data nyata, 
 
 ### Cuplikan
 
-**WhatsApp Bot** — _(gambar menyusul)_
-<!-- ![WhatsApp Bot](assets/whatsapp_demo.png) -->
+**Dashboard** — peta Jawa Timur dengan bubble surplus/defisit per kabupaten, daftar *top matches*, plus panel **Forecast & Anomali harga** (ketiga fungsi dalam satu layar):
 
-**Dashboard** — _(gambar menyusul)_
-<!-- ![Dashboard](assets/dashboard.png) -->
+![Dashboard AgriFlow](assets/dashboard.png)
+
+**WhatsApp Bot** — tanya harga, cari pembeli/pemasok, prediksi & anomali harga lewat chat. Mendukung **Bahasa Indonesia** dan **Bahasa Jawa** (inklusi petani daerah):
+
+| Bahasa Indonesia | Bahasa Jawa |
+|:---:|:---:|
+| ![WhatsApp Bahasa Indonesia](assets/whatsapp-id.png) | ![WhatsApp Bahasa Jawa](assets/whatsapp-jawa.png) |
 
 ## Kenapa tech stack kami RINGKAS (bukan sebanyak proposal awal)?
 

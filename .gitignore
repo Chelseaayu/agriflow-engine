@@ -150,3 +150,6 @@ timesfm_model_cache/
 # pip temp dirs (disk-full workaround)
 /d/pip-tmp/
 /d/pip-cache/
+
+# Dashboard-internal README — not for public repo
+dashboard/README.md

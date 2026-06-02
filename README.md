@@ -21,6 +21,17 @@ Language / Bahasa: [English](./README.en.md) · **Bahasa Indonesia**
 
 ---
 
+<details>
+<summary><b>🖼️ Lihat Research Poster (klik untuk expand)</b></summary>
+
+<br/>
+
+<p align="center"><img src="poster/agriflow-poster.jpg" alt="AgriFlow Research Poster" width="100%"/></p>
+
+</details>
+
+---
+
 # 📍 Phase 1 — Tim & Tautan
 
 ## Tim

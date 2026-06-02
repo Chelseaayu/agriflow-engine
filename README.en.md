@@ -21,6 +21,17 @@ Language / Bahasa: **English** · [Bahasa Indonesia](./README.md)
 
 ---
 
+<details>
+<summary><b>🖼️ View Research Poster (click to expand)</b></summary>
+
+<br/>
+
+<p align="center"><img src="poster/agriflow-poster.jpg" alt="AgriFlow Research Poster" width="100%"/></p>
+
+</details>
+
+---
+
 # Phase 1 — Team & Links
 
 ## Team

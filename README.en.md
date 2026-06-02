@@ -1,5 +1,7 @@
 Language / Bahasa: **English** · [Bahasa Indonesia](./README.md)
 
+<p align="center"><img src="assets/logo-mark.png" alt="AgriFlow logo" width="300"/></p>
+
 <h1 align="center">AgriFlow</h1>
 
 <p align="center">

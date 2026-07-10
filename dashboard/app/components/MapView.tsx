@@ -48,10 +48,10 @@ export default function MapView({
             [m.deficit.lat, m.deficit.lng],
           ]}
           pathOptions={{
-            color: "#6366f1",
-            weight: 1.5,
-            opacity: 0.45,
-            dashArray: "4 4",
+            color: "#4e643c",
+            weight: 2,
+            opacity: 0.75,
+            dashArray: "5 5",
           }}
         />
       ))}
@@ -81,19 +81,17 @@ export default function MapView({
             eventHandlers={{ click: () => onSelectKab(k.id) }}
           >
             <Tooltip direction="top" offset={[0, -4]}>
-              <div style={{ fontSize: 12, lineHeight: 1.35 }}>
-                <strong>{k.nama}</strong>
-                <br />
-                Tier {k.tier.replace("TIER_", "").replace("_HIGH", " HIGH").replace("_MEDIUM", " MED")}
-                <br />
-                IPM {k.ipm.toFixed(1)} · {(k.population / 1000).toFixed(0)}k jiwa
+              <div className="space-y-1 text-[11px] text-zinc-700 leading-normal">
+                <strong className="text-sm text-zinc-900 block border-b border-zinc-100 pb-0.5">{k.nama}</strong>
+                <div>Kategori Wilayah: <span className="font-semibold text-zinc-800">{k.tier.replace("TIER_", "").replace("_HIGH", " Tinggi").replace("_MEDIUM", " Sedang")}</span></div>
+                <div>IPM: <span className="font-semibold text-zinc-800">{k.ipm.toFixed(1)}</span></div>
+                <div>Jumlah Penduduk: <span className="font-semibold text-zinc-800">{k.population.toLocaleString("id-ID")} jiwa</span></div>
                 {row && (
-                  <>
-                    <br />
-                    <span style={{ color }}>
-                      {role === "surplus" ? "Surplus" : "Defisit"}: {tons.toFixed(0)} ton
+                  <div className="mt-1 pt-1 border-t border-dashed border-zinc-200">
+                    <span className="font-semibold" style={{ color }}>
+                      {role === "surplus" ? "Stok Berlebih (Surplus)" : "Kekurangan Stok (Defisit)"}: {tons.toFixed(0)} ton
                     </span>
-                  </>
+                  </div>
                 )}
               </div>
             </Tooltip>

@@ -16,10 +16,37 @@ peta publik terbuka, tombol "Masuk" tersembunyi, tidak ada yang rusak.
 
 1. Buat project baru di https://supabase.com/dashboard.
 2. Buka **SQL Editor**, tempel isi `db/schema.sql`, jalankan.
-   Ini membuat 12 tabel termasuk `subscriber`, `wa_usage_daily`, `payment_order`.
-3. Buka **Authentication > Providers**, pastikan **Email** aktif.
+   Ini membuat 12 tabel termasuk `subscriber`, `wa_usage_daily`, `payment_order`,
+   lalu **mengunci semuanya dengan Row Level Security**.
+
+   Langkah penguncian itu bukan opsional. Supabase otomatis membuka setiap tabel
+   di skema `public` lewat PostgREST, dan kunci `anon` bersifat publik karena
+   ikut terkirim ke browser setiap pengunjung. Tanpa RLS, siapa pun bisa
+   mengambil kunci itu dari devtools lalu membaca tabel `subscriber` atau
+   mengubah paketnya sendiri jadi `PRO`, sepenuhnya melewati pemeriksaan JWT
+   di API.
+
+3. **Verifikasi penguncian.** Masih di SQL Editor, jalankan:
+
+   ```sql
+   SELECT tablename, rowsecurity
+     FROM pg_tables
+    WHERE schemaname = 'public'
+    ORDER BY rowsecurity, tablename;
+   ```
+
+   Ke-12 baris harus menunjukkan `rowsecurity = true`. Satu saja bernilai `f`
+   berarti tabel itu masih bisa dibaca memakai kunci `anon` yang publik.
+
+   > Jangan menambahkan `FORCE ROW LEVEL SECURITY`. `FORCE` membuat pemilik
+   > tabel ikut terkena RLS, dan karena kita sengaja tidak mendefinisikan
+   > policy apa pun, backend FastAPI akan ikut terkunci dan semua query
+   > mengembalikan nol baris. Gejalanya mirip "database kosong" padahal datanya
+   > ada.
+
+4. Buka **Authentication > Providers**, pastikan **Email** aktif.
    Untuk uji coba internal, matikan "Confirm email" supaya akun langsung bisa dipakai.
-4. Buka **Settings > API** dan salin tiga nilai berikut:
+5. Buka **Settings > API** dan salin tiga nilai berikut:
 
 | Nilai | Dipakai di | Sifat |
 |---|---|---|
@@ -134,16 +161,21 @@ per permintaan.
 
 ## Lapisan pengamanan
 
-Tiga lapis, dan penting untuk tahu mana yang benar-benar menjaga data:
+Empat lapis, dan penting untuk tahu mana yang benar-benar menjaga data:
 
 | Lapis | Berkas | Fungsi |
 |---|---|---|
 | Tampilan | `AccountMenu.tsx`, `AuthProvider` | Menyembunyikan menu. **Bukan** pengamanan. |
 | Optimistis | `proxy.ts` | Memantulkan pengunjung dari `/account`. Cookie palsu bisa lolos. |
-| **Otoritatif** | `whatsapp_bot/auth.py` | **Verifikasi tanda tangan JWT. Ini yang menjaga data.** |
+| **Otoritatif** | `whatsapp_bot/auth.py` | **Verifikasi tanda tangan JWT. Ini yang menjaga jalur API.** |
+| **Otoritatif** | RLS di `db/schema.sql` | **Menutup jalur PostgREST. Tanpa ini kunci `anon` yang publik bisa membaca `subscriber` langsung, melewati semua lapis di atas.** |
 
 Urutan ini disengaja dan sesuai anjuran dokumentasi Next.js: proxy untuk
 pemeriksaan optimistis, otorisasi sesungguhnya di lapisan data.
+
+Dua lapis otoritatif itu menjaga dua pintu yang berbeda, dan keduanya perlu.
+Memverifikasi JWT di API tidak ada gunanya kalau tabel yang sama masih bisa
+dibaca langsung lewat PostgREST memakai kunci `anon`.
 
 Kasus penolakan yang sudah diuji (`tests/test_auth.py`, 29 pengujian): tanda
 tangan palsu, token tanpa tanda tangan (`alg: none`), token kedaluwarsa,

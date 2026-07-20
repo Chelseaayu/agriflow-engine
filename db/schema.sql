@@ -324,3 +324,93 @@ CREATE TABLE IF NOT EXISTS payment_order (
 
 CREATE INDEX IF NOT EXISTS idx_order_phone  ON payment_order(phone_hash);
 CREATE INDEX IF NOT EXISTS idx_order_status ON payment_order(status);
+
+
+-- =============================================================================
+-- 13. ROW LEVEL SECURITY  —  lock the PostgREST surface
+-- =============================================================================
+--
+-- WHY THIS SECTION EXISTS
+-- -----------------------
+-- Supabase automatically exposes every table in the `public` schema over
+-- PostgREST, and the `anon` API key is PUBLIC BY DESIGN: it ships to every
+-- visitor's browser inside NEXT_PUBLIC_SUPABASE_ANON_KEY. Without RLS, anyone
+-- who opens devtools can lift that key and talk to this database directly:
+--
+--     GET   /rest/v1/subscriber      -> read every subscriber row
+--     PATCH /rest/v1/subscriber      -> set their own plan to 'PRO'
+--
+-- That would bypass the JWT verification in whatsapp_bot/auth.py entirely.
+-- Locking the API layer while leaving PostgREST open is a locked front door
+-- next to an open back one.
+--
+-- THE MODEL: DENY BY DEFAULT
+-- --------------------------
+-- Enabling RLS with NO policies denies all access to non-owner roles. Since
+-- AgriFlow's dashboard never queries Supabase tables directly (it reads
+-- everything through the FastAPI service, and uses Supabase only to sign users
+-- in), nothing legitimate needs the PostgREST path. So we grant nothing.
+--
+-- The FastAPI backend is unaffected: it connects over SUPABASE_DB_URL as the
+-- table owner, and in Postgres the owner bypasses RLS. PostgREST connects as
+-- `anon` or `authenticated`, which do not.
+--
+-- ⚠ DO NOT ADD `FORCE ROW LEVEL SECURITY`.
+--   FORCE subjects the table OWNER to RLS too. With no policies defined, that
+--   locks out the backend as well and every query returns zero rows -- an
+--   outage that looks exactly like "the database is empty". Enabling RLS is
+--   correct here; forcing it is not.
+--
+-- IF YOU LATER WANT BROWSER-DIRECT READS
+-- --------------------------------------
+-- Add a narrow policy per table rather than disabling RLS, e.g. to let any
+-- signed-in user read reference data:
+--
+--     CREATE POLICY kabupaten_read_authenticated ON kabupaten
+--         FOR SELECT TO authenticated USING (true);
+--
+-- Never write a policy `USING (true)` for the `anon` role on subscriber,
+-- wa_usage_daily, or payment_order. Those are per-person records.
+-- =============================================================================
+
+ALTER TABLE kabupaten          ENABLE ROW LEVEL SECURITY;
+ALTER TABLE commodity          ENABLE ROW LEVEL SECURITY;
+ALTER TABLE surplus_deficit    ENABLE ROW LEVEL SECURITY;
+ALTER TABLE weather_forecast   ENABLE ROW LEVEL SECURITY;
+ALTER TABLE historical_prices  ENABLE ROW LEVEL SECURITY;
+ALTER TABLE commodity_code_map ENABLE ROW LEVEL SECURITY;
+ALTER TABLE policy_docs        ENABLE ROW LEVEL SECURITY;
+ALTER TABLE price_history      ENABLE ROW LEVEL SECURITY;
+ALTER TABLE forecasts          ENABLE ROW LEVEL SECURITY;
+ALTER TABLE subscriber         ENABLE ROW LEVEL SECURITY;
+ALTER TABLE wa_usage_daily     ENABLE ROW LEVEL SECURITY;
+ALTER TABLE payment_order      ENABLE ROW LEVEL SECURITY;
+
+-- Defence in depth: revoke table privileges from the PostgREST roles outright,
+-- so a carelessly-added policy later cannot by itself open a table up.
+--
+-- Wrapped in a guard because `anon` and `authenticated` are Supabase-specific
+-- roles. This file should stay runnable against a plain Postgres instance (a
+-- local test database, CI), where those roles do not exist and an unguarded
+-- REVOKE would abort the script.
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'anon') THEN
+        REVOKE ALL ON ALL TABLES    IN SCHEMA public FROM anon;
+        REVOKE ALL ON ALL SEQUENCES IN SCHEMA public FROM anon;
+    END IF;
+
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticated') THEN
+        REVOKE ALL ON ALL TABLES    IN SCHEMA public FROM authenticated;
+        REVOKE ALL ON ALL SEQUENCES IN SCHEMA public FROM authenticated;
+    END IF;
+END
+$$;
+
+-- Verification — run after applying. Every row must show rowsecurity = true.
+-- Any 'f' is a table still readable with the public anon key.
+--
+--     SELECT tablename, rowsecurity
+--       FROM pg_tables
+--      WHERE schemaname = 'public'
+--      ORDER BY rowsecurity, tablename;

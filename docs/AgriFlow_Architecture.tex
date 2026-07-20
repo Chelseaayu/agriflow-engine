@@ -299,7 +299,7 @@ C3 & Stale data & Data $>$24 jam $\rightarrow$ flag \code{STALE\_DATA\_24H}, con
 C4 & Holiday calendar & Event spike non-Ramadan ter-deteksi engine (multi-holiday) \\
 D1 & Banjir rute & Hujan 75mm rute Kediri--Surabaya $\rightarrow$ climate score 0.3 \\
 D2 & Komoditas rusak & Cabai harvest\_age=4 (max 5) $\rightarrow$ perish score 0 \\
-D3 & Harga anomali & Outlier $>3\sigma$ dari rolling median $\rightarrow$ exclude~\cite{shesd2017} \\
+D3 & Harga anomali & Outlier $>3\sigma$ dari ambang statis per komoditas $\rightarrow$ exclude (pra-filter $z$-score, bukan S-H-ESD) \\
 D4 & Erupsi gunung & Lumajang erupsi Semeru $\rightarrow$ unreachable, semua match ditolak \\
 D5 & Banjir multi-kab & Bojonegoro+Lamongan+Tuban (sentra padi) banjir bersamaan \\
 D6 & Route blackout & Rute ditutup (mudik/demo/maintenance) $\rightarrow$ re-route/reject \\

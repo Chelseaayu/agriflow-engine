@@ -136,7 +136,21 @@ CREATE INDEX IF NOT EXISTS idx_ccmap_active    ON commodity_code_map(is_active);
 
 -- Seed: known Bapanas commodity IDs at time of AgriFlow v9 build (2026-05)
 -- Update this table when Bapanas changes their numbering — never change canonical_code.
-INSERT INTO commodity_code_map (mapping_id, canonical_code, bapanas_name) VALUES
+--
+-- SELECT ... WHERE EXISTS, not a plain VALUES insert. canonical_code is a
+-- foreign key into commodity, and commodity is populated by the application
+-- loader, NOT by this file. A plain INSERT therefore aborts on a fresh
+-- database with:
+--     violates foreign key constraint "commodity_code_map_canonical_code_fkey"
+-- which kills the rest of the script -- including the RLS section at the end,
+-- silently leaving every table world-readable through PostgREST.
+--
+-- Filtering on EXISTS makes this a no-op on an empty database instead. Because
+-- the whole file is IF NOT EXISTS / ON CONFLICT idempotent, re-running it after
+-- the loader has populated commodity backfills these mappings.
+INSERT INTO commodity_code_map (mapping_id, canonical_code, bapanas_name)
+SELECT v.mapping_id, v.canonical_code, v.bapanas_name
+FROM (VALUES
     (1,  'beras_premium',  'Beras Premium'),
     (2,  'beras_medium',   'Beras Medium'),
     (3,  'beras_ir64',     'Beras IR 64'),
@@ -156,6 +170,8 @@ INSERT INTO commodity_code_map (mapping_id, canonical_code, bapanas_name) VALUES
     (17, 'kentang',        'Kentang'),
     (18, 'wortel',         'Wortel'),
     (19, 'kacang_tanah',   'Kacang Tanah Kupas')
+) AS v(mapping_id, canonical_code, bapanas_name)
+WHERE EXISTS (SELECT 1 FROM commodity c WHERE c.code = v.canonical_code)
 ON CONFLICT (mapping_id) DO NOTHING;
 
 
@@ -356,10 +372,17 @@ CREATE INDEX IF NOT EXISTS idx_order_status ON payment_order(status);
 -- `anon` or `authenticated`, which do not.
 --
 -- ⚠ DO NOT ADD `FORCE ROW LEVEL SECURITY`.
---   FORCE subjects the table OWNER to RLS too. With no policies defined, that
---   locks out the backend as well and every query returns zero rows -- an
---   outage that looks exactly like "the database is empty". Enabling RLS is
---   correct here; forcing it is not.
+--   FORCE additionally subjects the table OWNER to RLS. With no policies
+--   defined, an owner that lacks the BYPASSRLS attribute then sees zero rows
+--   and cannot insert -- an outage that looks exactly like "the database is
+--   empty". Enabling RLS is correct here; forcing it buys nothing.
+--
+--   Measured on PostgreSQL 17.2 against a NOSUPERUSER NOBYPASSRLS owner:
+--       RLS enabled, no FORCE  -> owner SELECT returns its row
+--       RLS enabled + FORCE    -> owner SELECT returns 0 rows,
+--                                 INSERT fails "violates row-level security"
+--   A superuser or BYPASSRLS role is immune and will not reproduce this, which
+--   is exactly why the mistake survives a casual test and bites in production.
 --
 -- IF YOU LATER WANT BROWSER-DIRECT READS
 -- --------------------------------------

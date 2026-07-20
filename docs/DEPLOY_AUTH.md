@@ -38,6 +38,16 @@ peta publik terbuka, tombol "Masuk" tersembunyi, tidak ada yang rusak.
    Ke-12 baris harus menunjukkan `rowsecurity = true`. Satu saja bernilai `f`
    berarti tabel itu masih bisa dibaca memakai kunci `anon` yang publik.
 
+   Atau, kalau Anda punya connection string-nya, jalankan pemeriksa otomatis
+   yang menguji keempat sifatnya sekaligus (tabel lengkap, RLS menyala, FORCE
+   mati, dan peran publik benar-benar tertolak):
+
+   ```bash
+   python db/verify_rls.py --db-url "<connection-string-anda>"
+   ```
+
+   Keluar dengan kode 0 hanya kalau semuanya benar.
+
    > Jangan menambahkan `FORCE ROW LEVEL SECURITY`. `FORCE` membuat pemilik
    > tabel ikut terkena RLS, dan karena kita sengaja tidak mendefinisikan
    > policy apa pun, backend FastAPI akan ikut terkunci dan semua query

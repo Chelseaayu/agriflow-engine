@@ -46,6 +46,14 @@ peta publik terbuka, tombol "Masuk" tersembunyi, tidak ada yang rusak.
 
 4. Buka **Authentication > Providers**, pastikan **Email** aktif.
    Untuk uji coba internal, matikan "Confirm email" supaya akun langsung bisa dipakai.
+4b. Buka **Authentication > URL Configuration**, tambahkan URL domain Vercel
+   Anda di **Redirect URLs**, contoh `https://<domain-anda>.vercel.app/**`
+   (dan `http://localhost:3000/**` untuk pengembangan lokal). Ini **wajib**
+   untuk tautan "lupa kata sandi": `resetPasswordForEmail()` mengirim
+   `redirectTo=.../reset-password`, dan Supabase menolak/mengabaikan
+   `redirectTo` mana pun yang tidak ada di daftar ini, lalu diam-diam
+   memakai **Site URL** sebagai gantinya — gejalanya tautan di email
+   membawa pengguna ke halaman yang salah, bukan ke `/reset-password`.
 5. Buka **Settings > API** dan salin tiga nilai berikut:
 
 | Nilai | Dipakai di | Sifat |
@@ -70,8 +78,9 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY  = eyJhbGciOi...
 NEXT_PUBLIC_API_URL            = https://masteraaa123-agriflow-api.hf.space
 ```
 
-Redeploy. Setelah ini tombol **Masuk** muncul, `/login` dan `/account` hidup,
-dan `proxy.ts` mulai menjaga `/account` di sisi server.
+Redeploy. Setelah ini tombol **Masuk** muncul, `/login`, `/account`,
+`/forgot-password`, dan `/reset-password` hidup, dan `proxy.ts` mulai
+menjaga `/account` di sisi server.
 
 ---
 
@@ -193,3 +202,5 @@ header sama sekali.
 | Login berhasil lalu keluar sendiri | Cookie diblokir; pastikan dashboard dan API sama-sama HTTPS |
 | `/health` bilang `auth_configured: false` | Env belum terbaca Space; restart Space setelah menyimpan |
 | `phone_hash_salted: false` | `PHONE_HASH_SALT` kosong. Mengubahnya nanti akan mereset semua identitas |
+| Tautan "lupa kata sandi" membawa ke halaman yang salah, bukan `/reset-password` | Domain Vercel belum ada di **Authentication > URL Configuration > Redirect URLs** (lihat langkah 4b) |
+| `/reset-password` selalu bilang tautan tidak valid, walau baru diklik | Tautan sudah pernah dipakai (satu kali pakai) atau kedaluwarsa — di Supabase, kirim ulang lewat `/forgot-password` |

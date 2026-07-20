@@ -98,9 +98,19 @@ export default function LoginForm() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-slate-700">
-              Kata sandi
-            </label>
+            <div className="flex items-center justify-between">
+              <label htmlFor="password" className="block text-sm font-medium text-slate-700">
+                Kata sandi
+              </label>
+              {mode === "signin" && (
+                <Link
+                  href={`/forgot-password${email ? `?email=${encodeURIComponent(email)}` : ""}`}
+                  className="text-sm text-emerald-700 hover:underline"
+                >
+                  Lupa kata sandi?
+                </Link>
+              )}
+            </div>
             <input
               id="password"
               type="password"

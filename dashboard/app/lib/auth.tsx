@@ -23,6 +23,8 @@ type AuthContextValue = {
   signIn: (email: string, password: string) => Promise<AuthResult>;
   signUp: (email: string, password: string) => Promise<AuthResult>;
   signOut: () => Promise<void>;
+  requestPasswordReset: (email: string) => Promise<AuthResult>;
+  updatePassword: (newPassword: string) => Promise<AuthResult>;
 };
 
 const NOT_CONFIGURED =
@@ -80,6 +82,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setSession(null);
   }, []);
 
+  // Step 1 of password recovery: ask Supabase to email a link. The link
+  // lands the visitor back on /reset-password?code=... . redirectTo must be
+  // present in the Supabase project's Authentication > URL Configuration
+  // allow-list, or Supabase silently falls back to the Site URL instead —
+  // see docs/DEPLOY_AUTH.md.
+  const requestPasswordReset = useCallback(async (email: string) => {
+    const supabase = getSupabase();
+    if (!supabase) return { error: NOT_CONFIGURED };
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    return { error: error?.message ?? null };
+  }, []);
+
+  // Step 2: called from /reset-password once the recovery link has been
+  // exchanged for a session (see app/lib/supabase.ts — the browser client's
+  // detectSessionInUrl does that exchange automatically on load). updateUser
+  // works against whatever session is currently active, recovery or normal.
+  const updatePassword = useCallback(async (newPassword: string) => {
+    const supabase = getSupabase();
+    if (!supabase) return { error: NOT_CONFIGURED };
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    return { error: error?.message ?? null };
+  }, []);
+
   const value = useMemo<AuthContextValue>(
     () => ({
       user: session?.user ?? null,
@@ -89,8 +116,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signIn,
       signUp,
       signOut,
+      requestPasswordReset,
+      updatePassword,
     }),
-    [session, loading, configured, signIn, signUp, signOut],
+    [session, loading, configured, signIn, signUp, signOut, requestPasswordReset, updatePassword],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

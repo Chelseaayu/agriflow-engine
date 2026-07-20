@@ -20,6 +20,13 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 // Pages that require a signed-in user.
+//
+// /forgot-password and /reset-password must NOT be added here. Supabase
+// lands a signed-out visitor on /reset-password?code=... to complete a
+// password recovery — if that route required a session, this proxy would
+// bounce them to /login before the client-side code exchange (see
+// app/reset-password/ResetPasswordForm.tsx) ever got a chance to run, and
+// the recovery link would be a dead end.
 const PROTECTED = ["/account"];
 
 export async function proxy(request: NextRequest) {

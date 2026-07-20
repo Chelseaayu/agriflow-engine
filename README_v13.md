@@ -17,7 +17,7 @@ Language / Bahasa: [English](./README.en.md) · **Bahasa Indonesia**
   <img src="https://img.shields.io/badge/tests-520%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
 </p>
 
-> **Roadmap proyek dibagi 3 Phase.** README teknis lengkap versi sebelumnya diarsipkan di [`README_v13.md`](README_v13.md) (snapshot terbaru), [`README_v12.md`](README_v12.md), dan [`README_v11.md`](README_v11.md).
+> **Roadmap proyek dibagi 3 Phase.** README teknis lengkap versi sebelumnya diarsipkan di [`README_v12.md`](README_v12.md) dan [`README_v11.md`](README_v11.md).
 
 ---
 
@@ -202,26 +202,6 @@ Mesin AgriFlow **sudah siap memproses data apa pun yang diberikan**. Cakupan sek
 ## Scaling up
 
 Peningkatan skala (nasional 514 kab, multi-komoditas penuh, real-time) **dibatasi oleh laju keterbukaan data publik per-kabupaten — bukan oleh kesiapan teknis.** Engine sudah siap; tinggal data feed-nya tersedia, lalu optimasi skala (spatial partitioning). Pendekatan kami: **buktikan nilai dulu di skala provinsi dengan data nyata, lalu perluas seiring data tersedia.** Foundation-model forecasting (TimesFM 2.0) dan kanal suara/Bahasa daerah adalah peningkatan terjadwal fase berikutnya.
-
-## Utang teknis terukur (perbaikan terjadwal)
-
-Dua batasan berikut sudah kami ukur sendiri terhadap performa maksimal yang mungkin dicapai engine ini, bukan cuma diklaim begitu saja. Angkanya berasal dari benchmark yang di-commit di repo ini dan bisa direproduksi oleh juri.
-
-**1. Allocator belum optimal (min-cost-flow / optimal transport).**
-
-Allocator greedy/stable yang di-ship terbukti belum optimal. Diuji terhadap solusi LP transportation yang eksak, pada data BPS asli: tier stable meninggalkan 25,4% welfare berbobot-ekuitas di atas meja, tier greedy 11,1%. Benchmark: [`benchmarks/greedy_vs_optimal.py`](benchmarks/greedy_vs_optimal.py) (seeded, reproducible, memanggil fungsi engine sendiri).
-
-Bukti nyata di data real: permintaan cabai_merah Sumenep hanya terisi 26%, padahal pasokan terjangkau (2.662 ton dalam radius 200 km) melebihi kebutuhannya (1.418 ton). Allocator greedy sudah mengomit pasokan itu ke tempat lain lebih dulu. Jadi ini bukan masalah kelangkaan, ini masalah optimalitas alokasi.
-
-Rencana perbaikan: ganti greedy dengan solver capacitated min-cost-flow / entropic-OT (hitungan milidetik pada skala provinsi, provably optimal, dan dual-nya memberi shadow price per-kabupaten). Greedy tetap dipertahankan sebagai v1 yang di-ship.
-
-Akar masalahnya: `stable_match_tier1` bersifat satu-ke-satu dan mencatat min(supply, deficit) (`matching_engine/allocation.py:307`), jadi surplus besar yang dipasangkan ke deficit kecil membuat sisanya terdampar.
-
-**2. Satukan detektor anomali.**
-
-Ada dua detektor anomali harga di codebase. Panel anomali yang dilihat pengguna, di dashboard/API, sudah memakai metode robust dan sadar-musim, S-H-ESD (`analysis/price_anomaly.py`). Itu sudah bagus, dan README ini sudah memujinya. Masalahnya ada di detektor kedua, yang internal: gerbang pre-filter D3 milik engine (`matching_engine/engine.py:62`, `detect_price_anomaly`) memakai z-score 3σ non-robust terhadap ambang statis. Diuji terhadap 70.953 observasi PIHPS asli, detektor ini hanya me-recall 14,4% dari anomali persisten yang tervalidasi oleh S-H-ESD. Flag D3 mengecualikan sebuah node dari matching sepenuhnya, jadi gerbang yang lemah diam-diam membuang supply/demand nyata. Benchmark: [`benchmarks/anomaly_detector_gap.py`](benchmarks/anomaly_detector_gap.py).
-
-Rencana perbaikan: pensiunkan detektor kedua ini, dan buat gerbang D3 mengonsumsi output S-H-ESD tervalidasi yang sama dengan yang dipakai dashboard. Perbaikan ini butuh mengubah kontrak `historical_prices`, dari commodity→(median,std) menjadi (city,commodity,date), jadi ini perubahan arsitektur yang dijadwalkan untuk Phase 3, bukan hot-patch.
 
 ---
 

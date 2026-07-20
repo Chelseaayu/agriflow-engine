@@ -17,7 +17,7 @@ Language / Bahasa: **English** · [Bahasa Indonesia](./README.md)
   <img src="https://img.shields.io/badge/tests-520%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
 </p>
 
-> **Project roadmap spans 3 Phases.** Full technical documentation from previous versions is archived at [`README_v12.md`](README_v12.md) and [`README_v11.md`](README_v11.md).
+> **Project roadmap spans 3 Phases.** Full technical documentation from previous versions is archived at [`README_v13.md`](README_v13.md) (latest snapshot), [`README_v12.md`](README_v12.md), and [`README_v11.md`](README_v11.md).
 
 ---
 
@@ -178,6 +178,26 @@ The AgriFlow engine is **ready to process whatever data it is given**. Today's c
 ## Scaling Up
 
 Scaling (national 514 districts, full multi-commodity, real-time) is **gated by the pace of public per-district data opening up — not by technical readiness.** The engine is ready; it just needs the data feeds, then scale optimization (spatial partitioning). Our approach: **prove value at province scale with real data first, then expand as data becomes available.** Foundation-model forecasting (TimesFM 2.0) and voice/regional-language channels are scheduled enhancements for the next phase.
+
+## Quantified engineering debt (scheduled fixes)
+
+We measured these two limitations against this engine's own achievable ceiling ourselves, not just claimed them. The numbers come from benchmarks committed in this repo, reproducible by a judge.
+
+**1. Optimal allocator (min-cost-flow / optimal transport).**
+
+The shipped greedy/stable allocator is provably not optimal. Measured against an exact LP transportation optimum, on the real BPS data: the stable tier leaves 25.4% of equity-weighted welfare on the table, the greedy tier 11.1%. Benchmark: [`benchmarks/greedy_vs_optimal.py`](benchmarks/greedy_vs_optimal.py) (seeded, reproducible, calls the engine's own functions).
+
+Concrete evidence on the real data: Sumenep's cabai_merah demand is only 26% filled, even though reachable supply (2,662 t within the 200 km limit) exceeds its need (1,418 t). The greedy allocator committed that supply elsewhere first. So this is not a scarcity problem, it's an allocation-optimality problem.
+
+Planned fix: replace greedy with a capacitated min-cost-flow / entropic-OT solver (milliseconds at province scale, provably optimal, and the dual gives per-district shadow prices). Greedy stays as the shipped v1.
+
+Root cause: `stable_match_tier1` is one-to-one and records min(supply, deficit) (`matching_engine/allocation.py:307`), so a large surplus matched to a small deficit strands the remainder.
+
+**2. Unify the anomaly detector.**
+
+There are two price-anomaly detectors in the codebase. The user-facing panel, in the dashboard/API, already uses a robust, season-aware method, S-H-ESD (`analysis/price_anomaly.py`). That one is good, and this README already praises it. The problem is a second, internal detector: the engine's D3 pre-filter gate (`matching_engine/engine.py:62`, `detect_price_anomaly`) uses a non-robust 3σ z-score against a static threshold. Measured against 70,953 real PIHPS observations, it recalls only 14.4% of the validated persistent anomalies the S-H-ESD detector finds. A D3 flag excludes a node from matching entirely, so a weak gate silently drops real supply/demand. Benchmark: [`benchmarks/anomaly_detector_gap.py`](benchmarks/anomaly_detector_gap.py).
+
+Planned fix: retire the second detector, and have the D3 stage consume the same validated S-H-ESD output the dashboard uses. This requires reshaping the `historical_prices` contract, from commodity→(median,std) to (city,commodity,date), so it's an architecture change scheduled for Phase 3, not a hot-patch.
 
 ---
 

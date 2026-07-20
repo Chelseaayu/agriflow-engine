@@ -90,7 +90,7 @@ All three functions (Detect · Predict · Distribute) share one real data source
 | **Detect** | Price anomaly detection (deseasonalize + robust statistics) on daily PIHPS prices **2021–2025** | ✅ |
 | **Predict** | 30-day price forecasting with **TimesFM 2.0** (time-series foundation model) | ✅ |
 | **Accessibility** | **WhatsApp Chatbot** (ask price & recommendations) + **interactive map Dashboard** | ✅ |
-| **Security** | Supabase account system (server-side JWT verification, Row Level Security on 12 tables, password reset) ready for a subscription model; the map & core features stay **open to the public** (`REQUIRE_AUTH=false`) for the judging period | ✅ |
+| **Security** | The site is *login-first*: opening it shows a login page. Judges click **"Masuk sebagai Tamu" (Enter as Guest)** to review without creating an account. A Supabase account system (server-side JWT verification, Row Level Security on 12 tables, password reset) is ready for a subscription model; sensitive subscriber & billing data stays JWT-protected server-side. | ✅ |
 | **Real data** | **6 real commodities** per-district: premium & medium rice, large & cayenne chilli, red & garlic onion + 5 years of PIHPS prices | ✅ |
 
 > **Quality:** 520 automated tests pass (521 collected, 1 skipped) — the engine is tested, reproducible, and honest about its limitations (see [Testing & Scenarios](#testing--scenarios) and Phase 3).

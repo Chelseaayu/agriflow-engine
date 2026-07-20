@@ -13,6 +13,9 @@
 --   7. policy_docs           — RAG document store (pgvector embeddings)
 --   8. price_history         — TimesFM INPUT  (daily price time series per city)
 --   9. forecasts             — TimesFM OUTPUT (per-commodity per-city forecasts)
+--  10. subscriber            — WhatsApp identity (hashed) + plan state
+--  11. wa_usage_daily        — per-day metered query counter (free-tier quota)
+--  12. payment_order         — upgrade orders + settlement status
 -- =============================================================================
 
 -- Required extension for pgvector (RAG embeddings)
@@ -249,3 +252,75 @@ CREATE INDEX IF NOT EXISTS idx_forecasts_generated_at ON forecasts(generated_at 
 -- Composite for the primary dashboard query: latest forecast per city+commodity
 CREATE INDEX IF NOT EXISTS idx_forecasts_city_commodity_date
     ON forecasts(city_id, commodity, date DESC);
+
+
+-- =============================================================================
+-- 10. SUBSCRIBER  —  WhatsApp identity + plan
+--
+-- PRIVACY CONTRACT: phone_hash is a salted SHA-256 digest of the normalized
+-- number (see whatsapp_bot/subscription.py::hash_phone).  The raw number is
+-- NEVER written to this database.  The salt lives in PHONE_HASH_SALT, outside
+-- the database, so a dump of this table alone cannot be reversed into a
+-- contact list even by brute force.
+--
+-- dashboard_user_id links a WhatsApp identity to a Supabase Auth user once the
+-- two channels are tied together.  Nullable: most WhatsApp users never sign in
+-- to the dashboard, and most dashboard users are government staff with no
+-- WhatsApp subscription.
+-- =============================================================================
+CREATE TABLE IF NOT EXISTS subscriber (
+    phone_hash        CHAR(64)      PRIMARY KEY,   -- hex SHA-256, salted
+    plan              VARCHAR(10)   NOT NULL DEFAULT 'FREE'
+                      CHECK (plan IN ('FREE', 'PRO')),
+    plan_expires_at   TIMESTAMPTZ,                 -- NULL = perpetual (or FREE)
+    dashboard_user_id UUID,                        -- Supabase auth.users.id
+    created_at        TIMESTAMPTZ   NOT NULL DEFAULT NOW(),
+    updated_at        TIMESTAMPTZ   NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_subscriber_plan      ON subscriber(plan);
+CREATE INDEX IF NOT EXISTS idx_subscriber_expires   ON subscriber(plan_expires_at);
+CREATE INDEX IF NOT EXISTS idx_subscriber_dash_user ON subscriber(dashboard_user_id);
+
+
+-- =============================================================================
+-- 11. WA_USAGE_DAILY  —  free-tier counter
+--
+-- One row per (phone_hash, day).  usage_date is a WIB (UTC+7) calendar date,
+-- computed by the application, NOT by the database — the server may run in UTC
+-- and CURRENT_DATE would then roll the quota over at 07:00 local time.
+--
+-- Incremented via INSERT .. ON CONFLICT DO UPDATE so concurrent workers cannot
+-- lose a count and hand out queries beyond the limit.
+-- =============================================================================
+CREATE TABLE IF NOT EXISTS wa_usage_daily (
+    phone_hash   CHAR(64)  NOT NULL,
+    usage_date   DATE      NOT NULL,
+    query_count  INTEGER   NOT NULL DEFAULT 0,
+    PRIMARY KEY (phone_hash, usage_date)
+);
+
+CREATE INDEX IF NOT EXISTS idx_wa_usage_date ON wa_usage_daily(usage_date DESC);
+
+
+-- =============================================================================
+-- 12. PAYMENT_ORDER  —  upgrade orders
+--
+-- No foreign key to subscriber: an order is created the moment a user asks to
+-- upgrade, which may be before any subscriber row exists for them.
+-- =============================================================================
+CREATE TABLE IF NOT EXISTS payment_order (
+    order_id    VARCHAR(20)   PRIMARY KEY,          -- e.g. 'AF-1A2B3C4D'
+    phone_hash  CHAR(64)      NOT NULL,
+    plan        VARCHAR(10)   NOT NULL DEFAULT 'PRO'
+                CHECK (plan IN ('FREE', 'PRO')),
+    amount_idr  INTEGER       NOT NULL,
+    status      VARCHAR(10)   NOT NULL DEFAULT 'PENDING'
+                CHECK (status IN ('PENDING', 'PAID', 'EXPIRED')),
+    provider    VARCHAR(30)   NOT NULL DEFAULT 'MOCK',
+    created_at  TIMESTAMPTZ   NOT NULL DEFAULT NOW(),
+    paid_at     TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_order_phone  ON payment_order(phone_hash);
+CREATE INDEX IF NOT EXISTS idx_order_status ON payment_order(status);

@@ -153,3 +153,6 @@ timesfm_model_cache/
 
 # Dashboard-internal README — not for public repo
 dashboard/README.md
+
+# Local subscription/quota state (JSON quota backend)
+.state/

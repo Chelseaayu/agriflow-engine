@@ -33,6 +33,7 @@ except ImportError as e:
 
 from matching_engine import LogisticsContext, run_matching
 from sample_data.loader import load_all_sample_data as _load_csv
+from sample_data.loader import load_real_data as _load_real
 
 # Precomputed data paths (resolved relative to project root so they work
 # both locally and inside the Docker container)
@@ -46,19 +47,42 @@ def _load_data_backend() -> dict:
     """
     Select the data backend via the DATA_BACKEND env var.
 
-    DATA_BACKEND=csv      (default) — load from sample CSV files (offline-safe).
+    DATA_BACKEND=csv      (default) — REAL BPS Jawa Timur 2022 data from
+                                      sample_data/surplus_deficit_real.csv.
+                                      Offline-safe.
+    DATA_BACKEND=demo                — the synthetic 19-commodity fixture. Test
+                                      data only; never serve it to users.
     DATA_BACKEND=postgres            — load from Supabase/Postgres via db.db_loader.
 
-    The CSV path is always available; the Postgres path raises RuntimeError if
-    SUPABASE_DB_URL is not set, so misconfiguration is loud rather than silent.
+    WHY THE DEFAULT IS REAL DATA
+    ----------------------------
+    This used to call load_all_sample_data(), whose default file is the
+    synthetic surplus_deficit.csv. Every served response — dashboard map,
+    WhatsApp reply, API — was therefore built on invented numbers while the
+    real BPS-derived file sat unused beside it.
+
+    That also caused a visible failure. The synthetic file prices rice demand
+    in consumer cities at Rp16,400-17,000/kg against a 2022 farmgate-derived
+    threshold whose 3-sigma ceiling is Rp15,100, so the D3 gate excluded EVERY
+    rice deficit node and both beras commodities returned zero matches. On real
+    data there are no anomaly exclusions at all, and matches go from 23 to 84.
+
+    The synthetic fixture is still what 13 test files load directly, which is
+    fine: it exercises engine logic across more commodities than the real data
+    covers. It just must not be what users see.
+
+    The Postgres path raises RuntimeError if SUPABASE_DB_URL is not set, so
+    misconfiguration is loud rather than silent.
     """
     import os
     backend = os.environ.get("DATA_BACKEND", "csv").strip().lower()
     if backend == "postgres":
         from db.db_loader import load_all as _load_pg
         return _load_pg()
-    # Default: csv (offline-safe, demo mode)
-    return _load_csv()
+    if backend == "demo":
+        return _load_csv()
+    # Default: real BPS data (offline-safe)
+    return _load_real()
 
 
 from . import billing

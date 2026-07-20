@@ -187,9 +187,24 @@ def load_real_data():
     Muat HANYA komoditas yang ada di surplus_deficit_real.csv — tidak ada
     data sintetis di-merge.
 
+    The komoditas dict is filtered to match. Without that filter this function
+    returned all 19 rows of komoditas_constraints.csv, so /api/v1/commodities
+    advertised 13 commodities that have no real nodes behind them — a dropdown
+    where two thirds of the options render an empty map, each one backed by a
+    row marked SYNTHETIC in historical_price_stats.csv. Filtering here keeps
+    the promise the docstring above already made.
+
     Returns same dict shape as load_all_sample_data().
     """
-    return load_all_sample_data(surplus_deficit_csv="surplus_deficit_real.csv")
+    data = load_all_sample_data(surplus_deficit_csv="surplus_deficit_real.csv")
+    with_nodes = (
+        {n.commodity.code for n in data["surplus"]}
+        | {n.commodity.code for n in data["deficit"]}
+    )
+    data["komoditas"] = {
+        code: c for code, c in data["komoditas"].items() if code in with_nodes
+    }
+    return data
 
 
 if __name__ == "__main__":

@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "../lib/auth";
+import { enterGuest } from "../lib/guest";
+import { DEV_LOGIN_ENABLED, DEV_EMAIL, DEV_PASSWORD } from "../lib/devauth";
 
 type Mode = "signin" | "signup";
 
@@ -12,14 +14,15 @@ export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // proxy.ts appends ?next= when it bounces someone off a protected page.
+  // proxy.ts appends ?next= when it funnels someone off a gated page.
   // Only relative paths are honoured — accepting an absolute URL here would
   // make this an open redirect an attacker could point at their own site.
+  // Default to the map (/), which is the app's home, not /account.
   const rawNext = searchParams.get("next");
   const nextPath =
     rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//")
       ? rawNext
-      : "/account";
+      : "/";
 
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
@@ -56,22 +59,33 @@ export default function LoginForm() {
       setMode("signin");
       return;
     }
-    router.push(nextPath);
+    // Full navigation (not router.push) so the proxy re-runs and sees the
+    // freshly-set session/dev cookie, letting the destination through.
+    window.location.assign(nextPath);
+  }
+
+  function enterAsGuest() {
+    enterGuest();
+    // Full navigation (not router.push) so the proxy re-runs and now sees the
+    // guest cookie, letting the destination page through.
+    window.location.assign(nextPath);
   }
 
   return (
     <main className="flex-1 flex items-center justify-center p-6 bg-slate-50">
       <div className="w-full max-w-sm">
-        <Link href="/" className="block text-sm text-slate-500 hover:text-slate-800 mb-6">
-          ← Kembali ke peta
-        </Link>
-
         <h1 className="text-2xl font-semibold text-slate-900">
           {mode === "signin" ? "Masuk ke AgriFlow" : "Buat akun AgriFlow"}
         </h1>
         <p className="mt-1 text-sm text-slate-500">
           Untuk pelanggan dinas, TPID, dan mitra data.
         </p>
+
+        {DEV_LOGIN_ENABLED && (
+          <p className="mt-4 rounded-lg bg-sky-50 border border-sky-200 p-3 text-sm text-sky-900">
+            Mode pengembangan aktif. Login uji: <b>{DEV_EMAIL}</b> / <b>{DEV_PASSWORD}</b>.
+          </p>
+        )}
 
         {!configured && (
           <p className="mt-4 rounded-lg bg-amber-50 border border-amber-200 p-3 text-sm text-amber-900">
@@ -87,7 +101,10 @@ export default function LoginForm() {
             </label>
             <input
               id="email"
-              type="email"
+              // Dev login uses a non-email username ("admin"), which type=email
+              // would reject before submit. Relax to text only when dev login
+              // is on; production keeps real email validation.
+              type={DEV_LOGIN_ENABLED ? "text" : "email"}
               required
               autoComplete="email"
               value={email}
@@ -115,7 +132,10 @@ export default function LoginForm() {
               id="password"
               type="password"
               required
-              minLength={8}
+              // Enforce length only when CREATING a password (signup). On
+              // signin you are entering an existing one, so a length rule here
+              // is wrong, and it was also blocking the short dev-login password.
+              minLength={mode === "signup" ? 8 : undefined}
               autoComplete={mode === "signin" ? "current-password" : "new-password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -147,6 +167,24 @@ export default function LoginForm() {
             {busy ? "Memproses…" : mode === "signin" ? "Masuk" : "Daftar"}
           </button>
         </form>
+
+        <div className="mt-6 flex items-center gap-3">
+          <span className="h-px flex-1 bg-slate-200" />
+          <span className="text-xs text-slate-400">atau</span>
+          <span className="h-px flex-1 bg-slate-200" />
+        </div>
+
+        <button
+          type="button"
+          onClick={enterAsGuest}
+          className="mt-6 w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm
+                     font-medium text-slate-700 hover:bg-slate-50"
+        >
+          Masuk sebagai Tamu (juri)
+        </button>
+        <p className="mt-2 text-center text-xs text-slate-400">
+          Akses peta &amp; data untuk peninjauan, tanpa membuat akun.
+        </p>
 
         <p className="mt-6 text-center text-sm text-slate-600">
           {mode === "signin" ? "Belum punya akun? " : "Sudah punya akun? "}

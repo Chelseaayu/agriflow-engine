@@ -12,6 +12,18 @@ import {
 } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { getSupabase, isAuthConfigured } from "./supabase";
+import {
+  credentialsMatch, currentDevUser, enterDev, exitDev, DEV_LOGIN_ENABLED,
+} from "./devauth";
+import { exitGuest } from "./guest";
+
+// Minimal object shaped enough for the UI (AccountMenu and /account read only
+// `email`). Used to represent a dev-login session, which has no real Supabase
+// User behind it. Never sent to the backend.
+function makeDevUser(email: string): User {
+  return { id: "dev-admin", email, aud: "dev", app_metadata: {}, user_metadata: {},
+           created_at: "" } as unknown as User;
+}
 
 type AuthResult = { error: string | null };
 
@@ -35,7 +47,15 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const configured = isAuthConfigured();
   const [session, setSession] = useState<Session | null>(null);
+  const [devUser, setDevUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(configured);
+
+  // Restore a dev-login session from its cookie on mount. Client-only, and a
+  // no-op unless NEXT_PUBLIC_DEV_LOGIN is on, so production carries no trace.
+  useEffect(() => {
+    const email = currentDevUser();
+    if (email) setDevUser(makeDevUser(email));
+  }, []);
 
   useEffect(() => {
     const supabase = getSupabase();
@@ -64,6 +84,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signIn = useCallback(async (email: string, password: string) => {
+    // Dev-login short-circuit, checked before Supabase. credentialsMatch is
+    // hard-false unless NEXT_PUBLIC_DEV_LOGIN is on, so this branch does not
+    // exist in a production build.
+    if (credentialsMatch(email, password)) {
+      enterDev(email);
+      setDevUser(makeDevUser(email));
+      return { error: null };
+    }
     const supabase = getSupabase();
     if (!supabase) return { error: NOT_CONFIGURED };
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -79,6 +107,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = useCallback(async () => {
     await getSupabase()?.auth.signOut();
+    // Clear every way a visitor could be "in" so sign-out is complete.
+    exitDev();
+    exitGuest();
+    setDevUser(null);
     setSession(null);
   }, []);
 
@@ -109,17 +141,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo<AuthContextValue>(
     () => ({
-      user: session?.user ?? null,
+      // A real Supabase session wins; the dev user is the fallback identity.
+      user: session?.user ?? devUser,
       session,
       loading,
-      configured,
+      configured: configured || DEV_LOGIN_ENABLED,
       signIn,
       signUp,
       signOut,
       requestPasswordReset,
       updatePassword,
     }),
-    [session, loading, configured, signIn, signUp, signOut, requestPasswordReset, updatePassword],
+    [session, devUser, loading, configured, signIn, signUp, signOut,
+     requestPasswordReset, updatePassword],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

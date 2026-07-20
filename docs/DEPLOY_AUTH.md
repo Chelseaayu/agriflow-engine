@@ -114,6 +114,26 @@ siapa pun bisa menebak-nebak nomor telepon mana yang berlangganan.
 
 ---
 
+## Catatan: ganti kata sandi tanpa kata sandi lama
+
+Halaman `/reset-password` memberi formulir kepada siapa pun yang punya sesi
+aktif, bukan hanya yang baru saja mengeklik tautan pemulihan. Ini disengaja:
+mengandalkan sesi yang ada lebih tahan terhadap refresh halaman daripada
+menunggu satu kali kejadian `PASSWORD_RECOVERY`.
+
+Konsekuensinya perlu Anda sadari: pengguna yang sudah masuk dapat mengganti
+kata sandinya **tanpa memasukkan kata sandi lama**. Kalau seseorang menemukan
+komputer yang tidak terkunci dengan sesi AgriFlow masih hidup, ia bisa
+mengambil alih akun itu.
+
+Untuk akun dinas yang dipakai bergantian, periksa pengaturan autentikasi di
+project Supabase Anda untuk opsi yang mewajibkan autentikasi ulang sebelum
+perubahan kata sandi. Belum diverifikasi terhadap project sungguhan, jadi
+perlakukan ini sebagai hal yang harus dicek saat penyiapan, bukan sebagai
+langkah yang sudah terbukti.
+
+---
+
 ## 4. Verifikasi
 
 ```bash

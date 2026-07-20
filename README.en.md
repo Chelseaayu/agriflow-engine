@@ -14,7 +14,7 @@ Language / Bahasa: **English** · [Bahasa Indonesia](./README.md)
 <p align="center">
   <img src="https://img.shields.io/badge/PIDI-DIGDAYA%20%C3%97%20Hackathon%202026-1B5E20?style=for-the-badge" alt="Hackathon"/>
   <img src="https://img.shields.io/badge/Problem%20Statement-2%20Matching%20Demand–Supply-4CAF50?style=for-the-badge" alt="PS"/>
-  <img src="https://img.shields.io/badge/tests-403%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
+  <img src="https://img.shields.io/badge/tests-520%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
 </p>
 
 > **Project roadmap spans 3 Phases.** Full technical documentation from previous versions is archived at [`README_v12.md`](README_v12.md) and [`README_v11.md`](README_v11.md).
@@ -90,9 +90,10 @@ All three functions (Detect · Predict · Distribute) share one real data source
 | **Detect** | Price anomaly detection (deseasonalize + robust statistics) on daily PIHPS prices **2021–2025** | ✅ |
 | **Predict** | 30-day price forecasting with **TimesFM 2.0** (time-series foundation model) | ✅ |
 | **Accessibility** | **WhatsApp Chatbot** (ask price & recommendations) + **interactive map Dashboard** | ✅ |
-| **Real data** | 5 real commodities per-district: rice, large & cayenne chilli, red & garlic onion + 5 years of prices | ✅ |
+| **Security** | Supabase account system (server-side JWT verification, Row Level Security on 12 tables, password reset) ready for a subscription model; the map & core features stay **open to the public** (`REQUIRE_AUTH=false`) for the judging period | ✅ |
+| **Real data** | **6 real commodities** per-district: premium & medium rice, large & cayenne chilli, red & garlic onion + 5 years of PIHPS prices | ✅ |
 
-> **Quality:** 403 automated tests pass (404 collected, 1 skipped) — the engine is tested, reproducible, and honest about its limitations (see [Testing & Scenarios](#testing--scenarios) and Phase 3).
+> **Quality:** 520 automated tests pass (521 collected, 1 skipped) — the engine is tested, reproducible, and honest about its limitations (see [Testing & Scenarios](#testing--scenarios) and Phase 3).
 
 ### Snapshots
 
@@ -110,8 +111,10 @@ All three functions (Detect · Predict · Distribute) share one real data source
 
 Because AgriFlow's output drives inter-district food allocation that touches low-HDI districts, claims of "fair" and "robust" must be re-auditable — not just narrative. The test suite locks food-balance figures as *golden numbers* (reproducibility), guards sensitive policy parameters against accidental drift (regression-safety), and tests anomaly detection adversarially.
 
-**404 tests collected · 403 pass · 1 skipped · cross-OS on CI.**
+**521 tests collected · 520 pass · 1 skipped · cross-OS on CI.**
 (Skip = `test_timesfm_importorskip`: skipped when the heavy TimesFM library isn't installed on the runner; the forecasting path is still tested via fallback + API contract.)
+
+The production server loads **real BPS data by default** (`DATA_BACKEND=csv`, the default). The old synthetic 19-commodity fixture is still used by 13 test files (`DATA_BACKEND=demo`) to exercise engine logic across a wider commodity range — it is never served to users.
 
 | Category | Count | Coverage |
 |---|---|---|
@@ -122,12 +125,14 @@ Because AgriFlow's output drives inter-district food allocation that touches low
 | Forecast & API | 40 | Forecast/anomaly endpoints + fallback |
 | Baseline & equity | 39 | greedy/uniform/proportional vs AgriFlow + supply-constrained scenario |
 | Ingest & integration | 73 | DB loader, PIHPS ingest, OSRM distance, WhatsApp bot |
+| Dashboard auth & WhatsApp quota | 117 | Supabase login, server-side JWT verification, RLS on 12 tables, password reset, WhatsApp free-tier quota (disabled by default) |
 
 The **24 edge-case scenarios** map to real East Java events, e.g.: Ramadan spike (C1), Mt. Semeru eruption in Lumajang → unreachable (D4), multi-district flood of rice belts (D5), fuel-price hike → higher logistics cost (E5), and Bulog contract-reserve priority (E3).
 
 **Key results:**
 - **Equity proven under scarcity, at zero efficiency cost.** In the supply-constrained scenario (La Niña, surplus 3962t vs deficit 5249t), pure greedy abandons Madura — Sampang **0%**, Bangkalan **20%**. AgriFlow lifts both to **100%** at *identical aggregate coverage* (0.6649), with Gini dropping (0.3017 → 0.2905). We do not claim an equity advantage under abundance.
 - **Season-aware anomalies.** A ~60% price drop is flagged, but a pure seasonal pattern (pre-Eid cycle) does **not** trigger false positives; genuine anomalies riding on top of the seasonal pattern are still caught.
+- **The data reveals a structural deficit, not a bug.** Garlic (bawang putih) produces **0 matches** across all 38 districts on the 2022 BPS data — East Java is deficit in garlic in every district, consistent with Indonesia being a net garlic importer. The engine is working correctly; the data is what's speaking.
 
 📄 Full detail (why, the 24-scenario list, paper citations): [Architecture Document](docs/AgriFlow_Architecture.pdf) §Testing & Validation.
 
@@ -164,9 +169,9 @@ The AgriFlow engine is **ready to process whatever data it is given**. Today's c
 
 | Current coverage | The gate: data availability |
 |---|---|
-| 5 core commodities | Engine accepts any commodity; the rest await **per-district production data** published by BPS at the same granularity |
+| 6 core commodities | Engine accepts any commodity; the rest await **per-district production data** published by BPS at the same granularity |
 | Reference year 2022 | The latest year consistently complete across all per-district sources; newer years are simply ingested as BPS releases them |
-| Meat & eggs pending | Per-district broiler/layer production data is not yet in public sources |
+| Meat & eggs pending | Per-district broiler/layer production data is not yet in public sources; 13 other commodities (including eggs & chicken meat) are still **synthetic placeholders** in `historical_price_stats.csv`, unreachable through the production backend (`DATA_BACKEND=csv`) |
 | Chilli/onion consumption via national figures | *Per-district* consumption for these isn't published yet; **rice consumption is already per-district & used for real** |
 | Tier-2 prices (non-IHK districts) | Bapanas Panel Harga is under maintenance; once the feed is restored, 30+ more districts are covered |
 
@@ -181,7 +186,7 @@ Scaling (national 514 districts, full multi-commodity, real-time) is **gated by 
 ```bash
 pip install -r requirements.txt
 python examples/run_demo_real.py   # matching demo on real BPS 2022 data
-pytest tests/                      # 403 pass, 1 skipped
+pytest tests/                      # 520 pass, 1 skipped
 ```
 
 Full engineering detail in [`README_v12.md`](README_v12.md).

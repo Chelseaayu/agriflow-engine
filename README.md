@@ -14,7 +14,7 @@ Language / Bahasa: [English](./README.en.md) · **Bahasa Indonesia**
 <p align="center">
   <img src="https://img.shields.io/badge/PIDI-DIGDAYA%20%C3%97%20Hackathon%202026-1B5E20?style=for-the-badge" alt="Hackathon"/>
   <img src="https://img.shields.io/badge/Problem%20Statement-2%20Matching%20Demand–Supply-4CAF50?style=for-the-badge" alt="PS"/>
-  <img src="https://img.shields.io/badge/tests-403%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
+  <img src="https://img.shields.io/badge/tests-520%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
 </p>
 
 > **Roadmap proyek dibagi 3 Phase.** README teknis lengkap versi sebelumnya diarsipkan di [`README_v12.md`](README_v12.md) dan [`README_v11.md`](README_v11.md).
@@ -90,9 +90,10 @@ Tiga fungsi (Deteksi · Prediksi · Distribusi) berbagi satu sumber data nyata, 
 | **Deteksi** | Deteksi anomali harga (deseasonalize + robust statistics) pada harga PIHPS harian **2021–2025** | ✅ |
 | **Prediksi** | Forecasting harga 30 hari dengan **TimesFM 2.0** (foundation model time-series) | ✅ |
 | **Aksesibilitas** | **Chatbot WhatsApp** (tanya harga & rekomendasi) + **Dashboard** peta interaktif | ✅ |
-| **Data nyata** | 5 komoditas real per-kab: beras, cabai merah & rawit, bawang merah & putih + harga 5 tahun | ✅ |
+| **Keamanan** | Sistem akun Supabase (JWT terverifikasi server-side, Row Level Security di 12 tabel, reset password) siap untuk model berlangganan; peta & fitur inti tetap **terbuka publik** (`REQUIRE_AUTH=false`) selama periode penjurian | ✅ |
+| **Data nyata** | **6 komoditas** real per-kab: beras premium & medium, cabai merah & rawit, bawang merah & putih + harga PIHPS 5 tahun | ✅ |
 
-> **Kualitas:** 403 tes otomatis lulus (404 terkumpul, 1 di-skip) — engine teruji, dapat direproduksi, dan jujur soal keterbatasannya (lihat [Pengujian & Skenario](#pengujian--skenario) dan Phase 3).
+> **Kualitas:** 520 tes otomatis lulus (521 terkumpul, 1 di-skip) — engine teruji, dapat direproduksi, dan jujur soal keterbatasannya (lihat [Pengujian & Skenario](#pengujian--skenario) dan Phase 3).
 
 ### Cuplikan
 
@@ -110,8 +111,10 @@ Tiga fungsi (Deteksi · Prediksi · Distribusi) berbagi satu sumber data nyata, 
 
 Karena output AgriFlow menggerakkan alokasi pangan antar-kabupaten yang menyentuh daerah IPM-rendah, klaim "adil" dan "robust" harus dapat diaudit ulang — bukan sekadar narasi. Suite uji mengunci angka food-balance sebagai *golden numbers* (reproducibility), menjaga parameter kebijakan dari pergeseran tak sengaja (regression-safety), dan menguji deteksi anomali secara adversarial.
 
-**404 tes terkumpul · 403 lulus · 1 di-skip · lintas-OS di CI.**
+**521 tes terkumpul · 520 lulus · 1 di-skip · lintas-OS di CI.**
 (Skip = `test_timesfm_importorskip`: dilewati jika pustaka TimesFM tak terpasang di runner; jalur forecasting tetap diuji via fallback + kontrak API.)
+
+Server produksi memuat **data BPS asli secara default** (`DATA_BACKEND=csv`, bawaan). Fixture sintetis 19-komoditas lama tetap dipakai di 13 file test (`DATA_BACKEND=demo`) untuk menguji logika engine di lebih banyak variasi komoditas — tidak pernah disajikan ke pengguna.
 
 | Kategori | Jumlah | Cakupan |
 |---|---|---|
@@ -122,12 +125,14 @@ Karena output AgriFlow menggerakkan alokasi pangan antar-kabupaten yang menyentu
 | Forecast & API | 40 | Endpoint forecast/anomali + fallback |
 | Baseline & equity | 39 | greedy/uniform/proporsional vs AgriFlow + skenario langka pasokan |
 | Ingest & integrasi | 73 | DB loader, ingest PIHPS, jarak OSRM, bot WhatsApp |
+| Autentikasi dashboard & kuota WhatsApp | 117 | Login Supabase, verifikasi JWT server-side, RLS 12 tabel, reset password, kuota gratis WhatsApp (nonaktif default) |
 
 **24 skenario edge-case** memetakan kejadian nyata Jawa Timur, contohnya: Ramadan spike (C1), erupsi Semeru di Lumajang → unreachable (D4), banjir multi-kabupaten sentra padi (D5), kenaikan BBM → biaya logistik naik (E5), dan prioritas reserve kontrak Bulog (E3).
 
 **Hasil kunci:**
 - **Equity terbukti saat pasokan langka, biaya efisiensi nol.** Pada skenario supply-constrained (La Niña, surplus 3962t vs defisit 5249t), greedy murni menelantarkan Madura — Sampang **0%**, Bangkalan **20%**. AgriFlow mengangkat keduanya ke **100%** dengan *coverage agregat identik* (0.6649) dan Gini turun (0.3017 → 0.2905). Kami tidak mengklaim keunggulan equity saat pasokan melimpah.
 - **Anomali sadar-musiman.** Penurunan harga ~60% ter-flag, tapi pola musiman murni (siklus jelang Lebaran) **tidak** memicu false positive; anomali genuine di atas pola musiman tetap terdeteksi.
+- **Data mengungkap defisit struktural, bukan bug.** Bawang putih menghasilkan **0 match** di seluruh 38 kabupaten pada data BPS 2022 — Jawa Timur defisit bawang putih di semua kabupaten, konsisten dengan Indonesia sebagai net-importir bawang putih. Engine bekerja benar; datanya yang bicara.
 
 📄 Detail lengkap (kenapa, daftar 24 skenario, sitasi paper): [Dokumen Arsitektur](docs/AgriFlow_Architecture.pdf) §Pengujian & Validasi.
 
@@ -188,9 +193,9 @@ Mesin AgriFlow **sudah siap memproses data apa pun yang diberikan**. Cakupan sek
 
 | Cakupan sekarang | Gerbangnya: ketersediaan data |
 |---|---|
-| 5 komoditas inti | Engine menerima komoditas apa pun; sisanya menunggu data **produksi per-kabupaten** dirilis BPS pada granularitas sama |
+| 6 komoditas inti | Engine menerima komoditas apa pun; sisanya menunggu data **produksi per-kabupaten** dirilis BPS pada granularitas sama |
 | Tahun acuan 2022 | Tahun konsisten terbaru yang lengkap di semua sumber per-kab; tahun lebih baru tinggal di-*ingest* saat BPS merilis |
-| Daging ayam & telur belum | Data produksi broiler/ayam-ras per-kab belum tersedia di sumber publik |
+| Daging ayam & telur belum | Data produksi broiler/ayam-ras per-kab belum tersedia di sumber publik; 13 komoditas lain (termasuk telur & daging ayam) masih berstatus **placeholder sintetis** di `historical_price_stats.csv`, tidak terjangkau lewat backend produksi (`DATA_BACKEND=csv`) |
 | Konsumsi cabai/bawang via angka nasional | Konsumsi *per-kabupaten* untuk komoditas ini belum dipublikasikan; konsumsi **beras sudah per-kab & dipakai nyata** |
 | Harga Tier-2 (kab non-IHK) | Panel Harga Bapanas sedang pemeliharaan; saat feed pulih, 30+ kab tambahan langsung tercakup |
 
@@ -205,7 +210,7 @@ Peningkatan skala (nasional 514 kab, multi-komoditas penuh, real-time) **dibatas
 ```bash
 pip install -r requirements.txt
 python examples/run_demo_real.py   # demo matching pada data BPS asli 2022
-pytest tests/                      # 403 lulus, 1 di-skip
+pytest tests/                      # 520 lulus, 1 di-skip
 ```
 
 Detail engineering lengkap ada di [`README_v12.md`](README_v12.md).

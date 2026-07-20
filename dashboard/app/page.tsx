@@ -13,6 +13,7 @@ import {
 } from "./lib/api";
 import AnomalyPanel from "./components/AnomalyPanel";
 import ForecastPanel from "./components/ForecastPanel";
+import AccountMenu from "./components/AccountMenu";
 
 // Leaflet touches window — must be client-only.
 const MapView = dynamic(() => import("./components/MapView"), { ssr: false });
@@ -863,6 +864,9 @@ export default function Home() {
 
           {/* Right Controls Area */}
           <div className="flex items-center gap-3">
+            {/* Account / sign-in — renders nothing when auth is not configured */}
+            <AccountMenu />
+
             {/* Tour Button */}
             <button
               onClick={() => setTourStep(0)}

@@ -14,10 +14,10 @@ Language / Bahasa: **English** · [Bahasa Indonesia](./README.md)
 <p align="center">
   <img src="https://img.shields.io/badge/PIDI-DIGDAYA%20%C3%97%20Hackathon%202026-1B5E20?style=for-the-badge" alt="Hackathon"/>
   <img src="https://img.shields.io/badge/Problem%20Statement-2%20Matching%20Demand–Supply-4CAF50?style=for-the-badge" alt="PS"/>
-  <img src="https://img.shields.io/badge/tests-403%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
+  <img src="https://img.shields.io/badge/tests-520%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
 </p>
 
-> **Project roadmap spans 3 Phases.** Full technical documentation from previous versions is archived at [`README_v12.md`](README_v12.md) and [`README_v11.md`](README_v11.md).
+> **Project roadmap spans 3 Phases.** Full technical documentation from previous versions is archived at [`README_v13.md`](README_v13.md) (latest snapshot), [`README_v12.md`](README_v12.md), and [`README_v11.md`](README_v11.md).
 
 ---
 
@@ -90,9 +90,10 @@ All three functions (Detect · Predict · Distribute) share one real data source
 | **Detect** | Price anomaly detection (deseasonalize + robust statistics) on daily PIHPS prices **2021–2025** | ✅ |
 | **Predict** | 30-day price forecasting with **TimesFM 2.0** (time-series foundation model) | ✅ |
 | **Accessibility** | **WhatsApp Chatbot** (ask price & recommendations) + **interactive map Dashboard** | ✅ |
-| **Real data** | 5 real commodities per-district: rice, large & cayenne chilli, red & garlic onion + 5 years of prices | ✅ |
+| **Security** | The site is *login-first*: opening it shows a login page. Judges click **"Masuk sebagai Tamu" (Enter as Guest)** to review without creating an account. A Supabase account system (server-side JWT verification, Row Level Security on 12 tables, password reset) is ready for a subscription model; sensitive subscriber & billing data stays JWT-protected server-side. | ✅ |
+| **Real data** | **6 real commodities** per-district: premium & medium rice, large & cayenne chilli, red & garlic onion + 5 years of PIHPS prices | ✅ |
 
-> **Quality:** 403 automated tests pass (404 collected, 1 skipped) — the engine is tested, reproducible, and honest about its limitations (see [Testing & Scenarios](#testing--scenarios) and Phase 3).
+> **Quality:** 520 automated tests pass (521 collected, 1 skipped) — the engine is tested, reproducible, and honest about its limitations (see [Testing & Scenarios](#testing--scenarios) and Phase 3).
 
 ### Snapshots
 
@@ -110,8 +111,10 @@ All three functions (Detect · Predict · Distribute) share one real data source
 
 Because AgriFlow's output drives inter-district food allocation that touches low-HDI districts, claims of "fair" and "robust" must be re-auditable — not just narrative. The test suite locks food-balance figures as *golden numbers* (reproducibility), guards sensitive policy parameters against accidental drift (regression-safety), and tests anomaly detection adversarially.
 
-**404 tests collected · 403 pass · 1 skipped · cross-OS on CI.**
+**521 tests collected · 520 pass · 1 skipped · cross-OS on CI.**
 (Skip = `test_timesfm_importorskip`: skipped when the heavy TimesFM library isn't installed on the runner; the forecasting path is still tested via fallback + API contract.)
+
+The production server loads **real BPS data by default** (`DATA_BACKEND=csv`, the default). The old synthetic 19-commodity fixture is still used by 13 test files (`DATA_BACKEND=demo`) to exercise engine logic across a wider commodity range — it is never served to users.
 
 | Category | Count | Coverage |
 |---|---|---|
@@ -122,12 +125,14 @@ Because AgriFlow's output drives inter-district food allocation that touches low
 | Forecast & API | 40 | Forecast/anomaly endpoints + fallback |
 | Baseline & equity | 39 | greedy/uniform/proportional vs AgriFlow + supply-constrained scenario |
 | Ingest & integration | 73 | DB loader, PIHPS ingest, OSRM distance, WhatsApp bot |
+| Dashboard auth & WhatsApp quota | 117 | Supabase login, server-side JWT verification, RLS on 12 tables, password reset, WhatsApp free-tier quota (disabled by default) |
 
 The **24 edge-case scenarios** map to real East Java events, e.g.: Ramadan spike (C1), Mt. Semeru eruption in Lumajang → unreachable (D4), multi-district flood of rice belts (D5), fuel-price hike → higher logistics cost (E5), and Bulog contract-reserve priority (E3).
 
 **Key results:**
-- **Equity proven under scarcity, at zero efficiency cost.** In the supply-constrained scenario (La Niña, surplus 3962t vs deficit 5249t), pure greedy abandons Madura — Sampang **0%**, Bangkalan **20%**. AgriFlow lifts both to **100%** at *identical aggregate coverage* (0.6649), with Gini dropping (0.3017 → 0.2905). We do not claim an equity advantage under abundance.
+- **Equity proven under scarcity, at zero efficiency cost.** *This is a hypothetical stress test, not a result from the real BPS data:* on the 2022 data East Java is in fact heavily in surplus (6.6× ratio), so the equity value would not surface. To show how the mechanism works we built a synthetic scarcity scenario (the `surplus_deficit_constrained.csv` fixture, surplus 3962t vs deficit 5249t). In it, pure greedy abandons Madura — Sampang **0%**, Bangkalan **20%**; AgriFlow lifts both to **100%** at *identical aggregate coverage* (0.6649), with Gini dropping (0.3017 → 0.2905). We do not claim an equity advantage under abundance, nor that this scenario comes from real data.
 - **Season-aware anomalies.** A ~60% price drop is flagged, but a pure seasonal pattern (pre-Eid cycle) does **not** trigger false positives; genuine anomalies riding on top of the seasonal pattern are still caught.
+- **The data reveals a structural deficit, not a bug.** Garlic (bawang putih) produces **0 matches** across all 38 districts on the 2022 BPS data — East Java is deficit in garlic in every district, consistent with Indonesia being a net garlic importer. The engine is working correctly; the data is what's speaking.
 
 📄 Full detail (why, the 24-scenario list, paper citations): [Architecture Document](docs/AgriFlow_Architecture.pdf) §Testing & Validation.
 
@@ -148,31 +153,43 @@ The initial proposal listed a large stack (Qdrant, LangChain, Redis, n8n, multi-
 
 # Phase 3 — Future Plans & Scaling
 
-The components below were **intentionally deferred** because they would be *over-engineering* at current scale. We will build them when **scaling up**:
+Phase 3 covers two things we keep honestly separate: features we intentionally deferred because they aren't needed at the current scale, and limits we've measured on the running engine and scheduled fixes for.
 
-| Phase 3 Plan | Purpose |
+## What's deferred (waiting on data or real load)
+
+| Plan | Purpose | Trigger |
+|---|---|---|
+| National scale, 514 districts | From 38 East Java districts to all of Indonesia | spatial partitioning + distance precompute |
+| Exogenous forecasting (ENSO index, Ramadan calendar) | Accuracy improves under climate shocks & holidays | exogenous data available |
+| Broiler chicken & eggs (real data) | Completes the 6 core commodities | per-district broiler & layer-egg production data released |
+| Granular per-city/market prices | Real gap can be Rp5,000 to 15,000/kg (chilli interview) | open market price feed |
+| Facilitating inter-district transactions | Price info alone is "not effective enough" without a buy/sell channel (onion & rice interviews) | distribution partnership |
+| Source transparency & transaction security | User-trust requirement (interviews) | formal partnership stage |
+| Sahabat-AI (Javanese/Madurese) + phone IVR | Inclusion for elderly farmers & feature-phone users | channel-scaling stage |
+| Qdrant / Redis / n8n | Vector scale, caching, orchestration | when real load arrives |
+
+## Coverage limits today (the gate is data availability, not architecture)
+
+The engine is already ready to process any data it's given; what limits it is the availability of public per-district data. Once a source opens up, the same pipeline processes it immediately with no architecture change.
+
+| Coverage today | The gate |
 |---|---|
-| **National scale, 514 districts** | From 38 East Java districts → all Indonesia (needs spatial partitioning + distance precompute) |
-| **Exogenous forecasting** (ENSO/climate index, Ramadan calendar) | Prediction accuracy improves with climate shocks & seasonal events |
-| **Qdrant / Redis / n8n** | Vector scale, caching, scheduled orchestration — when real load arrives |
-| **Sahabat-AI (Javanese/Madurese) + IVR phone** | Inclusion for elderly farmers and feature-phone users |
-| **Broiler chicken & eggs (real data)** | Requires complete per-district broiler & layer egg production data |
+| 6 core commodities | awaiting per-district production data for other commodities to be released by BPS |
+| Reference year 2022 | the most complete year across all per-district sources; a newer year is simply ingested when available |
+| Broiler chicken & eggs not yet | the other 13 commodities remain synthetic placeholders, not served to users (`DATA_BACKEND=csv`) |
+| Chilli/onion consumption via national figures | rice consumption is already per-district & used for real; the rest awaits publication |
+| Tier-2 prices (non-IHK districts) | Bapanas Panel Harga is under maintenance; once the feed is restored, 30+ districts are covered immediately |
 
-## Current Coverage (the gate is data availability, not the system)
+## Quantified engineering debt (scheduled fixes)
 
-The AgriFlow engine is **ready to process whatever data it is given**. Today's coverage is set by the **availability of public per-district data** — once the source opens up, the same pipeline processes it with no architectural change.
+We measured these two limits ourselves against the engine's own achievable ceiling, with benchmarks committed and reproducible by a judge.
 
-| Current coverage | The gate: data availability |
-|---|---|
-| 5 core commodities | Engine accepts any commodity; the rest await **per-district production data** published by BPS at the same granularity |
-| Reference year 2022 | The latest year consistently complete across all per-district sources; newer years are simply ingested as BPS releases them |
-| Meat & eggs pending | Per-district broiler/layer production data is not yet in public sources |
-| Chilli/onion consumption via national figures | *Per-district* consumption for these isn't published yet; **rice consumption is already per-district & used for real** |
-| Tier-2 prices (non-IHK districts) | Bapanas Panel Harga is under maintenance; once the feed is restored, 30+ more districts are covered |
+1. The allocator is not yet optimal. Measured against the exact LP transportation optimum on real BPS data: the stable tier leaves 25.4% of equity-weighted welfare on the table, the greedy tier 11.1%. Concrete evidence: Sumenep's cabai_merah demand is only 26% filled even though reachable supply (2,662 t within 200 km) exceeds the need (1,418 t), greedy already committed that supply elsewhere first. So this is an optimality problem, not a scarcity problem. Plan: replace with a capacitated min-cost-flow / entropic-OT solver (milliseconds at province scale, provably optimal); greedy stays as v1. Root cause: `matching_engine/allocation.py:307`. Benchmark: `benchmarks/greedy_vs_optimal.py`.
+2. Unify the anomaly detectors. The user-facing anomaly panel already uses robust S-H-ESD (`analysis/price_anomaly.py`). But the internal D3 pre-filter gate (`matching_engine/engine.py:62`) still uses a non-robust 3σ z-score, on 70,953 real PIHPS observations it recalls only 14.4% of validated anomalies, and a D3 flag excludes a node from matching entirely. Plan: point D3 at the same S-H-ESD output (requires changing the `historical_prices` contract). Benchmark: `benchmarks/anomaly_detector_gap.py`.
 
 ## Scaling Up
 
-Scaling (national 514 districts, full multi-commodity, real-time) is **gated by the pace of public per-district data opening up — not by technical readiness.** The engine is ready; it just needs the data feeds, then scale optimization (spatial partitioning). Our approach: **prove value at province scale with real data first, then expand as data becomes available.** Foundation-model forecasting (TimesFM 2.0) and voice/regional-language channels are scheduled enhancements for the next phase.
+National-scale growth is gated by the pace of public per-district data opening up, not technical readiness. Our approach: prove value at province scale with real data first, then expand as data becomes available.
 
 ---
 
@@ -181,7 +198,7 @@ Scaling (national 514 districts, full multi-commodity, real-time) is **gated by 
 ```bash
 pip install -r requirements.txt
 python examples/run_demo_real.py   # matching demo on real BPS 2022 data
-pytest tests/                      # 403 pass, 1 skipped
+pytest tests/                      # 520 pass, 1 skipped
 ```
 
 Full engineering detail in [`README_v12.md`](README_v12.md).

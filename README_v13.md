@@ -17,7 +17,7 @@ Language / Bahasa: [English](./README.en.md) · **Bahasa Indonesia**
   <img src="https://img.shields.io/badge/tests-520%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
 </p>
 
-> **Roadmap proyek dibagi 3 Phase.** README teknis lengkap versi sebelumnya diarsipkan di [`README_v13.md`](README_v13.md) (snapshot terbaru), [`README_v12.md`](README_v12.md), dan [`README_v11.md`](README_v11.md).
+> **Roadmap proyek dibagi 3 Phase.** README teknis lengkap versi sebelumnya diarsipkan di [`README_v12.md`](README_v12.md) dan [`README_v11.md`](README_v11.md).
 
 ---
 
@@ -90,7 +90,7 @@ Tiga fungsi (Deteksi · Prediksi · Distribusi) berbagi satu sumber data nyata, 
 | **Deteksi** | Deteksi anomali harga (deseasonalize + robust statistics) pada harga PIHPS harian **2021–2025** | ✅ |
 | **Prediksi** | Forecasting harga 30 hari dengan **TimesFM 2.0** (foundation model time-series) | ✅ |
 | **Aksesibilitas** | **Chatbot WhatsApp** (tanya harga & rekomendasi) + **Dashboard** peta interaktif | ✅ |
-| **Keamanan** | Situs bersifat *login-first*: membuka website menampilkan halaman login lebih dulu. Juri cukup klik **"Masuk sebagai Tamu"** untuk meninjau tanpa membuat akun. Akun Supabase (JWT terverifikasi server-side, Row Level Security di 12 tabel, reset password) siap untuk model berlangganan; data sensitif (langganan & pembayaran) tetap dijaga verifikasi JWT di sisi server. | ✅ |
+| **Keamanan** | Sistem akun Supabase (JWT terverifikasi server-side, Row Level Security di 12 tabel, reset password) siap untuk model berlangganan; peta & fitur inti tetap **terbuka publik** (`REQUIRE_AUTH=false`) selama periode penjurian | ✅ |
 | **Data nyata** | **6 komoditas** real per-kab: beras premium & medium, cabai merah & rawit, bawang merah & putih + harga PIHPS 5 tahun | ✅ |
 
 > **Kualitas:** 520 tes otomatis lulus (521 terkumpul, 1 di-skip) — engine teruji, dapat direproduksi, dan jujur soal keterbatasannya (lihat [Pengujian & Skenario](#pengujian--skenario) dan Phase 3).
@@ -174,43 +174,34 @@ Kami mewawancarai **4 petani lintas komoditas & skala usaha** — dari petani ma
 
 # 🌐 Phase 3 — Rencana Lanjutan & Scaling
 
-Phase 3 memuat dua hal yang kami pisahkan secara jujur: fitur yang sengaja ditunda karena belum dibutuhkan pada skala sekarang, dan batas yang sudah kami ukur pada engine yang berjalan lalu kami jadwalkan perbaikannya.
+Komponen di bawah ini **sengaja kami tunda** karena *over-engineering* untuk skala sekarang. Kami kerjakan saat **scaling up**:
 
-## Yang ditunda (menunggu data atau beban nyata)
-
-| Rencana | Untuk apa | Pemicu |
-|---|---|---|
-| Skala nasional 514 kab | Dari 38 kab Jatim ke seluruh Indonesia | spatial partitioning + precompute jarak |
-| Exogenous forecasting (indeks ENSO, kalender Ramadan) | Akurasi naik saat guncangan iklim & hari raya | data eksogen tersedia |
-| Daging ayam & telur (data real) | Melengkapi 6 komoditas inti | produksi broiler & telur-ras per-kab dirilis |
-| Harga granular per kota/pasar | Selisih riil bisa Rp5.000 sampai 15.000/kg (wawancara cabai) | feed harga pasar terbuka |
-| Fasilitasi transaksi antar-daerah | Info harga saja "kurang efektif" tanpa saluran jual-beli (wawancara bawang & padi) | kemitraan penyaluran |
-| Transparansi sumber & keamanan transaksi | Syarat kepercayaan pengguna (wawancara) | tahap kemitraan resmi |
-| Sahabat-AI (Jawa/Madura) + IVR telepon | Inklusi petani lansia & feature-phone | tahap penskalaan kanal |
-| Qdrant / Redis / n8n | Vector scale, caching, orkestrasi | saat beban nyata muncul |
-
-## Batas cakupan hari ini (gerbangnya ketersediaan data, bukan arsitektur)
-
-Engine sudah siap memproses data apa pun; yang membatasi adalah ketersediaan data publik per-kabupaten. Begitu sumbernya terbuka, pipeline yang sama langsung memprosesnya tanpa ubah arsitektur.
-
-| Cakupan sekarang | Gerbangnya |
+| Rencana Phase 3 | Untuk apa |
 |---|---|
-| 6 komoditas inti | menunggu produksi per-kab komoditas lain dirilis BPS |
-| Tahun acuan 2022 | tahun terlengkap di semua sumber per-kab; tahun baru tinggal di-ingest |
-| Daging ayam & telur belum | 13 komoditas lain masih placeholder sintetis, tidak disajikan ke pengguna (`DATA_BACKEND=csv`) |
-| Konsumsi cabai/bawang via angka nasional | konsumsi beras sudah per-kab & dipakai nyata; sisanya menunggu publikasi |
-| Harga Tier-2 (kab non-IHK) | Panel Harga Bapanas dalam pemeliharaan; saat feed pulih, 30+ kab langsung tercakup |
+| **Skala nasional 514 kab** | Dari 38 kab Jatim → seluruh Indonesia (perlu spatial partitioning + precompute jarak) |
+| **Exogenous forecasting** (indeks ENSO/iklim, kalender Ramadan) | Akurasi prediksi naik saat ada guncangan iklim & hari raya |
+| **Qdrant / Redis / n8n** | Vector scale, caching, orkestrasi terjadwal — saat beban nyata muncul |
+| **Sahabat-AI (Bahasa Jawa/Madura) + IVR telepon** | Inklusi petani lansia & pengguna feature-phone |
+| **Daging ayam & telur (data real)** | Perlu data produksi broiler & telur-ras per-kab yang lengkap |
+| **Fasilitasi transaksi / akses pasar luar daerah** *(gap dari wawancara)* | Temuan bawang merah & padi: info harga saja "kurang efektif" tanpa saluran jual-beli yang memutus ketergantungan tengkulak |
+| **Harga granular per kota/pasar** *(gap dari wawancara)* | Temuan cabai: sumber kini hanya level provinsi; selisih harga riil bisa Rp5.000–15.000/kg |
+| **Transparansi sumber data & jaminan keamanan transaksi** *(gap dari wawancara)* | Syarat kepercayaan: Labib menanyakan sumber & mekanisme update; padi ragu keamanan transaksi + petani lansia butuh onboarding anti-"ribet" |
 
-## Utang teknis yang sudah kami ukur (perbaikan terjadwal)
+## Cakupan saat ini (yang membatasi adalah ketersediaan data, bukan sistem)
 
-Dua batas ini kami ukur sendiri terhadap performa maksimal engine, dengan benchmark yang di-commit dan dapat direproduksi juri.
+Mesin AgriFlow **sudah siap memproses data apa pun yang diberikan**. Cakupan sekarang ditentukan oleh **ketersediaan data publik per-kabupaten** — begitu sumber datanya terbuka, pipeline yang sama langsung memprosesnya tanpa ubah arsitektur.
 
-1. Allocator belum optimal. Diuji terhadap optimum LP transportation eksak pada data BPS asli: tier stable meninggalkan 25,4% welfare berbobot-ekuitas, tier greedy 11,1%. Bukti nyata: permintaan cabai_merah Sumenep terisi 26% padahal pasokan terjangkau (2.662 ton, radius 200 km) melebihi kebutuhan (1.418 ton), greedy mengalokasikannya lebih dulu ke tempat lain. Jadi ini soal optimalitas, bukan kelangkaan. Rencana: ganti ke solver capacitated min-cost-flow / entropic-OT (milidetik pada skala provinsi, provably optimal); greedy tetap sebagai v1. Akar: `matching_engine/allocation.py:307`. Benchmark: `benchmarks/greedy_vs_optimal.py`.
-2. Satukan detektor anomali. Panel anomali pengguna sudah pakai S-H-ESD robust (`analysis/price_anomaly.py`). Namun gerbang pre-filter D3 internal (`matching_engine/engine.py:62`) masih z-score 3σ non-robust, pada 70.953 observasi PIHPS asli hanya me-recall 14,4% anomali tervalidasi, dan flag D3 mengeluarkan node dari matching sepenuhnya. Rencana: arahkan D3 ke output S-H-ESD yang sama (perlu ubah kontrak `historical_prices`). Benchmark: `benchmarks/anomaly_detector_gap.py`.
+| Cakupan sekarang | Gerbangnya: ketersediaan data |
+|---|---|
+| 6 komoditas inti | Engine menerima komoditas apa pun; sisanya menunggu data **produksi per-kabupaten** dirilis BPS pada granularitas sama |
+| Tahun acuan 2022 | Tahun konsisten terbaru yang lengkap di semua sumber per-kab; tahun lebih baru tinggal di-*ingest* saat BPS merilis |
+| Daging ayam & telur belum | Data produksi broiler/ayam-ras per-kab belum tersedia di sumber publik; 13 komoditas lain (termasuk telur & daging ayam) masih berstatus **placeholder sintetis** di `historical_price_stats.csv`, tidak terjangkau lewat backend produksi (`DATA_BACKEND=csv`) |
+| Konsumsi cabai/bawang via angka nasional | Konsumsi *per-kabupaten* untuk komoditas ini belum dipublikasikan; konsumsi **beras sudah per-kab & dipakai nyata** |
+| Harga Tier-2 (kab non-IHK) | Panel Harga Bapanas sedang pemeliharaan; saat feed pulih, 30+ kab tambahan langsung tercakup |
 
 ## Scaling up
 
-Peningkatan skala nasional dibatasi laju keterbukaan data publik per-kabupaten, bukan kesiapan teknis. Pendekatan kami: buktikan nilai dulu di skala provinsi dengan data nyata, lalu perluas seiring data tersedia.
+Peningkatan skala (nasional 514 kab, multi-komoditas penuh, real-time) **dibatasi oleh laju keterbukaan data publik per-kabupaten — bukan oleh kesiapan teknis.** Engine sudah siap; tinggal data feed-nya tersedia, lalu optimasi skala (spatial partitioning). Pendekatan kami: **buktikan nilai dulu di skala provinsi dengan data nyata, lalu perluas seiring data tersedia.** Foundation-model forecasting (TimesFM 2.0) dan kanal suara/Bahasa daerah adalah peningkatan terjadwal fase berikutnya.
 
 ---
 

@@ -57,5 +57,26 @@ class Settings:
     # Server
     public_base_url: str = os.getenv("PUBLIC_BASE_URL", "http://localhost:8000")
 
+    # Free tier / billing
+    # Master switch for the WhatsApp paywall. Default OFF: the quota machinery
+    # ships complete and tested, but WhatsApp stays unlimited until the business
+    # decision to meter it is actually made. Flip to true to enable.
+    quota_enabled: bool = _bool(os.getenv("QUOTA_ENABLED"), default=False)
+    # Metered queries a FREE WhatsApp sender gets per day (resets 00:00 WIB).
+    free_daily_quota: int = int(os.getenv("FREE_DAILY_QUOTA", "2"))
+    pro_price_idr: int = int(os.getenv("PRO_PRICE_IDR", "25000"))
+    # Salt for the phone-number digest. MUST be set in production — see the
+    # note in subscription.hash_phone about the reversibility of an unsalted
+    # hash over the Indonesian mobile keyspace.
+    phone_hash_salt: str = os.getenv("PHONE_HASH_SALT", "")
+    # json (offline-safe, default) | postgres
+    quota_backend: str = os.getenv("QUOTA_BACKEND", "json")
+    # Mock billing settles orders with no gateway. Default True so a fresh
+    # clone demos end-to-end; set false once a real provider is wired.
+    billing_mock: bool = _bool(os.getenv("BILLING_MOCK"), default=True)
+    # /chat is unmetered when no sender is supplied, so it bypasses the
+    # paywall. Disable it in deployments where that matters.
+    debug_chat_enabled: bool = _bool(os.getenv("DEBUG_CHAT_ENABLED"), default=True)
+
 
 settings = Settings()

@@ -48,9 +48,16 @@ def _idr(amount: float) -> str:
     return f"Rp {amount:,.0f}".replace(",", ".")
 
 
+# Marker for "I could not answer because the question was incomplete".
+# server.py checks for this prefix so an unanswerable query is not billed
+# against the user's free daily quota — being asked to rephrase must be free,
+# otherwise a user can burn their whole allowance on typos.
+MISSING_SLOT_PREFIX = "Maaf, saya butuh info tambahan:"
+
+
 def _missing_slot_reply(missing: List[str]) -> str:
     return (
-        "Maaf, saya butuh info tambahan: " + ", ".join(missing) + ".\n"
+        MISSING_SLOT_PREFIX + " " + ", ".join(missing) + ".\n"
         "Contoh format:\n"
         "• \"Harga cabai di Malang\"\n"
         "• \"Cari pembeli 50 ton cabai Kediri\""

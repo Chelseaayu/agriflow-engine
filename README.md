@@ -174,54 +174,43 @@ Kami mewawancarai **4 petani lintas komoditas & skala usaha** — dari petani ma
 
 # 🌐 Phase 3 — Rencana Lanjutan & Scaling
 
-Komponen di bawah ini **sengaja kami tunda** karena *over-engineering* untuk skala sekarang. Kami kerjakan saat **scaling up**:
+Phase 3 memuat dua hal yang kami pisahkan secara jujur: fitur yang sengaja ditunda karena belum dibutuhkan pada skala sekarang, dan batas yang sudah kami ukur pada engine yang berjalan lalu kami jadwalkan perbaikannya.
 
-| Rencana Phase 3 | Untuk apa |
+## Yang ditunda (menunggu data atau beban nyata)
+
+| Rencana | Untuk apa | Pemicu |
+|---|---|---|
+| Skala nasional 514 kab | Dari 38 kab Jatim ke seluruh Indonesia | spatial partitioning + precompute jarak |
+| Exogenous forecasting (indeks ENSO, kalender Ramadan) | Akurasi naik saat guncangan iklim & hari raya | data eksogen tersedia |
+| Daging ayam & telur (data real) | Melengkapi 6 komoditas inti | produksi broiler & telur-ras per-kab dirilis |
+| Harga granular per kota/pasar | Selisih riil bisa Rp5.000 sampai 15.000/kg (wawancara cabai) | feed harga pasar terbuka |
+| Fasilitasi transaksi antar-daerah | Info harga saja "kurang efektif" tanpa saluran jual-beli (wawancara bawang & padi) | kemitraan penyaluran |
+| Transparansi sumber & keamanan transaksi | Syarat kepercayaan pengguna (wawancara) | tahap kemitraan resmi |
+| Sahabat-AI (Jawa/Madura) + IVR telepon | Inklusi petani lansia & feature-phone | tahap penskalaan kanal |
+| Qdrant / Redis / n8n | Vector scale, caching, orkestrasi | saat beban nyata muncul |
+
+## Batas cakupan hari ini (gerbangnya ketersediaan data, bukan arsitektur)
+
+Engine sudah siap memproses data apa pun; yang membatasi adalah ketersediaan data publik per-kabupaten. Begitu sumbernya terbuka, pipeline yang sama langsung memprosesnya tanpa ubah arsitektur.
+
+| Cakupan sekarang | Gerbangnya |
 |---|---|
-| **Skala nasional 514 kab** | Dari 38 kab Jatim → seluruh Indonesia (perlu spatial partitioning + precompute jarak) |
-| **Exogenous forecasting** (indeks ENSO/iklim, kalender Ramadan) | Akurasi prediksi naik saat ada guncangan iklim & hari raya |
-| **Qdrant / Redis / n8n** | Vector scale, caching, orkestrasi terjadwal — saat beban nyata muncul |
-| **Sahabat-AI (Bahasa Jawa/Madura) + IVR telepon** | Inklusi petani lansia & pengguna feature-phone |
-| **Daging ayam & telur (data real)** | Perlu data produksi broiler & telur-ras per-kab yang lengkap |
-| **Fasilitasi transaksi / akses pasar luar daerah** *(gap dari wawancara)* | Temuan bawang merah & padi: info harga saja "kurang efektif" tanpa saluran jual-beli yang memutus ketergantungan tengkulak |
-| **Harga granular per kota/pasar** *(gap dari wawancara)* | Temuan cabai: sumber kini hanya level provinsi; selisih harga riil bisa Rp5.000–15.000/kg |
-| **Transparansi sumber data & jaminan keamanan transaksi** *(gap dari wawancara)* | Syarat kepercayaan: Labib menanyakan sumber & mekanisme update; padi ragu keamanan transaksi + petani lansia butuh onboarding anti-"ribet" |
+| 6 komoditas inti | menunggu produksi per-kab komoditas lain dirilis BPS |
+| Tahun acuan 2022 | tahun terlengkap di semua sumber per-kab; tahun baru tinggal di-ingest |
+| Daging ayam & telur belum | 13 komoditas lain masih placeholder sintetis, tidak disajikan ke pengguna (`DATA_BACKEND=csv`) |
+| Konsumsi cabai/bawang via angka nasional | konsumsi beras sudah per-kab & dipakai nyata; sisanya menunggu publikasi |
+| Harga Tier-2 (kab non-IHK) | Panel Harga Bapanas dalam pemeliharaan; saat feed pulih, 30+ kab langsung tercakup |
 
-## Cakupan saat ini (yang membatasi adalah ketersediaan data, bukan sistem)
+## Utang teknis yang sudah kami ukur (perbaikan terjadwal)
 
-Mesin AgriFlow **sudah siap memproses data apa pun yang diberikan**. Cakupan sekarang ditentukan oleh **ketersediaan data publik per-kabupaten** — begitu sumber datanya terbuka, pipeline yang sama langsung memprosesnya tanpa ubah arsitektur.
+Dua batas ini kami ukur sendiri terhadap performa maksimal engine, dengan benchmark yang di-commit dan dapat direproduksi juri.
 
-| Cakupan sekarang | Gerbangnya: ketersediaan data |
-|---|---|
-| 6 komoditas inti | Engine menerima komoditas apa pun; sisanya menunggu data **produksi per-kabupaten** dirilis BPS pada granularitas sama |
-| Tahun acuan 2022 | Tahun konsisten terbaru yang lengkap di semua sumber per-kab; tahun lebih baru tinggal di-*ingest* saat BPS merilis |
-| Daging ayam & telur belum | Data produksi broiler/ayam-ras per-kab belum tersedia di sumber publik; 13 komoditas lain (termasuk telur & daging ayam) masih berstatus **placeholder sintetis** di `historical_price_stats.csv`, tidak terjangkau lewat backend produksi (`DATA_BACKEND=csv`) |
-| Konsumsi cabai/bawang via angka nasional | Konsumsi *per-kabupaten* untuk komoditas ini belum dipublikasikan; konsumsi **beras sudah per-kab & dipakai nyata** |
-| Harga Tier-2 (kab non-IHK) | Panel Harga Bapanas sedang pemeliharaan; saat feed pulih, 30+ kab tambahan langsung tercakup |
+1. Allocator belum optimal. Diuji terhadap optimum LP transportation eksak pada data BPS asli: tier stable meninggalkan 25,4% welfare berbobot-ekuitas, tier greedy 11,1%. Bukti nyata: permintaan cabai_merah Sumenep terisi 26% padahal pasokan terjangkau (2.662 ton, radius 200 km) melebihi kebutuhan (1.418 ton), greedy mengalokasikannya lebih dulu ke tempat lain. Jadi ini soal optimalitas, bukan kelangkaan. Rencana: ganti ke solver capacitated min-cost-flow / entropic-OT (milidetik pada skala provinsi, provably optimal); greedy tetap sebagai v1. Akar: `matching_engine/allocation.py:307`. Benchmark: `benchmarks/greedy_vs_optimal.py`.
+2. Satukan detektor anomali. Panel anomali pengguna sudah pakai S-H-ESD robust (`analysis/price_anomaly.py`). Namun gerbang pre-filter D3 internal (`matching_engine/engine.py:62`) masih z-score 3σ non-robust, pada 70.953 observasi PIHPS asli hanya me-recall 14,4% anomali tervalidasi, dan flag D3 mengeluarkan node dari matching sepenuhnya. Rencana: arahkan D3 ke output S-H-ESD yang sama (perlu ubah kontrak `historical_prices`). Benchmark: `benchmarks/anomaly_detector_gap.py`.
 
 ## Scaling up
 
-Peningkatan skala (nasional 514 kab, multi-komoditas penuh, real-time) **dibatasi oleh laju keterbukaan data publik per-kabupaten — bukan oleh kesiapan teknis.** Engine sudah siap; tinggal data feed-nya tersedia, lalu optimasi skala (spatial partitioning). Pendekatan kami: **buktikan nilai dulu di skala provinsi dengan data nyata, lalu perluas seiring data tersedia.** Foundation-model forecasting (TimesFM 2.0) dan kanal suara/Bahasa daerah adalah peningkatan terjadwal fase berikutnya.
-
-## Utang teknis terukur (perbaikan terjadwal)
-
-Dua batasan berikut sudah kami ukur sendiri terhadap performa maksimal yang mungkin dicapai engine ini, bukan cuma diklaim begitu saja. Angkanya berasal dari benchmark yang di-commit di repo ini dan bisa direproduksi oleh juri.
-
-**1. Allocator belum optimal (min-cost-flow / optimal transport).**
-
-Allocator greedy/stable yang di-ship terbukti belum optimal. Diuji terhadap solusi LP transportation yang eksak, pada data BPS asli: tier stable meninggalkan 25,4% welfare berbobot-ekuitas di atas meja, tier greedy 11,1%. Benchmark: [`benchmarks/greedy_vs_optimal.py`](benchmarks/greedy_vs_optimal.py) (seeded, reproducible, memanggil fungsi engine sendiri).
-
-Bukti nyata di data real: permintaan cabai_merah Sumenep hanya terisi 26%, padahal pasokan terjangkau (2.662 ton dalam radius 200 km) melebihi kebutuhannya (1.418 ton). Allocator greedy sudah mengomit pasokan itu ke tempat lain lebih dulu. Jadi ini bukan masalah kelangkaan, ini masalah optimalitas alokasi.
-
-Rencana perbaikan: ganti greedy dengan solver capacitated min-cost-flow / entropic-OT (hitungan milidetik pada skala provinsi, provably optimal, dan dual-nya memberi shadow price per-kabupaten). Greedy tetap dipertahankan sebagai v1 yang di-ship.
-
-Akar masalahnya: `stable_match_tier1` bersifat satu-ke-satu dan mencatat min(supply, deficit) (`matching_engine/allocation.py:307`), jadi surplus besar yang dipasangkan ke deficit kecil membuat sisanya terdampar.
-
-**2. Satukan detektor anomali.**
-
-Ada dua detektor anomali harga di codebase. Panel anomali yang dilihat pengguna, di dashboard/API, sudah memakai metode robust dan sadar-musim, S-H-ESD (`analysis/price_anomaly.py`). Itu sudah bagus, dan README ini sudah memujinya. Masalahnya ada di detektor kedua, yang internal: gerbang pre-filter D3 milik engine (`matching_engine/engine.py:62`, `detect_price_anomaly`) memakai z-score 3σ non-robust terhadap ambang statis. Diuji terhadap 70.953 observasi PIHPS asli, detektor ini hanya me-recall 14,4% dari anomali persisten yang tervalidasi oleh S-H-ESD. Flag D3 mengecualikan sebuah node dari matching sepenuhnya, jadi gerbang yang lemah diam-diam membuang supply/demand nyata. Benchmark: [`benchmarks/anomaly_detector_gap.py`](benchmarks/anomaly_detector_gap.py).
-
-Rencana perbaikan: pensiunkan detektor kedua ini, dan buat gerbang D3 mengonsumsi output S-H-ESD tervalidasi yang sama dengan yang dipakai dashboard. Perbaikan ini butuh mengubah kontrak `historical_prices`, dari commodity→(median,std) menjadi (city,commodity,date), jadi ini perubahan arsitektur yang dijadwalkan untuk Phase 3, bukan hot-patch.
+Peningkatan skala nasional dibatasi laju keterbukaan data publik per-kabupaten, bukan kesiapan teknis. Pendekatan kami: buktikan nilai dulu di skala provinsi dengan data nyata, lalu perluas seiring data tersedia.
 
 ---
 

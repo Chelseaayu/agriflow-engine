@@ -153,51 +153,43 @@ The initial proposal listed a large stack (Qdrant, LangChain, Redis, n8n, multi-
 
 # Phase 3 — Future Plans & Scaling
 
-The components below were **intentionally deferred** because they would be *over-engineering* at current scale. We will build them when **scaling up**:
+Phase 3 covers two things we keep honestly separate: features we intentionally deferred because they aren't needed at the current scale, and limits we've measured on the running engine and scheduled fixes for.
 
-| Phase 3 Plan | Purpose |
+## What's deferred (waiting on data or real load)
+
+| Plan | Purpose | Trigger |
+|---|---|---|
+| National scale, 514 districts | From 38 East Java districts to all of Indonesia | spatial partitioning + distance precompute |
+| Exogenous forecasting (ENSO index, Ramadan calendar) | Accuracy improves under climate shocks & holidays | exogenous data available |
+| Broiler chicken & eggs (real data) | Completes the 6 core commodities | per-district broiler & layer-egg production data released |
+| Granular per-city/market prices | Real gap can be Rp5,000 to 15,000/kg (chilli interview) | open market price feed |
+| Facilitating inter-district transactions | Price info alone is "not effective enough" without a buy/sell channel (onion & rice interviews) | distribution partnership |
+| Source transparency & transaction security | User-trust requirement (interviews) | formal partnership stage |
+| Sahabat-AI (Javanese/Madurese) + phone IVR | Inclusion for elderly farmers & feature-phone users | channel-scaling stage |
+| Qdrant / Redis / n8n | Vector scale, caching, orchestration | when real load arrives |
+
+## Coverage limits today (the gate is data availability, not architecture)
+
+The engine is already ready to process any data it's given; what limits it is the availability of public per-district data. Once a source opens up, the same pipeline processes it immediately with no architecture change.
+
+| Coverage today | The gate |
 |---|---|
-| **National scale, 514 districts** | From 38 East Java districts → all Indonesia (needs spatial partitioning + distance precompute) |
-| **Exogenous forecasting** (ENSO/climate index, Ramadan calendar) | Prediction accuracy improves with climate shocks & seasonal events |
-| **Qdrant / Redis / n8n** | Vector scale, caching, scheduled orchestration — when real load arrives |
-| **Sahabat-AI (Javanese/Madurese) + IVR phone** | Inclusion for elderly farmers and feature-phone users |
-| **Broiler chicken & eggs (real data)** | Requires complete per-district broiler & layer egg production data |
-
-## Current Coverage (the gate is data availability, not the system)
-
-The AgriFlow engine is **ready to process whatever data it is given**. Today's coverage is set by the **availability of public per-district data** — once the source opens up, the same pipeline processes it with no architectural change.
-
-| Current coverage | The gate: data availability |
-|---|---|
-| 6 core commodities | Engine accepts any commodity; the rest await **per-district production data** published by BPS at the same granularity |
-| Reference year 2022 | The latest year consistently complete across all per-district sources; newer years are simply ingested as BPS releases them |
-| Meat & eggs pending | Per-district broiler/layer production data is not yet in public sources; 13 other commodities (including eggs & chicken meat) are still **synthetic placeholders** in `historical_price_stats.csv`, unreachable through the production backend (`DATA_BACKEND=csv`) |
-| Chilli/onion consumption via national figures | *Per-district* consumption for these isn't published yet; **rice consumption is already per-district & used for real** |
-| Tier-2 prices (non-IHK districts) | Bapanas Panel Harga is under maintenance; once the feed is restored, 30+ more districts are covered |
-
-## Scaling Up
-
-Scaling (national 514 districts, full multi-commodity, real-time) is **gated by the pace of public per-district data opening up — not by technical readiness.** The engine is ready; it just needs the data feeds, then scale optimization (spatial partitioning). Our approach: **prove value at province scale with real data first, then expand as data becomes available.** Foundation-model forecasting (TimesFM 2.0) and voice/regional-language channels are scheduled enhancements for the next phase.
+| 6 core commodities | awaiting per-district production data for other commodities to be released by BPS |
+| Reference year 2022 | the most complete year across all per-district sources; a newer year is simply ingested when available |
+| Broiler chicken & eggs not yet | the other 13 commodities remain synthetic placeholders, not served to users (`DATA_BACKEND=csv`) |
+| Chilli/onion consumption via national figures | rice consumption is already per-district & used for real; the rest awaits publication |
+| Tier-2 prices (non-IHK districts) | Bapanas Panel Harga is under maintenance; once the feed is restored, 30+ districts are covered immediately |
 
 ## Quantified engineering debt (scheduled fixes)
 
-We measured these two limitations against this engine's own achievable ceiling ourselves, not just claimed them. The numbers come from benchmarks committed in this repo, reproducible by a judge.
+We measured these two limits ourselves against the engine's own achievable ceiling, with benchmarks committed and reproducible by a judge.
 
-**1. Optimal allocator (min-cost-flow / optimal transport).**
+1. The allocator is not yet optimal. Measured against the exact LP transportation optimum on real BPS data: the stable tier leaves 25.4% of equity-weighted welfare on the table, the greedy tier 11.1%. Concrete evidence: Sumenep's cabai_merah demand is only 26% filled even though reachable supply (2,662 t within 200 km) exceeds the need (1,418 t), greedy already committed that supply elsewhere first. So this is an optimality problem, not a scarcity problem. Plan: replace with a capacitated min-cost-flow / entropic-OT solver (milliseconds at province scale, provably optimal); greedy stays as v1. Root cause: `matching_engine/allocation.py:307`. Benchmark: `benchmarks/greedy_vs_optimal.py`.
+2. Unify the anomaly detectors. The user-facing anomaly panel already uses robust S-H-ESD (`analysis/price_anomaly.py`). But the internal D3 pre-filter gate (`matching_engine/engine.py:62`) still uses a non-robust 3σ z-score, on 70,953 real PIHPS observations it recalls only 14.4% of validated anomalies, and a D3 flag excludes a node from matching entirely. Plan: point D3 at the same S-H-ESD output (requires changing the `historical_prices` contract). Benchmark: `benchmarks/anomaly_detector_gap.py`.
 
-The shipped greedy/stable allocator is provably not optimal. Measured against an exact LP transportation optimum, on the real BPS data: the stable tier leaves 25.4% of equity-weighted welfare on the table, the greedy tier 11.1%. Benchmark: [`benchmarks/greedy_vs_optimal.py`](benchmarks/greedy_vs_optimal.py) (seeded, reproducible, calls the engine's own functions).
+## Scaling Up
 
-Concrete evidence on the real data: Sumenep's cabai_merah demand is only 26% filled, even though reachable supply (2,662 t within the 200 km limit) exceeds its need (1,418 t). The greedy allocator committed that supply elsewhere first. So this is not a scarcity problem, it's an allocation-optimality problem.
-
-Planned fix: replace greedy with a capacitated min-cost-flow / entropic-OT solver (milliseconds at province scale, provably optimal, and the dual gives per-district shadow prices). Greedy stays as the shipped v1.
-
-Root cause: `stable_match_tier1` is one-to-one and records min(supply, deficit) (`matching_engine/allocation.py:307`), so a large surplus matched to a small deficit strands the remainder.
-
-**2. Unify the anomaly detector.**
-
-There are two price-anomaly detectors in the codebase. The user-facing panel, in the dashboard/API, already uses a robust, season-aware method, S-H-ESD (`analysis/price_anomaly.py`). That one is good, and this README already praises it. The problem is a second, internal detector: the engine's D3 pre-filter gate (`matching_engine/engine.py:62`, `detect_price_anomaly`) uses a non-robust 3σ z-score against a static threshold. Measured against 70,953 real PIHPS observations, it recalls only 14.4% of the validated persistent anomalies the S-H-ESD detector finds. A D3 flag excludes a node from matching entirely, so a weak gate silently drops real supply/demand. Benchmark: [`benchmarks/anomaly_detector_gap.py`](benchmarks/anomaly_detector_gap.py).
-
-Planned fix: retire the second detector, and have the D3 stage consume the same validated S-H-ESD output the dashboard uses. This requires reshaping the `historical_prices` contract, from commodity→(median,std) to (city,commodity,date), so it's an architecture change scheduled for Phase 3, not a hot-patch.
+National-scale growth is gated by the pace of public per-district data opening up, not technical readiness. Our approach: prove value at province scale with real data first, then expand as data becomes available.
 
 ---
 

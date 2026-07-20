@@ -1,10 +1,21 @@
 // Typed thin wrapper around the FastAPI dashboard endpoints.
 
+import { getSupabase } from "./supabase";
+
 const API_BASE =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
   "http://localhost:8000";
 
 export type Commodity = { code: string; nama: string };
+
+export type BillingStatus = {
+  plan: "FREE" | "PRO";
+  is_pro: boolean;
+  expires_at: string | null;
+  used_today: number;
+  limit: number;
+  remaining: number; // -1 means unlimited (PRO)
+};
 
 export type Kabupaten = {
   id: string;
@@ -108,8 +119,30 @@ export type AnomaliesResponse = {
 // Fetch helper + API object
 // ---------------------------------------------------------------------------
 
+// Thrown when the API rejects our token. Callers can catch this specifically
+// to send the user back to /login instead of showing a generic error.
+export class UnauthorizedError extends Error {
+  constructor(path: string) {
+    super(`${path} requires sign-in`);
+    this.name = "UnauthorizedError";
+  }
+}
+
 async function fetchJson<T>(path: string): Promise<T> {
-  const r = await fetch(`${API_BASE}${path}`, { cache: "no-store" });
+  const headers: Record<string, string> = {};
+
+  // Attach the Supabase access token when there is a session. getSession()
+  // refreshes it if it is close to expiry, so a tab left open overnight sends
+  // a live token rather than a stale one.
+  const supabase = getSupabase();
+  if (supabase) {
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    if (token) headers.Authorization = `Bearer ${token}`;
+  }
+
+  const r = await fetch(`${API_BASE}${path}`, { cache: "no-store", headers });
+  if (r.status === 401) throw new UnauthorizedError(path);
   if (!r.ok) throw new Error(`${path} failed: ${r.status}`);
   return r.json() as Promise<T>;
 }
@@ -145,4 +178,10 @@ export const api = {
     if (params.since) q.set("since", params.since);
     return fetchJson<AnomaliesResponse>(`/api/v1/anomalies?${q.toString()}`);
   },
+  // Plan + remaining free-tier quota for a WhatsApp number. The API hashes the
+  // number server-side; it is never stored in raw form.
+  billingStatus: (phone: string) =>
+    fetchJson<BillingStatus>(
+      `/billing/status?phone=${encodeURIComponent(phone)}`,
+    ),
 };

@@ -61,11 +61,26 @@ def _load_data_backend() -> dict:
     return _load_csv()
 
 
+from . import billing
+from .auth import AuthUser, GatedUser, RequireUser, auth_configured, require_auth_enabled
 from .config import settings
 from .gemini_client import GeminiClient
-from .handlers import EngineData, dispatch
-from .intent import classify
+from .handlers import MISSING_SLOT_PREFIX, EngineData, dispatch
+from .intent import (
+    INTENT_ANOMALI, INTENT_CARI_PEMBELI, INTENT_CARI_PENJUAL,
+    INTENT_FORECAST, INTENT_HARGA_LOOKUP, classify,
+)
+from .subscription import SubscriptionService, hash_phone
 from .twilio_client import make_twiml_response, validate_signature
+
+
+# Intents that consume free-tier quota. The fallback intent is excluded on
+# purpose: a Gemini chit-chat answer is not the product, and charging for it
+# would let a vague question burn the user's daily allowance.
+METERED_INTENTS = frozenset({
+    INTENT_HARGA_LOOKUP, INTENT_CARI_PEMBELI, INTENT_CARI_PENJUAL,
+    INTENT_FORECAST, INTENT_ANOMALI,
+})
 
 
 # =============================================================================
@@ -75,6 +90,7 @@ from .twilio_client import make_twiml_response, validate_signature
 class AppState:
     data: EngineData | None = None
     gemini: GeminiClient | None = None
+    subs: SubscriptionService | None = None
 
 
 state = AppState()
@@ -84,6 +100,7 @@ state = AppState()
 async def lifespan(app: FastAPI):
     state.data = EngineData(_load_data_backend())
     state.gemini = GeminiClient()
+    state.subs = SubscriptionService()
     yield
     # No teardown needed
 
@@ -115,17 +132,71 @@ app.add_middleware(
 # CORE — pure function (no Twilio coupling), reused by /whatsapp and /chat
 # =============================================================================
 
-def handle_message(message: str) -> str:
-    """Pure pipeline: text in → text out. Easy to unit-test."""
-    if state.data is None or state.gemini is None:
-        # Eager init for non-FastAPI callers (CLI, tests not using TestClient)
+def _ensure_state() -> None:
+    """Eager init for non-FastAPI callers (CLI, tests not using TestClient)."""
+    if state.data is None:
         state.data = EngineData(_load_data_backend())
+    if state.gemini is None:
         state.gemini = GeminiClient()
+    if state.subs is None:
+        state.subs = SubscriptionService()
+
+
+def handle_message(message: str, sender: str | None = None) -> str:
+    """
+    Pure pipeline: text in → text out. Easy to unit-test.
+
+    `sender` is the raw WhatsApp identifier ('whatsapp:+62...'). When it is
+    absent the message is treated as anonymous and no quota is applied — that
+    is the debug path (/chat, CLI). The Twilio webhook always passes a sender,
+    so real users are always metered.
+
+    Order of operations matters here:
+      1. Billing/help commands run first and are never metered, so a user at
+         their limit can still reach STATUS and UPGRADE.
+      2. The quota check runs before dispatch, so an over-limit user gets the
+         upgrade offer instead of an answer.
+      3. Quota is consumed only *after* a metered intent produced a real
+         answer, so incomplete questions cost nothing.
+    """
+    _ensure_state()
+    assert state.data is not None and state.gemini is not None and state.subs is not None
+
+    phone_hash = hash_phone(sender) if sender else ""
+
+    # 1. Commands — free, and available even at zero remaining quota.
+    #    Skipped entirely when the paywall is off: with no quota there is no
+    #    billing surface, and a STATUS reply quoting a limit nobody enforces
+    #    would be a lie.
+    if settings.quota_enabled and phone_hash:
+        command = billing.parse_command(message)
+        if command is not None:
+            return billing.handle_command(command, phone_hash, state.subs)
+
     intent = classify(
         message, state.gemini,
         state.data.kabupaten, state.data.komoditas,
     )
-    return dispatch(intent, state.data, state.gemini)
+    metered = (
+        settings.quota_enabled
+        and bool(phone_hash)
+        and intent.name in METERED_INTENTS
+    )
+
+    # 2. Paywall.
+    if metered:
+        decision = state.subs.check(phone_hash)
+        if not decision.allowed:
+            order = state.subs.start_upgrade(phone_hash)
+            return billing.quota_exceeded(decision, order)
+
+    reply = dispatch(intent, state.data, state.gemini)
+
+    # 3. Bill only a query we actually answered.
+    if metered and not reply.startswith(MISSING_SLOT_PREFIX):
+        state.subs.consume(phone_hash)
+
+    return reply
 
 
 # =============================================================================
@@ -143,6 +214,15 @@ async def health() -> Dict[str, Any]:
         "kabupaten_count": len(state.data.kabupaten) if data_loaded else 0,
         "komoditas_count": len(state.data.komoditas) if data_loaded else 0,
         "gemini_mock": state.gemini.mock if state.gemini else None,
+        "auth_configured": auth_configured(),
+        "require_auth": require_auth_enabled(),
+        "quota_enabled": settings.quota_enabled,
+        "free_daily_quota": settings.free_daily_quota,
+        "quota_backend": settings.quota_backend,
+        "billing_mock": settings.billing_mock,
+        # Surfaced so a deployment check can catch an unsalted hash without
+        # exposing the salt itself.
+        "phone_hash_salted": bool(settings.phone_hash_salt),
     }
 
 
@@ -169,7 +249,7 @@ async def whatsapp_webhook(
         ):
             raise HTTPException(status_code=403, detail="Invalid Twilio signature")
 
-    reply = handle_message(Body)
+    reply = handle_message(Body, sender=From)
     return Response(content=make_twiml_response(reply), media_type="application/xml")
 
 
@@ -179,12 +259,161 @@ async def chat_debug(payload: Dict[str, str]) -> JSONResponse:
     Debug endpoint — bypasses Twilio. Useful for local curl testing:
         curl -X POST localhost:8000/chat -H 'Content-Type: application/json' \\
              -d '{"message": "Harga cabai di Malang"}'
+
+    Pass an optional "from" field to exercise the quota flow end to end:
+             -d '{"message": "Harga cabai di Malang", "from": "whatsapp:+628123"}'
+
+    WITHOUT "from" this endpoint is unmetered, so it bypasses the paywall by
+    design. Set DEBUG_CHAT_ENABLED=false in any deployment where that matters —
+    the Twilio webhook is the metered path, this one is a development tool.
     """
+    if not settings.debug_chat_enabled:
+        raise HTTPException(status_code=404, detail="Not found")
     message = payload.get("message", "").strip()
     if not message:
         raise HTTPException(status_code=400, detail="message field required")
-    reply = handle_message(message)
+    reply = handle_message(message, sender=payload.get("from"))
     return JSONResponse({"reply": reply})
+
+
+# =============================================================================
+# BILLING — upgrade flow
+#
+# The payment page and confirm endpoint form the gateway seam. In mock mode
+# they are self-contained; to go live, point PUBLIC_BASE_URL's payment link at
+# Midtrans/Xendit and have their webhook POST /billing/confirm with the order id
+# after verifying the provider signature.
+# =============================================================================
+
+def _ensure_subs() -> SubscriptionService:
+    if state.subs is None:
+        state.subs = SubscriptionService()
+    return state.subs
+
+
+@app.get("/billing/pay/{order_id}")
+async def billing_pay_page(order_id: str) -> Response:
+    """
+    Minimal payment page the WhatsApp link opens.
+
+    In mock mode this renders a confirm button that settles the order. With a
+    real gateway this route would instead redirect to the provider's hosted
+    checkout for this order.
+    """
+    subs = _ensure_subs()
+    order = subs.store.get_order(order_id)
+    if order is None:
+        return Response(
+            content="<h1>Pesanan tidak ditemukan</h1>"
+                    "<p>Silakan balas UPGRADE di WhatsApp untuk membuat pesanan baru.</p>",
+            media_type="text/html", status_code=404,
+        )
+
+    amount = f"Rp {order.amount_idr:,.0f}".replace(",", ".")
+    if order.status == "PAID":
+        body = "<p class=ok>Pesanan ini sudah dibayar. Akun Anda sudah PRO.</p>"
+    elif billing.billing_mock_enabled():
+        body = (
+            f"<form method='post' action='/billing/confirm'>"
+            f"<input type='hidden' name='order_id' value='{order.order_id}'>"
+            f"<button type='submit'>Bayar {amount} (demo)</button></form>"
+            f"<p class=note>Mode demo — tidak ada transaksi sungguhan.</p>"
+        )
+    else:
+        body = "<p class=note>Menunggu pengalihan ke penyedia pembayaran.</p>"
+
+    return Response(
+        content=(
+            "<!doctype html><meta charset='utf-8'>"
+            "<meta name='viewport' content='width=device-width,initial-scale=1'>"
+            "<title>AgriFlow PRO</title>"
+            "<style>body{font-family:system-ui,sans-serif;max-width:26rem;margin:3rem auto;"
+            "padding:0 1rem;line-height:1.6}button{background:#15803d;color:#fff;border:0;"
+            "padding:.8rem 1.4rem;border-radius:.5rem;font-size:1rem;cursor:pointer;width:100%}"
+            ".note{color:#666;font-size:.9rem}.ok{color:#15803d;font-weight:600}</style>"
+            f"<h1>AgriFlow PRO</h1><p>Pesanan <b>{order.order_id}</b><br>"
+            f"Jumlah <b>{amount}</b> untuk 30 hari</p>{body}"
+        ),
+        media_type="text/html",
+    )
+
+
+@app.post("/billing/confirm")
+async def billing_confirm(request: Request) -> Response:
+    """
+    Settle an order and grant PRO — the gateway webhook seam.
+
+    Accepts either form-encoded (the mock page) or JSON (a webhook). A real
+    integration MUST verify the provider's signature here before trusting the
+    order id; right now anyone who knows an order id can settle it, which is
+    acceptable only because mock mode charges nothing.
+    """
+    subs = _ensure_subs()
+    ctype = request.headers.get("content-type", "")
+    if "application/json" in ctype:
+        payload = await request.json()
+        order_id = str(payload.get("order_id", ""))
+    else:
+        form = await request.form()
+        order_id = str(form.get("order_id", ""))
+
+    if not order_id:
+        raise HTTPException(status_code=400, detail="order_id required")
+
+    if not billing.billing_mock_enabled():
+        raise HTTPException(
+            status_code=501,
+            detail="Live payment confirmation is not wired yet. "
+                   "Implement provider signature verification before enabling.",
+        )
+
+    account = subs.confirm_payment(order_id)
+    if account is None:
+        raise HTTPException(status_code=404, detail=f"unknown order: {order_id}")
+
+    if "application/json" in ctype:
+        return JSONResponse({
+            "status": "ok",
+            "plan": account.plan,
+            "expires_at": account.expires_at.isoformat() if account.expires_at else None,
+        })
+    return Response(
+        content="<!doctype html><meta charset='utf-8'>"
+                "<style>body{font-family:system-ui,sans-serif;max-width:26rem;"
+                "margin:3rem auto;padding:0 1rem;line-height:1.6}</style>"
+                "<h1>Pembayaran berhasil</h1>"
+                "<p>Akun WhatsApp Anda sekarang PRO selama 30 hari. "
+                "Silakan kembali ke WhatsApp dan lanjutkan bertanya.</p>",
+        media_type="text/html",
+    )
+
+
+@app.get("/billing/status")
+async def billing_status(
+    phone: str = Query(..., description="WhatsApp number, e.g. +628123456789"),
+    user: AuthUser = RequireUser,
+) -> JSONResponse:
+    """
+    Plan + remaining quota for one number. Powers the dashboard account panel.
+
+    The number is hashed before lookup and never stored by this call.
+    """
+    subs = _ensure_subs()
+    phone_hash = hash_phone(phone)
+    if not phone_hash:
+        raise HTTPException(status_code=400, detail="invalid phone number")
+    decision = subs.check(phone_hash)
+    return JSONResponse({
+        "plan": decision.account.plan,
+        "is_pro": decision.account.is_pro,
+        "expires_at": (
+            decision.account.expires_at.isoformat()
+            if decision.account.expires_at else None
+        ),
+        "used_today": decision.used_today,
+        "limit": decision.limit,
+        "remaining": decision.remaining,
+    })
 
 
 # =============================================================================
@@ -195,6 +424,33 @@ def _ensure_engine() -> EngineData:
     if state.data is None:
         state.data = EngineData(_load_data_backend())
     return state.data
+
+
+# Cached full engine run.
+#
+# run_matching() is a pure function of the data loaded at startup, so re-running
+# it per request was burning ~1.5 ms of CPU to recompute a byte-identical
+# answer — about 60x the cost of everything else in the request and the binding
+# constraint on how many concurrent users one worker can serve.
+#
+# The cache is keyed on the EngineData object itself (not id(), which a garbage
+# collector can recycle onto a different object). Reloading data rebinds
+# state.data to a new instance, which misses the cache and recomputes.
+_matching_cache: Dict[str, Any] = {"data": None, "report": None}
+
+
+def _cached_report():
+    data = _ensure_engine()
+    if _matching_cache["data"] is not data:
+        _matching_cache["report"] = run_matching(
+            surplus_nodes=data.surplus,
+            deficit_nodes=data.deficit,
+            logistics=LogisticsContext(),
+            weather_forecasts=data.weather,
+            historical_prices=data.historical,
+        )
+        _matching_cache["data"] = data
+    return _matching_cache["report"]
 
 
 @app.get("/api/v1/commodities")
@@ -297,20 +553,18 @@ def _serialize_match(m) -> Dict[str, Any]:
 
 @app.get("/api/v1/matches")
 async def api_matches(
+    user: AuthUser | None = GatedUser,
     commodity: str | None = Query(None, description="Filter by commodity code"),
     kab_id: str | None = Query(None, description="Filter where this kab is surplus OR deficit side"),
     limit: int = Query(50, ge=1, le=500),
 ) -> JSONResponse:
-    """Run engine then filter. Returns scored matches for map flow lines + side panel."""
-    data = _ensure_engine()
-    report = run_matching(
-        surplus_nodes=data.surplus,
-        deficit_nodes=data.deficit,
-        logistics=LogisticsContext(),
-        weather_forecasts=data.weather,
-        historical_prices=data.historical,
-    )
-    matches = report.matches
+    """Serve scored matches for map flow lines + side panel, from a cached engine run."""
+    report = _cached_report()
+
+    # Copy before sorting. `report.matches` is the shared cached list, and an
+    # unfiltered request would otherwise sort it in place under every other
+    # concurrent caller.
+    matches = list(report.matches)
     if commodity:
         matches = [m for m in matches if m.surplus.commodity.code == commodity]
     if kab_id:
@@ -360,6 +614,7 @@ def _load_anomalies() -> list:
 
 @app.get("/api/v1/forecast")
 async def api_forecast(
+    user: AuthUser | None = GatedUser,
     commodity: str = Query(..., description="Commodity code, e.g. cabai_rawit"),
     city: str = Query(..., description="IHK city_id, e.g. 3578 (Surabaya)"),
 ) -> JSONResponse:
@@ -412,6 +667,7 @@ async def api_forecast(
 
 @app.get("/api/v1/anomalies")
 async def api_anomalies(
+    user: AuthUser | None = GatedUser,
     commodity: str | None = Query(None, description="Filter by commodity code"),
     city: str | None = Query(None, description="Filter by IHK city_id"),
     limit: int = Query(50, ge=1, le=500, description="Max records returned (sorted by score desc)"),
@@ -485,10 +741,16 @@ def _cli_main() -> None:
         except (AttributeError, OSError):
             pass
     if len(sys.argv) < 2:
-        print("Usage: python -m whatsapp_bot.server \"<your message>\"")
+        print("Usage: python -m whatsapp_bot.server \"<your message>\" [--from +628123]")
         sys.exit(1)
-    msg = " ".join(sys.argv[1:])
-    print(handle_message(msg))
+    argv = sys.argv[1:]
+    sender = None
+    if "--from" in argv:
+        i = argv.index("--from")
+        sender = argv[i + 1] if i + 1 < len(argv) else None
+        argv = argv[:i] + argv[i + 2:]
+    msg = " ".join(argv)
+    print(handle_message(msg, sender=sender))
 
 
 if __name__ == "__main__":

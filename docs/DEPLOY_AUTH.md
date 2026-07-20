@@ -1,0 +1,163 @@
+# Mengaktifkan Login Dashboard
+
+Panduan langkah demi langkah untuk menyalakan login AgriFlow di lingkungan nyata.
+
+**Tidak ada satu pun langkah di bawah yang perlu dikerjakan di laptop Anda.**
+Semuanya lewat browser: Supabase, Vercel, dan Hugging Face Spaces. File `.env`
+lokal hanya diperlukan kalau Anda ingin menjalankan sistem di laptop untuk
+pengembangan, dan itu opsional.
+
+Selama langkah ini belum dikerjakan, sistem tetap jalan seperti sekarang:
+peta publik terbuka, tombol "Masuk" tersembunyi, tidak ada yang rusak.
+
+---
+
+## 1. Supabase (browser)
+
+1. Buat project baru di https://supabase.com/dashboard.
+2. Buka **SQL Editor**, tempel isi `db/schema.sql`, jalankan.
+   Ini membuat 12 tabel termasuk `subscriber`, `wa_usage_daily`, `payment_order`.
+3. Buka **Authentication > Providers**, pastikan **Email** aktif.
+   Untuk uji coba internal, matikan "Confirm email" supaya akun langsung bisa dipakai.
+4. Buka **Settings > API** dan salin tiga nilai berikut:
+
+| Nilai | Dipakai di | Sifat |
+|---|---|---|
+| Project URL | Vercel + HF Spaces | publik |
+| `anon` public key | Vercel | publik (aman di browser) |
+| Connection string (Settings > Database) | HF Spaces | **RAHASIA** |
+
+> `service_role` key **tidak** dipakai di mana pun pada proyek ini. Kalau suatu
+> saat Anda memakainya, jangan pernah menaruhnya di variabel `NEXT_PUBLIC_*`,
+> karena semua `NEXT_PUBLIC_*` ikut terkirim ke browser pengguna.
+
+---
+
+## 2. Vercel — dashboard (browser)
+
+Project Settings > Environment Variables:
+
+```
+NEXT_PUBLIC_SUPABASE_URL       = https://xxxxxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY  = eyJhbGciOi...
+NEXT_PUBLIC_API_URL            = https://masteraaa123-agriflow-api.hf.space
+```
+
+Redeploy. Setelah ini tombol **Masuk** muncul, `/login` dan `/account` hidup,
+dan `proxy.ts` mulai menjaga `/account` di sisi server.
+
+---
+
+## 3. Hugging Face Spaces — API (browser)
+
+Space Settings > Variables and secrets:
+
+```
+SUPABASE_URL      = https://xxxxxxxx.supabase.co     (Variable)
+REQUIRE_AUTH      = false                            (Variable — lihat catatan)
+PHONE_HASH_SALT   = <64 karakter acak>               (Secret)
+```
+
+Kalau project Supabase Anda memakai skema lama HS256, ganti `SUPABASE_URL`
+dengan `SUPABASE_JWT_SECRET` (Secret). Salah satu saja, bukan keduanya.
+
+Membuat salt:
+
+```bash
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+### Kapan REQUIRE_AUTH dinyalakan
+
+- `false` — peta, prediksi, dan anomali terbuka untuk umum. **Pakai ini saat
+  penjurian**, supaya juri bisa mencoba tanpa membuat akun.
+- `true` — ketiganya jadi khusus pelanggan. Pakai setelah ada pelanggan nyata.
+
+`/billing/status` selalu butuh token, apa pun nilai flag ini, karena tanpa itu
+siapa pun bisa menebak-nebak nomor telepon mana yang berlangganan.
+
+---
+
+## 4. Verifikasi
+
+```bash
+curl -s https://<api-anda>/health | python -m json.tool
+```
+
+Yang harus terlihat:
+
+```json
+{
+  "auth_configured": true,      // ← kalau false, env belum terbaca
+  "require_auth": false,
+  "phone_hash_salted": true,    // ← kalau false, PHONE_HASH_SALT belum diset
+  "quota_enabled": false
+}
+```
+
+Lalu pastikan pintu terkunci benar-benar terkunci:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" \
+  "https://<api-anda>/billing/status?phone=%2B628123456789"
+# harus 401
+```
+
+---
+
+## Skala: apa yang sudah terbukti
+
+Diukur dengan `python benchmarks/dashboard_load.py --users 2000`:
+
+| Metrik | Hasil |
+|---|---|
+| Pengguna serentak | 2.000 |
+| Permintaan | 10.000 (5 per pengguna) |
+| Throughput | ~1.124 req/detik |
+| p99 muat halaman penuh | 211 ms |
+| Gagal | 0 |
+
+Verifikasi JWT bukan hambatan: ~40.000 verifikasi/detik/core, sekitar 0,025 ms
+per permintaan.
+
+**Kalau perlu lebih dari itu:**
+
+1. Tambah worker: `uvicorn --workers 4`. Engine bersifat baca-saja setelah
+   startup, jadi menambah worker aman.
+2. Kalau paywall WhatsApp dinyalakan (`QUOTA_ENABLED=true`) **wajib** pindah ke
+   `QUOTA_BACKEND=postgres`. Penyimpanan JSON menulis ulang seluruh berkas tiap
+   permintaan (60 ms pada 5.000 pengguna) dan tidak aman untuk banyak worker.
+3. Jaga anggaran koneksi: `worker x (DB_POOL_SIZE + DB_MAX_OVERFLOW)` harus di
+   bawah batas paket Supabase Anda.
+
+---
+
+## Lapisan pengamanan
+
+Tiga lapis, dan penting untuk tahu mana yang benar-benar menjaga data:
+
+| Lapis | Berkas | Fungsi |
+|---|---|---|
+| Tampilan | `AccountMenu.tsx`, `AuthProvider` | Menyembunyikan menu. **Bukan** pengamanan. |
+| Optimistis | `proxy.ts` | Memantulkan pengunjung dari `/account`. Cookie palsu bisa lolos. |
+| **Otoritatif** | `whatsapp_bot/auth.py` | **Verifikasi tanda tangan JWT. Ini yang menjaga data.** |
+
+Urutan ini disengaja dan sesuai anjuran dokumentasi Next.js: proxy untuk
+pemeriksaan optimistis, otorisasi sesungguhnya di lapisan data.
+
+Kasus penolakan yang sudah diuji (`tests/test_auth.py`, 29 pengujian): tanda
+tangan palsu, token tanpa tanda tangan (`alg: none`), token kedaluwarsa,
+audience salah, secret project lain, header tanpa skema Bearer, dan tanpa
+header sama sekali.
+
+---
+
+## Kalau ada yang tidak beres
+
+| Gejala | Penyebab yang paling sering |
+|---|---|
+| Tombol Masuk tidak muncul | `NEXT_PUBLIC_SUPABASE_*` belum diset di Vercel, atau belum redeploy |
+| Semua permintaan 401 | `SUPABASE_URL` di API berbeda project dengan yang di Vercel |
+| Login berhasil lalu keluar sendiri | Cookie diblokir; pastikan dashboard dan API sama-sama HTTPS |
+| `/health` bilang `auth_configured: false` | Env belum terbaca Space; restart Space setelah menyimpan |
+| `phone_hash_salted: false` | `PHONE_HASH_SALT` kosong. Mengubahnya nanti akan mereset semua identitas |

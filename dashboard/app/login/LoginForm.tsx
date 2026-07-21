@@ -88,9 +88,10 @@ export default function LoginForm() {
         )}
 
         {!configured && (
-          <p className="mt-4 rounded-lg bg-amber-50 border border-amber-200 p-3 text-sm text-amber-900">
-            Login belum dikonfigurasi di lingkungan ini. Peta dan data tetap
-            dapat diakses tanpa masuk.
+          <p className="mt-4 rounded-lg bg-sky-50 border border-sky-200 p-3 text-sm text-sky-900">
+            Login akun untuk dinas, TPID, dan mitra data akan segera hadir. Untuk
+            meninjau peta dan rekomendasi sekarang, silakan pilih <b>Masuk sebagai
+            Tamu</b> di bawah.
           </p>
         )}
 

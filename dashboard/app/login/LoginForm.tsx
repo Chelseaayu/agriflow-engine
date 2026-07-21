@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "../lib/auth";
@@ -31,9 +31,16 @@ export default function LoginForm() {
   const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
+  // Send an already-signed-in visitor away from the login page. This runs in an
+  // effect, not in render: calling router.replace() during render triggers
+  // React's "Cannot update a component (Router) while rendering a different
+  // component (LoginForm)" warning (a hard error under stricter React modes).
+  useEffect(() => {
+    if (user) router.replace(nextPath);
+  }, [user, nextPath, router]);
+
   if (user) {
-    // Already signed in — nothing to do on this page.
-    router.replace(nextPath);
+    // Redirect is in flight (handled by the effect above); render nothing.
     return null;
   }
 

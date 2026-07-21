@@ -89,7 +89,9 @@ from . import billing
 from .auth import AuthUser, GatedUser, RequireUser, auth_configured, require_auth_enabled
 from .config import settings
 from .gemini_client import GeminiClient
-from .handlers import MISSING_SLOT_PREFIX, EngineData, dispatch
+from .handlers import (
+    MISSING_SLOT_PREFIX, OUT_OF_COVERAGE_PREFIX, EngineData, dispatch,
+)
 from .intent import (
     INTENT_ANOMALI, INTENT_CARI_PEMBELI, INTENT_CARI_PENJUAL,
     INTENT_FORECAST, INTENT_HARGA_LOOKUP, classify,
@@ -216,8 +218,10 @@ def handle_message(message: str, sender: str | None = None) -> str:
 
     reply = dispatch(intent, state.data, state.gemini)
 
-    # 3. Bill only a query we actually answered.
-    if metered and not reply.startswith(MISSING_SLOT_PREFIX):
+    # 3. Bill only a query we actually answered. Asking the user to rephrase
+    #    is free, and so is telling them a commodity is outside our data —
+    #    neither delivered the thing they asked for.
+    if metered and not reply.startswith((MISSING_SLOT_PREFIX, OUT_OF_COVERAGE_PREFIX)):
         state.subs.consume(phone_hash)
 
     return reply

@@ -44,6 +44,17 @@ class Intent:
         return self.slots.get("commodity")
 
     @property
+    def commodity_raw(self) -> Optional[str]:
+        """
+        What the user called the commodity when it resolved to nothing.
+
+        Set only when a commodity WAS named but falls outside the loaded
+        dataset, so a handler can say "kentang is not covered" instead of
+        asking for a commodity name the user already gave.
+        """
+        return self.slots.get("commodity_raw")
+
+    @property
     def kabupaten_id(self) -> Optional[str]:
         """Normalized kabupaten id (e.g. '3578') for whichever slot is relevant."""
         return self.slots.get("kabupaten_id")
@@ -134,7 +145,14 @@ def classify(
 
     # Normalize commodity → code
     if "commodity" in slots:
-        slots["commodity"] = _normalize_commodity(slots["commodity"], commodity_lookup)
+        raw_commodity = slots["commodity"]
+        slots["commodity"] = _normalize_commodity(raw_commodity, commodity_lookup)
+        # Keep the original wording when it resolves to nothing. The dataset
+        # covers 6 commodities, so "kentang" is a routine miss, and the two
+        # cases need different replies: one asks for a missing slot, the other
+        # states what the platform actually covers.
+        if raw_commodity and not slots["commodity"]:
+            slots["commodity_raw"] = str(raw_commodity).strip()
 
     # Pick whichever kabupaten slot the intent uses + normalize it
     raw_kab = (

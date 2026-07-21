@@ -64,6 +64,27 @@ def _missing_slot_reply(missing: List[str]) -> str:
     )
 
 
+# Marker for "the commodity was understood, we simply have no data for it".
+# Kept distinct from MISSING_SLOT_PREFIX because the user error is different
+# and, like a missing slot, it must not be billed against the free quota.
+OUT_OF_COVERAGE_PREFIX = "Maaf, komoditas"
+
+
+def _out_of_coverage_reply(raw_name: str, data: EngineData) -> str:
+    """
+    Reply when the user named a commodity AgriFlow does not carry.
+
+    Mirrors the shape handle_forecast already uses: name the gap, then list
+    what is actually available so the user's next message can succeed.
+    """
+    available = ", ".join(sorted(c.nama for c in data.komoditas.values()))
+    return (
+        f"{OUT_OF_COVERAGE_PREFIX} \"{raw_name}\" belum tercakup data AgriFlow.\n"
+        "Tersedia untuk: " + available + ".\n"
+        "Contoh: \"Harga cabai di Malang\""
+    )
+
+
 # =============================================================================
 # DATA BUNDLE — passed in from server (loaded once at startup)
 # =============================================================================
@@ -85,6 +106,8 @@ class EngineData:
 
 def handle_harga_lookup(intent: Intent, data: EngineData) -> str:
     """Look up current price for a commodity in a specific kabupaten."""
+    if not intent.commodity and intent.commodity_raw:
+        return _out_of_coverage_reply(intent.commodity_raw, data)
     missing = []
     if not intent.commodity:
         missing.append("nama komoditas")
@@ -180,6 +203,8 @@ def _run_engine_filtered(
 
 def handle_cari_pembeli(intent: Intent, data: EngineData) -> str:
     """User has supply — find best buyers."""
+    if not intent.commodity and intent.commodity_raw:
+        return _out_of_coverage_reply(intent.commodity_raw, data)
     missing = []
     if not intent.commodity:
         missing.append("nama komoditas")
@@ -224,6 +249,8 @@ def handle_cari_pembeli(intent: Intent, data: EngineData) -> str:
 
 def handle_cari_penjual(intent: Intent, data: EngineData) -> str:
     """User has demand — find best suppliers."""
+    if not intent.commodity and intent.commodity_raw:
+        return _out_of_coverage_reply(intent.commodity_raw, data)
     missing = []
     if not intent.commodity:
         missing.append("nama komoditas")

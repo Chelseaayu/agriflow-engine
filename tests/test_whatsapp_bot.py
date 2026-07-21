@@ -17,9 +17,11 @@ if _ROOT not in sys.path:
 
 import pytest
 
-from sample_data.loader import load_all_sample_data
+from sample_data.loader import load_all_sample_data, load_real_data
 from whatsapp_bot.gemini_client import GeminiClient
-from whatsapp_bot.handlers import EngineData, dispatch
+from whatsapp_bot.handlers import (
+    MISSING_SLOT_PREFIX, OUT_OF_COVERAGE_PREFIX, EngineData, dispatch,
+)
 from whatsapp_bot.intent import (
     INTENT_CARI_PEMBELI, INTENT_CARI_PENJUAL,
     INTENT_FALLBACK, INTENT_HARGA_LOOKUP, classify,
@@ -161,6 +163,49 @@ class TestHandlerDispatch:
         intent = classify("Halo", gemini, data.kabupaten, data.komoditas)
         reply = dispatch(intent, data, gemini)
         assert "agriflow" in reply.lower()
+
+
+# =============================================================================
+# Out-of-coverage commodity — real BPS dataset
+#
+# The fixtures above load the synthetic file, which carries 13 commodities.
+# Production serves load_real_data(): 6 commodities from BPS Jatim. So
+# "kentang" is answerable in the fixture and NOT answerable in production,
+# and only the real dataset can exercise what a live user actually hits.
+# =============================================================================
+
+class TestOutOfCoverageCommodity:
+    @pytest.fixture(scope="class")
+    def real_data(self):
+        return EngineData(load_real_data())
+
+    def test_names_the_gap_instead_of_asking_again(self, gemini, real_data):
+        intent = classify(
+            "Harga kentang di Malang", gemini,
+            real_data.kabupaten, real_data.komoditas,
+        )
+        reply = dispatch(intent, real_data, gemini)
+        # The user DID name a commodity, so the reply must not claim otherwise.
+        assert "butuh info tambahan" not in reply.lower()
+        assert "kentang" in reply.lower()
+        assert "belum tercakup" in reply.lower()
+        # And it must point at something that will work next time.
+        assert "cabai" in reply.lower()
+
+    def test_still_asks_when_no_commodity_named(self, gemini, real_data):
+        intent = classify(
+            "Harga di Malang", gemini, real_data.kabupaten, real_data.komoditas,
+        )
+        reply = dispatch(intent, real_data, gemini)
+        assert reply.startswith(MISSING_SLOT_PREFIX)
+
+    def test_out_of_coverage_is_not_billed(self, gemini, real_data):
+        intent = classify(
+            "Cari pembeli 50 ton tomat Kediri", gemini,
+            real_data.kabupaten, real_data.komoditas,
+        )
+        reply = dispatch(intent, real_data, gemini)
+        assert reply.startswith(OUT_OF_COVERAGE_PREFIX)
 
 
 # =============================================================================

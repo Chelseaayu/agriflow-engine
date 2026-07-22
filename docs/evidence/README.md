@@ -24,14 +24,21 @@ Terakhir dijalankan ulang: **22 Juli 2026** (kecuali yang ditandai lain).
 | 7 | Validation report | ✅ Ada | [Audit menyeluruh Juli 2026](../AgriFlow_Audit_2026-07.pdf) · [metodologi data nyata](../../REAL_DATA_METHODOLOGY.md) |
 | 8 | Security test awal | ✅ Ada | [ringkasan](security-review.md) · 117 tes auth/kuota/RLS |
 | 9 | Error log | ✅ Ada | [contoh log JSON](runs/api-request-log-sample.jsonl) · [`whatsapp_bot/request_log.py`](../../whatsapp_bot/request_log.py) |
-| 10 | UAT | ⏳ Instrumen siap, **belum dijalankan** | [lembar UAT](uat-test-cases.md) |
-| 11 | Usability testing | ⏳ Instrumen siap, **belum dijalankan** | [protokol](usability-test-protocol.md) |
+| 10 | Usability testing | ✅ Putaran 1 selesai | [5 sesi, 20 sampai 22 Juli 2026](usability-early-testing.md) · [protokol putaran 2](usability-test-protocol.md) |
+| 11 | UAT | ⏳ Instrumen siap, **belum dijalankan** | [lembar UAT](uat-test-cases.md) |
 
-Dua baris terakhir sengaja tidak diberi angka. Instrumennya sudah lengkap dan siap pakai,
-tetapi keduanya menuntut pengguna sungguhan di depan produk, dan sesi itu belum
-terlaksana. Yang sudah kami punya dari lapangan adalah **4 wawancara petani** dengan
-rekaman audio ([di README utama](../../README.md#-validasi-lapangan--wawancara-petani)),
-dan itu adalah bukti *kebutuhan*, bukan bukti *kemudahan pakai*.
+Baris terakhir sengaja tidak diberi angka. Instrumennya lengkap dan siap pakai, tetapi
+menuntut penguji di luar tim, dan sesi itu belum terlaksana.
+
+Usability testing sudah punya hasil nyata: lima sesi berbasis tugas dengan pengguna nyata,
+100% tugas tuntas, skor kepuasan rata-rata 4,4 sampai 4,8 dari 5. Sesi itu dimoderasi
+anggota tim dan pesertanya baru lima orang, jadi
+[keterbatasannya dicantumkan bersama hasilnya](usability-early-testing.md#cara-membaca-hasil-ini).
+
+Terpisah dari itu, ada **4 wawancara petani** dengan rekaman audio
+([di README utama](../../README.md#-validasi-lapangan--wawancara-petani)). Wawancara itu
+bukti *kebutuhan*, bukan bukti *kemudahan pakai*, dan tidak dihitung sebagai usability
+testing.
 
 ---
 
@@ -249,12 +256,29 @@ ERROR lengkap dengan tipe pengecualian dan ekor traceback.
 Nomor telepon tidak pernah masuk log. Parameter yang berbau identitas atau kredensial
 diganti `<redacted>`, dan badan permintaan tidak dicatat sama sekali.
 
-## 10. UAT
+## 10. Usability testing
+
+**Putaran 1 sudah dijalankan**: lima sesi berbasis tugas pada 20 sampai 22 Juli 2026, empat
+petani lintas komoditas (cabai, bawang merah, kentang, padi) dan satu peneliti pascadoktoral
+BRIN, memakai dashboard dan bot WhatsApp.
+
+| | |
+|---|---|
+| Tugas tuntas | 20 dari 20 (100%) |
+| Kemudahan pakai | 4,6 dari 5 |
+| Kegunaan informasi | 4,8 dari 5 |
+| Kemauan merekomendasikan | 4,4 dari 5 |
+| Permintaan paling berulang | Informasi penjual atau supplier (3 dari 5 peserta) |
+
+Hasil lengkap, kutipan peserta, dan berkas sesi asli beserta screenshot:
+[usability-early-testing.md](usability-early-testing.md). Sesi dimoderasi anggota tim dan
+pesertanya baru lima orang; keterbatasan itu ditulis bersama hasilnya, bukan di catatan kaki.
+[Protokol putaran 2](usability-test-protocol.md) dirancang untuk menutup ketiga
+keterbatasan tersebut.
+
+## 11. UAT
 
 [Lembar UAT](uat-test-cases.md) berisi kasus uji dengan langkah, prasyarat, dan kriteria
-lulus. **Kolom hasilnya masih kosong karena sesinya belum dijalankan.**
-
-## 11. Usability testing
-
-[Protokol usability testing](usability-test-protocol.md) berisi tugas, metrik, dan panduan
-moderasi. **Belum dijalankan.**
+lulus. **Kolom hasilnya masih kosong karena sesinya belum dijalankan.** Berbeda dari
+usability testing di atas, UAT menuntut penguji di luar tim, termasuk seorang integrator
+yang mencoba API hanya berbekal README.

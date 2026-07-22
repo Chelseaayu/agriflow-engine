@@ -95,6 +95,16 @@ docs/AgriFlow_v12.docx
 docs/AgriFlow_v13.docx
 docs/AgriFlow_v13_clean.docx
 
+# Phase-2 proposal drafts — same stance as the v8-v13 docx above: internal team
+# artifacts, not for public repo.
+docs/Proposal phase 2*.docx
+docs/Proposal_AgriFlow_P0297_final.docx
+docs/proposal_phase2_working.md
+
+# Organizer's submission handbook — not our document to republish, and the PDF
+# alone is 19 MB.
+docs/BUKU PANDUAN*
+
 # Proposal docx generator scripts — internal toolchain, paired with the
 # gitignored .docx outputs above (kept consistent: if the artefact is private,
 # the script that builds it stays private too).

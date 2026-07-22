@@ -14,7 +14,7 @@ Language / Bahasa: **English** · [Bahasa Indonesia](./README.md)
 <p align="center">
   <img src="https://img.shields.io/badge/PIDI-DIGDAYA%20%C3%97%20Hackathon%202026-1B5E20?style=for-the-badge" alt="Hackathon"/>
   <img src="https://img.shields.io/badge/Problem%20Statement-2%20Matching%20Demand–Supply-4CAF50?style=for-the-badge" alt="PS"/>
-  <img src="https://img.shields.io/badge/tests-520%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
+  <img src="https://img.shields.io/badge/tests-523%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
 </p>
 
 > **Project roadmap spans 3 Phases.** Full technical documentation from previous versions is archived at [`README_v13.md`](README_v13.md) (latest snapshot), [`README_v12.md`](README_v12.md), and [`README_v11.md`](README_v11.md).
@@ -95,7 +95,7 @@ All three functions (Detect · Predict · Distribute) share one real data source
 
 > **Quality:** 523 automated tests pass (524 collected, 1 skipped) — the engine is tested, reproducible, and honest about its limitations (see [Testing & Scenarios](#testing--scenarios) and Phase 3).
 >
-> 📁 **[Full testing evidence](docs/evidence/README.md)** — test cases, experiment results, model evaluation, performance tests, A/B test, simulation results, initial security testing, error logs, validation report, plus the UAT and usability-testing instruments that have not been run yet.
+> 📁 **[Full testing evidence](docs/evidence/README.md)** — test cases, experiment results, model evaluation, performance tests, A/B test, simulation results, initial security testing, error logs, validation report, and [usability testing with 5 real users](docs/evidence/usability-early-testing.md) (100% task completion). UAT has a ready instrument but has not been run.
 
 ### Snapshots
 

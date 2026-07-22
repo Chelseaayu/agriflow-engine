@@ -14,7 +14,7 @@ Language / Bahasa: [English](./README.en.md) · **Bahasa Indonesia**
 <p align="center">
   <img src="https://img.shields.io/badge/PIDI-DIGDAYA%20%C3%97%20Hackathon%202026-1B5E20?style=for-the-badge" alt="Hackathon"/>
   <img src="https://img.shields.io/badge/Problem%20Statement-2%20Matching%20Demand–Supply-4CAF50?style=for-the-badge" alt="PS"/>
-  <img src="https://img.shields.io/badge/tests-520%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
+  <img src="https://img.shields.io/badge/tests-523%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
 </p>
 
 > **Roadmap proyek dibagi 3 Phase.** README teknis lengkap versi sebelumnya diarsipkan di [`README_v13.md`](README_v13.md) (snapshot terbaru), [`README_v12.md`](README_v12.md), dan [`README_v11.md`](README_v11.md).
@@ -95,7 +95,7 @@ Tiga fungsi (Deteksi · Prediksi · Distribusi) berbagi satu sumber data nyata, 
 
 > **Kualitas:** 523 tes otomatis lulus (524 terkumpul, 1 di-skip) — engine teruji, dapat direproduksi, dan jujur soal keterbatasannya (lihat [Pengujian & Skenario](#pengujian--skenario) dan Phase 3).
 >
-> 📁 **[Bukti pengujian lengkap](docs/evidence/README.md)** — test case, hasil eksperimen, model evaluation, performance test, A/B test, hasil simulasi, security test awal, error log, validation report, beserta instrumen UAT dan usability testing yang belum dijalankan.
+> 📁 **[Bukti pengujian lengkap](docs/evidence/README.md)** — test case, hasil eksperimen, model evaluation, performance test, A/B test, hasil simulasi, security test awal, error log, validation report, dan [usability testing dengan 5 pengguna nyata](docs/evidence/usability-early-testing.md) (100% tugas tuntas). UAT punya instrumen siap-pakai tapi belum dijalankan.
 
 ### Cuplikan
 

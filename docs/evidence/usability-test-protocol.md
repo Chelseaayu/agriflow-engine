@@ -1,11 +1,26 @@
-# Protokol Usability Testing — AgriFlow
+# Protokol Usability Testing — AgriFlow (putaran 2)
 
-**Status: belum dijalankan.** Ini instrumen. Bagian hasil di bawah kosong dan hanya diisi
-setelah sesi nyata dengan pengguna nyata.
+**Putaran 1 sudah selesai**: lima sesi pada 20 sampai 22 Juli 2026, hasilnya di
+[usability-early-testing.md](usability-early-testing.md). Protokol ini untuk **putaran
+berikutnya**, dan sengaja lebih ketat pada tiga titik yang membatasi putaran 1: moderatornya
+anggota tim, pesertanya belum mencakup segmen literasi digital rendah, dan waktu per tugas
+tidak tercatat.
+
+**Status putaran 2: belum dijalankan.** Bagian hasil di bawah kosong dan hanya diisi setelah
+sesinya berlangsung.
 
 Bedanya dengan UAT: [lembar UAT](uat-test-cases.md) menanyakan *apakah fiturnya bekerja*.
 Protokol ini menanyakan *apakah orang bisa memakainya tanpa dijelaskan*. Sebuah fitur bisa
 lulus UAT dan tetap gagal di sini.
+
+## Aturan tambahan setelah putaran 1
+
+- **Moderator bukan anggota tim AgriFlow.** Pada putaran 1 seluruh observer berasal dari tim,
+  dan itu menaikkan tingkat keberhasilan sekaligus menahan kritik.
+- **Waktu per tugas wajib dicatat.** Kolomnya tersedia di putaran 1 tetapi dibiarkan kosong.
+- **Segmen literasi digital rendah wajib terisi.** Putaran 1 belum menyentuhnya sama sekali.
+- **Catat eksplisit apakah peserta dibantu.** Tanpa itu, "berhasil" tidak bisa dibedakan dari
+  "berhasil setelah diberi tahu".
 
 ## Kenapa ini terpisah dari wawancara petani yang sudah ada
 

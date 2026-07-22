@@ -16,15 +16,15 @@ Terakhir diperbarui: **22 Juli 2026**.
 
 | # | Kategori | Status | Halaman |
 |---|---|---|---|
-| 1 | **Bukti produk digital** | ✅ 8 dari 9 item | [produk-digital.md](produk-digital.md) |
+| 1 | **Bukti produk digital** | ✅ 9 dari 9 item | [produk-digital.md](produk-digital.md) |
 | 2 | **Bukti pengujian** | ✅ 10 dari 11 item | [pengujian.md](pengujian.md) |
 | 3 | **Bukti pengguna** | ✅ 7 dari 8 item | [pengguna.md](pengguna.md) |
-| 4 | **Bukti implementasi awal non-digital** | ⚠️ 2 dari 9 item | [implementasi-non-digital.md](implementasi-non-digital.md) |
+| 4 | **Bukti implementasi awal non-digital** | ⚠️ 1 dari 9 item, 2 sebagian | [implementasi-non-digital.md](implementasi-non-digital.md) |
 | 5 | **Bukti kesiapan pihak luar** | ✅ 4 dari 7 item | [kesiapan-pihak-luar.md](kesiapan-pihak-luar.md) |
 
 Kategori 4 adalah yang paling tipis, dan kami tidak menutupinya. AgriFlow lahir sebagai produk
-digital, sehingga bukti non-digital kami terbatas pada demonstrasi metode dan wawancara
-lapangan. Rinciannya, termasuk apa yang belum ada, di
+digital, sehingga bukti non-digitalnya terbatas pada demonstrasi metode kepada pengguna.
+Rinciannya, termasuk apa yang belum ada, di
 [halamannya sendiri](implementasi-non-digital.md).
 
 ---
@@ -66,9 +66,8 @@ sesi dimoderasi anggota tim, ditulis bersama hasilnya.
 
 ### 4. Bukti implementasi awal non-digital → [selengkapnya](implementasi-non-digital.md)
 
-Yang ada: demonstrasi metode langsung ke pengguna di lima sesi, dan observasi lapangan lewat
-empat wawancara petani. Yang belum ada: pilot layanan, policy sandbox, uji SOP, dan kegiatan
-komunitas.
+Yang ada: demonstrasi metode langsung ke pengguna di lima sesi. Yang belum ada: pilot layanan,
+role-play, policy sandbox, uji SOP, kelas terbatas, dan kegiatan komunitas.
 
 ### 5. Bukti kesiapan pihak luar → [selengkapnya](kesiapan-pihak-luar.md)
 

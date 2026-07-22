@@ -53,26 +53,184 @@ Language / Bahasa: **English** · [Bahasa Indonesia](./README.md)
 
 ---
 
-# Supporting Evidence — Judge Navigation
+# Supporting Evidence
 
-All of AgriFlow's supporting evidence sits in one place, organised along the five categories in
-the submission guide. Entry point: **[docs/evidence/](docs/evidence/README.md)**.
+All of AgriFlow's supporting evidence is organised along the five categories in the submission
+guide. The summary lives here; each category has a detailed page under
+[`docs/evidence/`](docs/evidence/README.md).
 
-| # | Category | In short | Status |
+The rule we hold to: **if something has not been run, its status says it has not been run.** No
+result was invented to fill a table, and findings that reflect badly on us are included anyway.
+Every number comes with a command to reproduce it.
+
+## The five categories
+
+| # | Category | Status | Detail page |
 |---|---|---|---|
-| 1 | [**Digital product**](docs/evidence/produk-digital.md) | Live dashboard, production API with recorded real responses, runnable 4-layer rule engine, WhatsApp bot | 8 of 9 items |
-| 2 | [**Testing**](docs/evidence/pengujian.md) | 523 tests passing, 10.8% MAPE, performance tests, A/B test, 24 simulations, security testing, error logs, audit | 10 of 11 items |
-| 3 | [**Users**](docs/evidence/pengguna.md) | 5 early testers (100% task success, 4.4-4.8 scores), 4 audio-recorded farmer interviews, testimonials | 7 of 8 items |
-| 4 | [**Non-digital implementation**](docs/evidence/implementasi-non-digital.md) | Method demonstration, field observation | 2 of 9 items |
-| 5 | [**External readiness**](docs/evidence/kesiapan-pihak-luar.md) | Signed BRIN pilot-willingness letter, domain-expert validation, official data-access provenance | 4 of 7 items |
+| 1 | **Digital product** | ✅ 9 of 9 items | [produk-digital.md](docs/evidence/produk-digital.md) |
+| 2 | **Testing** | ✅ 10 of 11 items | [pengujian.md](docs/evidence/pengujian.md) |
+| 3 | **Users** | ✅ 7 of 8 items | [pengguna.md](docs/evidence/pengguna.md) |
+| 4 | **Non-digital early implementation** | ⚠️ 1 of 9 items, 2 partial | [implementasi-non-digital.md](docs/evidence/implementasi-non-digital.md) |
+| 5 | **External readiness** | ✅ 4 of 7 items | [kesiapan-pihak-luar.md](docs/evidence/kesiapan-pihak-luar.md) |
 
-**Four fastest links:** [live production API responses](docs/evidence/runs/api-live-responses.md) ·
-[real BPS data demo](docs/evidence/runs/demo_real_bps.txt) ·
-[5 early-tester sessions](docs/evidence/usability-early-testing.md) ·
-[full audit](docs/AgriFlow_Audit_2026-07.pdf)
+## Fastest way to be convinced
 
-Category 4 is our thinnest, and we say so plainly, as we do with every unflattering finding on
-those pages.
+| To see | Open |
+|---|---|
+| The product genuinely runs | [Live production API responses](docs/evidence/runs/api-live-responses.md) — 6 endpoints, captured 22 July 2026 |
+| The engine genuinely computes | [Real BPS 2022 demo](docs/evidence/runs/demo_real_bps.txt) — 84 matches, 467k tonnes |
+| Real users have tried it | [5 early-tester sessions](docs/evidence/usability-early-testing.md) — 100% task completion |
+| We test ourselves hard | [Full audit, July 2026](docs/AgriFlow_Audit_2026-07.pdf) — 7 findings, including the ones against us |
+
+<details>
+<summary><b>1. Digital product — 9 of 9 items</b> (click to expand)</summary>
+
+<br/>
+
+Status today: **an MVP running in production**, not a mockup and not a proof of concept.
+
+| Item requested | Status | Evidence |
+|---|:---:|---|
+| Functional prototype | ✅ | Dashboard + WhatsApp bot + API, all three running |
+| MVP | ✅ | Three pillars (detect, predict, distribute) already serving users |
+| Proof of concept | ✅ | [Real BPS 2022 demo](docs/evidence/runs/demo_real_bps.txt) |
+| Source code repository | ✅ | This repository, open licence |
+| API test | ✅ | [Live production API responses](docs/evidence/runs/api-live-responses.md) · 40 automated endpoint tests |
+| Working dashboard | ✅ | [agriflow-engine.vercel.app](https://agriflow-engine.vercel.app/) |
+| Alpha/beta version | ✅ | Public beta, guest access without registration |
+| Demo with real input & output | ✅ | [Demo output](docs/evidence/runs/demo_real_bps.txt) · [API responses](docs/evidence/runs/api-live-responses.md) |
+| Runnable rule engine | ✅ | [`matching_engine/`](matching_engine), 4 layers, one command |
+
+Seven real calls against the production API are recorded as they came back: six 200s, and one
+deliberately malformed request that returns a 404 listing the available pairs so the caller can
+correct itself.
+
+**Two things worth stating plainly.** `GET /health` reports `"mock_mode": true`: the food data
+served is entirely real (38 regencies, 6 BPS commodities), but the natural-language layer still
+returns canned replies because we run the public demo without paid keys. The repository also has
+no numbered release yet.
+
+📄 [Full page](docs/evidence/produk-digital.md)
+
+</details>
+
+<details>
+<summary><b>2. Testing — 10 of 11 items</b> (click to expand)</summary>
+
+<br/>
+
+| Item requested | Status | Evidence |
+|---|:---:|---|
+| Test case | ✅ | [523 passing, 1 skipped](docs/evidence/runs/pytest.txt) · [`tests/`](tests) · [CI, 4 legs](.github/workflows/test.yml) |
+| Experiment results | ✅ | greedy vs optimal · [weight sensitivity](docs/evidence/runs/weight_sensitivity.txt) · [detector gap](docs/evidence/runs/anomaly_detector_gap.txt) |
+| Model evaluation | ✅ | [Holdout backtest, 10.8% MAPE](docs/evidence/runs/backtest_baseline.txt) |
+| Performance test | ✅ | [latency](docs/evidence/runs/latency.txt) · [national scale](docs/evidence/runs/national_scale.txt) · [dashboard load](docs/evidence/runs/dashboard_load.txt) |
+| A/B test | ✅ | [Haversine vs road distance](docs/evidence/runs/ab_test_road_distance.txt) |
+| Simulation results | ✅ | 24 edge-case scenarios · [supply-constrained scenario](docs/evidence/runs/equity_comparison_constrained.txt) |
+| Validation report | ✅ | [Full audit](docs/AgriFlow_Audit_2026-07.pdf) · [real-data methodology](REAL_DATA_METHODOLOGY.md) |
+| Initial security testing | ✅ | [Summary](docs/evidence/security-review.md) · 117 auth/quota/RLS tests |
+| Error log | ✅ | [JSON log sample](docs/evidence/runs/api-request-log-sample.jsonl) · [`request_log.py`](whatsapp_bot/request_log.py) |
+| Usability testing | ✅ | [5 sessions, 20-22 July 2026](docs/evidence/usability-early-testing.md) |
+| UAT | ⏳ | [Instrument ready](docs/evidence/uat-test-cases.md), **not yet run** |
+
+**Key numbers:** engine p99 of 69 ms against a 500 ms target · 1,096 req/s with 0 failures at
+1,000 users · national scale at **3,022 ms, still 6× over target**, which we state as it is.
+
+**A defect we know about:** `tests/test_auth_jwks.py` is flaky, recorded three times (twice in
+CI on the Windows py3.11 leg, once locally). The root cause has not been found and we **do not
+claim it is fixed**.
+
+📄 [Full page](docs/evidence/pengujian.md)
+
+</details>
+
+<details>
+<summary><b>3. Users — 7 of 8 items</b> (click to expand)</summary>
+
+<br/>
+
+| Item requested | Status | Evidence |
+|---|:---:|---|
+| User feedback | ✅ | [5 session records + screenshots](docs/evidence/early-testing/) |
+| Interview after testing | ✅ | The "impressions & feedback" section of each session record |
+| Early tester | ✅ | [5 testers, 20-22 July 2026](docs/evidence/usability-early-testing.md) |
+| Completion rate | ✅ | 5 of 5 sessions completed |
+| Task success rate | ✅ | **20 of 20 tasks (100%)** |
+| Initial satisfaction score | ✅ | Ease 4.6 · usefulness 4.8 · recommend 4.4 out of 5 |
+| User testimonials | ✅ | [5 direct quotes](docs/evidence/usability-early-testing.md#kutipan) |
+| Usage observation results | ⚠️ | An observer attended every session, but the per-task timing column was left blank |
+
+Participants: 4 farmers across commodities (chilli in Kalanganyar, shallot in Nganjuk, potato in
+Dieng, rice in Tapanuli Selatan) and 1 postdoctoral researcher from BRIN. Plus **4
+audio-recorded farmer interviews** as evidence of need.
+
+**The most useful part is not the score.** Three of five participants asked for the same thing,
+seller and supplier information, and that request had already surfaced in the field interviews
+before the product existed.
+
+**We write the limits down rather than bury them:** every session was moderated by a team
+member, five participants is a small sample, and the low-digital-literacy farmer segment is not
+represented yet.
+
+📄 [Full page](docs/evidence/pengguna.md)
+
+</details>
+
+<details>
+<summary><b>4. Non-digital early implementation — 1 of 9 items, 2 partial</b> (click to expand)</summary>
+
+<br/>
+
+**This is our thinnest category and we do not pretend otherwise.**
+
+| Item requested | Status | Note |
+|---|:---:|---|
+| Method demonstration | ✅ | 5 sessions demonstrated directly to users, with an observer |
+| Process simulation | ⚠️ | 24 simulation scenarios exist, but they run as code, not as human role-play |
+| Public service prototype | ⚠️ | The dashboard is publicly accessible, but it is digital |
+| Service pilot | ❌ | A pilot-willingness letter exists; the pilot itself has not run |
+| Role-play | ❌ | Not yet |
+| Limited class or module | ❌ | Not yet |
+| Policy sandbox | ❌ | No formal discussion with a regulator yet |
+| SOP testing | ❌ | No operational SOP has been written |
+| Limited community activity | ❌ | Not yet |
+
+AgriFlow was born as a digital product and was tested through digital channels. SOP testing and
+a policy sandbox only start to make sense once an institutional partner runs allocation off
+AgriFlow's output; while the output is advice to individual users, there is no SOP to test.
+
+📄 [Full page](docs/evidence/implementasi-non-digital.md)
+
+</details>
+
+<details>
+<summary><b>5. External readiness — 4 of 7 items</b> (click to expand)</summary>
+
+<br/>
+
+| Item requested | Status | Evidence |
+|---|:---:|---|
+| Letter of Intent | ✅ | Signed pilot-willingness letter, 20 July 2026 |
+| Willingness to pilot | ✅ | East Java pilot, dashboard + WhatsApp chatbot |
+| Domain-expert validation | ✅ | A BRIN postdoctoral researcher tested it directly and gave feedback |
+| Data access evidence | ✅ | [BPS](sample_data/bps_real/PROVENANCE.md) · [PIHPS Bapanas](sample_data/price_history/SOURCE.md) · OSRM |
+| Exploration agreement | ⚠️ | The letter calls itself "a basis for further discussion"; that discussion has not happened |
+| Institutional letter of support | ❌ | Not yet |
+| Pilot discussion minutes | ❌ | Not yet, because the discussion has not happened |
+
+Signatory: **Medina Uli Alba Somala, PhD**, Postdoctoral Researcher, Badan Riset dan Inovasi
+Nasional. The letter describes itself as **an initial statement of interest, not a binding
+agreement**, and we quote it as such. The file itself is deliberately not published in this
+repository because it carries a personal phone number, address, and signature; a copy can be
+handed to the organisers directly.
+
+All food data traces back to its source files: 70,953 daily PIHPS price rows from 2021 to 2025,
+and BPS production and consumption across 38 regencies. All of it is public data, and we make
+**no** claim to a privileged data-sharing agreement.
+
+📄 [Full page](docs/evidence/kesiapan-pihak-luar.md)
+
+</details>
 
 ---
 
@@ -118,7 +276,7 @@ All three functions (Detect · Predict · Distribute) share one real data source
 
 > **Quality:** 523 automated tests pass (524 collected, 1 skipped) — the engine is tested, reproducible, and honest about its limitations (see [Testing & Scenarios](#testing--scenarios) and Phase 3).
 >
-> 📁 Full evidence lives in [**Supporting Evidence**](#supporting-evidence--judge-navigation) above: five categories, including [testing evidence](docs/evidence/pengujian.md) and [usability testing with 5 real users](docs/evidence/usability-early-testing.md).
+> 📁 Full evidence lives in [**Supporting Evidence**](#supporting-evidence) above: five categories, including [testing evidence](docs/evidence/pengujian.md) and [usability testing with 5 real users](docs/evidence/usability-early-testing.md).
 
 ### Snapshots
 

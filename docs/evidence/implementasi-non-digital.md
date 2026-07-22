@@ -4,23 +4,28 @@ Kategori 4 dari [lima kategori bukti pendukung](README.md).
 
 **Ini kategori paling tipis kami, dan kami tidak berpura-pura sebaliknya.** AgriFlow lahir
 sebagai produk digital yang langsung diuji lewat kanal digital, sehingga jejak non-digitalnya
-terbatas pada demonstrasi metode dan observasi lapangan. Menyebut hal lain sebagai "pilot"
+terbatas pada demonstrasi metode kepada pengguna. Menyebut hal lain sebagai "pilot"
 akan melebih-lebihkan apa yang benar-benar terjadi.
 
 ## Ringkasan
 
+**Satu dari sembilan item terpenuhi, dua lagi hanya sebagian.** Itu angka yang jujur, dan
+kami tidak membaguskannya dengan memasukkan bukti dari kategori lain ke sini.
+
 | Item yang diminta | Status | Keterangan |
 |---|:---:|---|
 | Demonstrasi metode | ✅ | 5 sesi demonstrasi langsung ke pengguna, didampingi observer |
-| Hasil observasi lapangan | ✅ | 4 wawancara petani di lokasi, dengan rekaman audio |
+| Simulasi proses | ⚠️ Sebagian | 24 skenario simulasi ada, tetapi dijalankan sebagai kode, bukan role-play manusia |
+| Prototype layanan publik | ⚠️ Sebagian | Dashboard dapat diakses publik, tetapi bentuknya digital |
 | Pilot layanan | ❌ | Belum. Surat kesediaan uji coba sudah ada, pelaksanaannya belum |
-| Simulasi proses | ⚠️ Digital | 24 skenario simulasi ada, tetapi dijalankan sebagai kode, bukan role-play manusia |
 | Role-play | ❌ | Belum |
 | Kelas atau modul terbatas | ❌ | Belum |
 | Policy sandbox | ❌ | Belum ada pembahasan formal dengan regulator |
 | Uji SOP | ❌ | SOP operasional belum disusun |
 | Kegiatan komunitas terbatas | ❌ | Belum |
-| Prototype layanan publik | ⚠️ Digital | Dashboard dapat diakses publik, tetapi bentuknya digital |
+
+Observasi lapangan lewat 4 wawancara petani beraudio juga kami lakukan, tetapi itu kami hitung
+di [kategori pengguna](pengguna.md), bukan di sini, agar tidak dihitung dua kali.
 
 ## Yang benar-benar terjadi
 

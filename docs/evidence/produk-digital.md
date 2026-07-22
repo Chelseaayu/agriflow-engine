@@ -20,8 +20,9 @@ tanpa membuat akun.
 | Demo dengan input dan output nyata | ✅ | [Keluaran demo](runs/demo_real_bps.txt) · [respons API](runs/api-live-responses.md) |
 | Model atau rule engine yang dapat dijalankan | ✅ | [`matching_engine/`](../../matching_engine) 4 lapis, satu perintah |
 
-Satu-satunya yang belum: rilis versi bernomor (tag rilis). Repositori masih berjalan di
-`main` tanpa penandaan versi formal.
+**Kesembilan item terpenuhi.** Satu catatan di luar daftar itu: repositori belum punya rilis
+bernomor, masih berjalan di `main` tanpa penandaan versi formal. Itu bukan salah satu item yang
+diminta, tetapi kami sebutkan agar gambarannya utuh.
 
 ## Coba sendiri dalam tiga menit
 

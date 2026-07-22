@@ -53,26 +53,184 @@ Language / Bahasa: [English](./README.en.md) · **Bahasa Indonesia**
 
 ---
 
-# 📋 Bukti Pendukung — Navigasi untuk Juri
+# 📋 Bukti Pendukung
 
-Seluruh bukti pendukung AgriFlow dikumpulkan di satu tempat, disusun mengikuti lima kategori
-panduan submission. Pintu masuknya: **[docs/evidence/](docs/evidence/README.md)**.
+Seluruh bukti pendukung AgriFlow disusun mengikuti lima kategori panduan submission. Ringkasan
+lengkapnya ada di halaman ini, dan setiap kategori punya halaman rinci di
+[`docs/evidence/`](docs/evidence/README.md).
 
-| # | Kategori | Isi ringkas | Status |
+Aturan yang kami pegang: **kalau sesuatu belum dijalankan, statusnya ditulis belum dijalankan.**
+Tidak ada hasil yang dikarang untuk mengisi tabel, dan temuan yang tidak menguntungkan kami
+tetap dicantumkan. Setiap angka disertai perintah untuk direproduksi.
+
+## Peta lima kategori
+
+| # | Kategori | Status | Halaman rinci |
 |---|---|---|---|
-| 1 | [**Produk digital**](docs/evidence/produk-digital.md) | Dashboard live, API produksi dengan respons nyata terekam, rule engine 4 lapis yang bisa dijalankan, bot WhatsApp | 8 dari 9 item |
-| 2 | [**Pengujian**](docs/evidence/pengujian.md) | 523 tes lulus, MAPE 10,8%, uji performa, A/B test, 24 simulasi, uji keamanan, error log, audit | 10 dari 11 item |
-| 3 | [**Pengguna**](docs/evidence/pengguna.md) | 5 early tester (task success 100%, skor 4,4–4,8), 4 wawancara petani beraudio, testimoni | 7 dari 8 item |
-| 4 | [**Implementasi non-digital**](docs/evidence/implementasi-non-digital.md) | Demonstrasi metode, observasi lapangan | 2 dari 9 item |
-| 5 | [**Kesiapan pihak luar**](docs/evidence/kesiapan-pihak-luar.md) | Surat kesediaan uji coba BRIN, validasi ahli domain, bukti akses data resmi | 4 dari 7 item |
+| 1 | **Produk digital** | ✅ 9 dari 9 item | [produk-digital.md](docs/evidence/produk-digital.md) |
+| 2 | **Pengujian** | ✅ 10 dari 11 item | [pengujian.md](docs/evidence/pengujian.md) |
+| 3 | **Pengguna** | ✅ 7 dari 8 item | [pengguna.md](docs/evidence/pengguna.md) |
+| 4 | **Implementasi awal non-digital** | ⚠️ 1 dari 9 item, 2 sebagian | [implementasi-non-digital.md](docs/evidence/implementasi-non-digital.md) |
+| 5 | **Kesiapan pihak luar** | ✅ 4 dari 7 item | [kesiapan-pihak-luar.md](docs/evidence/kesiapan-pihak-luar.md) |
 
-**Empat tautan tercepat:** [respons API produksi live](docs/evidence/runs/api-live-responses.md) ·
-[demo data BPS asli](docs/evidence/runs/demo_real_bps.txt) ·
-[hasil 5 sesi early tester](docs/evidence/usability-early-testing.md) ·
-[audit menyeluruh](docs/AgriFlow_Audit_2026-07.pdf)
+## Yang paling cepat meyakinkan
 
-Kategori 4 adalah yang paling tipis dan kami menuliskannya apa adanya, sebagaimana setiap
-temuan yang tidak menguntungkan kami di halaman-halaman itu.
+| Ingin melihat | Buka |
+|---|---|
+| Produknya benar-benar jalan | [Respons API produksi live](docs/evidence/runs/api-live-responses.md) — 6 endpoint, diambil 22 Juli 2026 |
+| Enginenya benar-benar menghitung | [Demo data BPS asli 2022](docs/evidence/runs/demo_real_bps.txt) — 84 match, 467 ribu ton |
+| Pengguna nyata sudah mencobanya | [5 sesi early tester](docs/evidence/usability-early-testing.md) — 100% tugas tuntas |
+| Kami menguji diri sendiri dengan keras | [Audit menyeluruh Juli 2026](docs/AgriFlow_Audit_2026-07.pdf) — 7 temuan, termasuk yang menyalahkan kami |
+
+<details>
+<summary><b>1️⃣ Bukti produk digital — 9 dari 9 item</b> (klik untuk expand)</summary>
+
+<br/>
+
+Status hari ini: **MVP yang berjalan di produksi**, bukan mockup dan bukan proof of concept.
+
+| Item yang diminta | Status | Bukti |
+|---|:---:|---|
+| Functional prototype | ✅ | Dashboard + bot WhatsApp + API, ketiganya berjalan |
+| MVP | ✅ | Tiga pilar (deteksi, prediksi, distribusi) sudah melayani pengguna |
+| Proof of concept | ✅ | [Demo data BPS asli 2022](docs/evidence/runs/demo_real_bps.txt) |
+| Source code repository | ✅ | Repositori ini, lisensi terbuka |
+| API test | ✅ | [Respons API produksi live](docs/evidence/runs/api-live-responses.md) · 40 tes otomatis endpoint |
+| Working dashboard | ✅ | [agriflow-engine.vercel.app](https://agriflow-engine.vercel.app/) |
+| Alpha/beta version | ✅ | Versi beta publik, akses tamu tanpa registrasi |
+| Demo dengan input & output nyata | ✅ | [Keluaran demo](docs/evidence/runs/demo_real_bps.txt) · [respons API](docs/evidence/runs/api-live-responses.md) |
+| Rule engine yang dapat dijalankan | ✅ | [`matching_engine/`](matching_engine) 4 lapis, satu perintah |
+
+Tujuh pemanggilan nyata ke API produksi terekam apa adanya: enam berbalas 200, satu sengaja
+dibuat salah untuk memperlihatkan jalur galat dan dibalas 404 yang menyebutkan pasangan
+tersedia sehingga pemanggil bisa mengoreksi diri.
+
+**Dua hal yang jujur perlu disebut.** `GET /health` melaporkan `"mock_mode": true`: data
+pangannya sepenuhnya nyata (38 kabupaten, 6 komoditas BPS), tetapi lapisan bahasa alaminya
+masih balasan tiruan karena kami menjalankan demo publik tanpa kunci berbayar. Repositori juga
+belum punya rilis bernomor.
+
+📄 [Halaman lengkap](docs/evidence/produk-digital.md)
+
+</details>
+
+<details>
+<summary><b>2️⃣ Bukti pengujian — 10 dari 11 item</b> (klik untuk expand)</summary>
+
+<br/>
+
+| Item yang diminta | Status | Bukti |
+|---|:---:|---|
+| Test case | ✅ | [523 lulus, 1 skip](docs/evidence/runs/pytest.txt) · [`tests/`](tests) · [CI 4 leg](.github/workflows/test.yml) |
+| Hasil eksperimen | ✅ | greedy vs optimal · [sensitivitas bobot](docs/evidence/runs/weight_sensitivity.txt) · [gap dua detektor](docs/evidence/runs/anomaly_detector_gap.txt) |
+| Model evaluation | ✅ | [Backtest holdout, MAPE 10,8%](docs/evidence/runs/backtest_baseline.txt) |
+| Performance test | ✅ | [latency](docs/evidence/runs/latency.txt) · [skala nasional](docs/evidence/runs/national_scale.txt) · [beban dashboard](docs/evidence/runs/dashboard_load.txt) |
+| A/B test | ✅ | [Haversine vs jarak jalan](docs/evidence/runs/ab_test_road_distance.txt) |
+| Hasil simulasi | ✅ | 24 skenario edge-case · [skenario pasokan langka](docs/evidence/runs/equity_comparison_constrained.txt) |
+| Validation report | ✅ | [Audit menyeluruh](docs/AgriFlow_Audit_2026-07.pdf) · [metodologi data nyata](REAL_DATA_METHODOLOGY.md) |
+| Security test awal | ✅ | [Ringkasan](docs/evidence/security-review.md) · 117 tes auth/kuota/RLS |
+| Error log | ✅ | [Contoh log JSON](docs/evidence/runs/api-request-log-sample.jsonl) · [`request_log.py`](whatsapp_bot/request_log.py) |
+| Usability testing | ✅ | [5 sesi, 20–22 Juli 2026](docs/evidence/usability-early-testing.md) |
+| UAT | ⏳ | [Instrumen siap](docs/evidence/uat-test-cases.md), **belum dijalankan** |
+
+**Angka kunci:** p99 engine 69 ms terhadap target 500 ms · 1.096 req/s dengan 0 gagal pada
+1.000 pengguna · skala nasional **3.022 ms, masih 6× di atas target** dan itu kami cantumkan
+apa adanya.
+
+**Cacat yang kami ketahui:** `tests/test_auth_jwks.py` flaky, tercatat 3 kali (2 di CI leg
+Windows py3.11, 1 di lokal), akar masalahnya belum ditemukan dan **tidak kami klaim selesai**.
+
+📄 [Halaman lengkap](docs/evidence/pengujian.md)
+
+</details>
+
+<details>
+<summary><b>3️⃣ Bukti pengguna — 7 dari 8 item</b> (klik untuk expand)</summary>
+
+<br/>
+
+| Item yang diminta | Status | Bukti |
+|---|:---:|---|
+| User feedback | ✅ | [5 berkas sesi + screenshot](docs/evidence/early-testing/) |
+| Interview setelah testing | ✅ | Bagian "kesan & umpan balik" di tiap berkas sesi |
+| Early tester | ✅ | [5 penguji, 20–22 Juli 2026](docs/evidence/usability-early-testing.md) |
+| Completion rate | ✅ | 5 dari 5 sesi tuntas |
+| Task success rate | ✅ | **20 dari 20 tugas (100%)** |
+| Satisfaction score awal | ✅ | Kemudahan 4,6 · kegunaan 4,8 · rekomendasi 4,4 dari 5 |
+| Testimoni pengguna | ✅ | [5 kutipan langsung](docs/evidence/usability-early-testing.md#kutipan) |
+| Hasil observasi penggunaan | ⚠️ | Observer hadir tiap sesi, tetapi kolom waktu per tugas dibiarkan kosong |
+
+Peserta: 4 petani lintas komoditas (cabai Kalanganyar, bawang merah Nganjuk, kentang Dieng,
+padi Tapanuli Selatan) dan 1 peneliti pascadoktoral BRIN. Ditambah **4 wawancara petani
+dengan rekaman audio** sebagai bukti kebutuhan.
+
+**Yang paling berguna bukan skornya.** Tiga dari lima peserta meminta hal yang sama,
+informasi penjual/supplier, dan permintaan itu sudah muncul lebih dulu di wawancara lapangan
+sebelum produk ada.
+
+**Keterbatasannya kami tulis, bukan disembunyikan:** seluruh sesi dimoderasi anggota tim, lima
+peserta itu sedikit, dan segmen petani literasi digital rendah belum terwakili.
+
+📄 [Halaman lengkap](docs/evidence/pengguna.md)
+
+</details>
+
+<details>
+<summary><b>4️⃣ Bukti implementasi awal non-digital — 1 dari 9 item, 2 sebagian</b> (klik untuk expand)</summary>
+
+<br/>
+
+**Ini kategori paling tipis kami, dan kami tidak berpura-pura sebaliknya.**
+
+| Item yang diminta | Status | Keterangan |
+|---|:---:|---|
+| Demonstrasi metode | ✅ | 5 sesi demonstrasi langsung ke pengguna, didampingi observer |
+| Simulasi proses | ⚠️ | 24 skenario simulasi ada, tetapi dijalankan sebagai kode, bukan role-play manusia |
+| Prototype layanan publik | ⚠️ | Dashboard dapat diakses publik, tetapi bentuknya digital |
+| Pilot layanan | ❌ | Surat kesediaan uji coba sudah ada, pelaksanaannya belum |
+| Role-play | ❌ | Belum |
+| Kelas atau modul terbatas | ❌ | Belum |
+| Policy sandbox | ❌ | Belum ada pembahasan formal dengan regulator |
+| Uji SOP | ❌ | SOP operasional belum disusun |
+| Kegiatan komunitas terbatas | ❌ | Belum |
+
+AgriFlow lahir sebagai produk digital yang langsung diuji lewat kanal digital. Uji SOP dan
+policy sandbox baru masuk akal setelah ada mitra institusional yang menjalankan alokasi
+berdasarkan keluaran AgriFlow; selama keluarannya masih saran kepada pengguna perorangan,
+tidak ada SOP yang bisa diuji.
+
+📄 [Halaman lengkap](docs/evidence/implementasi-non-digital.md)
+
+</details>
+
+<details>
+<summary><b>5️⃣ Bukti kesiapan pihak luar — 4 dari 7 item</b> (klik untuk expand)</summary>
+
+<br/>
+
+| Item yang diminta | Status | Bukti |
+|---|:---:|---|
+| Letter of Intent | ✅ | Surat kesediaan uji coba bertanda tangan, 20 Juli 2026 |
+| Kesediaan uji coba | ✅ | Piloting Jawa Timur, dashboard + chatbot WhatsApp |
+| Validasi ahli domain | ✅ | Peneliti pascadoktoral BRIN menguji langsung dan memberi umpan balik |
+| Bukti akses data | ✅ | [BPS](sample_data/bps_real/PROVENANCE.md) · [PIHPS Bapanas](sample_data/price_history/SOURCE.md) · OSRM |
+| Kesepakatan eksplorasi | ⚠️ | Surat menyatakan dirinya "dasar pembahasan lebih lanjut", pembahasannya belum berjalan |
+| Surat dukungan institusional | ❌ | Belum |
+| Notulensi pembahasan pilot | ❌ | Belum, karena pembahasannya belum berlangsung |
+
+Penandatangan: **Medina Uli Alba Somala, PhD**, Peneliti Pascadoktoral, Badan Riset dan Inovasi
+Nasional. Suratnya menyatakan dirinya **pernyataan minat awal, bukan perjanjian mengikat**, dan
+kami mengutipnya apa adanya. Berkas suratnya sengaja tidak dipublikasikan di repositori ini
+karena memuat nomor telepon, alamat, dan tanda tangan pribadi; salinannya dapat diserahkan
+langsung kepada panitia.
+
+Seluruh data pangan terunut sampai berkas sumbernya: 70.953 baris harga harian PIHPS
+2021–2025, produksi dan konsumsi BPS 38 kabupaten. Semuanya data publik, dan kami **tidak**
+mengklaim punya perjanjian berbagi data istimewa.
+
+📄 [Halaman lengkap](docs/evidence/kesiapan-pihak-luar.md)
+
+</details>
 
 ---
 
@@ -118,7 +276,7 @@ Tiga fungsi (Deteksi · Prediksi · Distribusi) berbagi satu sumber data nyata, 
 
 > **Kualitas:** 523 tes otomatis lulus (524 terkumpul, 1 di-skip) — engine teruji, dapat direproduksi, dan jujur soal keterbatasannya (lihat [Pengujian & Skenario](#pengujian--skenario) dan Phase 3).
 >
-> 📁 Bukti lengkapnya ada di [**Bukti Pendukung**](#-bukti-pendukung--navigasi-untuk-juri) di bawah: lima kategori, termasuk [bukti pengujian](docs/evidence/pengujian.md) dan [usability testing dengan 5 pengguna nyata](docs/evidence/usability-early-testing.md).
+> 📁 Bukti lengkapnya ada di [**Bukti Pendukung**](#-bukti-pendukung) di atas: lima kategori, termasuk [bukti pengujian](docs/evidence/pengujian.md) dan [usability testing dengan 5 pengguna nyata](docs/evidence/usability-early-testing.md).
 
 ### Cuplikan
 

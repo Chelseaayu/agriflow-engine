@@ -1,0 +1,19 @@
+Detour index (road km / straight-line km), East Java kabupaten pairs
+======================================================================
+  pairs evaluated : 1402
+  median          : 1.352
+  mean            : 1.417
+  p10 / p90       : 1.189 / 1.598
+  max             : 4.585
+  share > 1.5     : 17.4%
+
+  5 worst detours:
+    Sumenep            -> Situbondo            79.7 km straight,  365.6 km by road (x4.59)
+    Situbondo          -> Sumenep              79.7 km straight,  362.5 km by road (x4.55)
+    Pamekasan          -> Situbondo            84.7 km straight,  312.6 km by road (x3.69)
+    Situbondo          -> Pamekasan            84.7 km straight,  309.3 km by road (x3.65)
+    Sumenep            -> Bondowoso           100.9 km straight,  361.5 km by road (x3.58)
+
+  Reading: at the median pair the road is 35.2% longer than the straight line, i.e. the straight line is 26.1% shorter than the real travel distance. Madura-to-mainland pairs are far worse, since they must route via the Suramadu bridge.
+
+  Wrote JSON -> benchmarks\output\detour_index.json

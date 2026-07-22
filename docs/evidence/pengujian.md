@@ -113,6 +113,7 @@ di sini lebih dulu.
 | Greedy vs optimal | Apakah alokasi greedy sudah cukup, atau kalah dari solusi eksak? | [`benchmarks/greedy_vs_optimal.py`](../../benchmarks/greedy_vs_optimal.py) → [JSON 100 trial](../../benchmarks/output/greedy_vs_optimal_2026-07-20.json) |
 | Sensitivitas bobot | Apakah kesimpulan bergantung pada lima bobot skor yang kami pilih? | [`benchmarks/weight_sensitivity.py`](../../benchmarks/weight_sensitivity.py) → [hasil](runs/weight_sensitivity.txt) |
 | Gap dua detektor anomali | Dua detektor hidup berdampingan di kode. Seberapa jauh bedanya? | [`benchmarks/anomaly_detector_gap.py`](../../benchmarks/anomaly_detector_gap.py) → [hasil](runs/anomaly_detector_gap.txt) |
+| Indeks detour | Seberapa jauh jarak jalan menyimpang dari garis lurus? | [`benchmarks/detour_index.py`](../../benchmarks/detour_index.py) → [hasil](runs/detour_index.txt) |
 | Perbandingan baseline | Apakah AgriFlow mengalahkan greedy, uniform, dan proporsional? | [`benchmarks/equity_comparison.py`](../../benchmarks/equity_comparison.py) → [hasil](../../benchmarks/output/equity_comparison.md) |
 
 Tiga temuan yang perlu dibaca apa adanya:
@@ -195,6 +196,24 @@ versus 54 km lewat jalan, karena harus memutari Jembatan Suramadu). Jarak semu i
 melahirkan pencocokan yang tidak benar-benar layak dalam radius kesegaran, misalnya
 Kota Batu→Bondowoso untuk tomat yang gugur begitu jaraknya dihitung jujur. Selisih −2,81%
 adalah optimisme palsu yang kami buang, bukan kinerja yang hilang.
+
+**Seberapa besar bias haversine itu, diukur langsung.** Indeks detour (jarak jalan dibagi
+jarak garis lurus) dihitung untuk seluruh 1.402 pasangan kabupaten
+([`benchmarks/detour_index.py`](../../benchmarks/detour_index.py) → [hasil](runs/detour_index.txt)):
+
+| Statistik | Nilai |
+|---|---:|
+| Median | 1,352 |
+| Rata-rata | 1,417 |
+| p10 / p90 | 1,189 / 1,598 |
+| Maksimum | 4,585 |
+| Pasangan di atas 1,5× | 17,4% |
+
+Pada pasangan median, jarak jalan **35,2% lebih panjang** daripada garis lurus, yang setara dengan garis lurus **26,1% lebih pendek** daripada jarak sebenarnya. Lima detour terparah
+semuanya melibatkan Madura, dengan Sumenep→Situbondo mencapai **4,59×** (79,7 km lurus versus
+365,6 km lewat jalan) karena satu-satunya jalur darat adalah Jembatan Suramadu di ujung barat.
+Angka ini bukan galat acak melainkan **galat berarah**: jarak selalu terlalu pendek, tidak
+pernah terlalu panjang, sehingga kendala kesegaran menjadi lebih longgar daripada seharusnya.
 
 Catatan reproduksi: skrip ini pertama kali dijalankan Mei 2026 ketika haversine masih
 menjadi default. Setelah jarak jalan diadopsi, skrip lama melaporkan selisih nol karena

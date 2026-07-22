@@ -71,13 +71,40 @@ matriks 4 leg (Ubuntu + Windows × Python 3.11 + 3.12) pada setiap push dan pull
 Yang di-skip adalah `test_timesfm_importorskip`: dilewati bila pustaka TimesFM tidak
 terpasang di runner. Jalur forecasting tetap diuji lewat fallback dan kontrak API.
 
-**Cacat yang kami ketahui.** `test_auth_jwks.py::test_correct_key_selected_from_multi_key_set`
-pernah gagal satu kali pada 22 Juli 2026 dengan `PyJWKClientError: Unable to find a signing
-key that matches: "new-kid"`, lalu lulus pada empat kali jalan berikutnya termasuk saat
-dijalankan sendirian. Tes itu menyalakan server HTTP JWKS sungguhan di thread terpisah,
-jadi dugaan kami ini sensitif terhadap timing. Kami belum menemukan akar masalahnya,
-sehingga tidak kami klaim sudah selesai. Angka 523/1 di atas adalah kondisi yang stabil
-kami amati.
+### Cacat yang kami ketahui: `tests/test_auth_jwks.py` flaky
+
+Berkas ini kadang gagal lalu lulus lagi tanpa ada perubahan kode. Kami catat ketiga
+kejadiannya apa adanya, karena tes yang kadang merah lebih berbahaya bila disembunyikan
+daripada bila diakui.
+
+| Kapan | Di mana | Tes | Gejala |
+|---|---|---|---|
+| 21 Juli 2026 | CI, `windows-latest · py3.11` | `TestA::test_es256_token_is_accepted` | `PyJWKSetError: The JWK Set did not contain any usable keys` |
+| 22 Juli 2026 | Lokal | `TestA::test_correct_key_selected_from_multi_key_set` | `PyJWKClientError: Unable to find a signing key that matches: "new-kid"` |
+| 22 Juli 2026 | CI, `windows-latest · py3.11` | `TestD::test_protected_endpoint_accepts_a_real_es256_token` | 401, padahal 200 diharapkan; balasan datang dalam 1,43 ms |
+
+Yang sudah kami ketahui:
+
+- **Selalu berkas yang sama**, tetapi tes yang berbeda-beda di dalamnya.
+- **Hanya leg `windows-latest · py3.11` yang pernah merah di CI.** Ubuntu 3.11, Ubuntu 3.12,
+  dan Windows 3.12 belum pernah gagal karena sebab ini.
+- **Bukan pergeseran versi pustaka.** `pyjwt[crypto]` dipatok di `2.10.1` pada
+  [`requirements.txt`](../../requirements.txt).
+- **Lulus saat diulang.** Commit berikutnya lulus di keempat leg, dan tes yang gagal di lokal
+  lulus saat dijalankan sendirian maupun pada empat kali jalan berikutnya.
+- Balasan 401 dalam **1,43 ms** terlalu cepat untuk sempat mengambil dokumen JWKS lewat HTTP,
+  jadi kegagalan itu terjadi sebelum atau tanpa pengambilan yang benar.
+
+Ketiga gejalanya konsisten dengan satu dugaan: klien JWKS mengambil dokumen yang **bukan**
+milik server tes yang sedang berjalan. Tes-tes ini menyalakan server HTTP sungguhan di port
+acak pada thread terpisah, dan `whatsapp_bot/auth.py` menyimpan kliennya dalam `lru_cache`
+yang tidak berkunci URL. Itu baru dugaan, belum terbukti, dan kami belum bisa
+mereproduksinya sesuai permintaan. Karena itu **kami tidak menyatakan cacat ini selesai.**
+
+Angka 523 lulus di atas adalah kondisi stabil yang kami amati, dan itulah yang dilaporkan CI
+pada commit terakhir untuk keempat leg. Tetapi bila panitia menjalankan CI berulang kali,
+ada kemungkinan menemui satu leg merah dari berkas ini, dan kami lebih memilih menuliskannya
+di sini lebih dulu.
 
 ## 2. Hasil eksperimen
 

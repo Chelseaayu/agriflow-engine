@@ -123,7 +123,7 @@ Server produksi memuat **data BPS asli secara default** (`DATA_BACKEND=csv`, baw
 | Kategori | Jumlah | Cakupan |
 |---|---|---|
 | Unit per-layer (L0–L3) | 73 | Tier IPM, constraint jarak/perishability, skor, alokasi equity |
-| 24 skenario edge-case (A–F) | 27+ | Volume, spasial, temporal, disrupsi, politis, kualitas |
+| 25 skenario edge-case (A–F) | 64 | Volume, spasial, temporal, disrupsi, politis, kualitas |
 | Validasi data nyata BPS/PIHPS | 57 | Food-balance beras + hortikultura 2022, pipeline reproducible |
 | Deteksi anomali harga | 49 | S-H-ESD sadar-musiman pada residual deseasonalized |
 | Forecast & API | 40 | Endpoint forecast/anomali + fallback |
@@ -131,14 +131,14 @@ Server produksi memuat **data BPS asli secara default** (`DATA_BACKEND=csv`, baw
 | Ingest & integrasi | 73 | DB loader, ingest PIHPS, jarak OSRM, bot WhatsApp |
 | Autentikasi dashboard & kuota WhatsApp | 117 | Login Supabase, verifikasi JWT server-side, RLS 12 tabel, reset password, kuota gratis WhatsApp (nonaktif default) |
 
-**24 skenario edge-case** memetakan kejadian nyata Jawa Timur, contohnya: Ramadan spike (C1), erupsi Semeru di Lumajang → unreachable (D4), banjir multi-kabupaten sentra padi (D5), kenaikan BBM → biaya logistik naik (E5), dan prioritas reserve kontrak Bulog (E3).
+**25 skenario edge-case** memetakan kejadian nyata Jawa Timur, contohnya: Ramadan spike (C1), erupsi Semeru di Lumajang → unreachable (D4), banjir multi-kabupaten sentra padi (D5), kenaikan BBM → biaya logistik naik (E5), dan prioritas reserve kontrak Bulog (E3).
 
 **Hasil kunci:**
 - **Equity terbukti saat pasokan langka, biaya efisiensi nol.** *Ini uji-tekan hipotetis, bukan hasil data BPS asli:* Jawa Timur pada data 2022 justru sangat surplus (rasio 6,6×), sehingga nilai equity tidak akan tampak. Untuk menunjukkan cara kerja mekanismenya kami membangun skenario langka buatan (fixture `surplus_deficit_constrained.csv`, surplus 3962t vs defisit 5249t). Di skenario itu greedy murni menelantarkan Madura — Sampang **0%**, Bangkalan **20%**; AgriFlow mengangkat keduanya ke **100%** dengan *coverage agregat identik* (0.6649) dan Gini turun (0.3017 → 0.2905). Kami tidak mengklaim keunggulan equity saat pasokan melimpah, dan tidak mengklaim skenario ini berasal dari data nyata.
 - **Anomali sadar-musiman.** Penurunan harga ~60% ter-flag, tapi pola musiman murni (siklus jelang Lebaran) **tidak** memicu false positive; anomali genuine di atas pola musiman tetap terdeteksi.
 - **Data mengungkap defisit struktural, bukan bug.** Bawang putih menghasilkan **0 match** di seluruh 38 kabupaten pada data BPS 2022 — Jawa Timur defisit bawang putih di semua kabupaten, konsisten dengan Indonesia sebagai net-importir bawang putih. Engine bekerja benar; datanya yang bicara.
 
-📄 Detail lengkap (kenapa, daftar 24 skenario, sitasi paper): [Dokumen Arsitektur](docs/AgriFlow_Architecture.pdf) §Pengujian & Validasi.
+📄 Detail lengkap (kenapa, daftar 25 skenario, sitasi paper): [Dokumen Arsitektur](docs/AgriFlow_Architecture.pdf) §Pengujian & Validasi.
 
 ## Kenapa tech stack kami RINGKAS (bukan sebanyak proposal awal)?
 
@@ -306,7 +306,7 @@ belum punya rilis bernomor.
 | Model evaluation | ✅ | [Backtest holdout, MAPE 10,8%](docs/evidence/runs/backtest_baseline.txt) |
 | Performance test | ✅ | [latency](docs/evidence/runs/latency.txt) · [skala nasional](docs/evidence/runs/national_scale.txt) · [beban dashboard](docs/evidence/runs/dashboard_load.txt) |
 | A/B test | ✅ | [Haversine vs jarak jalan](docs/evidence/runs/ab_test_road_distance.txt) |
-| Hasil simulasi | ✅ | 24 skenario edge-case · [skenario pasokan langka](docs/evidence/runs/equity_comparison_constrained.txt) |
+| Hasil simulasi | ✅ | 25 skenario edge-case · [skenario pasokan langka](docs/evidence/runs/equity_comparison_constrained.txt) |
 | Validation report | ✅ | [Audit menyeluruh](docs/AgriFlow_Audit_2026-07.pdf) · [metodologi data nyata](REAL_DATA_METHODOLOGY.md) |
 | Security test awal | ✅ | [Ringkasan](docs/evidence/security-review.md) · 117 tes auth/kuota/RLS |
 | Error log | ✅ | [Contoh log JSON](docs/evidence/runs/api-request-log-sample.jsonl) · [`request_log.py`](whatsapp_bot/request_log.py) |
@@ -358,7 +358,7 @@ tautan ke tiap berkas sesi.
 | Item yang diminta | Status | Keterangan |
 |---|:---:|---|
 | Demonstrasi metode | ✅ | 5 sesi demonstrasi langsung ke pengguna, didampingi observer |
-| Simulasi proses | ⚠️ | 24 skenario simulasi ada, tetapi dijalankan sebagai kode, bukan role-play manusia |
+| Simulasi proses | ⚠️ | 25 skenario simulasi ada, tetapi dijalankan sebagai kode, bukan role-play manusia |
 | Prototype layanan publik | ⚠️ | Dashboard dapat diakses publik, tetapi bentuknya digital |
 | Pilot layanan | ❌ | Surat kesediaan uji coba sudah ada, pelaksanaannya belum |
 | Role-play | ❌ | Belum |

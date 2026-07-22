@@ -123,7 +123,7 @@ The production server loads **real BPS data by default** (`DATA_BACKEND=csv`, th
 | Category | Count | Coverage |
 |---|---|---|
 | Per-layer unit (L0–L3) | 73 | IPM tier, distance/perishability constraints, scoring, equity allocation |
-| 24 edge-case scenarios (A–F) | 27+ | Volume, spatial, temporal, disruption, political, quality |
+| 25 edge-case scenarios (A–F) | 64 | Volume, spatial, temporal, disruption, political, quality |
 | Real BPS/PIHPS data validation | 57 | Rice + horticulture 2022 food-balance, reproducible pipeline |
 | Price anomaly detection | 49 | Season-aware S-H-ESD on deseasonalized residuals |
 | Forecast & API | 40 | Forecast/anomaly endpoints + fallback |
@@ -131,14 +131,14 @@ The production server loads **real BPS data by default** (`DATA_BACKEND=csv`, th
 | Ingest & integration | 73 | DB loader, PIHPS ingest, OSRM distance, WhatsApp bot |
 | Dashboard auth & WhatsApp quota | 117 | Supabase login, server-side JWT verification, RLS on 12 tables, password reset, WhatsApp free-tier quota (disabled by default) |
 
-The **24 edge-case scenarios** map to real East Java events, e.g.: Ramadan spike (C1), Mt. Semeru eruption in Lumajang → unreachable (D4), multi-district flood of rice belts (D5), fuel-price hike → higher logistics cost (E5), and Bulog contract-reserve priority (E3).
+The **25 edge-case scenarios** map to real East Java events, e.g.: Ramadan spike (C1), Mt. Semeru eruption in Lumajang → unreachable (D4), multi-district flood of rice belts (D5), fuel-price hike → higher logistics cost (E5), and Bulog contract-reserve priority (E3).
 
 **Key results:**
 - **Equity proven under scarcity, at zero efficiency cost.** *This is a hypothetical stress test, not a result from the real BPS data:* on the 2022 data East Java is in fact heavily in surplus (6.6× ratio), so the equity value would not surface. To show how the mechanism works we built a synthetic scarcity scenario (the `surplus_deficit_constrained.csv` fixture, surplus 3962t vs deficit 5249t). In it, pure greedy abandons Madura — Sampang **0%**, Bangkalan **20%**; AgriFlow lifts both to **100%** at *identical aggregate coverage* (0.6649), with Gini dropping (0.3017 → 0.2905). We do not claim an equity advantage under abundance, nor that this scenario comes from real data.
 - **Season-aware anomalies.** A ~60% price drop is flagged, but a pure seasonal pattern (pre-Eid cycle) does **not** trigger false positives; genuine anomalies riding on top of the seasonal pattern are still caught.
 - **The data reveals a structural deficit, not a bug.** Garlic (bawang putih) produces **0 matches** across all 38 districts on the 2022 BPS data — East Java is deficit in garlic in every district, consistent with Indonesia being a net garlic importer. The engine is working correctly; the data is what's speaking.
 
-📄 Full detail (why, the 24-scenario list, paper citations): [Architecture Document](docs/AgriFlow_Architecture.pdf) §Testing & Validation.
+📄 Full detail (why, the 25-scenario list, paper citations): [Architecture Document](docs/AgriFlow_Architecture.pdf) §Testing & Validation.
 
 ## Why Our Tech Stack Is LEAN (not as large as the original proposal)?
 
@@ -282,7 +282,7 @@ no numbered release yet.
 | Model evaluation | ✅ | [Holdout backtest, 10.8% MAPE](docs/evidence/runs/backtest_baseline.txt) |
 | Performance test | ✅ | [latency](docs/evidence/runs/latency.txt) · [national scale](docs/evidence/runs/national_scale.txt) · [dashboard load](docs/evidence/runs/dashboard_load.txt) |
 | A/B test | ✅ | [Haversine vs road distance](docs/evidence/runs/ab_test_road_distance.txt) |
-| Simulation results | ✅ | 24 edge-case scenarios · [supply-constrained scenario](docs/evidence/runs/equity_comparison_constrained.txt) |
+| Simulation results | ✅ | 25 edge-case scenarios · [supply-constrained scenario](docs/evidence/runs/equity_comparison_constrained.txt) |
 | Validation report | ✅ | [Full audit](docs/AgriFlow_Audit_2026-07.pdf) · [real-data methodology](REAL_DATA_METHODOLOGY.md) |
 | Initial security testing | ✅ | [Summary](docs/evidence/security-review.md) · 117 auth/quota/RLS tests |
 | Error log | ✅ | [JSON log sample](docs/evidence/runs/api-request-log-sample.jsonl) · [`request_log.py`](whatsapp_bot/request_log.py) |
@@ -333,7 +333,7 @@ all in [**User Feedback**](#user-feedback) below, with a link to each session re
 | Item requested | Status | Note |
 |---|:---:|---|
 | Method demonstration | ✅ | 5 sessions demonstrated directly to users, with an observer |
-| Process simulation | ⚠️ | 24 simulation scenarios exist, but they run as code, not as human role-play |
+| Process simulation | ⚠️ | 25 simulation scenarios exist, but they run as code, not as human role-play |
 | Public service prototype | ⚠️ | The dashboard is publicly accessible, but it is digital |
 | Service pilot | ❌ | A pilot-willingness letter exists; the pilot itself has not run |
 | Role-play | ❌ | Not yet |

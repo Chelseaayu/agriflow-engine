@@ -15,7 +15,7 @@ kami tidak membaguskannya dengan memasukkan bukti dari kategori lain ke sini.
 | Item yang diminta | Status | Keterangan |
 |---|:---:|---|
 | Demonstrasi metode | ✅ | 5 sesi demonstrasi langsung ke pengguna, didampingi observer |
-| Simulasi proses | ⚠️ Sebagian | 24 skenario simulasi ada, tetapi dijalankan sebagai kode, bukan role-play manusia |
+| Simulasi proses | ⚠️ Sebagian | 25 skenario simulasi ada, tetapi dijalankan sebagai kode, bukan role-play manusia |
 | Prototype layanan publik | ⚠️ Sebagian | Dashboard dapat diakses publik, tetapi bentuknya digital |
 | Pilot layanan | ❌ | Belum. Surat kesediaan uji coba sudah ada, pelaksanaannya belum |
 | Role-play | ❌ | Belum |
@@ -70,7 +70,7 @@ tidak diselesaikan oleh pelatihan.
 
 ## Catatan tentang "simulasi proses"
 
-AgriFlow punya **24 skenario simulasi** yang memetakan kejadian nyata Jawa Timur: lonjakan
+AgriFlow punya **25 skenario simulasi** yang memetakan kejadian nyata Jawa Timur: lonjakan
 Ramadan, erupsi Semeru di Lumajang, banjir multi-kabupaten di sentra padi, kenaikan BBM,
 prioritas kontrak Bulog. Rinciannya di [halaman pengujian](pengujian.md#6-hasil-simulasi).
 

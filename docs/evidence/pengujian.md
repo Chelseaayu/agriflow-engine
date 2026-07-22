@@ -22,7 +22,7 @@ Terakhir dijalankan ulang: **22 Juli 2026** (kecuali yang ditandai lain).
 | 3 | Model evaluation | ✅ Ada | [backtest holdout, MAPE 10,8%](runs/backtest_baseline.txt) |
 | 4 | Performance test | ✅ Ada | [latency](runs/latency.txt) · [skala nasional](runs/national_scale.txt) · [beban dashboard](runs/dashboard_load.txt) |
 | 5 | A/B test | ✅ Ada | [haversine vs jarak jalan](runs/ab_test_road_distance.txt) |
-| 6 | Hasil simulasi | ✅ Ada | [24 skenario edge-case](#6-hasil-simulasi) · [skenario pasokan langka](runs/equity_comparison_constrained.txt) |
+| 6 | Hasil simulasi | ✅ Ada | [25 skenario edge-case](#6-hasil-simulasi) · [skenario pasokan langka](runs/equity_comparison_constrained.txt) |
 | 7 | Validation report | ✅ Ada | [Audit menyeluruh Juli 2026](../AgriFlow_Audit_2026-07.pdf) · [metodologi data nyata](../../REAL_DATA_METHODOLOGY.md) |
 | 8 | Security test awal | ✅ Ada | [ringkasan](security-review.md) · 117 tes auth/kuota/RLS |
 | 9 | Error log | ✅ Ada | [contoh log JSON](runs/api-request-log-sample.jsonl) · [`whatsapp_bot/request_log.py`](../../whatsapp_bot/request_log.py) |
@@ -203,17 +203,26 @@ menambal fungsi yang tidak lagi dipanggil di jalur itu. Lengan uji sudah diarahk
 
 ## 6. Hasil simulasi
 
-**24 skenario edge-case (A–F)** memetakan kejadian nyata Jawa Timur, dijalankan sebagai tes
+**25 skenario edge-case (A–F)** memetakan kejadian nyata Jawa Timur, dijalankan sebagai tes
 otomatis di [`tests/test_scenarios_*.py`](../../tests):
 
-| Berkas | Skenario | Contoh |
-|---|---:|---|
-| [temporal](../../tests/test_scenarios_temporal.py) | 7 | C1 lonjakan Ramadan |
-| [disruption](../../tests/test_scenarios_disruption.py) | 9 | D4 erupsi Semeru di Lumajang, D5 banjir multi-kabupaten |
-| [political](../../tests/test_scenarios_political.py) | 11 | E3 prioritas kontrak Bulog, E5 kenaikan BBM |
-| [spatial](../../tests/test_scenarios_spatial.py) | 6 | pulau terpisah, jarak ekstrem |
-| [volume](../../tests/test_scenarios_volume.py) | 4 | surplus/defisit ekstrem |
-| [tier-1 extensions](../../tests/test_scenarios_tier1_extensions.py) | 27 | turunan tiap tier |
+| Berkas | Skenario | Kode | Tes |
+|---|---:|---|---:|
+| [volume](../../tests/test_scenarios_volume.py) | 4 | A1–A4 surplus/defisit ekstrem | 4 |
+| [spatial](../../tests/test_scenarios_spatial.py) | 3 | B1–B3 pulau terpisah, jarak ekstrem | 6 |
+| [temporal](../../tests/test_scenarios_temporal.py) | 3 | C1 lonjakan Ramadan, C2, C3 | 7 |
+| [disruption](../../tests/test_scenarios_disruption.py) | 5 | D1–D5, termasuk D4 erupsi Semeru dan D5 banjir multi-kabupaten | 9 |
+| [political](../../tests/test_scenarios_political.py) | 5 | E1–E5, termasuk E3 prioritas Bulog dan E5 kenaikan BBM | 11 |
+| [tier-1 extensions](../../tests/test_scenarios_tier1_extensions.py) | 5 | C4, D6, E6, F1, F2 | 27 |
+| **Total** | **25** | A1–A4, B1–B3, C1–C4, D1–D6, E1–E6, F1–F2 | **64** |
+
+Kolom "Skenario" menghitung skenario bernama; kolom "Tes" menghitung fungsi tes yang
+menguji skenario itu. Satu skenario umumnya diuji lebih dari satu tes. Jumlah 25 dapat
+diperiksa ulang dengan:
+
+```
+grep -rhoE "class Test[A-F][0-9]+_" tests/ | sort -u | wc -l
+```
 
 Simulasi pasokan langka ([hasil](runs/equity_comparison_constrained.txt)): greedy murni
 menelantarkan Madura (Sampang 0%, Bangkalan 20%); AgriFlow mengangkat keduanya ke 100%

@@ -34,6 +34,7 @@ except ImportError as e:
 from matching_engine import LogisticsContext, run_matching
 from sample_data.loader import load_all_sample_data as _load_csv
 from sample_data.loader import load_real_data as _load_real
+from whatsapp_bot import request_log
 
 # Precomputed data paths (resolved relative to project root so they work
 # both locally and inside the Docker container)
@@ -152,6 +153,11 @@ app.add_middleware(
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
+
+# One JSON line per request on stderr, plus an X-Request-ID header so a user
+# report ties back to an exact log line. Set AGRIFLOW_LOG_FILE to also archive
+# the run to disk. Never logs phone numbers or request bodies.
+request_log.install(app)
 
 
 # =============================================================================

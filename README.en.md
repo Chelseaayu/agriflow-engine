@@ -53,6 +53,29 @@ Language / Bahasa: **English** · [Bahasa Indonesia](./README.md)
 
 ---
 
+# Supporting Evidence — Judge Navigation
+
+All of AgriFlow's supporting evidence sits in one place, organised along the five categories in
+the submission guide. Entry point: **[docs/evidence/](docs/evidence/README.md)**.
+
+| # | Category | In short | Status |
+|---|---|---|---|
+| 1 | [**Digital product**](docs/evidence/produk-digital.md) | Live dashboard, production API with recorded real responses, runnable 4-layer rule engine, WhatsApp bot | 8 of 9 items |
+| 2 | [**Testing**](docs/evidence/pengujian.md) | 523 tests passing, 10.8% MAPE, performance tests, A/B test, 24 simulations, security testing, error logs, audit | 10 of 11 items |
+| 3 | [**Users**](docs/evidence/pengguna.md) | 5 early testers (100% task success, 4.4-4.8 scores), 4 audio-recorded farmer interviews, testimonials | 7 of 8 items |
+| 4 | [**Non-digital implementation**](docs/evidence/implementasi-non-digital.md) | Method demonstration, field observation | 2 of 9 items |
+| 5 | [**External readiness**](docs/evidence/kesiapan-pihak-luar.md) | Signed BRIN pilot-willingness letter, domain-expert validation, official data-access provenance | 4 of 7 items |
+
+**Four fastest links:** [live production API responses](docs/evidence/runs/api-live-responses.md) ·
+[real BPS data demo](docs/evidence/runs/demo_real_bps.txt) ·
+[5 early-tester sessions](docs/evidence/usability-early-testing.md) ·
+[full audit](docs/AgriFlow_Audit_2026-07.pdf)
+
+Category 4 is our thinnest, and we say so plainly, as we do with every unflattering finding on
+those pages.
+
+---
+
 # Phase 2 — What We Have Built (MVP)
 
 ## The Problem
@@ -88,14 +111,14 @@ All three functions (Detect · Predict · Distribute) share one real data source
 |----------|---------|:------:|
 | **Distribute** | 4-layer matching engine (hard constraints → multi-objective scoring → equity) running on **real BPS per-district data (2022)** | ✅ |
 | **Detect** | Price anomaly detection (deseasonalize + robust statistics) on daily PIHPS prices **2021–2025** | ✅ |
-| **Predict** | 30-day price forecasting. What is **served today** is a seasonal-naive baseline (`seasonal_naive_baseline`) at **10.8% MAPE** on a [holdout backtest](docs/evidence/README.md#3-model-evaluation). The TimesFM 2.0 pipeline is in the repo but **not yet serving production** | ✅ |
+| **Predict** | 30-day price forecasting. What is **served today** is a seasonal-naive baseline (`seasonal_naive_baseline`) at **10.8% MAPE** on a [holdout backtest](docs/evidence/pengujian.md#3-model-evaluation). The TimesFM 2.0 pipeline is in the repo but **not yet serving production** | ✅ |
 | **Accessibility** | **WhatsApp Chatbot** (ask price & recommendations) + **interactive map Dashboard** | ✅ |
 | **Security** | The site is *login-first*: opening it shows a login page. Judges click **"Masuk sebagai Tamu" (Enter as Guest)** to review without creating an account. A Supabase account system (server-side JWT verification, Row Level Security on 12 tables, password reset) is ready for a subscription model; sensitive subscriber & billing data stays JWT-protected server-side. | ✅ |
 | **Real data** | **6 real commodities** per-district: premium & medium rice, large & cayenne chilli, red & garlic onion + 5 years of PIHPS prices | ✅ |
 
 > **Quality:** 523 automated tests pass (524 collected, 1 skipped) — the engine is tested, reproducible, and honest about its limitations (see [Testing & Scenarios](#testing--scenarios) and Phase 3).
 >
-> 📁 **[Full testing evidence](docs/evidence/README.md)** — test cases, experiment results, model evaluation, performance tests, A/B test, simulation results, initial security testing, error logs, validation report, and [usability testing with 5 real users](docs/evidence/usability-early-testing.md) (100% task completion). UAT has a ready instrument but has not been run.
+> 📁 Full evidence lives in [**Supporting Evidence**](#supporting-evidence--judge-navigation) above: five categories, including [testing evidence](docs/evidence/pengujian.md) and [usability testing with 5 real users](docs/evidence/usability-early-testing.md).
 
 ### Snapshots
 

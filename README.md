@@ -53,6 +53,29 @@ Language / Bahasa: [English](./README.en.md) · **Bahasa Indonesia**
 
 ---
 
+# 📋 Bukti Pendukung — Navigasi untuk Juri
+
+Seluruh bukti pendukung AgriFlow dikumpulkan di satu tempat, disusun mengikuti lima kategori
+panduan submission. Pintu masuknya: **[docs/evidence/](docs/evidence/README.md)**.
+
+| # | Kategori | Isi ringkas | Status |
+|---|---|---|---|
+| 1 | [**Produk digital**](docs/evidence/produk-digital.md) | Dashboard live, API produksi dengan respons nyata terekam, rule engine 4 lapis yang bisa dijalankan, bot WhatsApp | 8 dari 9 item |
+| 2 | [**Pengujian**](docs/evidence/pengujian.md) | 523 tes lulus, MAPE 10,8%, uji performa, A/B test, 24 simulasi, uji keamanan, error log, audit | 10 dari 11 item |
+| 3 | [**Pengguna**](docs/evidence/pengguna.md) | 5 early tester (task success 100%, skor 4,4–4,8), 4 wawancara petani beraudio, testimoni | 7 dari 8 item |
+| 4 | [**Implementasi non-digital**](docs/evidence/implementasi-non-digital.md) | Demonstrasi metode, observasi lapangan | 2 dari 9 item |
+| 5 | [**Kesiapan pihak luar**](docs/evidence/kesiapan-pihak-luar.md) | Surat kesediaan uji coba BRIN, validasi ahli domain, bukti akses data resmi | 4 dari 7 item |
+
+**Empat tautan tercepat:** [respons API produksi live](docs/evidence/runs/api-live-responses.md) ·
+[demo data BPS asli](docs/evidence/runs/demo_real_bps.txt) ·
+[hasil 5 sesi early tester](docs/evidence/usability-early-testing.md) ·
+[audit menyeluruh](docs/AgriFlow_Audit_2026-07.pdf)
+
+Kategori 4 adalah yang paling tipis dan kami menuliskannya apa adanya, sebagaimana setiap
+temuan yang tidak menguntungkan kami di halaman-halaman itu.
+
+---
+
 # 🚀 Phase 2 — Yang Sudah Kami Bangun (MVP)
 
 ## Masalah
@@ -88,14 +111,14 @@ Tiga fungsi (Deteksi · Prediksi · Distribusi) berbagi satu sumber data nyata, 
 |--------|-------|:------:|
 | **Distribusi** | Matching engine 4-lapis (hard constraints → multi-objective scoring → equity) berjalan di **data BPS asli per-kabupaten (2022)** | ✅ |
 | **Deteksi** | Deteksi anomali harga (deseasonalize + robust statistics) pada harga PIHPS harian **2021–2025** | ✅ |
-| **Prediksi** | Forecasting harga 30 hari. Yang **dilayani hari ini** adalah baseline seasonal-naive (`seasonal_naive_baseline`) dengan **MAPE 10,8%** pada [backtest holdout](docs/evidence/README.md#3-model-evaluation). Pipeline TimesFM 2.0 sudah ada di repo tetapi **belum melayani produksi** | ✅ |
+| **Prediksi** | Forecasting harga 30 hari. Yang **dilayani hari ini** adalah baseline seasonal-naive (`seasonal_naive_baseline`) dengan **MAPE 10,8%** pada [backtest holdout](docs/evidence/pengujian.md#3-model-evaluation). Pipeline TimesFM 2.0 sudah ada di repo tetapi **belum melayani produksi** | ✅ |
 | **Aksesibilitas** | **Chatbot WhatsApp** (tanya harga & rekomendasi) + **Dashboard** peta interaktif | ✅ |
 | **Keamanan** | Situs bersifat *login-first*: membuka website menampilkan halaman login lebih dulu. Juri cukup klik **"Masuk sebagai Tamu"** untuk meninjau tanpa membuat akun. Akun Supabase (JWT terverifikasi server-side, Row Level Security di 12 tabel, reset password) siap untuk model berlangganan; data sensitif (langganan & pembayaran) tetap dijaga verifikasi JWT di sisi server. | ✅ |
 | **Data nyata** | **6 komoditas** real per-kab: beras premium & medium, cabai merah & rawit, bawang merah & putih + harga PIHPS 5 tahun | ✅ |
 
 > **Kualitas:** 523 tes otomatis lulus (524 terkumpul, 1 di-skip) — engine teruji, dapat direproduksi, dan jujur soal keterbatasannya (lihat [Pengujian & Skenario](#pengujian--skenario) dan Phase 3).
 >
-> 📁 **[Bukti pengujian lengkap](docs/evidence/README.md)** — test case, hasil eksperimen, model evaluation, performance test, A/B test, hasil simulasi, security test awal, error log, validation report, dan [usability testing dengan 5 pengguna nyata](docs/evidence/usability-early-testing.md) (100% tugas tuntas). UAT punya instrumen siap-pakai tapi belum dijalankan.
+> 📁 Bukti lengkapnya ada di [**Bukti Pendukung**](#-bukti-pendukung--navigasi-untuk-juri) di bawah: lima kategori, termasuk [bukti pengujian](docs/evidence/pengujian.md) dan [usability testing dengan 5 pengguna nyata](docs/evidence/usability-early-testing.md).
 
 ### Cuplikan
 

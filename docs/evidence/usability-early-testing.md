@@ -97,7 +97,7 @@ permintaan yang berulang: **tiga dari lima peserta meminta informasi penjual ata
 dan itu konsisten dengan keluhan pada wawancara lapangan sebelumnya bahwa petani tidak punya
 akses ke pembeli luar daerah. Satu keluhan lain layak ditindaklanjuti langsung: Aji kesulitan
 membaca prediksi baseline, yang sejalan dengan temuan bahwa
-[interval kepercayaan peramal memang belum terkalibrasi](README.md#3-model-evaluation).
+[interval kepercayaan peramal memang belum terkalibrasi](pengujian.md#3-model-evaluation).
 
 [Protokol usability testing](usability-test-protocol.md) dirancang untuk menutup ketiga
 keterbatasan itu pada putaran berikutnya: moderator yang tidak boleh menolong, peserta dari

@@ -1,0 +1,129 @@
+================================================================================
+  AgriFlow Matching Engine v9.0
+  DATA REAL -- BPS Jawa Timur 2022
+  6 Komoditas: beras_premium, beras_medium, cabai_merah,
+               cabai_rawit, bawang_merah, bawang_putih
+================================================================================
+
+-> Loading data real: sample_data/surplus_deficit_real.csv
+   Surplus nodes:  106
+   Deficit nodes:  122
+   Weather routes: 10
+
+   Breakdown per komoditas:
+     bawang_merah            surplus=17 nodes (     406,626 t)  deficit=21 nodes (      57,075 t)
+     bawang_putih            surplus= 0 nodes (           0 t)  deficit=38 nodes (      82,104 t) [ALL DEFICIT - no domestic surplus]
+     beras_medium            surplus=26 nodes (   1,089,460 t)  deficit=12 nodes (     151,248 t)
+     beras_premium           surplus=26 nodes (   1,634,190 t)  deficit=12 nodes (     226,872 t)
+     cabai_merah             surplus=17 nodes (      66,262 t)  deficit=21 nodes (      28,954 t)
+     cabai_rawit             surplus=20 nodes (     549,562 t)  deficit=18 nodes (      22,457 t)
+
+-> Running matching engine pada data real...
+
+================================================================================
+  HASIL MATCHING -- DATA REAL BPS JAWA TIMUR 2022
+================================================================================
+
+Latency:                   12.85 ms (target <500ms)
+Total matches:             84
+  Tier1-Tier1 matches:     0
+  Cross/Tier2 matches:     84
+Candidate pairs evaluated: 1430
+Ramadan mode:              False
+Import policy:             False
+Stale data nodes:          0
+
+-> TOP 15 MATCHES (sorted by FinalScore desc)
+--------------------------------------------------------------------------------
+  # Surplus (asal)         -> Deficit (tujuan)       Komoditas            Vol(t) Dist(km)  Score Conf  
+-------------------------------------------------------------------------------------------------------
+  1 Sampang                -> Bangkalan              Bawang Merah        3,282.7       63  109.2 MEDIUM
+      flags: EQUITY_BOOST_30, MADURA_CLUSTER, VOLUME_MISMATCH_DRASTIS
+      note:  Marginal contribution: surplus/demand ratio < 20%. Suggest combine dengan source lain.
+  2 Gresik                 -> Bangkalan              Cabai Merah Besar   2,013.6       50  101.5 MEDIUM
+      flags: EQUITY_BOOST_30, MADURA_CLUSTER
+  3 Gresik                 -> Bangkalan              Cabai Rawit Merah   1,505.1       50  101.5 MEDIUM
+      flags: EQUITY_BOOST_30, MADURA_CLUSTER, VOLUME_MISMATCH_DRASTIS
+      note:  Marginal contribution: surplus/demand ratio < 20%. Suggest combine dengan source lain.
+  4 Situbondo              -> Bondowoso              Bawang Merah        1,955.8       35   98.4 MEDIUM
+      flags: EQUITY_BOOST_15
+  5 Kota Probolinggo       -> Pasuruan               Bawang Merah        3,655.5       40   98.1 MEDIUM
+      flags: EQUITY_BOOST_15
+  6 Kota Probolinggo       -> Lumajang               Bawang Merah        1,709.0       47   97.6 MEDIUM
+      flags: EQUITY_BOOST_15
+  7 Probolinggo            -> Jember                 Bawang Merah        7,310.3      116   93.2 MEDIUM
+      flags: EQUITY_BOOST_15, VOLUME_MISMATCH_DRASTIS
+      note:  Marginal contribution: surplus/demand ratio < 20%. Suggest combine dengan source lain.
+  8 Magetan                -> Pacitan                Bawang Merah        1,510.5       96   91.3 MEDIUM
+      flags: EQUITY_BOOST_15
+  9 Lamongan               -> Kota Surabaya          Beras Premium      104,204.4       47   90.2 MEDIUM
+ 10 Jombang                -> Kediri                 Beras Premium      15,333.6       34   90.1 MEDIUM
+      flags: EQUITY_BOOST_05
+ 11 Lamongan               -> Kota Surabaya          Beras Medium       69,469.6       47   90.1 MEDIUM
+ 12 Mojokerto              -> Jombang                Bawang Merah        3,296.9       32   90.0 MEDIUM
+      flags: EQUITY_BOOST_05
+ 13 Jombang                -> Kediri                 Beras Medium       10,222.4       34   90.0 MEDIUM
+      flags: EQUITY_BOOST_05
+ 14 Bojonegoro             -> Tuban                  Bawang Merah        1,585.1       40   89.5 MEDIUM
+      flags: EQUITY_BOOST_05, VOLUME_MISMATCH_DRASTIS
+      note:  Marginal contribution: surplus/demand ratio < 20%. Suggest combine dengan source lain.
+ 15 Blitar                 -> Malang                 Beras Premium      22,299.6       56   89.4 MEDIUM
+      flags: EQUITY_BOOST_05
+
+-> EXTERNAL OPPORTUNITIES / SARAN IMPOR (4)
+--------------------------------------------------------------------------------
+  * Cluster Madura surplus beras_medium: 25204t total. Saran: agregasi ekspor ke Surabaya/Sidoarjo via Suramadu.
+  * Cluster Madura surplus bawang_merah: 60807t total. Saran: agregasi ekspor ke Surabaya/Sidoarjo via Suramadu.
+  * Cluster Madura surplus beras_premium: 37807t total. Saran: agregasi ekspor ke Surabaya/Sidoarjo via Suramadu.
+  * Cluster Madura surplus cabai_rawit: 62002t total. Saran: agregasi ekspor ke Surabaya/Sidoarjo via Suramadu.
+
+-> UNMATCHED SURPLUS (55 nodes)
+--------------------------------------------------------------------------------
+  Nganjuk                Bawang Merah               190,610.2 t @ Rp 24.375/kg
+  Pamekasan              Bawang Merah                15,973.1 t @ Rp 24.375/kg
+  Sumenep                Bawang Merah                 8,116.2 t @ Rp 24.375/kg
+  Banyuwangi             Bawang Merah                   644.4 t @ Rp 24.375/kg
+  Madiun                 Bawang Merah                    72.8 t @ Rp 24.375/kg
+  Ngawi                  Beras Medium               146,546.6 t @ Rp 7.744/kg
+  Bojonegoro             Beras Medium               118,271.7 t @ Rp 7.744/kg
+  Tuban                  Beras Medium                73,802.8 t @ Rp 7.744/kg
+  ... +47 lainnya
+
+-> UNMATCHED DEFICIT (38 nodes)
+--------------------------------------------------------------------------------
+
+  bawang_putih (all-deficit): 38 nodes, 82,104 ton total unmatched
+  Saran: impor dari Jawa Tengah (Tegal/Brebes) atau luar Jatim.
+
+================================================================================
+  ESTIMASI DAMPAK EKONOMI -- DATA REAL BPS JAWA TIMUR 2022
+================================================================================
+Total volume matched:         467,044.9 ton
+Gross arbitrage value:     Rp 1.922.709.821.430
+  (selisih harga x volume, sebelum biaya logistik)
+
+-> RINGKASAN PER KOMODITAS
+--------------------------------------------------------------------------------
+  bawang_merah             21 matches,     51,834.3 ton matched
+  bawang_putih              0 matches (no domestic surplus — all 38 kab deficit; engine routes to external_opportunities: saran impor)
+  beras_medium             12 matches,    148,257.8 ton matched
+  beras_premium            12 matches,    222,386.6 ton matched
+  cabai_merah              21 matches,     22,737.5 ton matched
+  cabai_rawit              18 matches,     21,828.7 ton matched
+
+-> DEMO DATA ASSUMPTIONS (DATA REAL vs PRODUCTION)
+--------------------------------------------------------------------------------
+  [1] bawang_putih: Jatim 2022 produksi ~855 ton, konsumsi ~80.640 ton.
+      Semua 38 kab DEFICIT. Tidak ada surplus domestik.
+      Engine handles gracefully: 0 matches, external_opportunity (saran impor).
+      historical_price_stats: median Rp 20.750 (PIHPS 2022, real) — no anomaly.
+
+  [2] cabai_merah, cabai_rawit: harvest_age_days=1 (demo assumption: 'baru
+      tiba di collection point'). max_fresh_age_days=5 → Layer 1 passes.
+      Produksi: harvest_age dari scraper real-time (0-2 hari per batch).
+
+  [3] Harga surplus = 0.75 x harga deficit (demo assumption: margin
+      distribusi produsen-konsumen ~25%). Gross arbitrage mencerminkan
+      nilai redistribusi, bukan keuntungan bersih (belum kurangi logistik).
+      Produksi: harga per-kab dari BPS/PIHPS farmgate.
+

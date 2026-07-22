@@ -1,0 +1,17 @@
+
+Holdout backtest of DEPLOYED seasonal-naive forecaster (horizon=30 days, leakage-free)
+
+  Commodity        series    MAPE%    MAE(Rp)   RMSE(Rp)   CI80%
+  ------------------------------------------------------------
+  bawang_merah          8     19.4      9,769     11,075     27%
+  bawang_putih          8     16.8      5,169      6,092     32%
+  beras_medium         15      4.8        696        730     48%
+  beras_premium        15      3.6        568        582     67%
+  cabai_rawit           8     23.2     14,305     16,256     72%
+  daging_ayam           8     10.2      3,828      4,071      5%
+  telur_ayam            8      9.1      2,688      2,865     15%
+  ------------------------------------------------------------
+  OVERALL (per-series mean)                    10.8                           42%
+
+  Series evaluated: 70 | commodities: 7
+

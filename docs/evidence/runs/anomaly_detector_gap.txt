@@ -1,0 +1,61 @@
+AgriFlow — Anomaly Detector Gap Analysis  (seed=2026)
+Run: 2026-07-22T17:12:44
+
+==================================================================================
+  PART 1 — 'As shipped': static (median, std) vs real PIHPS Jatim prices
+==================================================================================
+  historical_price_stats.csv is a STATIC constant per commodity (not a rolling window,
+  despite engine.py's docstring claiming '30-day rolling') -- this reproduces exactly what
+  production does today: detect_price_anomaly() called with the SAME fixed (median, std)
+  against every real observed price.
+
+  commodity      source                                   n_obs  static_3σ_flags  MAD_persistent  overlap   recall
+  ----------------------------------------------------------------------------------------------------------------
+  bawang_merah   PIHPS_2022_median                        10160               85            1282       12     0.9%
+  bawang_putih   PIHPS_2022_median                        10160             4421             781      333    42.6%
+  beras_medium   PIHPS_2022_consumer_widened_for_farmgate    9994             4008             694      301    43.4%
+  beras_premium  PIHPS_2022_consumer_widened_for_farmgate   10160             2936             551      161    29.2%
+  cabai_rawit    PIHPS_2022_median                        10159               99             774        9     1.2%
+  daging_ayam    SYNTHETIC                                10160               10             790        0     0.0%
+  telur_ayam     SYNTHETIC                                10160              202             814        0     0.0%
+
+  TOTAL: 70953 real observations across 7 commodities x 8 IHK cities.
+  Static 3σ flagged 11761 points total.
+  S-H-ESD (robust, validated) flagged 5686 PERSISTENT genuine events.
+  Static 3σ caught 816/5686 of those (14.4% recall) on the SAME date+city.
+
+  Caveat: telur_ayam and daging_ayam static constants are labelled 'SYNTHETIC' in
+  historical_price_stats.csv (never calibrated against the real PIHPS series at all) --
+  their recall numbers reflect a made-up threshold, not a stale-but-real one.
+
+==================================================================================
+  PART 2 — Masking mechanism (rolling window, real price levels)
+==================================================================================
+  Simulates the 'rolling 30-day' design the docstring promises (engine.py:352)
+  but the shipped loader never implements. Calls the ACTUAL detect_price_anomaly()
+  function with median/std computed from a window built on REAL median price levels
+  (not an arbitrary Rp30,000 placeholder), sweeping how many contaminating outliers
+  are already sitting in that window when a genuine 3x spike arrives.
+
+  --- cabai_rawit (volatile, MAPE 23.2% per forecasting validation): base price Rp41,000/kg ---
+   contam_n  contam_%    mean_std  3σ_flags_spike  MAD_flags_spike
+          0      0.0%      14,765       200/200         200/200  
+          2      6.7%      18,203       200/200         200/200  
+          4     13.3%      20,487       199/200         200/200  
+          6     20.0%      23,174       187/200         200/200  
+          8     26.7%      24,929       153/200         200/200  
+         10     33.3%      26,450       111/200         200/200  
+         12     40.0%      27,821        71/200         200/200  
+         14     46.7%      28,746        52/200         200/200  
+
+  --- beras_medium (low-volatility staple): base price Rp14,000/kg ---
+   contam_n  contam_%    mean_std  3σ_flags_spike  MAD_flags_spike
+          0      0.0%       5,042       200/200         200/200  
+          2      6.7%       6,216       200/200         200/200  
+          4     13.3%       6,996       199/200         200/200  
+          6     20.0%       7,913       187/200         200/200  
+          8     26.7%       8,512       153/200         200/200  
+         10     33.3%       9,032       111/200         200/200  
+         12     40.0%       9,500        71/200         200/200  
+         14     46.7%       9,816        52/200         200/200  
+

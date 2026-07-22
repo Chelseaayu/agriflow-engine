@@ -1,0 +1,18 @@
+Minting 1,000 distinct user tokens…
+Running 1,000 user sessions across 32 workers…
+
+==============================================================
+  users simulated      1,000
+  requests issued      5,000  (5 per user)
+  wall clock           4.56 s
+  throughput           1,096 req/s
+  user sessions/sec    219
+--------------------------------------------------------------
+  full page load  mean   143.5 ms
+                  p50    140.1 ms
+                  p95    197.1 ms
+                  p99    208.9 ms
+                  max    228.2 ms
+--------------------------------------------------------------
+  failed requests      0
+==============================================================

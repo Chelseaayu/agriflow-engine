@@ -88,12 +88,14 @@ All three functions (Detect · Predict · Distribute) share one real data source
 |----------|---------|:------:|
 | **Distribute** | 4-layer matching engine (hard constraints → multi-objective scoring → equity) running on **real BPS per-district data (2022)** | ✅ |
 | **Detect** | Price anomaly detection (deseasonalize + robust statistics) on daily PIHPS prices **2021–2025** | ✅ |
-| **Predict** | 30-day price forecasting with **TimesFM 2.0** (time-series foundation model) | ✅ |
+| **Predict** | 30-day price forecasting. What is **served today** is a seasonal-naive baseline (`seasonal_naive_baseline`) at **10.8% MAPE** on a [holdout backtest](docs/evidence/README.md#3-model-evaluation). The TimesFM 2.0 pipeline is in the repo but **not yet serving production** | ✅ |
 | **Accessibility** | **WhatsApp Chatbot** (ask price & recommendations) + **interactive map Dashboard** | ✅ |
 | **Security** | The site is *login-first*: opening it shows a login page. Judges click **"Masuk sebagai Tamu" (Enter as Guest)** to review without creating an account. A Supabase account system (server-side JWT verification, Row Level Security on 12 tables, password reset) is ready for a subscription model; sensitive subscriber & billing data stays JWT-protected server-side. | ✅ |
 | **Real data** | **6 real commodities** per-district: premium & medium rice, large & cayenne chilli, red & garlic onion + 5 years of PIHPS prices | ✅ |
 
-> **Quality:** 520 automated tests pass (521 collected, 1 skipped) — the engine is tested, reproducible, and honest about its limitations (see [Testing & Scenarios](#testing--scenarios) and Phase 3).
+> **Quality:** 523 automated tests pass (524 collected, 1 skipped) — the engine is tested, reproducible, and honest about its limitations (see [Testing & Scenarios](#testing--scenarios) and Phase 3).
+>
+> 📁 **[Full testing evidence](docs/evidence/README.md)** — test cases, experiment results, model evaluation, performance tests, A/B test, simulation results, initial security testing, error logs, validation report, plus the UAT and usability-testing instruments that have not been run yet.
 
 ### Snapshots
 
@@ -111,7 +113,7 @@ All three functions (Detect · Predict · Distribute) share one real data source
 
 Because AgriFlow's output drives inter-district food allocation that touches low-HDI districts, claims of "fair" and "robust" must be re-auditable — not just narrative. The test suite locks food-balance figures as *golden numbers* (reproducibility), guards sensitive policy parameters against accidental drift (regression-safety), and tests anomaly detection adversarially.
 
-**521 tests collected · 520 pass · 1 skipped · cross-OS on CI.**
+**524 tests collected · 523 pass · 1 skipped · cross-OS on CI.** ([raw output](docs/evidence/runs/pytest.txt))
 (Skip = `test_timesfm_importorskip`: skipped when the heavy TimesFM library isn't installed on the runner; the forecasting path is still tested via fallback + API contract.)
 
 The production server loads **real BPS data by default** (`DATA_BACKEND=csv`, the default). The old synthetic 19-commodity fixture is still used by 13 test files (`DATA_BACKEND=demo`) to exercise engine logic across a wider commodity range — it is never served to users.
@@ -198,7 +200,7 @@ National-scale growth is gated by the pace of public per-district data opening u
 ```bash
 pip install -r requirements.txt
 python examples/run_demo_real.py   # matching demo on real BPS 2022 data
-pytest tests/                      # 520 pass, 1 skipped
+pytest tests/                      # 523 pass, 1 skipped
 ```
 
 Full engineering detail in [`README_v12.md`](README_v12.md).

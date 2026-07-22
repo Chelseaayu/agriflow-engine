@@ -1,0 +1,45 @@
+[setup] 1444 pairwise road distances in the OSRM pull
+[setup] 38 kabupaten coordinates indexed
+
+[ARM A  haversine only] matches=25  unmatched_supply=22  unmatched_demand=1  warnings=7
+
+[ARM B  road distance (production default)] matches=23  unmatched_supply=22  unmatched_demand=3  warnings=7
+
+==========================================================================================
+DIFF  Arm A (haversine only) vs Arm B (road distance)
+==========================================================================================
+
+Match set delta:
+  arm A only (lost when switching to road):       3
+  arm B only (new matches via road):               1
+  common (same surplus->deficit->commodity pair):  22
+
+Total volume-weighted final_score:
+  baseline:     126424.2
+  treatment:    122869.5
+  delta:         -3554.8  (-2.81%)
+
+Total matched volume (tons):
+  baseline:       1559.0
+  treatment:      1540.0
+  delta:           -19.0  (-1.22%)
+
+Top-10 arm A matches - did they survive in arm B?
+   1. KEPT   Malang            ->Kota Malang         kentang         dist    25->   33km (   +7)  score  92.9-> 92.5 ( -0.4)
+   2. KEPT   Probolinggo       ->Kota Surabaya       bawang_merah    dist   105->  143km (  +38)  score  89.5-> 87.3 ( -2.1)
+   3. KEPT   Bangkalan         ->Gresik              bawang_merah    dist    18->   54km (  +36)  score  89.4-> 87.3 ( -2.1)
+   4. KEPT   Pasuruan          ->Kota Malang         bawang_merah    dist    40->   55km (  +15)  score  88.9-> 88.0 ( -0.8)
+   5. KEPT   Kota Batu         ->Gresik              tomat           dist    81->  117km (  +36)  score  87.5-> 81.9 ( -5.6)
+   6. KEPT   Pasuruan          ->Sidoarjo            bawang_merah    dist    40->   52km (  +12)  score  87.4-> 86.7 ( -0.7)
+   7. LOST   Kota Batu         ->Bondowoso           tomat           dist   143km  score  85.4  -- DROPPED in treatment
+   8. KEPT   Bojonegoro        ->Gresik              jagung          dist    85->   94km (   +9)  score  84.1-> 83.8 ( -0.4)
+   9. KEPT   Kota Batu         ->Kota Surabaya       kol             dist    73->   99km (  +26)  score  83.8-> 81.9 ( -1.9)
+  10. KEPT   Kota Batu         ->Kota Surabaya       wortel          dist    73->   99km (  +26)  score  83.8-> 81.9 ( -1.9)
+
+New matches in treatment (not in baseline) — top 5 by score:
+     NEW  Sampang           ->Sumenep             cabai_merah     dist    87km  score  62.5
+
+Lost matches in treatment (not preserved) — top 5 by score:
+     LOST Kota Batu         ->Bondowoso           tomat           haversine dist   143km  score  85.4
+     LOST Lumajang          ->Sumenep             cabai_merah     haversine dist   143km  score  77.9
+     LOST Gresik            ->Kota Madiun         ikan_segar      haversine dist   134km  score  47.6

@@ -1,0 +1,56 @@
+==============================================================================
+  AGRIFLOW SCORING-WEIGHT SENSITIVITY HARNESS
+==============================================================================
+  Loading Jatim sample data ...
+  Default weights: distance=0.220, volume=0.220, price=0.220, perishability=0.180, climate=0.160
+
+  BASELINE  coverage=0.8802  gini=0.0990  sampang=1.0000  bangkalan=1.0000
+
+==============================================================================
+  TABLE 1 — ONE-AT-A-TIME WEIGHT PERTURBATION
+  Each row: shift one weight by delta, renormalise, re-run.
+  d(coverage)/d(gini) = change vs baseline; Jaccard/tons-moved = churn.
+==============================================================================
+| weight        | delta | coverage | dCover  | gini   | dGini   | Jaccard | tons_moved% |
+|---------------|-------|----------|---------|--------|---------|---------|-------------|
+| distance      | -0.05 | 0.8678   | -0.0124 | 0.1096 | +0.0106 | 1.0000  |     1.00    |
+| distance      | -0.02 | 0.8754   | -0.0048 | 0.1043 | +0.0053 | 1.0000  |     0.33    |
+| distance      | +0.02 | 0.8802   | +0.0000 | 0.0990 | +0.0000 | 1.0000  |     0.00    |
+| distance      | +0.05 | 0.8802   | +0.0000 | 0.0990 | +0.0000 | 1.0000  |     0.00    |
+| volume        | -0.05 | 0.8802   | +0.0000 | 0.0990 | +0.0000 | 1.0000  |     0.00    |
+| volume        | -0.02 | 0.8802   | +0.0000 | 0.0990 | +0.0000 | 1.0000  |     0.00    |
+| volume        | +0.02 | 0.8802   | +0.0000 | 0.0990 | +0.0000 | 1.0000  |     0.00    |
+| volume        | +0.05 | 0.8802   | +0.0000 | 0.0990 | +0.0000 | 1.0000  |     0.00    |
+| price         | -0.05 | 0.8802   | +0.0000 | 0.0990 | +0.0000 | 1.0000  |     0.00    |
+| price         | -0.02 | 0.8802   | +0.0000 | 0.0990 | +0.0000 | 1.0000  |     0.00    |
+| price         | +0.02 | 0.8802   | +0.0000 | 0.0990 | +0.0000 | 1.0000  |     0.00    |
+| price         | +0.05 | 0.8725   | -0.0076 | 0.1044 | +0.0054 | 1.0000  |     0.67    |
+| perishability | -0.05 | 0.8802   | +0.0000 | 0.0990 | +0.0000 | 1.0000  |     0.00    |
+| perishability | -0.02 | 0.8802   | +0.0000 | 0.0990 | +0.0000 | 1.0000  |     0.00    |
+| perishability | +0.02 | 0.8754   | -0.0048 | 0.1043 | +0.0053 | 1.0000  |     0.33    |
+| perishability | +0.05 | 0.8754   | -0.0048 | 0.1043 | +0.0053 | 1.0000  |     0.33    |
+| climate       | -0.05 | 0.8783   | -0.0019 | 0.1013 | +0.0023 | 1.0000  |     0.10    |
+| climate       | -0.02 | 0.8802   | +0.0000 | 0.0990 | +0.0000 | 1.0000  |     0.00    |
+| climate       | +0.02 | 0.8802   | +0.0000 | 0.0990 | +0.0000 | 1.0000  |     0.00    |
+| climate       | +0.05 | 0.8802   | +0.0000 | 0.0990 | +0.0000 | 1.0000  |     0.00    |
+
+==============================================================================
+  TABLE 2 — GLOBAL NEIGHBOURHOOD  (N=300, Dirichlet conc=400, mean L1 dist from default=0.079)
+==============================================================================
+  coverage : mean 0.8770  sd 0.0041  range [0.8630, 0.8802]
+  gini     : mean 0.1021  sd 0.0037  range [0.0990, 0.1156]
+  Jaccard  : mean 1.0000  min 1.0000   (1.0 = allocation identical to default)
+  tons moved: mean 0.23%  max 1.24%
+
+==============================================================================
+  VERDICT
+==============================================================================
+  Max |d coverage| across all perturbations : 0.0124
+  Max |d gini|     across all perturbations : 0.0106
+  Min allocation Jaccard vs default         : 1.0000
+  Max tons reallocated                      : 1.24%
+  => STABLE: outcome barely moves in a +/-0.05 weight neighbourhood.
+     The five weights act as a tunable policy prior; their exact
+     values do not materially change coverage or equity conclusions.
+
+  Wrote JSON -> benchmarks/output/weight_sensitivity.json

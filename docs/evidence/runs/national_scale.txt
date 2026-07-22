@@ -1,0 +1,46 @@
+==========================================================================================
+  NATIONAL SCALE STRESS TEST  (2026-07-22 17:11:35)
+==========================================================================================
+  Target: <500ms p99 (Section 5.5.4)
+  Indonesia reality: 514 kab/kota × 19 komoditas
+
+Provinsi (38 kab × 19 komoditas) — baseline Jatim
+  Workload: 333 supply × 389 demand
+  Matches generated: 181
+  Candidate pairs evaluated: 411
+  Latency: p50=14.4ms  p95=17.2ms  p99=17.3ms  max=17.4ms
+
+Multi-provinsi (100 kab × 19)
+  Workload: 948 supply × 952 demand
+  Matches generated: 661
+  Candidate pairs evaluated: 2,645
+  Latency: p50=95.5ms  p95=102.3ms  p99=102.4ms  max=102.4ms
+
+Setengah Indonesia (250 kab × 19)
+  Workload: 2326 supply × 2424 demand
+  Matches generated: 1993
+  Candidate pairs evaluated: 17,207
+  Latency: p50=674.6ms  p95=710.7ms  p99=716.3ms  max=717.7ms ⚠ OVER 500ms
+
+Full Indonesia (514 kab × 19) — TARGET NASIONAL
+  Workload: 4859 supply × 4907 demand
+  Matches generated: 4479
+  Candidate pairs evaluated: 53,734
+  Latency: p50=2730.2ms  p95=2983.6ms  p99=3021.9ms  max=3031.5ms ⚠ OVER 500ms
+
+Stress over-scale (1000 kab × 19)
+  Workload: 9479 supply × 9521 demand
+  Matches generated: 9192
+  Candidate pairs evaluated: 130,985
+  Latency: p50=9783.7ms  p95=10062.9ms  p99=10087.7ms  max=10093.9ms ⚠ OVER 500ms
+
+==========================================================================================
+  CONCLUSION
+==========================================================================================
+  ⚠ National scale 514 kab × 19 komoditas: p99 = 3021.9ms — OVER 500ms target
+     Slowdown vs target: 6.0x — butuh optimization
+     Optimization yang dapat dipertimbangkan:
+       1. Spatial indexing (R-tree / geohash) di Layer 1
+       2. Pre-computed distance matrix (cached)
+       3. Per-province batching (decompose ke 38 sub-problems)
+       4. Parallel processing per komoditas (independent)

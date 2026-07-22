@@ -1,0 +1,74 @@
+================================================================================
+  AGRIFLOW EQUITY COMPARISON HARNESS
+================================================================================
+  Loading Jatim sample data ...
+  Surplus nodes: 40
+  Deficit nodes: 33
+  Demand keys:   33
+
+  Running strategies ...
+    [1/5] pure_greedy done
+    [2/5] agriflow done
+    [3/5] uniform done
+    [4/5] proportional done
+    [5/5] agriflow_smoothed done
+
+================================================================================
+  TABLE 1 — BASELINE COMPARISON (5 strategies)
+  Coverage = volume-weighted tons fulfilled / tons demanded
+  Gini / Atkinson = weighted by demand volume (lower = more equitable)
+  MinFulfill = fulfillment ratio of worst-served demand node (higher = better)
+  Sampang=3527 (IPM 66.72), Bangkalan=3526 (IPM 67.70)
+================================================================================
+| Strategy          | Coverage | Gini  | Atk(0.5) | Atk(1.0) | MinFulfill | Sampang | Bangkalan |
+|-------------------|----------|-------|----------|----------|-----------|---------|-----------|
+| pure_greedy       | 0.8897   | 0.0926| 0.0154   | 0.1126   | 0.0000    | 1.0000 | 1.0000    |
+| agriflow          | 0.8802   | 0.0990| 0.0162   | 0.1139   | 0.0000    | 1.0000 | 1.0000    |
+| uniform           | 0.9925   | 0.0075| 0.0054   | 0.0940   | 0.0000    | 1.0000 | 1.0000    |
+| proportional      | 0.9930   | 0.0070| 0.0053   | 0.0940   | 0.0000    | 1.0000 | 1.0000    |
+| agriflow_smoothed | 0.8802   | 0.0990| 0.0162   | 0.1139   | 0.0000    | 1.0000 | 1.0000    |
+
+  Running Action 6 sensitivity ...
+
+================================================================================
+  TABLE 2 — ACTION 6 SENSITIVITY (threshold variants)
+  'current' delegates to equity_multiplier_value — single source of truth.
+================================================================================
+| Variant | Coverage | Gini  | Sampang | Bangkalan | Description |
+|---------|----------|-------|---------|-----------|-------------|
+| strict  | 0.8802   | 0.0990| 1.0000 | 1.0000    | IPM <65→1.50, <70→1.25, <75→1.10, >=75→1.00 |
+| current | 0.8802   | 0.0990| 1.0000 | 1.0000    | IPM <68→1.30, <72→1.15, <78→1.05, >=78→1.00 [PROD] |
+| lenient | 0.8802   | 0.0990| 1.0000 | 1.0000    | IPM <70→1.15, <75→1.08, <80→1.03, >=80→1.00 |
+
+================================================================================
+  BOUNDARY PERTURBATION — kabs changing tier when thresholds shift ±1/±2
+  (Attack #2: 'cliff effect' — how sensitive is tier assignment to threshold?)
+================================================================================
+  Jatim IPM values (sorted):
+    66.72  67.70  68.79  69.40  69.62  70.10  70.43  71.20  71.30  71.40  71.86  73.10  73.20  73.45  73.55  73.85  73.85  74.30  74.40  74.50  75.10  75.20  75.30  75.50  75.60  75.80  76.50  77.61  78.30  79.20  79.50  80.13  80.20  80.85  81.48  81.67  84.68  84.69
+
+  | Threshold shift | Kabs changing tier |
+  |-----------------|---------------------|
+  | -2 pts          | 10                  |
+  | -1 pts          |  6                  |
+  | +1 pts          |  2                  |
+  | +2 pts          | 12                  |
+
+  Interpretation:
+  - 0-1 kabs per ±1pt shift = cliff effect negligible.
+  - More kabs = higher sensitivity (attack #2 stronger).
+
+  Tables written to: D:\Research\Project Data\Hackathon\AgriFlow_v9_Engine\benchmarks\output\equity_comparison.md
+
+  ORDERING CHECKS (expected by pitch claims):
+  PASS greedy coverage (0.8897) >= agriflow coverage (0.8802)
+  FAIL agriflow gini (0.0990) <= greedy gini (0.0926)
+  PASS uniform gini (0.0075) <= agriflow gini (0.0990)
+  PASS Sampang: agriflow (1.0000) >= greedy (1.0000)
+  PASS strict Sampang (1.0000) >= lenient Sampang (1.0000)
+  PASS smoothed coverage (0.8802) approx agriflow (0.8802)
+  PASS smoothed gini (0.0990) approx agriflow gini (0.0990)
+
+================================================================================
+  DONE. Copy tables from benchmarks/output/equity_comparison.md into pitch deck.
+================================================================================

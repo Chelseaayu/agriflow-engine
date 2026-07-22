@@ -88,12 +88,14 @@ Tiga fungsi (Deteksi · Prediksi · Distribusi) berbagi satu sumber data nyata, 
 |--------|-------|:------:|
 | **Distribusi** | Matching engine 4-lapis (hard constraints → multi-objective scoring → equity) berjalan di **data BPS asli per-kabupaten (2022)** | ✅ |
 | **Deteksi** | Deteksi anomali harga (deseasonalize + robust statistics) pada harga PIHPS harian **2021–2025** | ✅ |
-| **Prediksi** | Forecasting harga 30 hari dengan **TimesFM 2.0** (foundation model time-series) | ✅ |
+| **Prediksi** | Forecasting harga 30 hari. Yang **dilayani hari ini** adalah baseline seasonal-naive (`seasonal_naive_baseline`) dengan **MAPE 10,8%** pada [backtest holdout](docs/evidence/README.md#3-model-evaluation). Pipeline TimesFM 2.0 sudah ada di repo tetapi **belum melayani produksi** | ✅ |
 | **Aksesibilitas** | **Chatbot WhatsApp** (tanya harga & rekomendasi) + **Dashboard** peta interaktif | ✅ |
 | **Keamanan** | Situs bersifat *login-first*: membuka website menampilkan halaman login lebih dulu. Juri cukup klik **"Masuk sebagai Tamu"** untuk meninjau tanpa membuat akun. Akun Supabase (JWT terverifikasi server-side, Row Level Security di 12 tabel, reset password) siap untuk model berlangganan; data sensitif (langganan & pembayaran) tetap dijaga verifikasi JWT di sisi server. | ✅ |
 | **Data nyata** | **6 komoditas** real per-kab: beras premium & medium, cabai merah & rawit, bawang merah & putih + harga PIHPS 5 tahun | ✅ |
 
-> **Kualitas:** 520 tes otomatis lulus (521 terkumpul, 1 di-skip) — engine teruji, dapat direproduksi, dan jujur soal keterbatasannya (lihat [Pengujian & Skenario](#pengujian--skenario) dan Phase 3).
+> **Kualitas:** 523 tes otomatis lulus (524 terkumpul, 1 di-skip) — engine teruji, dapat direproduksi, dan jujur soal keterbatasannya (lihat [Pengujian & Skenario](#pengujian--skenario) dan Phase 3).
+>
+> 📁 **[Bukti pengujian lengkap](docs/evidence/README.md)** — test case, hasil eksperimen, model evaluation, performance test, A/B test, hasil simulasi, security test awal, error log, validation report, beserta instrumen UAT dan usability testing yang belum dijalankan.
 
 ### Cuplikan
 
@@ -111,7 +113,7 @@ Tiga fungsi (Deteksi · Prediksi · Distribusi) berbagi satu sumber data nyata, 
 
 Karena output AgriFlow menggerakkan alokasi pangan antar-kabupaten yang menyentuh daerah IPM-rendah, klaim "adil" dan "robust" harus dapat diaudit ulang — bukan sekadar narasi. Suite uji mengunci angka food-balance sebagai *golden numbers* (reproducibility), menjaga parameter kebijakan dari pergeseran tak sengaja (regression-safety), dan menguji deteksi anomali secara adversarial.
 
-**521 tes terkumpul · 520 lulus · 1 di-skip · lintas-OS di CI.**
+**524 tes terkumpul · 523 lulus · 1 di-skip · lintas-OS di CI.** ([keluaran mentah](docs/evidence/runs/pytest.txt))
 (Skip = `test_timesfm_importorskip`: dilewati jika pustaka TimesFM tak terpasang di runner; jalur forecasting tetap diuji via fallback + kontrak API.)
 
 Server produksi memuat **data BPS asli secara default** (`DATA_BACKEND=csv`, bawaan). Fixture sintetis 19-komoditas lama tetap dipakai di 13 file test (`DATA_BACKEND=demo`) untuk menguji logika engine di lebih banyak variasi komoditas — tidak pernah disajikan ke pengguna.
@@ -219,8 +221,11 @@ Peningkatan skala nasional dibatasi laju keterbukaan data publik per-kabupaten, 
 ```bash
 pip install -r requirements.txt
 python examples/run_demo_real.py   # demo matching pada data BPS asli 2022
-pytest tests/                      # 520 lulus, 1 di-skip
+pytest tests/                      # 523 lulus, 1 di-skip
 ```
+
+Semua angka pengujian yang dikutip di halaman ini dapat dijalankan ulang lewat perintah
+yang tercantum di [Bukti Pengujian](docs/evidence/README.md).
 
 Detail engineering lengkap ada di [`README_v12.md`](README_v12.md).
 

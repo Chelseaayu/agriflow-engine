@@ -1,0 +1,812 @@
+% AgriFlow — Audit Menyeluruh Repo, GitHub, dan Deployment
+% Compile: pdflatex AgriFlow_Audit_2026-07.tex  (jalankan 2x untuk ToC)
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper,margin=2.3cm]{geometry}
+\usepackage{amsmath,amssymb}
+% NOTE: jangan muat longtable maupun xcolor[table]/colortbl di sini. Pada
+% instalasi MiKTeX ini colortbl merusak template kolom p{} (\insert@pcolumn
+% undefined), sehingga zebra-striping sengaja tidak dipakai. Cukup booktabs.
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{listings}
+
+\definecolor{agrigreen}{HTML}{1B5E20}
+\definecolor{sevhigh}{HTML}{C62828}
+\definecolor{sevmed}{HTML}{EF6C00}
+\definecolor{sevlow}{HTML}{1565C0}
+\definecolor{okgreen}{HTML}{2E7D32}
+
+\titleformat{\section}{\Large\bfseries\color{agrigreen}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\large\bfseries\color{black!80}}{\thesubsection}{0.6em}{}
+\setlist{nosep,leftmargin=1.3em}
+
+\newcommand{\code}[1]{\texttt{\small #1}}
+\newcommand{\sevH}{\textcolor{sevhigh}{\textbf{TINGGI}}}
+\newcommand{\sevM}{\textcolor{sevmed}{\textbf{SEDANG}}}
+\newcommand{\sevL}{\textcolor{sevlow}{\textbf{RENDAH}}}
+\newcommand{\ok}{\textcolor{okgreen}{\textbf{LULUS}}}
+\newcommand{\gagal}{\textcolor{sevhigh}{\textbf{GAGAL}}}
+
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{black!25},
+  backgroundcolor=\color{black!3},
+  columns=fullflexible,
+}
+
+% Identifier panjang ber-underscore (mis. get_active_demand_event) memicu
+% overfull hbox. Longgarkan justifikasi dan beri ruang darurat.
+\sloppy
+\emergencystretch=3em
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small AgriFlow — Audit Menyeluruh}
+\fancyhead[R]{\small Juli 2026}
+\fancyfoot[C]{\small \thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+
+\title{\textbf{AgriFlow — Audit Menyeluruh}\\[4pt]
+\large Fitur, Repositori GitHub, Deployment Web, dan Rekonsiliasi Audit Sebelumnya}
+\author{Hilmi \\ \small\url{https://master-hilmi.vercel.app/}}
+\date{17 Juli 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+Dokumen ini adalah audit menyeluruh terhadap proyek AgriFlow per 17 Juli 2026, mencakup tiga
+permukaan sekaligus: (1) kode dan fitur di repositori lokal, (2) repositori GitHub beserta
+continuous integration, dan (3) deployment web yang berjalan (dashboard Vercel dan API Hugging
+Face Space). Setiap klaim di dokumen ini diverifikasi dengan menjalankan kode, memanggil endpoint
+produksi, atau membaca log CI, bukan dengan membaca dokumentasi yang ada. Temuan utama: seluruh
+404 tes lulus di mesin lokal, namun CI di \code{main} berstatus merah pada keempat matrix leg
+karena dua tes bergantung pada tanggal kalender sistem. Akar masalahnya bukan sekadar tes rapuh,
+melainkan cacat logika di mesin pencocokan yang menyebabkan event kalender membatalkan flag
+kebijakan yang diberikan pemanggil secara eksplisit. Audit juga menemukan dua ketidakcocokan
+antara klaim dokumentasi dan artefak yang benar-benar dikirim, serta memastikan tidak ada
+kebocoran kredensial. Dokumen \code{AUDIT\_v10.md} yang ada dinyatakan usang dan digantikan oleh
+dokumen ini.
+\end{abstract}
+
+\tableofcontents
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+% =====================================================================
+\section{Ringkasan Eksekutif}
+
+\subsection{Verdict}
+
+Inti teknis AgriFlow (mesin pencocokan 4 lapis, deteksi anomali, penyajian via API dan dashboard)
+\textbf{berfungsi dan terbukti berjalan}. Rantai dashboard sampai API tervalidasi hidup
+end-to-end. Yang bermasalah adalah \textbf{lapisan integritas}: CI merah, dan dua klaim di
+dokumentasi lebih besar daripada artefak yang benar-benar dikirim.
+
+\begin{center}
+\begin{tabular}{@{}p{5.4cm}cp{7.6cm}@{}}
+\toprule
+\textbf{Permukaan audit} & \textbf{Status} & \textbf{Catatan} \\
+\midrule
+Test suite (lokal) & \ok & 403 lulus, 1 di-skip, 41,9 detik \\
+Test suite (CI GitHub) & \gagal & 2 gagal $\times$ 4 matrix leg, bergantung tanggal \\
+Mesin pencocokan 4 lapis & \ok & Berjalan di data BPS asli 2022, 63 match \\
+Deteksi anomali harga & \ok & Berjalan, tetapi salah label metode \\
+Prediksi harga & \ok & Berjalan sebagai baseline, bukan TimesFM \\
+API produksi (HF Space) & \ok & 6 endpoint hidup, CORS benar \\
+Dashboard produksi (Vercel) & \ok & HTTP 200, terhubung ke API produksi \\
+Latency benchmark & \ok & p99 tertinggi 59,53 ms, margin 88,1\,\% \\
+Kebersihan kredensial & \ok & Tidak ada secret ter-commit, riwayat bersih \\
+Konsistensi klaim vs bukti & \gagal & 2 overclaim di README (lihat \S\ref{sec:klaim}) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Tiga hal yang paling perlu ditindaklanjuti}
+
+\begin{enumerate}
+  \item \textbf{CI merah di \code{main} sejak 14 Juli 2026} akibat cacat logika kalender di
+        \code{engine.py}, bukan sekadar tes rapuh. Ini akan gagal ulang otomatis setiap
+        1--15 Januari dan 1--15 Juli (sekitar 30 hari per tahun). Lihat \S\ref{sec:f1}.
+  \item \textbf{README mengklaim forecasting memakai TimesFM 2.0}, padahal 56 dari 56 ramalan
+        yang dikirim berlabel \code{seasonal\_naive\_baseline}. API produksi justru jujur
+        melaporkan label baseline. Lihat \S\ref{sec:f2}.
+  \item \textbf{Detektor anomali menamai dirinya S-H-ESD} padahal implementasinya Hampel/MAD
+        tanpa uji ESD sama sekali. API produksi masih menyiarkan \code{"method":"shesd\_v2"}.
+        Perbaikannya sudah ada tetapi terhenti di branch lokal yang belum di-push.
+        Lihat \S\ref{sec:f3}.
+\end{enumerate}
+
+% =====================================================================
+\section{Metodologi dan Cakupan Audit}
+
+Audit ini memverifikasi dengan eksekusi, bukan dengan pembacaan dokumen. Yang benar-benar
+dijalankan atau dipanggil:
+
+\begin{center}
+\begin{tabular}{@{}p{6.8cm}p{8.2cm}@{}}
+\toprule
+\textbf{Tindakan verifikasi} & \textbf{Sumber bukti} \\
+\midrule
+Menjalankan seluruh test suite & \code{python -m pytest tests/ -q} \\
+Menjalankan demo data nyata & \code{python examples/run\_demo\_real.py} \\
+Menjalankan benchmark latency & \code{python benchmarks/latency.py} \\
+Membaca log CI yang gagal & \code{gh run view 29348620529 -{}-log-failed} \\
+Reproduksi bug kalender & Pemanggilan langsung \code{get\_active\_demand\_event()} \\
+Memanggil 6 endpoint API produksi & \code{curl} ke Hugging Face Space \\
+Memeriksa wiring dashboard & Grep bundel JS hasil build di Vercel \\
+Memeriksa CORS & Preflight \code{OPTIONS} dari origin Vercel \\
+Memeriksa kebocoran secret & \code{git ls-files} dan pemindaian riwayat commit \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+\textbf{Lingkungan.} Branch \code{main} pada commit \code{a6b3b47}, Python 3.14.3 (venv lokal),
+Windows 11. CI GitHub Actions memakai matriks Ubuntu dan Windows $\times$ Python 3.11 dan 3.12.
+
+% =====================================================================
+\section{Inventaris Fitur yang Terverifikasi}
+
+Repositori berisi 6.743 baris kode Python produksi (di luar tes) yang terbagi ke lima pilar.
+
+\subsection{Pilar 1: Distribusi (mesin pencocokan 4 lapis)}
+
+Modul \code{matching\_engine/} berisi 2.101 baris di lima file.
+
+\begin{center}
+\begin{tabular}{@{}p{3.6cm}rp{9.6cm}@{}}
+\toprule
+\textbf{Modul} & \textbf{Baris} & \textbf{Peran} \\
+\midrule
+\code{engine.py}      & 653 & Orkestrator, kalender event, Bulog reserve, blackout rute \\
+\code{allocation.py}  & 467 & Lapis 3, alokasi dan pengali equity berbasis IPM \\
+\code{constraints.py} & 453 & Lapis 1, 8 hard constraint dan pembangkit kandidat \\
+\code{scoring.py}     & 270 & Lapis 2, skor 5 dimensi dan 6 profil bobot \\
+\code{models.py}      & 258 & Tipe domain (SupplyNode, DemandNode, Match) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+\textbf{Bukti eksekusi} (\code{run\_demo\_real.py}, data BPS asli 2022):
+
+\begin{center}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+\textbf{Komoditas} & \textbf{Match} & \textbf{Volume tercocokkan (ton)} \\
+\midrule
+beras\_premium & 12 & 222.386,6 \\
+beras\_medium  & 12 & 148.257,8 \\
+cabai\_merah   & 21 & 22.737,5 \\
+cabai\_rawit   & 18 & 21.828,7 \\
+bawang\_putih  & 0  & Tidak ada surplus domestik, dirutekan ke saran impor \\
+\midrule
+\textbf{Total} & \textbf{63} & \textbf{415.210,6} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+Kasus \code{bawang\_putih} patut dicatat sebagai perilaku benar, bukan kegagalan: produksi Jatim
+2022 sekitar 855 ton berbanding konsumsi sekitar 80.640 ton, sehingga seluruh 38 kabupaten
+berstatus defisit. Mesin menanganinya dengan anggun (0 match, lalu mengeluarkan
+\code{external\_opportunity} berupa saran impor).
+
+\subsection{Pilar 2: Deteksi anomali harga}
+
+\code{analysis/price\_anomaly.py} (513 baris) melakukan deseasonalisasi lalu menerapkan MAD
+bergulir pada residual, dengan MAD floor untuk mencegah pemicuan trivial saat dispersi sangat
+kecil. Terverifikasi berjalan di produksi (endpoint mengembalikan 50 anomali). Catatan penting
+soal penamaan metode ada di \S\ref{sec:f3}.
+
+\subsection{Pilar 3: Prediksi harga}
+
+\code{analysis/forecast\_timesfm.py} (309 baris) memprecompute ramalan secara offline; server
+tidak pernah meng-import TimesFM saat runtime (penjaga OOM di HF Space free tier). Artefak yang
+dikirim, \code{sample\_data/forecasts/forecast\_all.json}:
+
+\begin{center}
+\begin{tabular}{@{}p{4.6cm}p{10.4cm}@{}}
+\toprule
+\textbf{Properti} & \textbf{Nilai terukur} \\
+\midrule
+Jumlah rekaman & 56 (7 komoditas $\times$ 8 kota) \\
+Label metode & \code{seasonal\_naive\_baseline} pada 56 dari 56 rekaman \\
+Horizon & 30 hari \\
+Akhir riwayat & 2025-12-31 \\
+Interval & p10 dan p90 per titik \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Pilar 4: Akses (API, dashboard, bot WhatsApp)}
+
+\code{whatsapp\_bot/server.py} (495 baris) melayani webhook WhatsApp sekaligus enam endpoint REST
+yang dikonsumsi dashboard. Dashboard adalah aplikasi Next.js di \code{dashboard/}. Bot memiliki
+pemisahan intent (\code{intent.py}), handler (\code{handlers.py}), klien Gemini
+(\code{gemini\_client.py}), dan klien Twilio (\code{twilio\_client.py}).
+
+\subsection{Pilar 5: Konektor data dan persistensi}
+
+Delapan konektor di \code{data\_sources/} (1.296 baris), seluruhnya dual-mode (mock dan live):
+\code{bps.py}, \code{pihps\_bi.py}, \code{bapanas.py}, \code{bmkg.py}, \code{bnpb.py},
+\code{pvmbg.py}, \code{google\_maps.py}, \code{hijri\_calendar.py}. Persistensi di \code{db/}
+(458 baris) berisi \code{schema.sql}, \code{db\_loader.py}, dan \code{price\_ingest.py}.
+
+% =====================================================================
+\section{Audit Test Suite}
+
+\subsection{Hasil lokal}
+
+\begin{lstlisting}
+$ python -m pytest tests/ -q
+403 passed, 1 skipped in 41.94s
+\end{lstlisting}
+
+\noindent
+Sebaran 404 tes yang terkumpul di 21 file:
+
+\begin{center}
+\begin{tabular}{@{}lr@{\hskip 1.2cm}lr@{}}
+\toprule
+\textbf{File} & \textbf{Tes} & \textbf{File} & \textbf{Tes} \\
+\midrule
+test\_price\_anomaly            & 49 & test\_layer0\_tier                  & 16 \\
+test\_forecast\_anomaly\_api     & 40 & test\_constrained\_scenario         & 15 \\
+test\_price\_ingest             & 33 & test\_layer3\_allocation            & 14 \\
+test\_scenarios\_tier1\_ext      & 27 & test\_scenarios\_political          & 11 \\
+test\_layer2\_scoring           & 24 & test\_db\_loader                    & 11 \\
+test\_baseline\_comparison      & 24 & test\_scenarios\_disruption         & 9 \\
+test\_real\_data\_pipeline       & 23 & test\_road\_distance                & 9 \\
+test\_real\_sd\_horti\_2022       & 22 & test\_scenarios\_temporal           & 7 \\
+test\_real\_sd\_beras            & 21 & test\_scenarios\_spatial            & 6 \\
+test\_whatsapp\_bot             & 20 & test\_scenarios\_volume             & 4 \\
+test\_layer1\_constraints       & 19 & & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Hasil CI: divergensi yang menyingkap bug}
+
+CI pada commit \code{a6b3b47} gagal di \textbf{keempat} matrix leg dengan pola identik:
+
+\begin{lstlisting}
+2 failed, 394 passed, 8 skipped, 1 warning in 34.90s
+FAILED tests/test_scenarios_political.py::TestE4_ImportPolicy::test_import_policy_uses_alternate_weights
+FAILED tests/test_scenarios_temporal.py::TestC1_RamadanSpike::test_ramadan_active_uses_ramadan_weights
+\end{lstlisting}
+
+\noindent
+Divergensi lokal (lulus) versus CI (gagal) pada commit yang sama inilah petunjuk yang membawa ke
+temuan F1. Penjelasan lengkapnya di \S\ref{sec:f1}.
+
+% =====================================================================
+\section{Audit Repositori GitHub}
+
+\begin{center}
+\begin{tabular}{@{}p{4.2cm}p{10.8cm}@{}}
+\toprule
+\textbf{Atribut} & \textbf{Nilai} \\
+\midrule
+URL & \url{https://github.com/masterA88/agriflow-engine} \\
+Visibilitas & Publik \\
+Push terakhir & 2026-07-14T16:11:41Z \\
+Commit \code{main} & \code{a6b3b47} (Merge PR \#1: update dashboard) \\
+Pull request & 1 total, berstatus merged \\
+Issue terbuka & 0 \\
+Lisensi & MIT \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Continuous integration}
+
+Workflow \code{.github/workflows/test.yml} menjalankan pytest pada matriks
+\{Ubuntu, Windows\} $\times$ \{Python 3.11, 3.12\}, ditambah job benchmark latency yang
+mempublikasikan artefak tanpa menjadi gate.
+
+\begin{center}
+\begin{tabular}{@{}p{7.4cm}p{2.4cm}p{4.4cm}@{}}
+\toprule
+\textbf{Commit} & \textbf{Status} & \textbf{Tanggal} \\
+\midrule
+Merge PR \#1: update dashboard & \gagal & 2026-07-14 \\
+docs: embed research poster in README & \ok & 2026-06-03 \\
+feat(forecast): reproducible holdout backtest & \ok & 2026-06-03 \\
+feat(forecast): vendor TimesFM 2.0 pipeline & \ok & 2026-06-03 \\
+docs: add AgriFlow logo to README & \ok & 2026-06-02 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+\textbf{Pengamatan.} CI hijau sepanjang Juni dan baru merah pada 14 Juli. Ini konsisten dengan
+akar masalah berbasis tanggal (\S\ref{sec:f1}), bukan dengan regresi yang diperkenalkan PR \#1.
+PR \#1 hanya menyentuh dashboard dan tidak menyentuh \code{matching\_engine/} sama sekali.
+
+\subsection{Divergensi branch}
+
+\begin{center}
+\begin{tabular}{@{}p{4.2cm}p{10.8cm}@{}}
+\toprule
+\textbf{Branch} & \textbf{Kondisi} \\
+\midrule
+\code{main} & Sinkron dengan \code{origin/main} pada \code{a6b3b47} \\
+\code{post-submit-analysis} & \textbf{Lokal saja, belum di-push.} 21 file, +2.886/-2.046 baris \\
+\code{space-deploy-v3} & Lokal, jalur deploy Hugging Face \\
+\code{Chelseaayu/main} & Lokal, kontribusi rekan tim \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+Branch \code{post-submit-analysis} memuat kerja bernilai yang belum terlindungi remote, termasuk
+\code{analysis/backtest\_baseline.py}, kalibrasi interval, koreksi pelabelan detektor anomali,
+harness sensitivitas bobot, dan pipeline TimesFM di \code{prediction/timesfm/}.
+
+% =====================================================================
+\section{Audit Deployment Web}
+
+\subsection{Dashboard (Vercel)}
+
+\begin{center}
+\begin{tabular}{@{}p{4.6cm}p{10.4cm}@{}}
+\toprule
+\textbf{Pemeriksaan} & \textbf{Hasil} \\
+\midrule
+URL & \url{https://agriflow-engine.vercel.app/} \\
+Status HTTP & 200, waktu muat 1,18 detik \\
+Judul dokumen & \code{AgriFlow Dashboard} \\
+Basis API pada bundel build & \code{https://masterAAA123-agriflow-api.hf.space} \\
+Fallback \code{localhost:8000} & Ada di bundel, tetapi tidak aktif karena env ter-set \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+\code{dashboard/app/lib/api.ts} memakai pola \code{process.env.NEXT\_PUBLIC\_API\_URL ||
+"http://localhost:8000"}. Pola ini berisiko diam-diam gagal bila variabel tidak ter-set saat
+build. Audit memverifikasi bahwa variabel \textbf{ter-set dengan benar} di Vercel, sehingga
+risiko tersebut tidak terwujud. Ini dicatat sebagai kerapuhan laten, bukan cacat aktif.
+
+\subsection{API (Hugging Face Space)}
+
+\begin{center}
+\begin{tabular}{@{}p{6.4cm}cp{7.0cm}@{}}
+\toprule
+\textbf{Endpoint} & \textbf{Kode} & \textbf{Respons terverifikasi} \\
+\midrule
+\code{/health}                  & 200 & \code{status:ok}, 38 kabupaten, 19 komoditas \\
+\code{/api/v1/commodities}      & 200 & Daftar komoditas \\
+\code{/api/v1/kabupaten}        & 200 & 38 kabupaten dengan lat, lng, tier, IPM \\
+\code{/api/v1/surplus-deficit}  & 200 & Baris surplus dan defisit plus total \\
+\code{/api/v1/matches}          & 200 & 23 match, terskor dan terurut \\
+\code{/api/v1/forecast}         & 200 & Titik, p10, p90 untuk 30 hari \\
+\code{/api/v1/anomalies}        & 200 & 50 anomali \\
+\code{/} (root)                 & 404 & Wajar, tidak ada route root \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+\textbf{CORS terverifikasi benar.} Preflight \code{OPTIONS} dari origin Vercel mengembalikan
+\code{access-control-allow-origin: https://agriflow-engine.vercel.app} dengan
+\code{access-control-allow-methods: GET}. Origin di-whitelist secara spesifik, bukan wildcard.
+
+\noindent
+\textbf{Rantai end-to-end tervalidasi hidup:} browser memuat dashboard Vercel, bundel menunjuk ke
+host HF Space yang benar, host merespons 200, dan CORS mengizinkan origin tersebut.
+
+% =====================================================================
+\section{Temuan}
+
+\begin{center}
+\begin{tabular}{@{}clp{8.6cm}c@{}}
+\toprule
+\textbf{ID} & \textbf{Severity} & \textbf{Ringkasan} & \textbf{Bagian} \\
+\midrule
+F1 & \sevH & Event kalender membatalkan flag kebijakan eksplisit, CI merah & \ref{sec:f1} \\
+F2 & \sevH & README klaim TimesFM, artefak 100\,\% baseline & \ref{sec:f2} \\
+F3 & \sevM & Detektor anomali salah label sebagai S-H-ESD & \ref{sec:f3} \\
+F4 & \sevM & Kerja bernilai terjebak di branch lokal yang belum di-push & \ref{sec:f4} \\
+F5 & \sevM & \code{AUDIT\_v10.md} usang dan menyesatkan & \ref{sec:f5} \\
+F6 & \sevL & API produksi berjalan dalam \code{mock\_mode} & \ref{sec:f6} \\
+F7 & \sevL & Parameter \code{city} pada endpoint forecast tidak intuitif & \ref{sec:f7} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ---------------------------------------------------------------
+\subsection{F1 (\sevH) Event kalender membatalkan flag kebijakan eksplisit}
+\label{sec:f1}
+
+\subsubsection*{Gejala}
+
+Dua tes gagal di keempat matrix leg CI pada 14 Juli 2026, tetapi lulus di mesin lokal pada 17 Juli
+2026 dengan commit yang sama.
+
+\subsubsection*{Akar masalah}
+
+\code{matching\_engine/engine.py:246-248} mendefinisikan window \code{SCHOOL\_START} sebagai 14
+hari sebelum 15 Juli dan 15 Januari, yaitu 1--15 Juli dan 1--15 Januari. CI berjalan 14 Juli,
+tepat di dalam window. Audit mereproduksinya secara langsung:
+
+\begin{lstlisting}
+>>> get_active_demand_event(datetime(2026, 7, 14))   # tanggal CI
+'SCHOOL_START'
+>>> get_active_demand_event(datetime(2026, 7, 17))   # tanggal audit lokal
+None
+\end{lstlisting}
+
+\noindent
+Kode pemilihan bobot di \code{engine.py:449-468}:
+
+\begin{lstlisting}
+active_event = get_active_demand_event(reference_date)
+if logistics.is_ramadan_proximity:
+    active_event = active_event or "RAMADAN"   # BUG: "or" kalah dari SCHOOL_START
+ramadan_active = active_event == "RAMADAN"
+if active_event:
+    weights = _weights_for_event(active_event)
+elif import_policy_active:                     # BUG: tak pernah tercapai saat event aktif
+    weights = scoring.IMPORT_POLICY_WEIGHTS
+else:
+    weights = scoring.DEFAULT_WEIGHTS
+\end{lstlisting}
+
+\noindent
+Bukti konfirmasi paling kuat: pesan error CI melaporkan bobot aktual berisi \code{price: 0.22},
+dan \code{SCHOOL\_START\_WEIGHTS} memang bernilai \code{price: 0.22}, sedangkan
+\code{IMPORT\_POLICY\_WEIGHTS} yang diharapkan bernilai \code{price: 0.10}.
+
+\subsubsection*{Mengapa ini bug produksi, bukan sekadar tes rapuh}
+
+\begin{enumerate}
+  \item \textbf{Implementasi melanggar prioritas yang didokumentasikannya sendiri.} Docstring
+        \code{get\_active\_demand\_event} menyatakan ``Priority order saat overlap: RAMADAN >
+        NATAL > IMLEK > SCHOOL\_START''. Namun ketika pemanggil menegaskan Ramadan lewat
+        \code{logistics.is\_ramadan\_proximity}, operator \code{or} hanya mengisi nilai bila
+        \code{active\_event} bernilai \code{None}. Akibatnya \code{SCHOOL\_START} yang diturunkan
+        dari tanggal justru \textbf{mengalahkan} Ramadan yang dinyatakan eksplisit, persis
+        kebalikan dari prioritas yang ditulis.
+  \item \textbf{Kebijakan impor menjadi tidak dapat diaktifkan selama 30 hari per tahun.}
+        Struktur \code{elif} membuat \code{import\_policy\_active=True} diabaikan diam-diam
+        sepanjang window event mana pun. Kebijakan impor adalah kondisi regulatif yang ortogonal
+        terhadap event musiman; keduanya seharusnya dapat berlaku bersamaan.
+  \item \textbf{Menghasilkan state yang saling bertentangan.} Pada \code{engine.py:573}, flag
+        \code{IMPORT\_POLICY\_ACTIVE} \textbf{tetap dipasang} ke setiap match meskipun bobot
+        import policy tidak pernah diterapkan. Konsumen hilir (dashboard, audit trail) akan
+        membaca match yang mengaku tunduk pada kebijakan impor padahal diskor dengan bobot
+        kos-kosan awal tahun ajaran. Untuk sistem B2G yang menjual transparansi kepada Bank
+        Indonesia dan Pemda, jejak audit yang berbohong adalah cacat serius.
+\end{enumerate}
+
+\subsubsection*{Dampak}
+
+CI akan merah secara otomatis sekitar 30 hari setiap tahun (1--15 Januari dan 1--15 Juli) tanpa
+ada perubahan kode. Lebih jauh, setiap keputusan alokasi yang dijalankan dalam window tersebut
+memakai profil bobot yang salah bila pemanggil mengaktifkan kebijakan impor atau menegaskan
+Ramadan.
+
+\subsubsection*{Perbaikan yang disarankan}
+
+\begin{enumerate}
+  \item \textbf{Hormati override eksplisit dari pemanggil}, sesuai prioritas terdokumentasi:
+\begin{lstlisting}
+active_event = get_active_demand_event(reference_date)
+if logistics.is_ramadan_proximity:
+    active_event = "RAMADAN"   # penegasan pemanggil menang, sesuai docstring
+\end{lstlisting}
+  \item \textbf{Pisahkan kebijakan impor dari event kalender.} Kebijakan impor sebaiknya
+        menyesuaikan bobot secara komposisional di atas profil event, atau minimal memancarkan
+        warning eksplisit ketika ditekan oleh sebuah event, sehingga tidak pernah gagal secara
+        diam-diam.
+  \item \textbf{Sematkan \code{reference\_date} di tes.} \code{run\_matching()} sudah menerima
+        parameter \code{reference\_date}, sehingga kedua tes dapat dibuat deterministik tanpa
+        mengubah kode produksi. Ini menutup kerapuhan tes, tetapi \textbf{jangan} dijadikan
+        satu-satunya perbaikan: menyematkan tanggal saja akan menyembunyikan bug produksi di
+        butir 1 dan 2.
+\end{enumerate}
+
+% ---------------------------------------------------------------
+\subsection{F2 (\sevH) Klaim TimesFM versus artefak baseline}
+\label{sec:f2}
+
+README menyatakan pada tabel fitur berstatus centang hijau:
+
+\begin{quote}
+``\textbf{Prediksi} — Forecasting harga 30 hari dengan \textbf{TimesFM 2.0} (foundation model
+time-series)''
+\end{quote}
+
+\noindent
+Verifikasi terhadap artefak yang benar-benar dikirim menunjukkan sebaliknya:
+
+\begin{center}
+\begin{tabular}{@{}p{6.4cm}p{8.6cm}@{}}
+\toprule
+\textbf{Sumber} & \textbf{Label metode terukur} \\
+\midrule
+\code{forecast\_all.json} (ter-commit) & \code{seasonal\_naive\_baseline}, 56 dari 56 rekaman \\
+API produksi (\code{/api/v1/forecast}) & \code{"method":"seasonal\_naive\_baseline"} \\
+README & ``TimesFM 2.0'' dengan status centang \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+Ironinya, \textbf{kode dan API sudah jujur}; hanya README yang melebihkan. Fallback baseline
+diberi label apa adanya karena model 2 GB mengalami OOM di HF Space free tier, dan itu justru
+keputusan rekayasa yang benar. Yang perlu diperbaiki adalah narasinya.
+
+\noindent
+\textbf{Konteks pendukung.} Backtest holdout 30 hari yang reproducible (di branch
+\code{post-submit-analysis}) mengukur MAPE keseluruhan baseline sebesar 10,8\,\%. Klaim TimesFM
+MAPE 3,0\,\% yang beredar di dokumen proposal tidak dapat direproduksi dari file mana pun di
+repositori ini.
+
+\noindent
+\textbf{Perbaikan.} Ubah baris README menjadi label yang akurat, misalnya ``Forecasting harga 30
+hari dengan seasonal naive baseline (MAPE 10,8\,\% pada holdout 30 hari); pipeline TimesFM 2.0
+tervendor dan menunggu runtime ber-GPU''. Ini tetap kuat, dan tidak dapat dibongkar di sesi tanya
+jawab teknis.
+
+% ---------------------------------------------------------------
+\subsection{F3 (\sevM) Detektor anomali salah label sebagai S-H-ESD}
+\label{sec:f3}
+
+\code{analysis/price\_anomaly.py} pada \code{main} mendeskripsikan dirinya sebagai
+``S-H-ESD price anomaly detector'' dan ``METHOD: Seasonal-Hybrid ESD (S-H-ESD style)''. Namun
+implementasi aktual melakukan deseasonalisasi lalu menerapkan MAD bergulir pada residual, yaitu
+detektor Hampel. \textbf{Tidak ada uji Extreme Studentized Deviate sama sekali} di dalam kode.
+API produksi meneruskan label keliru ini ke konsumen: \code{"method":"shesd\_v2"}.
+
+\noindent
+Perbaikan pelabelan sudah ditulis, tetapi hanya ada di branch \code{post-submit-analysis} yang
+belum di-push, sehingga produksi masih menyiarkan label yang salah.
+
+\noindent
+\textbf{Mengapa penting.} Hampel/MAD adalah metode yang sah, robust, dan tepat untuk kasus ini.
+Tidak ada alasan teknis untuk menyebutnya S-H-ESD. Salah label terhadap juri akademis justru
+menciptakan risiko kredibilitas yang tidak sepadan, padahal metode aslinya sudah dapat dibela.
+
+% ---------------------------------------------------------------
+\subsection{F4 (\sevM) Kerja bernilai terjebak di branch lokal}
+\label{sec:f4}
+
+Branch \code{post-submit-analysis} menyimpan 2.886 baris tambahan di 21 file, mencakup backtest
+reproducible, kalibrasi interval p10/p90 dari 1,4826$\times$MAD menjadi 1,90$\times$MAD, koreksi
+pelabelan F3, harness sensitivitas bobot, dan pipeline TimesFM. Seluruhnya hanya ada di satu
+mesin, tanpa salinan remote.
+
+\noindent
+\textbf{Catatan tata kelola.} Branch ini sengaja tidak di-push, dan audit ini
+\textbf{tidak mengubah statusnya}. Push memerlukan otorisasi eksplisit dari pemilik repositori.
+Rekomendasinya adalah mempertimbangkan push sebagai branch (tanpa merge) semata-mata untuk
+mendapatkan cadangan remote.
+
+% ---------------------------------------------------------------
+\subsection{F5 (\sevM) Audit sebelumnya sudah usang}
+\label{sec:f5}
+
+\code{docs/AUDIT\_v10.md} (4 Mei 2026) kini menyesatkan bila dibaca sebagai kondisi terkini.
+
+\begin{center}
+\begin{tabular}{@{}p{5.0cm}p{4.6cm}p{5.0cm}@{}}
+\toprule
+\textbf{Aspek} & \textbf{AUDIT\_v10 (Mei)} & \textbf{Terukur (Juli)} \\
+\midrule
+Jumlah tes & 106 & 404 terkumpul, 403 lulus \\
+Runtime tes & 0,16 detik & 41,94 detik \\
+File tes & 10 & 21 \\
+Cakupan & Mesin pencocokan saja & Ditambah deteksi, prediksi, API, bot \\
+Status CI & Belum ada (dicatat sebagai open question) & Ada, sedang merah \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+Beberapa isi \code{AUDIT\_v10.md} tetap berharga dan sebaiknya dipertahankan, khususnya analisis
+bottleneck skala nasional (\S4), tinjauan literatur (\S12), dan daftar klaim yang harus
+di-\emph{tone-down} (\S11.3). Rekomendasi: tandai file tersebut sebagai arsip historis dengan
+penunjuk ke dokumen ini.
+
+\noindent
+\textbf{Satu koreksi diagnosis.} Catatan kerja sebelumnya mendiagnosis dua tes gagal ini sebagai
+``config drift'' pada bobot Ramadan dan import policy. Diagnosis itu \textbf{keliru}. Nilai bobot
+di \code{scoring.py} konsisten dan berjumlah 1,00; penyebab sebenarnya adalah ketergantungan
+tanggal yang diuraikan di \S\ref{sec:f1}.
+
+% ---------------------------------------------------------------
+\subsection{F6 (\sevL) API produksi berjalan dalam mock mode}
+\label{sec:f6}
+
+Endpoint \code{/health} melaporkan \code{mock\_mode: true} dan \code{gemini\_mock: true}. Untuk
+demo hackathon ini wajar dan aman (tanpa kredensial, tanpa biaya, deterministik). Dicatat semata
+agar tidak ada yang menyangka jalur Gemini dan Twilio live sudah tervalidasi di produksi. Yang
+tervalidasi hidup adalah mesin pencocokan, data, dan penyajiannya.
+
+% ---------------------------------------------------------------
+\subsection{F7 (\sevL) Parameter city pada endpoint forecast tidak intuitif}
+\label{sec:f7}
+
+\code{/api/v1/forecast} mensyaratkan \code{city} berupa kode kabupaten BPS, bukan nama kota.
+Permintaan \code{city=Surabaya} gagal, sedangkan \code{city=3578} berhasil. Mitigasinya sudah
+baik: respons error mengembalikan daftar \code{available\_pairs}, sehingga dapat ditemukan sendiri
+oleh pengguna. Perbaikan opsional adalah menerima nama kota sebagai alias.
+
+% =====================================================================
+\section{Klaim versus Bukti}
+\label{sec:klaim}
+
+Tabel ini menguji setiap klaim menonjol di README terhadap bukti terukur.
+
+\begin{center}
+\begin{tabular}{@{}p{5.6cm}cp{7.8cm}@{}}
+\toprule
+\textbf{Klaim README} & \textbf{Status} & \textbf{Bukti} \\
+\midrule
+403 tes lulus, 1 di-skip & \ok & Direproduksi persis di lokal \\
+Mesin 4 lapis di data BPS asli 2022 & \ok & 63 match, 415.210 ton \\
+Deteksi anomali pada PIHPS 2021--2025 & \ok & Berjalan, label metode salah (F3) \\
+Forecasting dengan TimesFM 2.0 & \gagal & 56/56 artefak baseline (F2) \\
+Dashboard peta interaktif & \ok & HTTP 200, terhubung ke API produksi \\
+Bot WhatsApp & \ok & Kode ada, produksi dalam mock mode (F6) \\
+Equity terbukti saat pasokan langka & \ok & Fixture constrained ter-commit \\
+Biaya efisiensi nol & \ok & Coverage identik 0,6649, Gini 0,3017 ke 0,2905 \\
+Tech stack sengaja diringkas & \ok & Konsisten dengan isi repositori \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Catatan tentang klaim equity}
+
+Klaim equity AgriFlow terverifikasi \textbf{dan} dibingkai dengan jujur. README secara eksplisit
+menyatakan ``Kami tidak mengklaim keunggulan equity saat pasokan melimpah'', yang memang sesuai
+bukti: pada skenario abundant, nilai equity tidak terlihat, dan Gini AgriFlow (0,099) bahkan
+sedikit lebih buruk daripada greedy (0,093). Pembingkaian pada skenario supply-constrained adalah
+pilihan yang tepat dan dapat dipertahankan.
+
+\subsection{Catatan tentang performa}
+
+\begin{center}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+\textbf{Konfigurasi} & \textbf{N (s$\times$d)} & \textbf{p50 (ms)} & \textbf{p99 (ms)} & \textbf{vs target 500 ms} \\
+\midrule
+Sample data CSV (realistis) & 40$\times$33   & 0,72  & 1,44  & 347$\times$ margin \\
+Sintetis full Jatim         & 361$\times$361 & 41,62 & 59,53 & 8,4$\times$ margin \\
+Stress 100$\times$100       & 100$\times$100 & 8,86  & 15,32 & 33$\times$ margin \\
+Stress 200$\times$200       & 200$\times$200 & 20,90 & 34,09 & 15$\times$ margin \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+Seluruh konfigurasi lulus target 500 ms dengan p99 tertinggi 59,53 ms (margin 88,1\,\%). Angka ini
+mengonfirmasi ulang temuan \code{AUDIT\_v10.md}: skala provinsi aman, sedangkan skala nasional 514
+kabupaten tetap memerlukan spatial indexing sebagaimana didokumentasikan di sana.
+
+% =====================================================================
+\section{Hal yang Terverifikasi Baik}
+
+Agar audit ini berimbang, berikut yang terbukti solid dan sebaiknya tidak diutak-atik:
+
+\begin{itemize}
+  \item \textbf{Kebersihan kredensial.} Tidak ada \code{.env} ter-track, tidak ada secret di
+        seluruh riwayat commit, dan \code{.gitignore} memiliki aturan defensif eksplisit
+        (\code{.secrets}, \code{secrets/}, \code{*.key}).
+  \item \textbf{CORS dikonfigurasi ketat.} Origin di-whitelist spesifik, bukan wildcard.
+  \item \textbf{Penjaga OOM pada jalur forecast.} Server tidak pernah meng-import TimesFM saat
+        runtime, dan fallback diberi label jujur di payload API.
+  \item \textbf{Penanganan kasus tepi yang anggun.} \code{bawang\_putih} tanpa surplus domestik
+        tidak membuat mesin gagal, melainkan menghasilkan saran impor.
+  \item \textbf{Matriks CI lintas OS dan lintas versi Python} sudah ada dan berjalan, sehingga
+        kegagalan tanggal ini justru tertangkap. Ini pertanda CI bekerja sebagaimana mestinya.
+  \item \textbf{Asumsi demo dinyatakan terbuka.} Keluaran \code{run\_demo\_real.py} mencantumkan
+        sendiri asumsinya (margin 25\,\%, \code{harvest\_age\_days}), bukan menyembunyikannya.
+\end{itemize}
+
+% =====================================================================
+\section{Rekomendasi Berprioritas}
+
+\begin{center}
+\begin{tabular}{@{}clp{7.4cm}ll@{}}
+\toprule
+\textbf{\#} & \textbf{Prioritas} & \textbf{Tindakan} & \textbf{Effort} & \textbf{Ref} \\
+\midrule
+1 & \sevH & Perbaiki prioritas event dan pisahkan kebijakan impor dari event kalender & 2--4 jam & F1 \\
+2 & \sevH & Sematkan \code{reference\_date} pada 2 tes agar deterministik & 30 menit & F1 \\
+3 & \sevH & Koreksi baris forecasting di README menjadi label baseline & 15 menit & F2 \\
+4 & \sevM & Push perbaikan pelabelan detektor anomali ke produksi & 1 jam & F3 \\
+5 & \sevM & Cadangkan branch \code{post-submit-analysis} ke remote (perlu izin) & 10 menit & F4 \\
+6 & \sevM & Tandai \code{AUDIT\_v10.md} sebagai arsip, tunjuk ke dokumen ini & 15 menit & F5 \\
+7 & \sevL & Terima nama kota sebagai alias pada parameter \code{city} & 1 jam & F7 \\
+8 & \sevL & Jadikan \code{NEXT\_PUBLIC\_API\_URL} wajib saat build produksi & 30 menit & \S7.1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+Butir 1 sampai 3 mengembalikan CI ke hijau sekaligus menutup dua overclaim, dengan total usaha di
+bawah satu hari kerja.
+
+% =====================================================================
+\section{Reproduksi Audit}
+
+Seluruh temuan di dokumen ini dapat direproduksi ulang dengan perintah berikut.
+
+\begin{lstlisting}
+# Test suite lengkap
+python -m pytest tests/ -q
+# Harapan: 403 passed, 1 skipped
+
+# Reproduksi akar masalah F1 (bug kalender)
+python -c "from datetime import datetime; \
+from matching_engine.engine import get_active_demand_event; \
+print(get_active_demand_event(datetime(2026,7,14)))"
+# Harapan: SCHOOL_START  (tanggal CI yang gagal)
+
+# Reproduksi F1 pada test suite: jalankan dua tes ini antara 1-15 Jul / 1-15 Jan
+python -m pytest tests/test_scenarios_political.py::TestE4_ImportPolicy \
+                 tests/test_scenarios_temporal.py::TestC1_RamadanSpike -v
+
+# Reproduksi F2 (artefak forecast berlabel baseline)
+python -c "import json,collections; \
+d=json.load(open('sample_data/forecasts/forecast_all.json')); \
+print(collections.Counter(r['method'] for r in d))"
+# Harapan: Counter({'seasonal_naive_baseline': 56})
+
+# Demo data nyata BPS 2022
+python examples/run_demo_real.py
+
+# Benchmark latency
+python benchmarks/latency.py
+
+# Log CI yang gagal
+gh run view 29348620529 --log-failed
+
+# Verifikasi API produksi
+curl https://masteraaa123-agriflow-api.hf.space/health
+curl "https://masteraaa123-agriflow-api.hf.space/api/v1/forecast?commodity=beras_premium&city=3578"
+\end{lstlisting}
+
+% =====================================================================
+\section{Kesimpulan}
+
+AgriFlow adalah proyek yang secara teknis nyata: mesin pencocokannya berjalan di data BPS asli,
+API-nya hidup di produksi, dashboard-nya tersambung end-to-end, dan 403 tes melindunginya dari
+regresi. Fondasi rekayasanya kuat, dan budaya \emph{honest engineering} yang diklaim README
+sebagian besar benar-benar tercermin di kode, khususnya pada pelabelan fallback forecast yang
+jujur dan pembingkaian klaim equity yang disiplin.
+
+Yang perlu dibereskan bukan arsitekturnya, melainkan tiga titik kecil di lapisan integritas: satu
+cacat logika kalender yang membuat CI merah dan berpotensi menghasilkan jejak audit yang
+kontradiktif, serta dua klaim dokumentasi yang melampaui artefak yang benar-benar dikirim. Menarik
+dicatat bahwa pada kedua kasus overclaim, kode dan API justru sudah jujur; hanya narasi di README
+yang perlu diturunkan agar setara dengan bukti.
+
+Ketiganya dapat diselesaikan dalam waktu kurang dari satu hari kerja. Setelah itu, seluruh klaim
+proyek ini akan sepenuhnya dapat dipertahankan di hadapan pemeriksaan teknis mana pun.
+
+\vspace{1.5em}
+\hrule
+\vspace{0.6em}
+\noindent\small\textit{Audit dijalankan pada 17 Juli 2026 terhadap commit \code{a6b3b47}. Setiap
+temuan diverifikasi melalui eksekusi kode, pemanggilan endpoint produksi, atau pembacaan log CI.
+Tidak ada perubahan yang diterapkan ke kode, repositori, maupun deployment selama audit ini.}
+
+\end{document}

@@ -160,17 +160,8 @@ claim it is fixed**.
 | User testimonials | ✅ | [5 direct quotes](docs/evidence/usability-early-testing.md#kutipan) |
 | Usage observation results | ⚠️ | An observer attended every session, but the per-task timing column was left blank |
 
-Participants: 4 farmers across commodities (chilli in Kalanganyar, shallot in Nganjuk, potato in
-Dieng, rice in Tapanuli Selatan) and 1 postdoctoral researcher from BRIN. Plus **4
-audio-recorded farmer interviews** as evidence of need.
-
-**The most useful part is not the score.** Three of five participants asked for the same thing,
-seller and supplier information, and that request had already surfaced in the field interviews
-before the product existed.
-
-**We write the limits down rather than bury them:** every session was moderated by a team
-member, five participants is a small sample, and the low-digital-literacy farmer segment is not
-represented yet.
+Participants, per-person scores, quotes, what they asked for, and what limits this feedback are
+all in [**User Feedback**](#user-feedback) below, with a link to each session record.
 
 📄 [Full page](docs/evidence/pengguna.md)
 
@@ -231,6 +222,84 @@ and BPS production and consumption across 38 regencies. All of it is public data
 📄 [Full page](docs/evidence/kesiapan-pihak-luar.md)
 
 </details>
+
+---
+
+# User Feedback
+
+The supporting evidence above answers "does the product work". This section answers a different
+question: **what did the people using it actually say.** The original session records, including
+the screenshots taken at the time, are included, so nothing here has to be taken on trust.
+
+## Early testers — 5 sessions, 20 to 22 July 2026
+
+Every participant was given the same four tasks: check the price of their commodity in their own
+regency, find a buyer for a surplus, look at a price forecast or anomaly, and locate what they
+were after on the dashboard map.
+
+| Respondent | Profile | Channel | Tasks | Ease | Useful | Recommend | Session record |
+|---|---|---|:---:|:---:|:---:|:---:|---|
+| **Aji** | Chilli, Kalanganyar, 8 months | Dashboard + WA | 4/4 | 5 | 5 | 5 | [📄](docs/evidence/early-testing/Aji_cabai_kalanganyar.docx) |
+| **Denisa Septalian Alhamda** | Shallot, Nganjuk, 5 years | Dashboard | 4/4 | 5 | 5 | 4 | [📄](docs/evidence/early-testing/Deniz_bawang%20merah_nganjuk.docx) |
+| **Labib** | Potato, Dieng, 2 years | Dashboard | 4/4 | 4 | 5 | 4 | [📄](docs/evidence/early-testing/labib_kentang_dieng.docx) |
+| **Anisa** | Rice, Tapanuli Selatan, 15 years | Dashboard + WA | 4/4 | 4 | 4 | 4 | [📄](docs/evidence/early-testing/anisa_padi_tapanuli%20selatan.docx) |
+| **Medina Uli Alba Somala, PhD** | Postdoctoral Researcher, BRIN | Dashboard + WA | 4/4 | 5 | 5 | 5 | [📄](docs/evidence/early-testing/Alba_Peneliti%20Pascadoktoral.docx) |
+| | | **Average** | **100%** | **4.6** | **4.8** | **4.4** | |
+
+## What they said
+
+> "The system is good and sophisticated" — **Aji**, chilli farmer
+
+> "Good innovation, and the pricing is reasonable, though for a start I would probably try the
+> pay-as-you-go package first" — **Denisa**, shallot farmer
+
+> "Good innovation at a cheap price" — **Labib**, potato farmer
+
+> "A good innovation and easy to use" — **Anisa**, rice farmer
+
+> "A very good innovation, and useful for the nation" — **Medina Uli Alba Somala, PhD**,
+> postdoctoral researcher, BRIN
+
+*(Quotes translated from Indonesian; the originals are in the session records.)*
+
+## What they asked for, and what we did
+
+High scores are easy to collect in sessions moderated by the people who built the thing. The
+repeated patterns are worth more:
+
+| What we heard | Participants | Our response |
+|---|:---:|---|
+| Seller/supplier information | **3 of 5** | On the backlog. The same request had already surfaced in the field interviews before the product existed, so two different methods point at the same gap |
+| Hard to read the baseline forecast | 1 | Matches the measured finding that [the forecaster's confidence interval is not calibrated](docs/evidence/pengujian.md#3-model-evaluation): a band labelled 80% achieves 42% |
+| Subscription pricing is confusing | 1 | Pricing needs a clearer explanation before wider rollout |
+| Mobile layout is poor | 1 | Responsive fixes |
+| Wants to buy and sell inside the platform | 1 | Out of scope for now. AgriFlow matches; it does not yet facilitate transactions |
+
+## What limits this feedback
+
+Stated here, not in a footnote:
+
+- **Every session was moderated by a team member.** The presence of the product's authors raises
+  success rates and suppresses criticism. Read 4 out of 4 as "the task could be completed", not
+  "completed unaided".
+- **Five participants is a small sample**, and the segment most at risk, older farmers with low
+  digital literacy, is not represented at all.
+- **Per-task timing was not recorded**, even though the session sheet had a column for it.
+
+[The round-2 protocol](docs/evidence/usability-test-protocol.md) is designed to close all three:
+a moderator from outside the team, a quota for low-literacy participants, and mandatory timing.
+
+## Feedback from before the product existed
+
+Separately from the sessions above, we interviewed **4 farmers across commodities, with audio
+recordings**, between May and July 2026, when there was nothing yet to try. That material is
+evidence of *need*, not of *usability*, and we do not count it as usability testing. Transcripts:
+[shallot](interview/transcript-bawang-merah.md) · [rice](interview/transcript-padi.md) ·
+[chilli](interview/transcript-cabai.md) · [potato](interview/transcript-kentang.md). The full
+table with audio links is in the [Indonesian README](README.md#-validasi-lapangan--wawancara-petani).
+
+📄 Full write-up of the five sessions: [usability-early-testing.md](docs/evidence/usability-early-testing.md) ·
+User-evidence category: [pengguna.md](docs/evidence/pengguna.md)
 
 ---
 

@@ -160,16 +160,9 @@ Windows py3.11, 1 di lokal), akar masalahnya belum ditemukan dan **tidak kami kl
 | Testimoni pengguna | ✅ | [5 kutipan langsung](docs/evidence/usability-early-testing.md#kutipan) |
 | Hasil observasi penggunaan | ⚠️ | Observer hadir tiap sesi, tetapi kolom waktu per tugas dibiarkan kosong |
 
-Peserta: 4 petani lintas komoditas (cabai Kalanganyar, bawang merah Nganjuk, kentang Dieng,
-padi Tapanuli Selatan) dan 1 peneliti pascadoktoral BRIN. Ditambah **4 wawancara petani
-dengan rekaman audio** sebagai bukti kebutuhan.
-
-**Yang paling berguna bukan skornya.** Tiga dari lima peserta meminta hal yang sama,
-informasi penjual/supplier, dan permintaan itu sudah muncul lebih dulu di wawancara lapangan
-sebelum produk ada.
-
-**Keterbatasannya kami tulis, bukan disembunyikan:** seluruh sesi dimoderasi anggota tim, lima
-peserta itu sedikit, dan segmen petani literasi digital rendah belum terwakili.
+Peserta, skor per orang, kutipan, apa yang mereka minta, dan apa yang membatasi umpan balik
+ini semuanya ada di [**Umpan Balik Pengguna**](#-umpan-balik-pengguna) di bawah, lengkap dengan
+tautan ke tiap berkas sesi.
 
 📄 [Halaman lengkap](docs/evidence/pengguna.md)
 
@@ -231,6 +224,80 @@ mengklaim punya perjanjian berbagi data istimewa.
 📄 [Halaman lengkap](docs/evidence/kesiapan-pihak-luar.md)
 
 </details>
+
+---
+
+# 💬 Umpan Balik Pengguna
+
+Bukti pendukung di atas menjawab "apakah produknya bekerja". Bagian ini menjawab pertanyaan
+yang berbeda: **apa kata orang yang memakainya.** Seluruh berkas sesi asli beserta screenshot
+yang diambil saat itu ikut disertakan, jadi tidak ada yang perlu dipercaya begitu saja.
+
+## Early tester — 5 sesi, 20 sampai 22 Juli 2026
+
+Setiap peserta diberi empat tugas yang sama: cek harga komoditasnya di kabupaten sendiri, cari
+pembeli untuk surplus, lihat prediksi atau anomali harga, dan temukan informasi yang dicari di
+peta dashboard.
+
+| Responden | Profil | Kanal | Tugas | Mudah | Berguna | Rekomendasi | Berkas sesi |
+|---|---|---|:---:|:---:|:---:|:---:|---|
+| **Aji** | Cabai, Kalanganyar, 8 bln | Dashboard + WA | 4/4 | 5 | 5 | 5 | [📄](docs/evidence/early-testing/Aji_cabai_kalanganyar.docx) |
+| **Denisa Septalian Alhamda** | Bawang merah, Nganjuk, 5 thn | Dashboard | 4/4 | 5 | 5 | 4 | [📄](docs/evidence/early-testing/Deniz_bawang%20merah_nganjuk.docx) |
+| **Labib** | Kentang, Dieng, 2 thn | Dashboard | 4/4 | 4 | 5 | 4 | [📄](docs/evidence/early-testing/labib_kentang_dieng.docx) |
+| **Anisa** | Padi, Tapanuli Selatan, 15 thn | Dashboard + WA | 4/4 | 4 | 4 | 4 | [📄](docs/evidence/early-testing/anisa_padi_tapanuli%20selatan.docx) |
+| **Medina Uli Alba Somala, PhD** | Peneliti Pascadoktoral, BRIN | Dashboard + WA | 4/4 | 5 | 5 | 5 | [📄](docs/evidence/early-testing/Alba_Peneliti%20Pascadoktoral.docx) |
+| | | **Rata-rata** | **100%** | **4,6** | **4,8** | **4,4** | |
+
+## Apa kata mereka
+
+> "Sistem bagus dan canggih" — **Aji**, petani cabai
+
+> "Inovasi bagus, harga yang dipatok juga masuk akal, meskipun mungkin untuk tahap awal akan
+> coba paket pay as you go terlebih dahulu" — **Denisa**, petani bawang merah
+
+> "inovasi bagus dengan harga murah" — **Labib**, petani kentang
+
+> "inovasi yang bagus dan mudah digunakan" — **Anisa**, petani padi
+
+> "inovasi yang sangat bagus dan bermanfaat bagi nusa dan bangsa" — **Medina Uli Alba Somala,
+> PhD**, peneliti pascadoktoral BRIN
+
+## Yang mereka minta, dan apa yang kami lakukan
+
+Skor tinggi mudah didapat pada sesi yang dimoderasi pembuatnya sendiri. Yang lebih berguna
+adalah pola yang berulang:
+
+| Yang kami dengar | Berapa peserta | Tanggapan kami |
+|---|:---:|---|
+| Informasi penjual/supplier | **3 dari 5** | Masuk backlog. Permintaan ini sudah muncul lebih dulu di wawancara lapangan sebelum produk ada, jadi dua metode berbeda menunjuk hal yang sama |
+| Susah membaca prediksi baseline | 1 | Cocok dengan temuan terukur bahwa [interval kepercayaan peramal memang belum terkalibrasi](docs/evidence/pengujian.md#3-model-evaluation): pita berlabel 80% baru mencapai 42% |
+| Tarif berlangganan membingungkan | 1 | Penjelasan harga perlu diperbaiki sebelum penyebaran luas |
+| Tampilan di ponsel kurang bagus | 1 | Perbaikan responsif |
+| Ingin jual beli langsung di platform | 1 | Di luar cakupan saat ini. AgriFlow mempertemukan, belum memfasilitasi transaksi |
+
+## Yang membatasi umpan balik ini
+
+Kami tulis di sini, bukan di catatan kaki:
+
+- **Seluruh sesi dimoderasi anggota tim.** Kehadiran pembuat produk menaikkan tingkat
+  keberhasilan dan menahan kritik. Angka 4 dari 4 sebaiknya dibaca "tugasnya bisa
+  diselesaikan", bukan "bisa diselesaikan tanpa bantuan".
+- **Lima peserta itu sedikit**, dan segmen paling berisiko, petani berusia lanjut dengan
+  literasi digital rendah, belum terwakili sama sekali.
+- **Waktu per tugas tidak dicatat**, padahal kolomnya tersedia di lembar sesi.
+
+[Protokol putaran 2](docs/evidence/usability-test-protocol.md) dirancang khusus menutup ketiganya:
+moderator dari luar tim, kuota peserta literasi rendah, dan pencatatan waktu wajib.
+
+## Umpan balik sebelum produk ada
+
+Terpisah dari sesi di atas, kami mewawancarai **4 petani lintas komoditas dengan rekaman audio**
+pada Mei sampai Juli 2026, saat belum ada produk yang bisa dicoba. Isinya bukti *kebutuhan*,
+bukan bukti *kemudahan pakai*, dan tidak kami hitung sebagai usability testing. Tabel lengkapnya
+di [Validasi Lapangan](#-validasi-lapangan--wawancara-petani).
+
+📄 Rekap lengkap lima sesi: [usability-early-testing.md](docs/evidence/usability-early-testing.md) ·
+Kategori bukti pengguna: [pengguna.md](docs/evidence/pengguna.md)
 
 ---
 

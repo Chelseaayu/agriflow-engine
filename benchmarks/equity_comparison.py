@@ -349,7 +349,11 @@ def main():
     surplus = data["surplus"]
     deficit = data["deficit"]
     weather = data["weather"]
-    historical = data["historical_prices"]
+    # Deliberately None — see the note in equity_comparison_constrained.py. The
+    # synthetic fixture's prices predate the real PIHPS stats now sitting in
+    # historical_price_stats.csv, so the 3-sigma filter would drop fixture nodes and
+    # confound a comparison that is about the allocation mechanism.
+    historical = None
     kabupaten_dict = data["kabupaten"]
     logistics = LogisticsContext()
 

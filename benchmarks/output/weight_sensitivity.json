@@ -1,0 +1,249 @@
+{
+  "default_weights": {
+    "distance": 0.22,
+    "volume": 0.22,
+    "price": 0.22,
+    "perishability": 0.18,
+    "climate": 0.16
+  },
+  "baseline": {
+    "coverage": 0.8801676509811392,
+    "gini": 0.09897861394336914,
+    "sampang": 1.0,
+    "bangkalan": 1.0
+  },
+  "oat": [
+    {
+      "weight": "distance",
+      "delta": -0.05,
+      "coverage": 0.8677843398742617,
+      "dcover": -0.012383311106877515,
+      "gini": 0.10957432903951805,
+      "dgini": 0.010595715096148914,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 1.0001905124785673
+    },
+    {
+      "weight": "distance",
+      "delta": -0.02,
+      "coverage": 0.8754048390169556,
+      "dcover": -0.0047628119641836,
+      "gini": 0.10427060981199383,
+      "dgini": 0.005291995868624694,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 0.3333968374928558
+    },
+    {
+      "weight": "distance",
+      "delta": 0.02,
+      "coverage": 0.8801676509811392,
+      "dcover": 0.0,
+      "gini": 0.09897861394336914,
+      "dgini": 0.0,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 0.0
+    },
+    {
+      "weight": "distance",
+      "delta": 0.05,
+      "coverage": 0.8801676509811392,
+      "dcover": 0.0,
+      "gini": 0.09897861394336914,
+      "dgini": 0.0,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 0.0
+    },
+    {
+      "weight": "volume",
+      "delta": -0.05,
+      "coverage": 0.8801676509811392,
+      "dcover": 0.0,
+      "gini": 0.09897861394336914,
+      "dgini": 0.0,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 0.0
+    },
+    {
+      "weight": "volume",
+      "delta": -0.02,
+      "coverage": 0.8801676509811392,
+      "dcover": 0.0,
+      "gini": 0.09897861394336914,
+      "dgini": 0.0,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 0.0
+    },
+    {
+      "weight": "volume",
+      "delta": 0.02,
+      "coverage": 0.8801676509811392,
+      "dcover": 0.0,
+      "gini": 0.09897861394336914,
+      "dgini": 0.0,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 0.0
+    },
+    {
+      "weight": "volume",
+      "delta": 0.05,
+      "coverage": 0.8801676509811392,
+      "dcover": 0.0,
+      "gini": 0.09897861394336914,
+      "dgini": 0.0,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 0.0
+    },
+    {
+      "weight": "price",
+      "delta": -0.05,
+      "coverage": 0.8801676509811392,
+      "dcover": 0.0,
+      "gini": 0.09897861394336914,
+      "dgini": 0.0,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 0.0
+    },
+    {
+      "weight": "price",
+      "delta": -0.02,
+      "coverage": 0.8801676509811392,
+      "dcover": 0.0,
+      "gini": 0.09897861394336914,
+      "dgini": 0.0,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 0.0
+    },
+    {
+      "weight": "price",
+      "delta": 0.02,
+      "coverage": 0.8801676509811392,
+      "dcover": 0.0,
+      "gini": 0.09897861394336914,
+      "dgini": 0.0,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 0.0
+    },
+    {
+      "weight": "price",
+      "delta": 0.05,
+      "coverage": 0.8725471518384454,
+      "dcover": -0.007620499142693804,
+      "gini": 0.10437147104751082,
+      "dgini": 0.005392857104141682,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 0.6667936749857116
+    },
+    {
+      "weight": "perishability",
+      "delta": -0.05,
+      "coverage": 0.8801676509811392,
+      "dcover": 0.0,
+      "gini": 0.09897861394336914,
+      "dgini": 0.0,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 0.0
+    },
+    {
+      "weight": "perishability",
+      "delta": -0.02,
+      "coverage": 0.8801676509811392,
+      "dcover": 0.0,
+      "gini": 0.09897861394336914,
+      "dgini": 0.0,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 0.0
+    },
+    {
+      "weight": "perishability",
+      "delta": 0.02,
+      "coverage": 0.8754048390169556,
+      "dcover": -0.0047628119641836,
+      "gini": 0.10427060981199383,
+      "dgini": 0.005291995868624694,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 0.3333968374928558
+    },
+    {
+      "weight": "perishability",
+      "delta": 0.05,
+      "coverage": 0.8754048390169556,
+      "dcover": -0.0047628119641836,
+      "gini": 0.10427060981199383,
+      "dgini": 0.005291995868624694,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 0.3333968374928558
+    },
+    {
+      "weight": "climate",
+      "delta": -0.05,
+      "coverage": 0.8782625261954659,
+      "dcover": -0.0019051247856733955,
+      "gini": 0.10129722054278287,
+      "dgini": 0.002318606599413728,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 0.09525623928367308
+    },
+    {
+      "weight": "climate",
+      "delta": -0.02,
+      "coverage": 0.8801676509811392,
+      "dcover": 0.0,
+      "gini": 0.09897861394336914,
+      "dgini": 0.0,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 0.0
+    },
+    {
+      "weight": "climate",
+      "delta": 0.02,
+      "coverage": 0.8801676509811392,
+      "dcover": 0.0,
+      "gini": 0.09897861394336914,
+      "dgini": 0.0,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 0.0
+    },
+    {
+      "weight": "climate",
+      "delta": 0.05,
+      "coverage": 0.8801676509811392,
+      "dcover": 0.0,
+      "gini": 0.09897861394336914,
+      "dgini": 0.0,
+      "key_jaccard": 1.0,
+      "tons_moved_pct": 0.0
+    }
+  ],
+  "global": {
+    "samples": 300,
+    "conc": 400.0,
+    "mean_l1_dist": 0.0792054382021909,
+    "coverage": {
+      "mean": 0.8769892677970408,
+      "sd": 0.004053708573743865,
+      "min": 0.8630215279100781,
+      "max": 0.8801676509811392
+    },
+    "gini": {
+      "mean": 0.10214480687331128,
+      "sd": 0.00371834124673072,
+      "min": 0.09897861394336914,
+      "max": 0.11555229483425204
+    },
+    "jaccard": {
+      "mean": 1.0,
+      "min": 1.0
+    },
+    "tons_moved_pct": {
+      "mean": 0.2335365466438052,
+      "max": 1.2383311106877501
+    }
+  },
+  "verdict": {
+    "max_abs_dcoverage": 0.012383311106877515,
+    "max_abs_dgini": 0.010595715096148914,
+    "min_jaccard": 1.0,
+    "max_tons_moved_pct": 1.2383311106877501,
+    "stable": true
+  }
+}

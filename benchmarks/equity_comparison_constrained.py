@@ -242,7 +242,19 @@ def main():
     surplus_a = data_a["surplus"]
     deficit_a = data_a["deficit"]
     weather = data_a["weather"]
-    historical = data_a["historical_prices"]
+    # Deliberately None. run_matching()'s 3-sigma price filter compares each node's
+    # price against historical_price_stats.csv, which since commit 2819ca6 holds
+    # REAL PIHPS medians and deviations. The surplus/deficit fixtures used here are
+    # synthetic and were priced against the older synthetic stats, so feeding the
+    # real stats makes the filter DROP fixture nodes (7 exclusions, e.g. "Kota
+    # Surabaya Beras Premium @ Rp 17,000/kg") and silently changes what the five
+    # strategies are even allocating. That confounds a comparison whose whole point
+    # is the allocation mechanism. tests/test_constrained_scenario.py locks the same
+    # golden numbers and likewise calls run_matching without historical prices; this
+    # keeps the benchmark in step with the tests. The real-data path is unaffected:
+    # load_real_data() produces zero anomaly exclusions, because there the prices
+    # and the stats come from the same source.
+    historical = None
     kabupaten_dict = data_a["kabupaten"]
     demand_tons_a = _build_demand_tons(deficit_a)
 

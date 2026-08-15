@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import dynamic from "next/dynamic";
 import {
   api,
-  type AnomalyRecord,
+  ApiError,
+  type AnomaliesResponse,
   type Commodity,
   type ForecastResponse,
   type Kabupaten,
@@ -191,16 +192,9 @@ export default function Home() {
     { code: "daging_ayam", nama: "Daging Ayam" },
     { code: "telur_ayam", nama: "Telur Ayam" }
   ]);
-  const [kabupaten, setKabupaten]     = useState<Kabupaten[]>([
-    { id: "3518", nama: "Kab. Nganjuk", lat: -7.6024, lng: 111.9015, tier: "TIER_1", ipm: 72.8, population: 1017000 },
-    { id: "3516", nama: "Kab. Mojokerto", lat: -7.4726, lng: 112.4381, tier: "TIER_1", ipm: 73.5, population: 1110000 },
-    { id: "3515", nama: "Kab. Sidoarjo", lat: -7.4478, lng: 112.7183, tier: "TIER_1", ipm: 80.2, population: 2260000 },
-    { id: "3519", nama: "Kab. Madiun", lat: -7.6298, lng: 111.5239, tier: "TIER_2", ipm: 71.9, population: 741000 },
-    { id: "3578", nama: "Kota Surabaya", lat: -7.2575, lng: 112.7521, tier: "TIER_1", ipm: 82.5, population: 2870000 },
-    { id: "3507", nama: "Kab. Malang", lat: -7.9625, lng: 112.6308, tier: "TIER_1", ipm: 70.4, population: 2650000 },
-    { id: "3502", nama: "Kab. Ponorogo", lat: -7.8698, lng: 111.4658, tier: "TIER_2", ipm: 70.8, population: 949000 },
-    { id: "3510", nama: "Kab. Banyuwangi", lat: -8.2192, lng: 114.3691, tier: "TIER_2", ipm: 70.6, population: 1710000 }
-  ]);
+  // Local artifact mode populates this list through the same-origin API.
+  // Do not retain a partial city fallback: it hides the supported 38 regions.
+  const [kabupaten, setKabupaten]     = useState<Kabupaten[]>([]);
   const [commodity, setCommodity]     = useState<string>("bawang_merah"); // Default bawang merah to match mockup
   const [sd, setSd]                   = useState<SurplusDeficitResponse | null>(null);
   const [matches, setMatches]         = useState<Match[]>([]);
@@ -208,14 +202,14 @@ export default function Home() {
   const [loading, setLoading]         = useState(false);
   const [err, setErr]                 = useState<string | null>(null);
 
-  // --- Analysis state ---
+  // The existing Harga & Tren design uses one shared commodity and Kota
+  // Pantauan selector for both panels.
   const [analysisCommodity, setAnalysisCommodity] = useState("bawang_merah");
-  const [analysisCity, setAnalysisCity]           = useState("3578"); // Surabaya default
+  const [analysisCity, setAnalysisCity]           = useState("3578");
   const [forecast, setForecast]                   = useState<ForecastResponse | null>(null);
   const [forecastLoading, setForecastLoading]     = useState(false);
   const [forecastErr, setForecastErr]             = useState<string | null>(null);
-  const [anomalies, setAnomalies]                 = useState<AnomalyRecord[]>([]);
-  const [anomalyTotal, setAnomalyTotal]           = useState(0);
+  const [anomalyResponse, setAnomalyResponse]     = useState<AnomaliesResponse | null>(null);
   const [anomalyLoading, setAnomalyLoading]       = useState(false);
   const [anomalyErr, setAnomalyErr]               = useState<string | null>(null);
 
@@ -280,12 +274,8 @@ export default function Home() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatMessages, showChatbot]);
 
-  // Sync analysis selectors when main commodity changes
-  useEffect(() => {
-    setAnalysisCommodity(commodity);
-  }, [commodity]);
-
-  // Bootstrap: commodities + kabupaten
+  // Bootstrap: commodities + kabupaten. These API lists supply the full
+  // 38-region selector coverage; no analysis selector has a static city list.
   useEffect(() => {
     Promise.all([api.commodities(), api.kabupaten()])
       .then(([c, k]) => {
@@ -293,7 +283,7 @@ export default function Home() {
         if (k && k.length > 0) setKabupaten(k);
       })
       .catch((e) => {
-        console.warn("Bootstrap API failed, using fallback mock lists:", e);
+        console.warn("Bootstrap API failed; retaining currently available lists:", e);
       });
   }, []);
 
@@ -398,108 +388,95 @@ export default function Home() {
     refreshData();
   }, [commodity, selectedKabId]);
 
-  // Refresh forecast when analysis selectors change
+  // Keep the original analysis selector aligned with the main commodity choice.
   useEffect(() => {
+    setAnalysisCommodity(commodity);
+  }, [commodity]);
+
+  // Request the forecast for the pair selected through the existing controls.
+  useEffect(() => {
+    let cancelled = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- prevent rendering a prior pair while the requested pair loads.
+    setForecast(null);
     setForecastLoading(true);
     setForecastErr(null);
+
     api.forecast({ commodity: analysisCommodity, city: analysisCity })
       .then((res) => {
-        if (!res || !res.forecasts || res.forecasts.length === 0) {
-          throw new Error("Empty forecast");
+        const usable =
+          res.commodity_code === analysisCommodity &&
+          res.city_id === analysisCity &&
+          res.forecasts.length > 0 &&
+          res.forecasts.every((point) =>
+            Number.isFinite(point.point) &&
+            Number.isFinite(point.p10) &&
+            Number.isFinite(point.p90) &&
+            point.p10 <= point.point &&
+            point.point <= point.p90,
+          );
+        if (!usable) throw new Error("unusable forecast response");
+        if (!cancelled) setForecast(res);
+      })
+      .catch((error: unknown) => {
+        if (cancelled) return;
+        if (error instanceof ApiError && error.status === 404) {
+          setForecastErr(`Forecast tidak tersedia untuk ${analysisCommodity} di ${analysisCity}.`);
+        } else if (error instanceof ApiError) {
+          setForecastErr(`Permintaan forecast gagal untuk ${analysisCommodity} di ${analysisCity}.`);
+        } else if (error instanceof TypeError) {
+          setForecastErr(`Layanan forecast lokal tidak tersedia untuk ${analysisCommodity} di ${analysisCity}.`);
+        } else {
+          setForecastErr(`Data forecast tidak tersedia untuk ${analysisCommodity} di ${analysisCity}.`);
         }
-        setForecast(res);
       })
-      .catch((e) => {
-        console.warn("Forecast fetch failed, using fallback mock forecast:", e);
-        const cityObj = kabupaten.find(k => k.id === analysisCity);
-        setForecast({
-          commodity_code: analysisCommodity,
-          city_id: analysisCity,
-          city_name: cityObj ? cityObj.nama : "Kota Surabaya",
-          method: "timesfm_2.0",
-          generated_at: "2026-07-08",
-          horizon_days: 30,
-          history_end_date: "3 Mei 2026",
-          forecasts: Array.from({ length: 30 }, (_, i) => {
-            const date = new Date("2026-05-04");
-            date.setDate(date.getDate() + i);
-            const basePrice = analysisCommodity === "bawang_merah" ? 32000 : 14000;
-            const trend = Math.sin(i / 3.5) * 1800 + (i * 120);
-            return {
-              date: date.toISOString().split("T")[0],
-              point: basePrice + trend,
-              p10: basePrice + trend - 1500,
-              p90: basePrice + trend + 2200
-            };
-          })
-        });
-      })
-      .finally(() => setForecastLoading(false));
-  }, [analysisCommodity, analysisCity, commodities, kabupaten]);
+      .finally(() => {
+        if (!cancelled) setForecastLoading(false);
+      });
 
-  // Refresh anomalies when analysis selectors change
+    return () => {
+      cancelled = true;
+    };
+  }, [analysisCommodity, analysisCity]);
+
+  // The anomaly artifact is requested for the same existing analysis pair.
   useEffect(() => {
+    let cancelled = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- clear an old series before requesting the exact new pair.
+    setAnomalyResponse(null);
     setAnomalyLoading(true);
     setAnomalyErr(null);
+
     api.anomalies({
       commodity: analysisCommodity,
-      city:      analysisCity,
-      limit:     20,
-      since:     "2023-01-01",
+      city: analysisCity,
+      limit: 20,
+      since: "2023-01-01",
     })
       .then((res) => {
-        if (!res || !res.anomalies || res.anomalies.length === 0) {
-          throw new Error("Empty anomalies");
+        if (
+          !res.series ||
+          res.series.commodity_code !== analysisCommodity ||
+          res.series.city_id !== analysisCity ||
+          !Array.isArray(res.anomalies)
+        ) {
+          throw new Error("unusable anomaly response");
         }
-        setAnomalies(res.anomalies);
-        setAnomalyTotal(res.count);
+        if (!cancelled) setAnomalyResponse(res);
       })
-      .catch((e) => {
-        console.warn("Anomalies fetch failed, using fallback mock records:", e);
-        const cityObj = kabupaten.find(k => k.id === analysisCity);
-        const cityName = cityObj ? cityObj.nama : "Kota Surabaya";
-        setAnomalies([
-          {
-            date: "2026-05-03",
-            price: 41300,
-            rolling_median: 33000,
-            deviation_pct: 24.1,
-            type: "SPIKE",
-            score: 4.8,
-            commodity_code: analysisCommodity,
-            city_id: analysisCity,
-            city_name: cityName,
-            persistent: true
-          },
-          {
-            date: "2026-04-21",
-            price: 28000,
-            rolling_median: 43000,
-            deviation_pct: -35.0,
-            type: "DROP",
-            score: 5.2,
-            commodity_code: analysisCommodity,
-            city_id: analysisCity,
-            city_name: cityName,
-            persistent: false
-          },
-          {
-            date: "2026-04-17",
-            price: 29000,
-            rolling_median: 41400,
-            deviation_pct: -30.0,
-            type: "DROP",
-            score: 3.9,
-            commodity_code: analysisCommodity,
-            city_id: analysisCity,
-            city_name: cityName,
-            persistent: false
-          }
-        ]);
-        setAnomalyTotal(3);
+      .catch(() => {
+        if (!cancelled) {
+          setAnomalyResponse(null);
+          setAnomalyErr("Data anomali tidak tersedia.");
+        }
       })
-      .finally(() => setAnomalyLoading(false));
-  }, [analysisCommodity, analysisCity, kabupaten]);
+      .finally(() => {
+        if (!cancelled) setAnomalyLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [analysisCommodity, analysisCity]);
 
   const selectedKab = useMemo(
     () => kabupaten.find((k) => k.id === selectedKabId) ?? null,
@@ -960,7 +937,7 @@ export default function Home() {
               </div>
 
               {showCommodityDropdown && (
-                <div className="absolute right-0 mt-2 w-52 bg-white border border-zinc-100 rounded-2xl shadow-xl py-1.5 z-50 animate-in fade-in slide-in-from-top-1 duration-100">
+                <div className="absolute right-0 mt-2 w-52 bg-white border border-zinc-100 rounded-2xl shadow-xl py-1.5 z-[1100] animate-in fade-in slide-in-from-top-1 duration-100">
                   <div className="px-3.5 py-2 text-[9px] font-bold text-zinc-400 border-b border-zinc-100 uppercase tracking-wider">
                     Pilih Komoditas Pantauan
                   </div>
@@ -1611,7 +1588,7 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Selectors inside styled elements */}
+              {/* Existing selectors: one pair controls both forecast and anomaly. */}
               <div className="flex items-center gap-2">
                 <div className="bg-white rounded-full px-4 py-2 shadow-sm flex items-center gap-2">
                   <label className="text-[10px] font-bold text-zinc-400 uppercase">Komoditas</label>
@@ -1632,8 +1609,8 @@ export default function Home() {
                     value={analysisCity}
                     onChange={(e) => setAnalysisCity(e.target.value)}
                   >
-                    {kabupaten.slice(0, 8).map((c) => (
-                      <option key={c.id} value={c.id}>{c.nama}</option>
+                    {kabupaten.map((region) => (
+                      <option key={region.id} value={region.id}>{region.nama}</option>
                     ))}
                   </select>
                 </div>
@@ -1653,10 +1630,9 @@ export default function Home() {
               {/* Anomaly scan panel */}
               <div className="bg-white rounded-2xl shadow-sm overflow-hidden border-none p-2">
                 <AnomalyPanel
-                  anomalies={anomalies}
+                  response={anomalyResponse}
                   loading={anomalyLoading}
                   error={anomalyErr}
-                  totalCount={anomalyTotal}
                 />
               </div>
             </div>

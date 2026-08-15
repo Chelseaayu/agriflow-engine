@@ -2,9 +2,10 @@
 
 import { getSupabase } from "./supabase";
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
-  "http://localhost:8000";
+const LOCAL_DATA_MODE = process.env.NEXT_PUBLIC_LOCAL_DATA_MODE === "true";
+const API_BASE = LOCAL_DATA_MODE
+  ? ""
+  : process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "http://localhost:8000";
 
 export type Commodity = { code: string; nama: string };
 
@@ -96,23 +97,70 @@ export type ForecastResponse = {
 // Anomaly types
 // ---------------------------------------------------------------------------
 
-export type AnomalyRecord = {
-  date:           string;   // ISO 8601
-  price:          number;   // IDR/kg
-  rolling_median: number;
-  deviation_pct:  number;   // signed; positive = spike
-  type:           "SPIKE" | "DROP";
-  score:          number;
-  commodity_code: string;
-  city_id:        string;
-  city_name:      string;
-  persistent:     boolean;
+export type AnomalySeriesStatus =
+  | "DETECTABLE"
+  | "INSUFFICIENT_HISTORY"
+  | "NO_ACTIVE_HISTORY"
+  | "OUT_OF_COVERAGE";
+
+export type AnomalyObservationProvenance = {
+  data_source: "SISKAPERBAPO" | "PIHPS";
+  observation_date: string;
+  price_per_kg: number;
 };
 
+export type AnomalyMarketQuality = {
+  market_count?: number;
+  mean?: number;
+  min?: number;
+  max?: number;
+  median?: number;
+  coverage?: number;
+  confidence?: string;
+};
+
+export type AnomalySeries = {
+  city_id: string;
+  city_name: string;
+  commodity_code: string;
+  series_status: AnomalySeriesStatus;
+  history_start_date: string | null;
+  latest_observation_date: string | null;
+  observation_count: number;
+  history_coverage_ratio: number | null;
+  history_confidence: "HIGH" | "MEDIUM" | "LOW" | null;
+  active_history_source_counts: Record<"SISKAPERBAPO" | "PIHPS", number>;
+  latest_observation_source: "SISKAPERBAPO" | "PIHPS" | null;
+  observation_freshness_days: number | null;
+  market_quality: AnomalyMarketQuality | null;
+  market_quality_availability: string | null;
+};
+
+export type AnomalyRecord = {
+  date: string;
+  price: number;
+  rolling_median: number;
+  deviation_pct: number;
+  type: "SPIKE" | "DROP";
+  score: number;
+  commodity_code: string;
+  city_id: string;
+  city_name: string;
+  persistent: boolean;
+  observation_provenance: AnomalyObservationProvenance;
+};
+
+export type AnomalyStatusSummary = Partial<Record<AnomalySeriesStatus, number>>;
+
 export type AnomaliesResponse = {
-  count:     number;
-  method:    string;
+  schema_version: string;
+  artifact_generated_at: string;
+  active_source_policy: string;
+  count: number;
+  method: string;
   anomalies: AnomalyRecord[];
+  series: AnomalySeries | null;
+  status_summary: AnomalyStatusSummary | null;
 };
 
 // ---------------------------------------------------------------------------
@@ -128,22 +176,44 @@ export class UnauthorizedError extends Error {
   }
 }
 
+export class ApiError extends Error {
+  constructor(
+    public readonly path: string,
+    public readonly status: number,
+    public readonly detail: unknown = null,
+  ) {
+    super(`${path} failed: ${status}`);
+    this.name = "ApiError";
+  }
+}
+
 async function fetchJson<T>(path: string): Promise<T> {
   const headers: Record<string, string> = {};
 
-  // Attach the Supabase access token when there is a session. getSession()
-  // refreshes it if it is close to expiry, so a tab left open overnight sends
-  // a live token rather than a stale one.
-  const supabase = getSupabase();
-  if (supabase) {
-    const { data } = await supabase.auth.getSession();
-    const token = data.session?.access_token;
-    if (token) headers.Authorization = `Bearer ${token}`;
+  // Local artifact mode is self-contained and deliberately bypasses Supabase.
+  if (!LOCAL_DATA_MODE) {
+    // Attach the Supabase access token when there is a session. getSession()
+    // refreshes it if it is close to expiry, so a tab left open overnight sends
+    // a live token rather than a stale one.
+    const supabase = getSupabase();
+    if (supabase) {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (token) headers.Authorization = `Bearer ${token}`;
+    }
   }
 
   const r = await fetch(`${API_BASE}${path}`, { cache: "no-store", headers });
   if (r.status === 401) throw new UnauthorizedError(path);
-  if (!r.ok) throw new Error(`${path} failed: ${r.status}`);
+  if (!r.ok) {
+    let detail: unknown = null;
+    try {
+      detail = await r.json();
+    } catch {
+      // Non-JSON errors still retain their HTTP status for callers.
+    }
+    throw new ApiError(path, r.status, detail);
+  }
   return r.json() as Promise<T>;
 }
 

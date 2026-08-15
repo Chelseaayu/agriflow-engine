@@ -38,6 +38,33 @@ jobs:
       - name: Run pytest
         run: pytest -q
 
+  dashboard:
+    name: dashboard build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+
+      - name: Install dashboard dependencies
+        working-directory: dashboard
+        run: npm ci
+
+      - name: Lint dashboard
+        working-directory: dashboard
+        run: npm run lint
+
+      - name: Build dashboard with committed local artifacts
+        working-directory: dashboard
+        env:
+          NEXT_PUBLIC_LOCAL_DATA_MODE: "true"
+        run: npm run build
+
   benchmark:
     name: latency benchmark (publish, no gate)
     runs-on: ubuntu-latest

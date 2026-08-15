@@ -637,13 +637,107 @@ def _load_forecasts() -> list:
         return _json.load(fh)
 
 
+_ANOMALY_SCHEMA_VERSION = "source-aware-anomaly/v1"
+_ANOMALY_STATUSES = frozenset({
+    "DETECTABLE", "INSUFFICIENT_HISTORY", "NO_ACTIVE_HISTORY",
+})
+
+
+def _validate_anomaly_artifact(artifact: Any) -> dict:
+    """Return a strictly validated source-aware artifact or raise ValueError."""
+    if not isinstance(artifact, dict):
+        raise ValueError("artifact must be a JSON object")
+    required = {
+        "schema_version", "generated_at", "method", "active_source_policy",
+        "series_statuses", "events",
+    }
+    missing = required - artifact.keys()
+    if missing:
+        raise ValueError("artifact missing required field(s): " + ", ".join(sorted(missing)))
+    if artifact["schema_version"] != _ANOMALY_SCHEMA_VERSION:
+        raise ValueError("unsupported schema_version")
+    if not all(isinstance(artifact[key], str) and artifact[key] for key in (
+        "generated_at", "method", "active_source_policy",
+    )):
+        raise ValueError("artifact generation metadata must be non-empty strings")
+    if not isinstance(artifact["series_statuses"], list) or not isinstance(artifact["events"], list):
+        raise ValueError("series_statuses and events must be lists")
+
+    status_keys: set[tuple[str, str]] = set()
+    for index, status in enumerate(artifact["series_statuses"]):
+        if not isinstance(status, dict):
+            raise ValueError(f"series_statuses[{index}] must be an object")
+        fields = {
+            "city_id", "city_name", "commodity_code", "series_status",
+            "history_start_date", "latest_observation_date", "observation_count",
+            "history_coverage_ratio", "history_confidence", "active_history_source_counts",
+            "latest_observation_source", "observation_freshness_days", "market_quality",
+            "market_quality_availability",
+        }
+        absent = fields - status.keys()
+        if absent:
+            raise ValueError(
+                f"series_statuses[{index}] missing field(s): {', '.join(sorted(absent))}"
+            )
+        if status["series_status"] not in _ANOMALY_STATUSES:
+            raise ValueError(f"series_statuses[{index}] has invalid series_status")
+        key = (str(status["city_id"]), str(status["commodity_code"]))
+        if key in status_keys:
+            raise ValueError(f"duplicate series status for city={key[0]} commodity={key[1]}")
+        status_keys.add(key)
+    for index, event in enumerate(artifact["events"]):
+        if not isinstance(event, dict):
+            raise ValueError(f"events[{index}] must be an object")
+        absent = {
+            "date", "price", "rolling_median", "deviation_pct", "type", "score",
+            "persistent", "city_id", "city_name", "commodity_code",
+            "observation_provenance",
+        } - event.keys()
+        if absent:
+            raise ValueError(f"events[{index}] missing field(s): {', '.join(sorted(absent))}")
+    return artifact
+
+
 @functools.lru_cache(maxsize=1)
-def _load_anomalies() -> list:
-    """Load anomalies_all.json once and cache in-process."""
+def _load_anomalies() -> dict:
+    """Load and validate the completed offline anomaly artifact once per process."""
     if not os.path.exists(_ANOMALIES_PATH):
-        return []
-    with open(_ANOMALIES_PATH, encoding="utf-8") as fh:
-        return _json.load(fh)
+        raise ValueError(f"artifact not found: {_ANOMALIES_PATH}")
+    try:
+        with open(_ANOMALIES_PATH, encoding="utf-8") as fh:
+            return _validate_anomaly_artifact(_json.load(fh))
+    except (OSError, _json.JSONDecodeError, ValueError) as exc:
+        raise ValueError(f"invalid anomaly artifact at {_ANOMALIES_PATH}: {exc}") from exc
+
+
+def reload_anomaly_artifact() -> None:
+    """Clear the artifact reader cache after an atomic artifact replacement."""
+    _load_anomalies.cache_clear()
+
+
+def _status_summary(statuses: list[dict]) -> dict[str, int]:
+    """Count supported status states without inferring availability from events."""
+    return {state: sum(item["series_status"] == state for item in statuses)
+            for state in sorted(_ANOMALY_STATUSES)}
+
+
+def _out_of_coverage_status(city: str, commodity: str) -> dict:
+    return {
+        "city_id": city,
+        "city_name": None,
+        "commodity_code": commodity,
+        "series_status": "OUT_OF_COVERAGE",
+        "history_start_date": None,
+        "latest_observation_date": None,
+        "observation_count": 0,
+        "history_coverage_ratio": None,
+        "history_confidence": None,
+        "active_history_source_counts": {"SISKAPERBAPO": 0, "PIHPS": 0},
+        "latest_observation_source": None,
+        "observation_freshness_days": None,
+        "market_quality": None,
+        "market_quality_availability": "OUT_OF_COVERAGE",
+    }
 
 
 @app.get("/api/v1/forecast")
@@ -702,64 +796,82 @@ async def api_forecast(
 @app.get("/api/v1/anomalies")
 async def api_anomalies(
     user: AuthUser | None = GatedUser,
-    commodity: str | None = Query(None, description="Filter by commodity code"),
-    city: str | None = Query(None, description="Filter by IHK city_id"),
+    commodity: str | None = Query(None, description="Filter by anomaly commodity code"),
+    city: str | None = Query(None, description="Filter by Jawa Timur region ID"),
     limit: int = Query(50, ge=1, le=500, description="Max records returned (sorted by score desc)"),
     since: str | None = Query(None, description="ISO date lower-bound, e.g. 2024-01-01"),
 ) -> JSONResponse:
-    """
-    Detected price anomalies from the S-H-ESD scanner (precomputed offline).
+    """Serve the versioned, offline source-aware anomaly artifact only."""
+    try:
+        artifact = _load_anomalies()
+    except ValueError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
 
-    All filters are optional.  Without filters returns top-N anomalies by score.
+    statuses = artifact["series_statuses"]
+    events = artifact["events"]
+    matching_statuses = [
+        status for status in statuses
+        if (commodity is None or status["commodity_code"] == commodity)
+        and (city is None or str(status["city_id"]) == city)
+    ]
 
-    Query params:
-        commodity  optional commodity code filter
-        city       optional IHK city_id filter
-        limit      max records (default 50, max 500)
-        since      ISO date — only return anomalies on or after this date
-
-    Response schema:
-        count     int
-        method    str  ("shesd_v2")
-        anomalies list of {
-            date           str  ISO 8601
-            price          float  IDR/kg
-            rolling_median float
-            deviation_pct  float  (positive = spike, negative = drop)
-            type           str    SPIKE | DROP
-            score          float  (higher = more anomalous)
-            commodity_code str
-            city_id        str
-            city_name      str
-            persistent     bool
-        }
-    """
-    records = _load_anomalies()
-    if not records:
-        raise HTTPException(
-            status_code=503,
-            detail=(
-                "Anomaly data not yet precomputed.  "
-                "Run: python analysis/precompute_anomalies.py"
-            ),
+    # A fully specified supported pair has exactly one status envelope. An
+    # unsupported code is intentionally not substituted with a near commodity.
+    if city is not None and commodity is not None:
+        series = next(
+            (status for status in matching_statuses
+             if str(status["city_id"]) == city and status["commodity_code"] == commodity),
+            None,
         )
+        if series is None:
+            supported_codes = {status["commodity_code"] for status in statuses}
+            if commodity not in supported_codes:
+                series = _out_of_coverage_status(city, commodity)
+            else:
+                raise HTTPException(
+                    status_code=503,
+                    detail=("invalid anomaly artifact: missing status for "
+                            f"city={city} commodity={commodity}"),
+                )
+        filtered = [
+            event for event in events
+            if str(event["city_id"]) == city and event["commodity_code"] == commodity
+        ]
+        if since:
+            filtered = [event for event in filtered if event["date"] >= since]
+        filtered = filtered[:limit]
+        return JSONResponse({
+            "count": len(filtered),
+            "method": artifact["method"],
+            "anomalies": filtered,
+            "schema_version": artifact["schema_version"],
+            "artifact_generated_at": artifact["generated_at"],
+            "active_source_policy": artifact["active_source_policy"],
+            "series": series,
+            "status_summary": _status_summary([series]) if series["series_status"] in _ANOMALY_STATUSES else {
+                "DETECTABLE": 0, "INSUFFICIENT_HISTORY": 0, "NO_ACTIVE_HISTORY": 0,
+            },
+        })
 
-    filtered = records
-    if commodity:
-        filtered = [r for r in filtered if r["commodity_code"] == commodity]
-    if city:
-        filtered = [r for r in filtered if r["city_id"] == city]
-    if since:
-        filtered = [r for r in filtered if r["date"] >= since]
-
-    # Already sorted by score desc in the precomputed file; slice to limit
-    filtered = filtered[:limit]
-
-    return JSONResponse({
-        "count":     len(filtered),
-        "method":    "shesd_v2",
+    filtered = [
+        event for event in events
+        if (commodity is None or event["commodity_code"] == commodity)
+        and (city is None or str(event["city_id"]) == city)
+        and (since is None or event["date"] >= since)
+    ][:limit]
+    response: dict[str, Any] = {
+        "count": len(filtered),
+        "method": artifact["method"],
         "anomalies": filtered,
-    })
+        "schema_version": artifact["schema_version"],
+        "artifact_generated_at": artifact["generated_at"],
+        "active_source_policy": artifact["active_source_policy"],
+        "series": None,
+        "status_summary": _status_summary(matching_statuses),
+    }
+    if commodity is not None or city is not None:
+        response["matching_series_statuses"] = matching_statuses
+    return JSONResponse(response)
 
 
 # =============================================================================

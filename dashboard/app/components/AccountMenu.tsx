@@ -22,7 +22,10 @@ export default function AccountMenu() {
   // The guest cookie is not reactive, so read it once on mount. Client-only:
   // isGuest() returns false during SSR, which is fine (the menu is decorative).
   const [guest, setGuest] = useState(false);
-  useEffect(() => setGuest(isGuest()), []);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- the guest cookie is readable only after client mount.
+    setGuest(isGuest());
+  }, []);
 
   if (loading) return null;
 

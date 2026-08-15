@@ -385,11 +385,13 @@ export default function Home() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- refreshes data for the newly selected map filter.
     refreshData();
   }, [commodity, selectedKabId]);
 
   // Keep the original analysis selector aligned with the main commodity choice.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- shared analysis control follows the existing main commodity control.
     setAnalysisCommodity(commodity);
   }, [commodity]);
 

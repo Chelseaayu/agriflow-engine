@@ -3,7 +3,6 @@
 import type {
   AnomaliesResponse,
   AnomalyRecord,
-  AnomalySeries,
 } from "../lib/api";
 
 function fmtIdr(n: number): string {

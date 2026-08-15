@@ -54,12 +54,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // no-op unless NEXT_PUBLIC_DEV_LOGIN is on, so production carries no trace.
   useEffect(() => {
     const email = currentDevUser();
-    if (email) setDevUser(makeDevUser(email));
+    if (email) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- restores the client-only development session.
+      setDevUser(makeDevUser(email));
+    }
   }, []);
 
   useEffect(() => {
     const supabase = getSupabase();
     if (!supabase) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- marks client-only auth initialization as complete.
       setLoading(false);
       return;
     }

@@ -233,7 +233,7 @@ class TestAnomaliesEndpoint:
         assert "count"     in body
         assert "method"    in body
         assert "anomalies" in body
-        assert body["method"] == "shesd_v2"
+        assert body["method"] == "hampel_mad_v2"
         assert isinstance(body["anomalies"], list)
         assert len(body["anomalies"]) <= 10
 

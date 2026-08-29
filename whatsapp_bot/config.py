@@ -52,7 +52,9 @@ class Settings:
 
     # Gemini
     gemini_api_key: str = os.getenv("GEMINI_API_KEY", "")
-    gemini_model: str = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+    # gemini-1.5-flash is retired; 2.5 Flash-Lite is the cheapest current tier and
+    # itself retires 16 Oct 2026 (budget on its successor for a Q4 pilot).
+    gemini_model: str = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
 
     # Server
     public_base_url: str = os.getenv("PUBLIC_BASE_URL", "http://localhost:8000")

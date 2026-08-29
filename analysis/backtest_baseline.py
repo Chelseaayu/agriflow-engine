@@ -69,13 +69,13 @@ def _load_series(path: str):
     return out
 
 
-def _score(series, horizon: int):
+def _score(series, horizon: int, conformal: bool = True):
     """Holdout-backtest one series. Returns metrics dict or None if too short."""
     if len(series) < horizon + 60:
         return None
     train = series[:-horizon]
     test = series[-horizon:]                       # (date, actual)
-    fc = _seasonal_naive_forecast(train, horizon=horizon)
+    fc = _seasonal_naive_forecast(train, horizon=horizon, conformal=conformal)
     fc_by_date = {datetime.date.fromisoformat(r["date"]): r for r in fc}
 
     pairs = []
@@ -103,7 +103,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--horizon", type=int, default=30)
     ap.add_argument("--json", default=None, help="optional path to dump full results")
+    ap.add_argument("--no-conformal", action="store_true",
+                    help="use the v1.0 same-month MAD band instead of the conformal band")
     args = ap.parse_args()
+    conformal = not args.no_conformal
 
     per_commodity: dict[str, list[dict]] = defaultdict(list)
     detail = []
@@ -113,7 +116,7 @@ def main():
             continue
         series_by_city = _load_series(path)
         for cid, series in series_by_city.items():
-            m = _score(series, args.horizon)
+            m = _score(series, args.horizon, conformal=conformal)
             if m is None:
                 continue
             m2 = {"commodity": comm, "city_id": cid, "file": fname, **m}
@@ -122,7 +125,8 @@ def main():
 
     # aggregate per commodity (mean over cities) then overall (mean over commodities)
     print(f"\nHoldout backtest of DEPLOYED seasonal-naive forecaster "
-          f"(horizon={args.horizon} days, leakage-free)\n")
+          f"(horizon={args.horizon} days, leakage-free, interval="
+          f"{'split_conformal_rolling_origin' if conformal else 'same_month_mad'})\n")
     print(f"  {'Commodity':<16}{'series':>7}{'MAPE%':>9}{'MAE(Rp)':>11}{'RMSE(Rp)':>11}{'CI80%':>8}")
     print("  " + "-" * 60)
     comm_means = []
@@ -145,6 +149,7 @@ def main():
         payload = {
             "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
             "method": "seasonal_naive_baseline",
+            "interval_method": "split_conformal_rolling_origin" if conformal else "same_month_mad",
             "horizon_days": args.horizon,
             "holdout": "last N calendar days, leakage-free",
             "overall_mape_pct": round(overall_mape, 2),

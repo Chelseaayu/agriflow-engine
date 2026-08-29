@@ -1,0 +1,57 @@
+name: deploy-space
+
+# Push the API to the Hugging Face Space on every version tag (v1.1.0, ...)
+# after the test matrix is green. Requires two repository settings:
+#   secret  HF_TOKEN   -- a Hugging Face write token
+#   variable HF_SPACE  -- e.g. masteraaa123/agriflow-api
+# Without them the job skips itself so tagging never fails CI.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - run: pytest -q
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: ${{ vars.HF_SPACE != '' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install huggingface_hub
+      - name: Upload to Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE: ${{ vars.HF_SPACE }}
+          AGRIFLOW_COMMIT: ${{ github.sha }}
+        run: |
+          python - <<'EOF'
+          import os
+          from huggingface_hub import HfApi
+          api = HfApi(token=os.environ["HF_TOKEN"])
+          api.upload_folder(
+              repo_id=os.environ["HF_SPACE"], repo_type="space", folder_path=".",
+              ignore_patterns=[".git/*", ".venv/*", "dashboard/node_modules/*", "dashboard/.next/*",
+                               "docs/*", "interview/*", "poster/*", "assets/*", "*.docx", "*.pdf"],
+              commit_message=f"deploy {os.environ.get('GITHUB_REF_NAME', 'manual')} ({os.environ['AGRIFLOW_COMMIT'][:7]})",
+          )
+          EOF

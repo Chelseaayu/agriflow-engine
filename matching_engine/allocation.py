@@ -428,6 +428,126 @@ def greedy_match_tier2(
 
 
 # =============================================================================
+# OPTIMAL — CAPACITATED TRANSPORTATION LP (v1.1)
+# =============================================================================
+
+LP_STRATEGY_NAMES = {"lp", "optimal", "mcf"}
+
+
+def lp_optimal_allocate(
+    candidates: List[Tuple[SupplyNode, DemandNode]],
+    score_fn: Callable[[SupplyNode, DemandNode], Tuple[ScoreBreakdown, float, float]],
+    *,
+    equity_fn: EquityFn = equity_multiplier_value,
+    min_edge_tons: float = 1e-6,
+) -> List[MatchResult]:
+    """
+    Exact optimum of the capacitated transportation problem on the Layer 1
+    candidate pool, solved as a linear program with scipy (HiGHS).
+
+        max  sum_e  final_score_e * x_e
+        s.t. sum_{e out of supply i}   x_e <= volume_i
+             sum_{e into deficit j}    x_e <= volume_j
+             0 <= x_e <= min(volume_i, volume_j)
+
+    final_score_e = base_score * equity_multiplier(IPM_j) * segment_multiplier,
+    the same objective the greedy allocator ranks by. Putting the equity
+    multiplier inside the objective (rather than re-ranking after greedy has
+    already committed tonnage) is what closes the welfare gap measured in
+    benchmarks/greedy_vs_optimal.py: 11.1% for greedy, 25.4% for the stable
+    matcher on the real Jatim pool.
+
+    This is weighted-sum equity, not leximin. A leximin or Gini-penalised
+    variant needs sequential LPs and is deliberately out of scope for v1.1.
+
+    Runtime: single-digit milliseconds at provincial scale; the LP is sparse
+    (edges <= surplus x top_k) and HiGHS handles the 514-kabupaten pool in
+    well under a second.
+    """
+    if not candidates:
+        return []
+
+    try:
+        import numpy as np
+        from scipy.optimize import linprog
+        from scipy.sparse import lil_matrix
+    except ImportError as exc:  # pragma: no cover - scipy is pinned in requirements
+        raise RuntimeError(
+            "lp_optimal_allocate needs scipy (pip install -r requirements.txt)"
+        ) from exc
+
+    supply_index: Dict[str, int] = {}
+    supply_vol: List[float] = []
+    deficit_index: Dict[str, int] = {}
+    deficit_vol: List[float] = []
+    edges: List[Tuple[int, int, float, SupplyNode, DemandNode, ScoreBreakdown, float, float, float, float, list]] = []
+    score_cache: Dict[Tuple[str, str], Tuple[ScoreBreakdown, float, float]] = {}
+
+    for s, d in candidates:
+        s_key = s.kabupaten.id + "_" + s.commodity.code
+        d_key = d.kabupaten.id + "_" + d.commodity.code + "_" + d.segment.value
+        if s_key not in supply_index:
+            supply_index[s_key] = len(supply_vol)
+            supply_vol.append(s.volume_tons)
+        if d_key not in deficit_index:
+            deficit_index[d_key] = len(deficit_vol)
+            deficit_vol.append(d.volume_tons)
+        cache_key = (s_key, d.kabupaten.id + "_" + d.commodity.code + "_" + d.segment.value)
+        if cache_key not in score_cache:
+            score_cache[cache_key] = score_fn(s, d)
+        breakdown, base, dist = score_cache[cache_key]
+        eq_mult = equity_fn(d.kabupaten.ipm)
+        seg_mult, seg_flags = segment_multiplier_value(s, d)
+        fscore = base * eq_mult * seg_mult
+        edges.append((
+            supply_index[s_key], deficit_index[d_key], fscore,
+            s, d, breakdown, base, dist, eq_mult, seg_mult, list(seg_flags),
+        ))
+
+    n_e = len(edges)
+    n_s = len(supply_vol)
+    n_d = len(deficit_vol)
+
+    c = np.array([-e[2] for e in edges], dtype=float)
+    bounds = [(0.0, min(e[3].volume_tons, e[4].volume_tons)) for e in edges]
+    A = lil_matrix((n_s + n_d, n_e))
+    for idx, e in enumerate(edges):
+        A[e[0], idx] = 1.0
+        A[n_s + e[1], idx] = 1.0
+    b = np.array(supply_vol + deficit_vol, dtype=float)
+
+    res = linprog(c, A_ub=A.tocsr(), b_ub=b, bounds=bounds, method="highs")
+    if not res.success:
+        # Fall back to the shipped greedy allocator rather than fail the run.
+        return greedy_match_tier2(candidates, score_fn, equity_fn=equity_fn)
+
+    results: List[MatchResult] = []
+    for idx, x in enumerate(res.x):
+        if x <= min_edge_tons:
+            continue
+        _si, _di, fscore, s, d, breakdown, base, dist, eq_mult, seg_mult, seg_flags = edges[idx]
+        results.append(MatchResult(
+            surplus=s, deficit=d,
+            matched_volume_tons=float(x),
+            distance_km=dist,
+            base_score=base,
+            equity_multiplier=eq_mult,
+            segment_multiplier=seg_mult,
+            final_score=fscore,
+            confidence=determine_confidence(s, d),
+            breakdown=breakdown,
+            flags=list(seg_flags),
+        ))
+    results.sort(key=lambda r: -r.final_score)
+    return results
+
+
+def welfare(matches: List[MatchResult]) -> float:
+    """Equity-weighted welfare: sum of final_score x matched tons."""
+    return float(sum(m.final_score * m.matched_volume_tons for m in matches))
+
+
+# =============================================================================
 # DISPATCHER — Pilih algoritma berdasarkan tier composition
 # =============================================================================
 
@@ -446,8 +566,11 @@ def allocate(
     Cross-tier handled by greedy (sesuai Section 5.5.4 catatan).
 
     Args:
-        force_strategy: "stable" | "greedy" | None
-                        untuk testing override.
+        force_strategy: "stable" | "greedy" | "lp" | None
+                        "lp" (aliases "optimal", "mcf") solves the exact
+                        capacitated transportation optimum, see
+                        lp_optimal_allocate. None keeps the v9 auto-detect
+                        so golden-number tests stay valid.
         equity_fn: injectable equity policy, ipm -> multiplier.
                    Default: equity_multiplier_value (production step-function).
                    Override only in benchmarks/tests — do not monkeypatch.
@@ -456,6 +579,8 @@ def allocate(
         return stable_match_tier1(candidates, score_fn, equity_fn=equity_fn)
     if force_strategy == "greedy":
         return greedy_match_tier2(candidates, score_fn, equity_fn=equity_fn)
+    if force_strategy in LP_STRATEGY_NAMES:
+        return lp_optimal_allocate(candidates, score_fn, equity_fn=equity_fn)
 
     # Auto-detect: kalau semua kab Tier 1 → pakai stable matching
     all_tier1 = all(

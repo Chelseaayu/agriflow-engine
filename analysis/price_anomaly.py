@@ -1,7 +1,13 @@
 """
-analysis/price_anomaly.py  --  S-H-ESD price anomaly detector for AgriFlow.
+analysis/price_anomaly.py  --  Robust deseasonalised Hampel/MAD price anomaly detector.
 
-METHOD: Seasonal-Hybrid ESD (S-H-ESD style)
+METHOD: deseasonalise, then rolling Hampel/MAD on residuals (label "hampel_mad_v2")
+    NOTE (v1.1): earlier versions called this "S-H-ESD". It is not: S-H-ESD
+    (Hochenbaum, Vallis, Kejariwal 2017) runs an iterative Generalized ESD test
+    on STL residuals, while this detector applies a rolling MAD threshold with
+    persistence and floor gates, i.e. a Hampel-style filter. The July 2026 audit
+    (finding F3) flagged the mislabel; the method is unchanged, the name is fixed.
+    Original inspiration: Seasonal-Hybrid ESD
     Based on: Hochenbaum, Vallis, Kejariwal (2017), "Automatic Anomaly Detection in
     the Cloud Via Statistical Learning", arXiv:1704.07706.
     Validated against: Liu & Paparrizos, NeurIPS 2024, "Elephant in the Room" --
@@ -272,8 +278,9 @@ def detect_anomalies(
     min_dev_pct: float = 3.0,
 ) -> List[Dict[str, Any]]:
     """
-    Detect price anomalies using S-H-ESD: deseasonalize then apply rolling MAD
-    on the residuals.
+    Detect price anomalies with the deseasonalised Hampel/MAD rule: remove trend
+    and monthly seasonal medians, then apply a rolling MAD threshold on the
+    residuals (persistence and floor gates on top).
 
     Steps
     -----

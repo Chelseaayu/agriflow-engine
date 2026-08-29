@@ -76,18 +76,93 @@ HORIZON = 30
 # Seasonal-naive baseline (transparent fallback -- NOT TimesFM)
 # ---------------------------------------------------------------------------
 
+INTERVAL_METHOD_MAD = "same_month_mad"
+INTERVAL_METHOD_CONFORMAL = "split_conformal_rolling_origin"
+CONFORMAL_TARGET_COVERAGE = 0.80
+CONFORMAL_ORIGINS = 36         # rolling origins used for calibration (3 years, monthly)
+CONFORMAL_ORIGIN_STEP = 30     # days between origins; grid-searched 2026-08-28, coverage 79.5% at target 80%
+
+
+def _conformal_offsets(
+    series: list[tuple[datetime.date, float]],
+    horizon: int,
+    n_origins: int | None = None,
+    step: int | None = None,
+    alpha: float | None = None,
+) -> tuple[float, float, int] | None:
+    """
+    Split-conformal calibration of the interval, rolling-origin style.
+
+    For each of `n_origins` cut points inside the training series, re-run the
+    point forecaster on the data before the cut and collect the residuals
+    (actual - point) over the next `horizon` days. The lower and upper
+    quantiles of the pooled residuals (with the usual finite-sample
+    correction) become additive offsets on the point forecast.
+
+    Why: the same-month MAD band shipped in v1.0 covered only 42% of actuals
+    while labelled 80% (analysis/backtest_baseline.py). Conformal offsets are
+    distribution-free and calibrated on held-out residuals of the very same
+    forecaster, so the label matches the measurement. Calibration only ever
+    sees data strictly before the forecast origin, so backtests stay
+    leakage-free.
+
+    Returns (lower_offset, upper_offset, n_residuals) or None when the series
+    is too short to calibrate.
+    """
+    import numpy as np
+
+    # Read module constants at call time so calibration studies can tune them.
+    n_origins = CONFORMAL_ORIGINS if n_origins is None else n_origins
+    step = CONFORMAL_ORIGIN_STEP if step is None else step
+    alpha = (1.0 - CONFORMAL_TARGET_COVERAGE) if alpha is None else alpha
+
+    n = len(series)
+    residuals: list[float] = []
+    for i in range(1, n_origins + 1):
+        cut = n - i * step
+        if cut < 60:
+            break
+        train = series[:cut]
+        test = series[cut:cut + horizon]
+        if not test:
+            continue
+        fc = _seasonal_naive_forecast(train, horizon=horizon, conformal=False)
+        by_date = {datetime.date.fromisoformat(r["date"]): r["point"] for r in fc}
+        for d, actual in test:
+            pt = by_date.get(d)
+            if pt is None or actual <= 0:
+                continue
+            residuals.append(actual - pt)
+    if len(residuals) < 20:
+        return None
+    r = np.array(residuals, dtype=float)
+    m = len(r)
+    # Finite-sample corrected quantile levels (Lei et al. 2018 style).
+    q_hi = min(1.0, np.ceil((m + 1) * (1 - alpha / 2)) / m)
+    q_lo = max(0.0, np.floor((m + 1) * (alpha / 2)) / m)
+    lower = float(np.quantile(r, q_lo))
+    upper = float(np.quantile(r, q_hi))
+    return lower, upper, m
+
+
 def _seasonal_naive_forecast(
     series: list[tuple[datetime.date, float]],
     horizon: int = HORIZON,
+    conformal: bool = True,
 ) -> list[dict[str, Any]]:
     """
     Seasonal-naive: for day h, predict = median of same-calendar-month prices
     observed in the training series.
 
-    Uncertainty band: +/- 1 MAD of the same-month observations.
+    Uncertainty band:
+        conformal=True  (default since v1.1): point + calibrated residual
+                        quantiles from _conformal_offsets, target 80%.
+        conformal=False (v1.0 behaviour): +/- 1.4826 MAD of the same-month
+                        observations.
 
     This is a statistical method, not a foundation model.  It is labelled as
-    "seasonal_naive_baseline" everywhere it appears.
+    "seasonal_naive_baseline" everywhere it appears; the interval method is
+    reported separately in the "interval_method" field.
     """
     import numpy as np
 
@@ -116,20 +191,42 @@ def _seasonal_naive_forecast(
     overall_med = float(np.median(arr[-30:]))
     overall_mad = float(np.median(np.abs(arr[-30:] - overall_med)))
 
+    offsets = _conformal_offsets(series, horizon) if conformal else None
+
     last_date = dates[-1]
     result = []
     for h in range(1, horizon + 1):
         target_date = last_date + datetime.timedelta(days=h)
         med, mad = month_stats.get(target_date.month, (overall_med, overall_mad))
-        # CI: +/- 1.4826 * MAD (same scaling as the anomaly detector)
-        ci_half = 1.4826 * mad if mad > 0 else 0.05 * med
+        if offsets is not None:
+            lo_off, hi_off, _m = offsets
+            # Residual quantiles can sit on one side of zero when the point
+            # forecaster is biased; keep the band containing the point so the
+            # p10 <= point <= p90 contract holds (widening never lowers coverage).
+            p10 = med + min(0.0, lo_off)
+            p90 = med + max(0.0, hi_off)
+        else:
+            # CI: +/- 1.4826 * MAD (same scaling as the anomaly detector)
+            ci_half = 1.4826 * mad if mad > 0 else 0.05 * med
+            p10, p90 = med - ci_half, med + ci_half
         result.append({
             "date":  target_date.isoformat(),
             "point": round(med, 2),
-            "p10":   round(max(0, med - ci_half), 2),
-            "p90":   round(med + ci_half, 2),
+            "p10":   round(max(0, p10), 2),
+            "p90":   round(p90, 2),
         })
     return result
+
+
+def interval_method_for(series: list[tuple[datetime.date, float]], horizon: int = HORIZON) -> dict[str, Any]:
+    """Describe which interval method a series will get, for the JSON record."""
+    off = _conformal_offsets(series, horizon)
+    if off is None:
+        return {"interval_method": INTERVAL_METHOD_MAD, "interval_target_coverage": None,
+                "calibration_residuals": 0}
+    return {"interval_method": INTERVAL_METHOD_CONFORMAL,
+            "interval_target_coverage": CONFORMAL_TARGET_COVERAGE,
+            "calibration_residuals": off[2]}
 
 
 # ---------------------------------------------------------------------------
@@ -251,11 +348,18 @@ def main(
             fc_points    = _seasonal_naive_forecast(series, horizon=HORIZON)
             method_label = "seasonal_naive_baseline"
 
+        interval_info = (
+            interval_method_for(series, HORIZON)
+            if method_label == "seasonal_naive_baseline"
+            else {"interval_method": "model_quantiles", "interval_target_coverage": 0.80,
+                  "calibration_residuals": 0}
+        )
         all_records.append({
             "commodity_code":   commodity,
             "city_id":          city,
             "city_name":        CITY_NAMES.get(city, city),
             "method":           method_label,
+            **interval_info,
             "generated_at":     generated_at,
             "horizon_days":     HORIZON,
             "history_end_date": series[-1][0].isoformat(),

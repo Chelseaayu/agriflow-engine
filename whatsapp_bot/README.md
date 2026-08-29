@@ -141,6 +141,23 @@ All tests run in mock mode — no API keys needed, no network calls. Cover:
 - **Conversation memory** — current bot is stateless; follow-ups like "Bagaimana dengan Kediri?" don't carry context yet
 - **Rate limiting / user auth** — fine for sandbox demo, needed before public launch
 
+## Backend v1.1 additions
+
+Two env knobs read by `server.py`, both with safe defaults so nothing needs to change to keep
+current behaviour:
+
+| Var | Default | What it controls |
+|---|---|---|
+| `ALLOCATOR` | `lp` | Layer 3 strategy. `lp` solves the exact capacitated LP transportation optimum (scipy HiGHS); `greedy` restores the v1.0 behaviour. |
+| `ANOMALY_GATE_WINDOW_DAYS` | `14` | How recent a batch-detected anomaly must be to exclude a node from matching, via the unified Hampel/MAD gate in `analysis/anomaly_gate.py`. |
+
+New endpoints served alongside the existing `/whatsapp`, `/chat`, and `/health`:
+`/api/v1/meta` (data-as-of + engine/allocator version), `/api/v1/summary` (computed KPIs),
+`/api/v1/report.csv`, `/api/v1/matches/explain` (per-match score breakdown), and
+`POST /api/v1/simulate` (what-if scenario presets: semeru, banjir_sentra_padi, banjir_madura,
+ramadan, bbm_20, impor, suramadu_tutup). See `tests/test_backend_v11.py` for the contract each
+one is tested against.
+
 ## Cost guardrails
 
 Per the v10 proposal Section 7:

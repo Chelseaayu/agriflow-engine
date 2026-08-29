@@ -14,7 +14,7 @@ Language / Bahasa: **English** · [Bahasa Indonesia](./README.md)
 <p align="center">
   <img src="https://img.shields.io/badge/PIDI-DIGDAYA%20%C3%97%20Hackathon%202026-1B5E20?style=for-the-badge" alt="Hackathon"/>
   <img src="https://img.shields.io/badge/Problem%20Statement-2%20Matching%20Demand–Supply-4CAF50?style=for-the-badge" alt="PS"/>
-  <img src="https://img.shields.io/badge/tests-523%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
+  <img src="https://img.shields.io/badge/tests-544%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
 </p>
 
 > **Project roadmap spans 3 Phases.** Full technical documentation from previous versions is archived at [`README_v13.md`](README_v13.md) (latest snapshot), [`README_v12.md`](README_v12.md), and [`README_v11.md`](README_v11.md).
@@ -95,7 +95,7 @@ All three functions (Detect · Predict · Distribute) share one real data source
 | **Security** | The site is *login-first*: opening it shows a login page. Judges click **"Masuk sebagai Tamu" (Enter as Guest)** to review without creating an account. A Supabase account system (server-side JWT verification, Row Level Security on 12 tables, password reset) is ready for a subscription model; sensitive subscriber & billing data stays JWT-protected server-side. | ✅ |
 | **Real data** | **6 real commodities** per-district: premium & medium rice, large & cayenne chilli, red & garlic onion + 5 years of PIHPS prices | ✅ |
 
-> **Quality:** 523 automated tests pass (524 collected, 1 skipped) — the engine is tested, reproducible, and honest about its limitations (see [Testing & Scenarios](#testing--scenarios) and Phase 3).
+> **Quality:** 544 automated tests pass (552 collected, 8 skipped) — the engine is tested, reproducible, and honest about its limitations (see [Testing & Scenarios](#testing--scenarios) and Phase 3).
 >
 > 📁 Full evidence lives in [**Supporting Evidence**](#supporting-evidence) after Phase 3: five categories, including [testing evidence](docs/evidence/pengujian.md) and [usability testing with 5 real users](docs/evidence/usability-early-testing.md).
 
@@ -115,7 +115,7 @@ All three functions (Detect · Predict · Distribute) share one real data source
 
 Because AgriFlow's output drives inter-district food allocation that touches low-HDI districts, claims of "fair" and "robust" must be re-auditable — not just narrative. The test suite locks food-balance figures as *golden numbers* (reproducibility), guards sensitive policy parameters against accidental drift (regression-safety), and tests anomaly detection adversarially.
 
-**524 tests collected · 523 pass · 1 skipped · cross-OS on CI.** ([raw output](docs/evidence/runs/pytest.txt))
+**552 tests collected · 544 pass · 8 skipped · cross-OS on CI.** ([raw output](docs/evidence/runs/pytest.txt))
 (Skip = `test_timesfm_importorskip`: skipped when the heavy TimesFM library isn't installed on the runner; the forecasting path is still tested via fallback + API contract.)
 
 The production server loads **real BPS data by default** (`DATA_BACKEND=csv`, the default). The old synthetic 19-commodity fixture is still used by 13 test files (`DATA_BACKEND=demo`) to exercise engine logic across a wider commodity range — it is never served to users.
@@ -125,7 +125,7 @@ The production server loads **real BPS data by default** (`DATA_BACKEND=csv`, th
 | Per-layer unit (L0–L3) | 73 | IPM tier, distance/perishability constraints, scoring, equity allocation |
 | 25 edge-case scenarios (A–F) | 64 | Volume, spatial, temporal, disruption, political, quality |
 | Real BPS/PIHPS data validation | 57 | Rice + horticulture 2022 food-balance, reproducible pipeline |
-| Price anomaly detection | 49 | Season-aware S-H-ESD on deseasonalized residuals |
+| Price anomaly detection | 49 | Season-aware Hampel/MAD on deseasonalized residuals (previously labeled S-H-ESD) |
 | Forecast & API | 40 | Forecast/anomaly endpoints + fallback |
 | Baseline & equity | 39 | greedy/uniform/proportional vs AgriFlow + supply-constrained scenario |
 | Ingest & integration | 73 | DB loader, PIHPS ingest, OSRM distance, WhatsApp bot |
@@ -188,8 +188,8 @@ The engine is already ready to process any data it's given; what limits it is th
 
 We measured these two limits ourselves against the engine's own achievable ceiling, with benchmarks committed and reproducible by a judge.
 
-1. The allocator is not yet optimal. Measured against the exact LP transportation optimum on real BPS data: the stable tier leaves 25.4% of equity-weighted welfare on the table, the greedy tier 11.1%. Concrete evidence: Sumenep's cabai_merah demand is only 26% filled even though reachable supply (2,662 t within 200 km) exceeds the need (1,418 t), greedy already committed that supply elsewhere first. So this is an optimality problem, not a scarcity problem. Plan: replace with a capacitated min-cost-flow / entropic-OT solver (milliseconds at province scale, provably optimal); greedy stays as v1. Root cause: `matching_engine/allocation.py:307`. Benchmark: `benchmarks/greedy_vs_optimal.py`.
-2. Unify the anomaly detectors. The user-facing anomaly panel already uses robust S-H-ESD (`analysis/price_anomaly.py`). But the internal D3 pre-filter gate (`matching_engine/engine.py:62`) still uses a non-robust 3σ z-score, on 70,953 real PIHPS observations it recalls only 14.4% of validated anomalies, and a D3 flag excludes a node from matching entirely. Plan: point D3 at the same S-H-ESD output (requires changing the `historical_prices` contract). Benchmark: `benchmarks/anomaly_detector_gap.py`.
+1. ~~The allocator is not yet optimal.~~ **Closed in v1.1.** Measured against the exact LP transportation optimum on real BPS data: the stable tier leaves 25.4% of equity-weighted welfare on the table, the greedy tier 11.1%. Concrete evidence: Sumenep's cabai_merah demand is only 26% filled even though reachable supply (2,662 t within 200 km) exceeds the need (1,418 t), greedy already committed that supply elsewhere first. So this is an optimality problem, not a scarcity problem. `ALLOCATOR=lp` is now the API default, a capacitated LP transportation solve (scipy HiGHS) with equity inside the objective, measured welfare +3.9% over greedy on real BPS data; greedy stays available as a fallback. See [Backend v1.1](#backend-v11-august-2026) and `benchmarks/output/lp_allocator.json`. Old root cause: `matching_engine/allocation.py:307`.
+2. ~~Unify the anomaly detectors.~~ **Closed in v1.1.** The user-facing anomaly panel already used robust S-H-ESD (`analysis/price_anomaly.py`). But the internal D3 pre-filter gate (`matching_engine/engine.py:62`) still used a non-robust 3σ z-score, on 70,953 real PIHPS observations it recalled only 14.4% of validated anomalies, and a D3 flag excluded a node from matching entirely. The D3 gate now reads the same Hampel/MAD scanner output as the user panel (`analysis/anomaly_gate.py`); the API label is `hampel_mad_v2`, not S-H-ESD. See [Backend v1.1](#backend-v11-august-2026).
 
 ## Scaling Up
 
@@ -202,10 +202,25 @@ National-scale growth is gated by the pace of public per-district data opening u
 ```bash
 pip install -r requirements.txt
 python examples/run_demo_real.py   # matching demo on real BPS 2022 data
-pytest tests/                      # 523 pass, 1 skipped
+pytest tests/                      # 544 pass, 8 skipped
 ```
 
 Full engineering detail in [`README_v12.md`](README_v12.md).
+
+### Backend v1.1 (August 2026)
+
+Server-side changes that close Phase 3 engineering-debt items 1 and 2, plus audit findings F1, F3, F7. All verified by 544 passing tests (552 collected, 8 skipped).
+
+| Change | Where | Evidence |
+|---|---|---|
+| Optimal L3 allocator: capacitated LP transportation (scipy HiGHS), equity inside the objective; greedy stays as fallback | `matching_engine/allocation.py::lp_optimal_allocate`, `ALLOCATOR=lp` default in the API | `python benchmarks/lp_allocator.py` (welfare vs greedy logged in `run_metadata.welfare_gain_pct`) |
+| One anomaly detector: the D3 gate uses the same Hampel/MAD scanner output as the panel; API label `hampel_mad_v2` (not S-H-ESD) | `analysis/anomaly_gate.py`, `run_matching(anomaly_keys=...)` | `run_metadata.anomaly_gate == "batch_hampel_mad"` |
+| Calibrated forecast interval: split-conformal rolling-origin, measured 80% coverage (was 42%) at the same 10.8% MAPE | `analysis/forecast_timesfm.py`, field `interval_method` | `python analysis/backtest_baseline.py` |
+| Calendar bug (audit F1): explicit Ramadan now wins over SCHOOL_START; import policy composes on top of the event profile | `matching_engine/engine.py`, `scoring.apply_import_policy` | `tests/test_backend_v11.py::TestCalendarPriority` |
+| New endpoints: `/api/v1/meta` (data-as-of), `/api/v1/summary` (computed KPIs), `/api/v1/report.csv`, `/api/v1/matches/explain`, `POST /api/v1/simulate` (presets: semeru, banjir_sentra_padi, banjir_madura, ramadan, bbm_20, impor, suramadu_tutup) | `whatsapp_bot/server.py` | `tests/test_backend_v11.py::TestApiV11` |
+| Match cards carry a 5-dimension `breakdown`, `base_score`, `equity_multiplier`, `why` | `_serialize_match` | `GET /api/v1/matches` |
+| The `city` parameter now accepts a city name (audit F7) | `_resolve_city` | `GET /api/v1/forecast?commodity=cabai_rawit&city=Kota%20Surabaya` |
+| Daily artefact refresh (anomalies, forecast, backtest) via GitHub Actions | `.github/workflows/refresh-data.yml` | automatic `data: daily refresh ...` commit |
 
 ---
 
@@ -277,7 +292,7 @@ no numbered release yet.
 
 | Item requested | Status | Evidence |
 |---|:---:|---|
-| Test case | ✅ | [523 passing, 1 skipped](docs/evidence/runs/pytest.txt) · [`tests/`](tests) · [CI, 4 legs](.github/workflows/test.yml) |
+| Test case | ✅ | [544 passing, 8 skipped](docs/evidence/runs/pytest.txt) · [`tests/`](tests) · [CI, 4 legs](.github/workflows/test.yml) |
 | Experiment results | ✅ | greedy vs optimal · [weight sensitivity](docs/evidence/runs/weight_sensitivity.txt) · [detector gap](docs/evidence/runs/anomaly_detector_gap.txt) |
 | Model evaluation | ✅ | [Holdout backtest, 10.8% MAPE](docs/evidence/runs/backtest_baseline.txt) |
 | Performance test | ✅ | [latency](docs/evidence/runs/latency.txt) · [national scale](docs/evidence/runs/national_scale.txt) · [dashboard load](docs/evidence/runs/dashboard_load.txt) |

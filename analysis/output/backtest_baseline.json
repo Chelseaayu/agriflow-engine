@@ -1,16 +1,17 @@
 {
-  "generated_at": "2026-07-22T15:10:02.820306+00:00",
+  "generated_at": "2026-08-29T13:02:26.061738+00:00",
   "method": "seasonal_naive_baseline",
+  "interval_method": "split_conformal_rolling_origin",
   "horizon_days": 30,
   "holdout": "last N calendar days, leakage-free",
   "overall_mape_pct": 10.82,
-  "overall_ci80_coverage_pct": 41.8,
+  "overall_ci80_coverage_pct": 79.5,
   "per_commodity": {
     "bawang_merah": {
       "mape_pct": 19.45,
       "mae_idr": 9769.0,
       "rmse_idr": 11075.0,
-      "ci80_coverage_pct": 26.7,
+      "ci80_coverage_pct": 84.1,
       "n_series": 8
     },
     "bawang_putih": {
@@ -24,35 +25,35 @@
       "mape_pct": 23.21,
       "mae_idr": 14305.0,
       "rmse_idr": 16256.0,
-      "ci80_coverage_pct": 72.2,
+      "ci80_coverage_pct": 97.7,
       "n_series": 8
     },
     "daging_ayam": {
       "mape_pct": 10.18,
       "mae_idr": 3828.0,
       "rmse_idr": 4071.0,
-      "ci80_coverage_pct": 5.1,
+      "ci80_coverage_pct": 61.9,
       "n_series": 8
     },
     "telur_ayam": {
       "mape_pct": 9.12,
       "mae_idr": 2688.0,
       "rmse_idr": 2865.0,
-      "ci80_coverage_pct": 15.3,
+      "ci80_coverage_pct": 100.0,
       "n_series": 8
     },
     "beras_medium": {
       "mape_pct": 4.84,
       "mae_idr": 696.0,
       "rmse_idr": 730.0,
-      "ci80_coverage_pct": 47.6,
+      "ci80_coverage_pct": 90.3,
       "n_series": 15
     },
     "beras_premium": {
       "mape_pct": 3.65,
       "mae_idr": 568.0,
       "rmse_idr": 582.0,
-      "ci80_coverage_pct": 67.0,
+      "ci80_coverage_pct": 80.6,
       "n_series": 15
     }
   },
@@ -65,7 +66,7 @@
       "mape": 26.806311047705734,
       "mae": 13550.0,
       "rmse": 15171.556820696958,
-      "coverage_80": 31.818181818181817
+      "coverage_80": 50.0
     },
     {
       "commodity": "bawang_merah",
@@ -75,7 +76,7 @@
       "mape": 19.973694373435762,
       "mae": 9772.727272727272,
       "rmse": 11000.77476610377,
-      "coverage_80": 31.818181818181817
+      "coverage_80": 77.27272727272727
     },
     {
       "commodity": "bawang_merah",
@@ -85,7 +86,7 @@
       "mape": 14.587940841970983,
       "mae": 7306.818181818182,
       "rmse": 8624.588264217182,
-      "coverage_80": 9.090909090909092
+      "coverage_80": 100.0
     },
     {
       "commodity": "bawang_merah",
@@ -95,7 +96,7 @@
       "mape": 21.10180705446538,
       "mae": 10329.545454545454,
       "rmse": 11145.601456098357,
-      "coverage_80": 9.090909090909092
+      "coverage_80": 77.27272727272727
     },
     {
       "commodity": "bawang_merah",
@@ -105,7 +106,7 @@
       "mape": 17.78162149443207,
       "mae": 9715.90909090909,
       "rmse": 11065.019615477828,
-      "coverage_80": 31.818181818181817
+      "coverage_80": 95.45454545454545
     },
     {
       "commodity": "bawang_merah",
@@ -115,7 +116,7 @@
       "mape": 18.613232397095384,
       "mae": 9306.818181818182,
       "rmse": 10373.562331935229,
-      "coverage_80": 31.818181818181817
+      "coverage_80": 95.45454545454545
     },
     {
       "commodity": "bawang_merah",
@@ -125,7 +126,7 @@
       "mape": 19.56035507407502,
       "mae": 10227.272727272728,
       "rmse": 12690.592435486862,
-      "coverage_80": 31.818181818181817
+      "coverage_80": 77.27272727272727
     },
     {
       "commodity": "bawang_merah",
@@ -135,7 +136,7 @@
       "mape": 17.14994482416028,
       "mae": 7943.181818181818,
       "rmse": 8531.192765375778,
-      "coverage_80": 36.36363636363637
+      "coverage_80": 100.0
     },
     {
       "commodity": "bawang_putih",
@@ -225,7 +226,7 @@
       "mape": 27.204144795991475,
       "mae": 17125.0,
       "rmse": 19257.457233261848,
-      "coverage_80": 68.18181818181817
+      "coverage_80": 90.9090909090909
     },
     {
       "commodity": "cabai_rawit",
@@ -235,7 +236,7 @@
       "mape": 28.947897297858642,
       "mae": 18693.18181818182,
       "rmse": 21228.531936566367,
-      "coverage_80": 54.54545454545454
+      "coverage_80": 90.9090909090909
     },
     {
       "commodity": "cabai_rawit",
@@ -245,7 +246,7 @@
       "mape": 24.88779136237249,
       "mae": 15681.818181818182,
       "rmse": 17443.089280180953,
-      "coverage_80": 68.18181818181817
+      "coverage_80": 100.0
     },
     {
       "commodity": "cabai_rawit",
@@ -255,7 +256,7 @@
       "mape": 21.236147889707897,
       "mae": 12863.636363636364,
       "rmse": 14420.432158446696,
-      "coverage_80": 63.63636363636363
+      "coverage_80": 100.0
     },
     {
       "commodity": "cabai_rawit",
@@ -265,7 +266,7 @@
       "mape": 18.94652993465342,
       "mae": 11500.0,
       "rmse": 13059.305285713115,
-      "coverage_80": 90.9090909090909
+      "coverage_80": 100.0
     },
     {
       "commodity": "cabai_rawit",
@@ -275,7 +276,7 @@
       "mape": 23.815828994317876,
       "mae": 13431.818181818182,
       "rmse": 15451.169417349496,
-      "coverage_80": 77.27272727272727
+      "coverage_80": 100.0
     },
     {
       "commodity": "cabai_rawit",
@@ -285,7 +286,7 @@
       "mape": 19.254148644764264,
       "mae": 12977.272727272728,
       "rmse": 14779.823470467494,
-      "coverage_80": 68.18181818181817
+      "coverage_80": 100.0
     },
     {
       "commodity": "cabai_rawit",
@@ -295,7 +296,7 @@
       "mape": 21.419814136945075,
       "mae": 12170.454545454546,
       "rmse": 14410.085641029973,
-      "coverage_80": 86.36363636363636
+      "coverage_80": 100.0
     },
     {
       "commodity": "daging_ayam",
@@ -305,7 +306,7 @@
       "mape": 14.390888602381063,
       "mae": 5272.727272727273,
       "rmse": 5594.091850905171,
-      "coverage_80": 0.0
+      "coverage_80": 31.818181818181817
     },
     {
       "commodity": "daging_ayam",
@@ -315,7 +316,7 @@
       "mape": 13.972396629810014,
       "mae": 5034.090909090909,
       "rmse": 5377.50998477582,
-      "coverage_80": 0.0
+      "coverage_80": 31.818181818181817
     },
     {
       "commodity": "daging_ayam",
@@ -325,7 +326,7 @@
       "mape": 4.049043815426418,
       "mae": 1681.8181818181818,
       "rmse": 2067.0576365276497,
-      "coverage_80": 31.818181818181817
+      "coverage_80": 100.0
     },
     {
       "commodity": "daging_ayam",
@@ -335,7 +336,7 @@
       "mape": 9.83560103130188,
       "mae": 3579.5454545454545,
       "rmse": 3748.105582096835,
-      "coverage_80": 0.0
+      "coverage_80": 50.0
     },
     {
       "commodity": "daging_ayam",
@@ -345,7 +346,7 @@
       "mape": 9.468817639884684,
       "mae": 3579.5454545454545,
       "rmse": 3718.427698027023,
-      "coverage_80": 0.0
+      "coverage_80": 31.818181818181817
     },
     {
       "commodity": "daging_ayam",
@@ -355,7 +356,7 @@
       "mape": 9.290852312026251,
       "mae": 3704.5454545454545,
       "rmse": 3792.936017963345,
-      "coverage_80": 0.0
+      "coverage_80": 100.0
     },
     {
       "commodity": "daging_ayam",
@@ -365,7 +366,7 @@
       "mape": 10.725708620445463,
       "mae": 4045.4545454545455,
       "rmse": 4301.162633521313,
-      "coverage_80": 9.090909090909092
+      "coverage_80": 100.0
     },
     {
       "commodity": "daging_ayam",
@@ -375,7 +376,7 @@
       "mape": 9.695666498952265,
       "mae": 3727.2727272727275,
       "rmse": 3966.478859827006,
-      "coverage_80": 0.0
+      "coverage_80": 50.0
     },
     {
       "commodity": "telur_ayam",
@@ -385,7 +386,7 @@
       "mape": 9.339847227280117,
       "mae": 2686.3636363636365,
       "rmse": 2858.87772004712,
-      "coverage_80": 0.0
+      "coverage_80": 100.0
     },
     {
       "commodity": "telur_ayam",
@@ -395,7 +396,7 @@
       "mape": 8.122705522269886,
       "mae": 2368.181818181818,
       "rmse": 2603.4068588538503,
-      "coverage_80": 0.0
+      "coverage_80": 100.0
     },
     {
       "commodity": "telur_ayam",
@@ -405,7 +406,7 @@
       "mape": 12.50048381521815,
       "mae": 3829.5454545454545,
       "rmse": 4000.355097874551,
-      "coverage_80": 0.0
+      "coverage_80": 100.0
     },
     {
       "commodity": "telur_ayam",
@@ -415,7 +416,7 @@
       "mape": 8.064917878747666,
       "mae": 2327.2727272727275,
       "rmse": 2434.3190199538535,
-      "coverage_80": 18.181818181818183
+      "coverage_80": 100.0
     },
     {
       "commodity": "telur_ayam",
@@ -425,7 +426,7 @@
       "mape": 9.542111971748142,
       "mae": 2781.818181818182,
       "rmse": 2850.1993550691086,
-      "coverage_80": 0.0
+      "coverage_80": 100.0
     },
     {
       "commodity": "telur_ayam",
@@ -435,7 +436,7 @@
       "mape": 10.895156666794202,
       "mae": 3234.090909090909,
       "rmse": 3446.3254476194047,
-      "coverage_80": 13.636363636363635
+      "coverage_80": 100.0
     },
     {
       "commodity": "telur_ayam",
@@ -445,7 +446,7 @@
       "mape": 8.203257948947606,
       "mae": 2397.7272727272725,
       "rmse": 2590.9589309400835,
-      "coverage_80": 31.818181818181817
+      "coverage_80": 100.0
     },
     {
       "commodity": "telur_ayam",
@@ -455,7 +456,7 @@
       "mape": 6.3098130308653,
       "mae": 1879.5454545454545,
       "rmse": 2134.3777036452993,
-      "coverage_80": 59.09090909090909
+      "coverage_80": 100.0
     },
     {
       "commodity": "beras_medium",
@@ -465,7 +466,7 @@
       "mape": 4.126524619590876,
       "mae": 609.0909090909091,
       "rmse": 609.7689577357819,
-      "coverage_80": 68.18181818181817
+      "coverage_80": 100.0
     },
     {
       "commodity": "beras_medium",
@@ -485,7 +486,7 @@
       "mape": 5.160872345253212,
       "mae": 713.6363636363636,
       "rmse": 920.8444740859042,
-      "coverage_80": 54.54545454545454
+      "coverage_80": 100.0
     },
     {
       "commodity": "beras_medium",
@@ -495,7 +496,7 @@
       "mape": 8.072100313479625,
       "mae": 1170.4545454545455,
       "rmse": 1176.2324291026528,
-      "coverage_80": 0.0
+      "coverage_80": 100.0
     },
     {
       "commodity": "beras_medium",
@@ -505,7 +506,7 @@
       "mape": 2.1583581545676354,
       "mae": 327.27272727272725,
       "rmse": 332.68877074800434,
-      "coverage_80": 100.0
+      "coverage_80": 31.818181818181817
     },
     {
       "commodity": "beras_medium",
@@ -515,7 +516,7 @@
       "mape": 9.446254071661238,
       "mae": 1450.0,
       "rmse": 1450.0,
-      "coverage_80": 0.0
+      "coverage_80": 100.0
     },
     {
       "commodity": "beras_medium",
@@ -525,7 +526,7 @@
       "mape": 6.720779220779219,
       "mae": 940.9090909090909,
       "rmse": 969.3015292185681,
-      "coverage_80": 31.818181818181817
+      "coverage_80": 100.0
     },
     {
       "commodity": "beras_medium",
@@ -535,7 +536,7 @@
       "mape": 5.472613358178274,
       "mae": 854.5454545454545,
       "rmse": 859.9682869417073,
-      "coverage_80": 0.0
+      "coverage_80": 100.0
     },
     {
       "commodity": "beras_medium",
@@ -555,7 +556,7 @@
       "mape": 5.278138528138528,
       "mae": 761.3636363636364,
       "rmse": 991.7271435595212,
-      "coverage_80": 31.818181818181817
+      "coverage_80": 100.0
     },
     {
       "commodity": "beras_medium",
@@ -565,7 +566,7 @@
       "mape": 5.384615384615386,
       "mae": 700.0,
       "rmse": 700.0,
-      "coverage_80": 0.0
+      "coverage_80": 100.0
     },
     {
       "commodity": "beras_medium",
@@ -575,7 +576,7 @@
       "mape": 2.072104443645945,
       "mae": 309.09090909090907,
       "rmse": 312.9769088200365,
-      "coverage_80": 68.18181818181817
+      "coverage_80": 100.0
     },
     {
       "commodity": "beras_medium",
@@ -585,7 +586,7 @@
       "mape": 4.195804195804197,
       "mae": 600.0,
       "rmse": 600.0,
-      "coverage_80": 68.18181818181817
+      "coverage_80": 100.0
     },
     {
       "commodity": "beras_medium",
@@ -595,7 +596,7 @@
       "mape": 9.41558441558442,
       "mae": 1318.1818181818182,
       "rmse": 1319.0044455090845,
-      "coverage_80": 0.0
+      "coverage_80": 100.0
     },
     {
       "commodity": "beras_medium",
@@ -605,7 +606,7 @@
       "mape": 1.227272727272727,
       "mae": 184.0909090909091,
       "rmse": 211.3269762928787,
-      "coverage_80": 90.9090909090909
+      "coverage_80": 22.727272727272727
     },
     {
       "commodity": "beras_premium",
@@ -615,7 +616,7 @@
       "mape": 0.2776614066936648,
       "mae": 43.18181818181818,
       "rmse": 77.60623217710851,
-      "coverage_80": 86.36363636363636
+      "coverage_80": 77.27272727272727
     },
     {
       "commodity": "beras_premium",
@@ -635,7 +636,7 @@
       "mape": 2.086483048684155,
       "mae": 320.45454545454544,
       "rmse": 367.57806839314605,
-      "coverage_80": 100.0
+      "coverage_80": 77.27272727272727
     },
     {
       "commodity": "beras_premium",
@@ -645,7 +646,7 @@
       "mape": 5.106355877832466,
       "mae": 775.0,
       "rmse": 776.1355317445295,
-      "coverage_80": 31.818181818181817
+      "coverage_80": 100.0
     },
     {
       "commodity": "beras_premium",
@@ -655,7 +656,7 @@
       "mape": 1.7984033371691597,
       "mae": 286.3636363636364,
       "rmse": 297.7185980693239,
-      "coverage_80": 100.0
+      "coverage_80": 31.818181818181817
     },
     {
       "commodity": "beras_premium",
@@ -665,7 +666,7 @@
       "mape": 9.375,
       "mae": 1500.0,
       "rmse": 1500.0,
-      "coverage_80": 0.0
+      "coverage_80": 100.0
     },
     {
       "commodity": "beras_premium",
@@ -705,7 +706,7 @@
       "mape": 3.502476620413912,
       "mae": 536.3636363636364,
       "rmse": 630.1154295408537,
-      "coverage_80": 54.54545454545454
+      "coverage_80": 100.0
     },
     {
       "commodity": "beras_premium",
@@ -715,7 +716,7 @@
       "mape": 5.174544937603005,
       "mae": 775.0,
       "rmse": 776.1355317445295,
-      "coverage_80": 31.818181818181817
+      "coverage_80": 100.0
     },
     {
       "commodity": "beras_premium",
@@ -725,7 +726,7 @@
       "mape": 1.1146148845829356,
       "mae": 175.0,
       "rmse": 178.05770259818993,
-      "coverage_80": 68.18181818181817
+      "coverage_80": 0.0
     },
     {
       "commodity": "beras_premium",
@@ -735,7 +736,7 @@
       "mape": 9.677419354838706,
       "mae": 1500.0,
       "rmse": 1500.0,
-      "coverage_80": 0.0
+      "coverage_80": 100.0
     },
     {
       "commodity": "beras_premium",
@@ -745,7 +746,7 @@
       "mape": 6.25,
       "mae": 1000.0,
       "rmse": 1000.0,
-      "coverage_80": 31.818181818181817
+      "coverage_80": 100.0
     },
     {
       "commodity": "beras_premium",
@@ -755,7 +756,7 @@
       "mape": 0.7359307359307358,
       "mae": 115.9090909090909,
       "rmse": 131.85736094872988,
-      "coverage_80": 100.0
+      "coverage_80": 22.727272727272727
     }
   ]
 }

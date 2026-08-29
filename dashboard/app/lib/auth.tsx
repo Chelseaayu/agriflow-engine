@@ -47,22 +47,21 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const configured = isAuthConfigured();
   const [session, setSession] = useState<Session | null>(null);
-  const [devUser, setDevUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(configured);
-
-  // Restore a dev-login session from its cookie on mount. Client-only, and a
-  // no-op unless NEXT_PUBLIC_DEV_LOGIN is on, so production carries no trace.
-  useEffect(() => {
+  // Restore a dev-login session from its cookie. Lazy initialiser, client
+  // only, and a no-op unless NEXT_PUBLIC_DEV_LOGIN is on, so production
+  // carries no trace and never diverges between server and client render.
+  const [devUser, setDevUser] = useState<User | null>(() => {
+    if (!DEV_LOGIN_ENABLED || typeof document === "undefined") return null;
     const email = currentDevUser();
-    if (email) setDevUser(makeDevUser(email));
-  }, []);
+    return email ? makeDevUser(email) : null;
+  });
+  const [loading, setLoading] = useState(configured);
 
   useEffect(() => {
     const supabase = getSupabase();
-    if (!supabase) {
-      setLoading(false);
-      return;
-    }
+    // No client means auth is not configured, and `loading` was already
+    // initialised to false from `configured`, so nothing to reset here.
+    if (!supabase) return;
     let active = true;
 
     supabase.auth.getSession().then(({ data }) => {

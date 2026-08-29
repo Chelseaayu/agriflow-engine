@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * AnomalyPanel — displays recent price anomalies (S-H-ESD detections).
+ * AnomalyPanel: recent price anomalies from the deseasonalised Hampel/MAD scanner.
  *
  * Shows a scrollable list of anomalies with SPIKE/DROP badges,
  * deviation percentage, and city/commodity labels.
@@ -109,7 +109,7 @@ export default function AnomalyPanel({ anomalies, loading, error, totalCount }: 
       {/* Header */}
       <div className="px-3 py-2 border-b border-zinc-100 flex items-center justify-between">
         <span className="text-xs font-semibold text-zinc-800">
-          Anomali Harga Terbaru
+          Anomali harga (scanner Hampel/MAD, deseasonalised)
         </span>
         <span className="text-[10px] text-zinc-400">
           {loading ? "memuat..." : `${totalCount.toLocaleString("id-ID")} total`}

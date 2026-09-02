@@ -9,7 +9,7 @@ direproduksi dengan satu perintah.
 Aturan yang kami pegang: **kalau pengujiannya belum dijalankan, statusnya ditulis belum
 dijalankan.** Tidak ada hasil yang dikarang untuk mengisi tabel.
 
-Terakhir dijalankan ulang: **22 Juli 2026** (kecuali yang ditandai lain).
+Terakhir dijalankan ulang: **29 Agustus 2026** untuk suite pytest dan backtest (v1.1); bagian lain bertanggal seperti ditandai.
 
 ---
 
@@ -17,9 +17,9 @@ Terakhir dijalankan ulang: **22 Juli 2026** (kecuali yang ditandai lain).
 
 | # | Kategori | Status | Bukti |
 |---|---|---|---|
-| 1 | Test case | ✅ Ada | [523 lulus, 1 skip](runs/pytest.txt) · [`tests/`](../../tests) · [CI](../../.github/workflows/test.yml) |
+| 1 | Test case | ✅ Ada | [544 lulus, 8 skip](runs/pytest.txt) · [`tests/`](../../tests) · [CI](../../.github/workflows/test.yml) |
 | 2 | Hasil eksperimen | ✅ Ada | [greedy vs optimal](#2-hasil-eksperimen) · [sensitivitas bobot](runs/weight_sensitivity.txt) · [gap dua detektor](runs/anomaly_detector_gap.txt) |
-| 3 | Model evaluation | ✅ Ada | [backtest holdout, MAPE 10,8%](runs/backtest_baseline.txt) |
+| 3 | Model evaluation | ✅ Ada | [backtest holdout, MAPE 10,8%, interval terkalibrasi 80%](runs/backtest_baseline.txt) |
 | 4 | Performance test | ✅ Ada | [latency](runs/latency.txt) · [skala nasional](runs/national_scale.txt) · [beban dashboard](runs/dashboard_load.txt) |
 | 5 | A/B test | ✅ Ada | [haversine vs jarak jalan](runs/ab_test_road_distance.txt) |
 | 6 | Hasil simulasi | ✅ Ada | [25 skenario edge-case](#6-hasil-simulasi) · [skenario pasokan langka](runs/equity_comparison_constrained.txt) |
@@ -50,26 +50,32 @@ testing.
 python -m pytest -q
 ```
 
-**523 lulus · 1 skip · 24 file** ([keluaran lengkap](runs/pytest.txt)). CI menjalankan
+**544 lulus · 8 skip · 26 file** ([keluaran lengkap](runs/pytest.txt)). CI menjalankan
 matriks 4 leg (Ubuntu + Windows × Python 3.11 + 3.12) pada setiap push dan pull request.
 
 | File | Tes | File | Tes |
 |---|---:|---|---:|
-| test_subscription_quota | 74 | test_layer1_constraints | 19 |
-| test_price_anomaly | 49 | test_layer0_tier | 16 |
-| test_forecast_anomaly_api | 40 | test_constrained_scenario | 15 |
-| test_price_ingest | 33 | test_layer3_allocation | 14 |
-| test_auth | 29 | test_auth_jwks | 14 |
-| test_scenarios_tier1_extensions | 27 | test_scenarios_political | 11 |
-| test_layer2_scoring | 24 | test_db_loader | 11 |
-| test_baseline_comparison | 24 | test_scenarios_disruption | 9 |
-| test_whatsapp_bot | 23 | test_road_distance | 9 |
-| test_real_data_pipeline | 23 | test_scenarios_temporal | 7 |
-| test_real_surplus_deficit_horti_2022 | 22 | test_scenarios_spatial | 6 |
-| test_real_surplus_deficit_beras | 21 | test_scenarios_volume | 4 |
+| test_subscription_quota | 74 | test_layer0_tier | 16 |
+| test_price_anomaly | 49 | test_constrained_scenario | 15 |
+| test_forecast_anomaly_api | 40 | test_layer3_allocation | 14 |
+| test_price_ingest | 33 | test_auth_jwks | 14 |
+| test_auth | 29 | test_scenarios_political | 11 |
+| test_scenarios_tier1_extensions | 27 | test_db_loader | 11 |
+| test_layer2_scoring | 24 | test_scenarios_disruption | 9 |
+| test_baseline_comparison | 24 | test_road_distance | 9 |
+| test_backend_v11 | 24 | test_scenarios_temporal | 7 |
+| test_whatsapp_bot | 23 | test_scenarios_spatial | 6 |
+| test_real_data_pipeline | 23 | test_scenarios_volume | 4 |
+| test_real_surplus_deficit_horti_2022 | 22 | test_refresh_prices | 4 |
+| test_real_surplus_deficit_beras | 21 | test_layer1_constraints | 19 |
 
-Yang di-skip adalah `test_timesfm_importorskip`: dilewati bila pustaka TimesFM tidak
-terpasang di runner. Jalur forecasting tetap diuji lewat fallback dan kontrak API.
+`test_backend_v11` dan `test_refresh_prices` baru di v1.1: allocator LP, gerbang anomali
+tersatukan, prioritas kalender, endpoint API baru, dan idempotensi refresh harian.
+
+Delapan yang di-skip: `test_timesfm_importorskip` (1, dilewati bila pustaka TimesFM tidak
+terpasang di runner; jalur forecasting tetap diuji lewat fallback dan kontrak API) dan tujuh
+tes di `test_real_surplus_deficit_horti_2022.py` yang menuntut folder unduhan mentah data
+hortikultura yang tidak ada di mesin CI/dev ini.
 
 ### Cacat yang kami ketahui: `tests/test_auth_jwks.py` flaky
 
@@ -101,7 +107,7 @@ acak pada thread terpisah, dan `whatsapp_bot/auth.py` menyimpan kliennya dalam `
 yang tidak berkunci URL. Itu baru dugaan, belum terbukti, dan kami belum bisa
 mereproduksinya sesuai permintaan. Karena itu **kami tidak menyatakan cacat ini selesai.**
 
-Angka 523 lulus di atas adalah kondisi stabil yang kami amati, dan itulah yang dilaporkan CI
+Angka 544 lulus di atas adalah kondisi stabil yang kami amati, dan itulah yang dilaporkan CI
 pada commit terakhir untuk keempat leg. Tetapi bila panitia menjalankan CI berulang kali,
 ada kemungkinan menemui satu leg merah dari berkas ini, dan kami lebih memilih menuliskannya
 di sini lebih dulu.
@@ -120,14 +126,18 @@ Tiga temuan yang perlu dibaca apa adanya:
 
 - **Greedy bukan optimal.** Pada n=12, greedy kalah di 100 dari 100 percobaan, dengan gap
   rata-rata 6%. Premis awal kami bahwa greedy sudah cukup ternyata keliru; itu berasal dari
-  contoh 3×3 yang kebetulan optimal.
+  contoh 3×3 yang kebetulan optimal. **Ditutup di v1.1**: `ALLOCATOR=lp` sekarang default di
+  API, solve LP transportation optimum (scipy HiGHS); welfare terukur +3,9% vs greedy pada
+  data BPS asli ([`benchmarks/output/lp_allocator.json`](../../benchmarks/output/lp_allocator.json)),
+  greedy tetap tersedia sebagai fallback.
 - **Bobot bukan titik rapuh.** Mengguncang kelima bobot ±0,05 menggeser coverage paling
   jauh 0,0124 dan Gini 0,0106, dengan Jaccard alokasi tetap 1,0000. Kesimpulan equity tidak
   bergantung pada penyetelan bobot.
 - **Detektor 3σ di jalur alokasi buta mulai kontaminasi 14,7%.** Detektor MAD di jalur
   dashboard menandai lonjakan 3× pada 200/200 percobaan di semua level kontaminasi;
-  detektor 3σ yang menggerakkan alokasi turun ke 52/200 saat kontaminasi 46,7%. Ini
-  temuan terbuka, bukan fitur.
+  detektor 3σ yang menggerakkan alokasi turun ke 52/200 saat kontaminasi 46,7%. **Ditutup di
+  v1.1**: gerbang D3 sekarang memakai output scanner Hampel/MAD yang sama dengan panel
+  pengguna (`analysis/anomaly_gate.py`), bukan z-score 3σ terpisah; label API `hampel_mad_v2`.
 
 ## 3. Model evaluation
 
@@ -141,20 +151,24 @@ Backtest holdout bebas kebocoran atas peramal yang **benar-benar dilayani produk
 
 | Komoditas | Seri | MAPE% | MAE (Rp) | Cakupan CI80% |
 |---|---:|---:|---:|---:|
-| beras_premium | 15 | 3,6 | 568 | 67% |
-| beras_medium | 15 | 4,8 | 696 | 48% |
-| telur_ayam | 8 | 9,1 | 2.688 | 15% |
-| daging_ayam | 8 | 10,2 | 3.828 | 5% |
+| beras_premium | 15 | 3,6 | 568 | 81% |
+| beras_medium | 15 | 4,8 | 696 | 90% |
+| telur_ayam | 8 | 9,1 | 2.688 | 100% |
+| daging_ayam | 8 | 10,2 | 3.828 | 62% |
 | bawang_putih | 8 | 16,8 | 5.169 | 32% |
-| bawang_merah | 8 | 19,4 | 9.769 | 27% |
-| cabai_rawit | 8 | 23,2 | 14.305 | 72% |
-| **Keseluruhan** | **70** | **10,8** | | **42%** |
+| bawang_merah | 8 | 19,4 | 9.769 | 84% |
+| cabai_rawit | 8 | 23,2 | 14.305 | 98% |
+| **Keseluruhan** | **70** | **10,8** | | **80%** |
 
-**Interval kepercayaannya belum terkalibrasi dan kami tidak menyembunyikannya.** Pita yang
-dilabeli 80% hanya mencapai cakupan 42%, karena pita itu mencerminkan sebaran antar-tahun
-per bulan, bukan galat ramalan, dan lebarnya tidak bertambah seiring horizon. Perbaikannya
-menuntut kuantil residual empiris per komoditas. Angka yang boleh dikutip dari sini adalah
-MAPE 10,8%; label "interval 80%" belum boleh diklaim tercapai.
+**Update v1.1: interval sekarang terkalibrasi.** Angka di atas sebelumnya menunjukkan pita
+80% yang hanya mencapai cakupan 42%, karena pita lama mencerminkan sebaran antar-tahun per
+bulan, bukan galat ramalan. Kami menggantinya dengan **split-conformal rolling-origin**
+(36 origin backtest × 30 hari): cakupan keseluruhan naik ke **79,5%** (dibulatkan 80% pada
+tabel di atas), pada MAPE 10,8% yang sama, tanpa trade-off akurasi titik. `bawang_putih`
+masih di bawah target (32%) karena serinya paling bervolatilitas tinggi dan paling pendek;
+itu keterbatasan yang kami catat, bukan yang kami sembunyikan. Angka boleh dikutip:
+MAPE 10,8% dan cakupan interval 79,5% keseluruhan
+([JSON](../../analysis/output/backtest_baseline.json), field `interval_method`).
 
 Pipeline TimesFM 2.0 ada di [`analysis/forecast_timesfm.py`](../../analysis/forecast_timesfm.py),
 tetapi **56 dari 56 ramalan yang saat ini dilayani berlabel `seasonal_naive_baseline`**.

@@ -13,7 +13,7 @@ Two detectors exist in the codebase, both in the production path:
       flagged node is DROPPED from the surplus/deficit pool entirely (not just
       down-weighted).
 
-  analysis/price_anomaly.py    detect_anomalies() -- S-H-ESD: deseasonalise
+  analysis/price_anomaly.py    detect_anomalies() -- Hampel/MAD (deseasonalised): deseasonalise
       (rolling-median trend + monthly seasonal), then robust MAD on the
       residual, with a persistence filter. This is validated against the
       literature (Hochenbaum/Vallis/Kejariwal 2017) and is what feeds the
@@ -33,7 +33,7 @@ data, and quantifies it two ways:
       detect_price_anomaly(), against every real observed price in
       sample_data/price_history/*.csv using the ACTUAL shipped static
       constants, and compares the flag set against the already-validated
-      S-H-ESD persistent-anomaly set (ground truth for "this was a real
+      Hampel/MAD (deseasonalised) persistent-anomaly set (ground truth for "this was a real
       event"). Reports recall (of genuine persistent anomalies, how many does
       the static 3-sigma catch) and precision-adjacent flag volume.
 
@@ -177,7 +177,7 @@ def run_as_shipped_gap(seed: int) -> None:
     overall_recall = (total_overlap / total_mad_persistent * 100.0) if total_mad_persistent else 0.0
     print(f"  TOTAL: {total_obs} real observations across 7 commodities x 8 IHK cities.")
     print(f"  Static 3σ flagged {total_static_flags} points total.")
-    print(f"  S-H-ESD (robust, validated) flagged {total_mad_persistent} PERSISTENT genuine events.")
+    print(f"  Hampel/MAD (deseasonalised) (robust, validated) flagged {total_mad_persistent} PERSISTENT genuine events.")
     print(f"  Static 3σ caught {total_overlap}/{total_mad_persistent} of those "
           f"({overall_recall:.1f}% recall) on the SAME date+city.")
     print(f"\n  Caveat: telur_ayam and daging_ayam static constants are labelled "

@@ -1,5 +1,5 @@
 """
-tests/test_price_anomaly.py  --  Unit tests for analysis/price_anomaly.py (S-H-ESD v2)
+tests/test_price_anomaly.py  --  Unit tests for analysis/price_anomaly.py (Hampel/MAD v2)
 
 Coverage:
   1.  detect_anomalies -- SPIKE injection: detected with correct type + date
@@ -15,7 +15,7 @@ Coverage:
  11.  scan_all -- commodity_code and city_id populated
  12.  scan_all -- cabai_rawit anomalies present
  13.  scan_all -- sorted by score descending
- ---- NEW for S-H-ESD v2 ----
+ ---- NEW for Hampel/MAD v2 ----
  14.  Seasonal filtering: Ramadan-shaped seasonal spike NOT flagged; genuine anomaly IS
  15.  Persistence: one-day blip filtered out; multi-day streak passes through
  16.  Low-volatility (beras-style): small nominal deviation not over-flagged
@@ -452,7 +452,7 @@ class TestSeasonalFiltering:
         ]
         assert bm_apr24, (
             "Expected bawang_merah April-May 2024 Lebaran spike to be detected "
-            "by S-H-ESD.  Got 0 flags in that window."
+            "by Hampel/MAD (deseasonalised).  Got 0 flags in that window."
         )
         # Must be persistent
         assert any(a["persistent"] for a in bm_apr24), (
@@ -544,7 +544,7 @@ class TestLowVolatilityGate:
     def test_beras_medium_not_over_flagged_on_real_data(self):
         """
         beras_medium has low volatility (~IDR 1500 std on 14k base).
-        S-H-ESD v2 must produce at least 70 % fewer anomalies than v1
+        Hampel/MAD v2 must produce at least 70 % fewer anomalies than v1
         (v1 rolling-MAD on raw prices gave 2526 for beras_medium over 2021-2025).
 
         The surviving flags are genuine sustained regime changes (e.g. the
@@ -556,7 +556,7 @@ class TestLowVolatilityGate:
         # v1 baseline: 2526.  Require >= 70 % reduction -> upper bound 757.
         v1_baseline = 2526
         assert len(beras) <= int(v1_baseline * 0.30), (
-            f"beras_medium: S-H-ESD v2 gave {len(beras)} anomalies, expected "
+            f"beras_medium: Hampel/MAD v2 gave {len(beras)} anomalies, expected "
             f"<= {int(v1_baseline * 0.30)} (i.e. >= 70 % reduction from v1 baseline of {v1_baseline})"
         )
 
@@ -568,7 +568,7 @@ class TestLowVolatilityGate:
         beras = [a for a in results if a["commodity_code"] == "beras_premium"]
         v1_baseline = 2887
         assert len(beras) <= int(v1_baseline * 0.30), (
-            f"beras_premium: S-H-ESD v2 gave {len(beras)} anomalies, expected "
+            f"beras_premium: Hampel/MAD v2 gave {len(beras)} anomalies, expected "
             f"<= {int(v1_baseline * 0.30)} (>= 70 % reduction from v1 baseline of {v1_baseline})"
         )
 

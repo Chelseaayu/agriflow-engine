@@ -14,16 +14,19 @@ Public entrypoint:
     - Post-processing: Bulog priority split, equity tie-break, external opportunities
 
 Author: AgriFlow Team
-Version: 9.0
+Version: 1.1.0 (engine lineage v9)
 """
 
 from __future__ import annotations
 import time
 from datetime import datetime, timedelta
-from typing import Callable, Dict, List, Optional, Set
+from typing import Callable, Dict, List, Optional, Set, Tuple
 
 from . import scoring
-from .allocation import allocate, equity_multiplier_value
+from .allocation import (
+    LP_STRATEGY_NAMES, allocate, equity_multiplier_value, greedy_match_tier2,
+    welfare,
+)
 from .constraints import (
     BULOG_PROCUREMENT_KAB, generate_candidates, is_viable_pair,
 )
@@ -358,6 +361,7 @@ def run_matching(
     allow_grade_substitution: bool = False,
     bulog_procurement_kab: Optional[Set[str]] = None,
     equity_fn: Optional[Callable[[float], float]] = None,
+    anomaly_keys: Optional[Set[Tuple[str, str]]] = None,
 ) -> MatchingReport:
     """
     AgriFlow Matching Engine — main entrypoint.
@@ -376,6 +380,15 @@ def run_matching(
             paralel (mis. FastAPI multi-worker) supaya tidak race pada module
             global. None → fallback ke BULOG_PROCUREMENT_KAB module-level
             (di-set via set_bulog_procurement, back-compat untuk tests).
+
+        anomaly_keys: v1.1 — set of (kab_id, commodity_code) yang sedang
+            anomali menurut scanner batch (analysis/anomaly_gate.py). Bila
+            diberikan (termasuk set kosong), gerbang D3 memakai set ini dan
+            z-score legacy dilewati, sehingga panel anomali dan matching
+            memakai satu detektor yang sama. None → perilaku lama
+            (z-score 3σ dari historical_prices).
+        force_strategy: "stable" | "greedy" | "lp" | None. "lp" memakai
+            optimum LP transportasi berkapasitas (allocation.lp_optimal_allocate).
 
     Returns:
         MatchingReport dengan matches, unmatched, warnings, metadata.
@@ -409,7 +422,34 @@ def run_matching(
         )
 
     # Skenario D3 — price anomaly: drop dari pool
-    if historical_prices:
+    # v1.1: bila caller memberi anomaly_keys (output scanner Hampel/MAD yang
+    # sama dengan panel dashboard), gerbang memakai set itu. Z-score 3σ lama
+    # hanya dipakai bila anomaly_keys None, untuk back-compat.
+    anomaly_gate = "none"
+    if anomaly_keys is not None:
+        anomaly_gate = "batch_hampel_mad"
+        clean_supply = []
+        for s in surplus_nodes:
+            if (s.kabupaten.id, s.commodity.code) in anomaly_keys:
+                warnings.append(
+                    f"Price anomaly (scanner): {s.kabupaten.nama} {s.commodity.nama} "
+                    f"sedang anomali persisten. Excluded — manual review pending."
+                )
+                continue
+            clean_supply.append(s)
+        surplus_nodes = clean_supply
+        clean_demand = []
+        for d in deficit_nodes:
+            if (d.kabupaten.id, d.commodity.code) in anomaly_keys:
+                warnings.append(
+                    f"Price anomaly (scanner): {d.kabupaten.nama} {d.commodity.nama} "
+                    f"sedang anomali persisten. Excluded."
+                )
+                continue
+            clean_demand.append(d)
+        deficit_nodes = clean_demand
+    elif historical_prices:
+        anomaly_gate = "zscore_3sigma"
         clean_supply = []
         for s in surplus_nodes:
             stats = historical_prices.get(s.commodity.code)
@@ -446,9 +486,13 @@ def run_matching(
     warnings.extend(contract_warnings)
 
     # Skenario C1 + C4 — Holiday calendar (RAMADAN / IMLEK / NATAL / SCHOOL_START)
+    # v1.1 (audit F1): penegasan Ramadan dari caller MENANG atas event yang
+    # diturunkan dari tanggal, sesuai prioritas terdokumentasi
+    # RAMADAN > NATAL > IMLEK > SCHOOL_START. Sebelumnya `or` membuat
+    # SCHOOL_START (1-15 Jan / 1-15 Jul) mengalahkan Ramadan eksplisit.
     active_event = get_active_demand_event(reference_date)
     if logistics.is_ramadan_proximity:
-        active_event = active_event or "RAMADAN"
+        active_event = "RAMADAN"
     ramadan_active = active_event == "RAMADAN"
     if active_event:
         weights = _weights_for_event(active_event)
@@ -460,12 +504,18 @@ def run_matching(
         }.get(active_event, active_event)
         warnings.append(f"{event_label} spike mode aktif — "
                         f"bobot scoring disesuaikan untuk event ini.")
-    elif import_policy_active:
-        weights = scoring.IMPORT_POLICY_WEIGHTS
-        warnings.append("Import policy detected — bobot price diturunkan, "
-                        "matching deprioritized untuk komoditas terdampak.")
     else:
         weights = scoring.DEFAULT_WEIGHTS
+    # v1.1 (audit F1): kebijakan impor adalah kondisi regulatif yang ortogonal
+    # terhadap event musiman, jadi dikomposisikan di atas profil event, bukan
+    # dibuang diam-diam saat ada event. Tanpa event hasilnya identik dengan
+    # IMPORT_POLICY_WEIGHTS lama.
+    if import_policy_active:
+        weights = scoring.apply_import_policy(weights)
+        warnings.append("Import policy detected — bobot price diturunkan, "
+                        "matching deprioritized untuk komoditas terdampak."
+                        + (f" Dikomposisikan di atas profil {active_event}."
+                           if active_event else ""))
 
     # Skenario A4 — zero demand check per komoditas
     surplus_commodities = {s.commodity.code for s in surplus_nodes}
@@ -533,6 +583,15 @@ def run_matching(
                 "tier1_candidates": 0,
                 "tier2_candidates": 0,
                 "weights_used": weights,
+                "active_event": active_event,
+                "anomaly_gate": anomaly_gate,
+                "allocator": None,
+                "matched_tons": 0.0,
+                "welfare": 0.0,
+                "welfare_greedy": None,
+                "welfare_gain_pct": None,
+                "import_policy_active": import_policy_active,
+                "ramadan_active": ramadan_active,
             },
         )
 
@@ -553,6 +612,23 @@ def run_matching(
     _equity_fn = equity_fn if equity_fn is not None else equity_multiplier_value
     matches = allocate(candidates, score_fn=score_fn, force_strategy=force_strategy,
                        equity_fn=_equity_fn)
+
+    # v1.1: nama allocator + welfare, dan untuk LP juga selisih vs greedy
+    # (benchmarks/greedy_vs_optimal.py mengukur gap 11 sampai 25%; angka ini
+    # menampilkannya di setiap run sehingga bisa dipantau, bukan diklaim).
+    if force_strategy in LP_STRATEGY_NAMES:
+        allocator_name = "lp_optimal"
+    elif force_strategy in ("stable", "greedy"):
+        allocator_name = force_strategy
+    else:
+        all_tier1 = all(s.kabupaten.is_tier1 and d.kabupaten.is_tier1 for s, d in candidates)
+        allocator_name = "stable" if all_tier1 else "greedy"
+    welfare_total = welfare(matches)
+    welfare_greedy = None
+    if allocator_name == "lp_optimal":
+        welfare_greedy = welfare(
+            greedy_match_tier2(candidates, score_fn, equity_fn=_equity_fn)
+        )
 
     # =========================================================================
     # POST-PROCESSING
@@ -649,5 +725,17 @@ def run_matching(
             "import_policy_active": import_policy_active,
             "bbm_change_pct": logistics.bbm_change_pct,
             "stale_data_count": len(stale_supply) + len(stale_demand),
+            # v1.1 additions
+            "active_event": active_event,
+            "anomaly_gate": anomaly_gate,
+            "allocator": allocator_name,
+            "matched_tons": round(sum(m.matched_volume_tons for m in matches), 3),
+            "welfare": round(welfare_total, 2),
+            "welfare_greedy": (round(welfare_greedy, 2)
+                               if welfare_greedy is not None else None),
+            "welfare_gain_pct": (
+                round((welfare_total - welfare_greedy) / welfare_greedy * 100, 2)
+                if welfare_greedy else None
+            ),
         },
     )

@@ -14,7 +14,7 @@ Language / Bahasa: [English](./README.en.md) · **Bahasa Indonesia**
 <p align="center">
   <img src="https://img.shields.io/badge/PIDI-DIGDAYA%20%C3%97%20Hackathon%202026-1B5E20?style=for-the-badge" alt="Hackathon"/>
   <img src="https://img.shields.io/badge/Problem%20Statement-2%20Matching%20Demand–Supply-4CAF50?style=for-the-badge" alt="PS"/>
-  <img src="https://img.shields.io/badge/tests-523%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
+  <img src="https://img.shields.io/badge/tests-544%20passing-brightgreen?style=for-the-badge" alt="Tests"/>
 </p>
 
 > **Roadmap proyek dibagi 3 Phase.** README teknis lengkap versi sebelumnya diarsipkan di [`README_v13.md`](README_v13.md) (snapshot terbaru), [`README_v12.md`](README_v12.md), dan [`README_v11.md`](README_v11.md).
@@ -89,13 +89,13 @@ Tiga fungsi (Deteksi · Prediksi · Distribusi) berbagi satu sumber data nyata, 
 | Fungsi | Fitur | Status |
 |--------|-------|:------:|
 | **Distribusi** | Matching engine 4-lapis (hard constraints → multi-objective scoring → equity) berjalan di **data BPS asli per-kabupaten (2022)** | ✅ |
-| **Deteksi** | Deteksi anomali harga (deseasonalize + robust statistics) pada harga PIHPS harian **2021–2025** | ✅ |
+| **Deteksi** | Deteksi anomali harga Hampel/MAD pada residual deseasonalized (sebelumnya berlabel S-H-ESD) pada harga PIHPS harian **2021–2025** | ✅ |
 | **Prediksi** | Forecasting harga 30 hari. Yang **dilayani hari ini** adalah baseline seasonal-naive (`seasonal_naive_baseline`) dengan **MAPE 10,8%** pada [backtest holdout](docs/evidence/pengujian.md#3-model-evaluation). Pipeline TimesFM 2.0 sudah ada di repo tetapi **belum melayani produksi** | ✅ |
 | **Aksesibilitas** | **Chatbot WhatsApp** (tanya harga & rekomendasi) + **Dashboard** peta interaktif | ✅ |
 | **Keamanan** | Situs bersifat *login-first*: membuka website menampilkan halaman login lebih dulu. Juri cukup klik **"Masuk sebagai Tamu"** untuk meninjau tanpa membuat akun. Akun Supabase (JWT terverifikasi server-side, Row Level Security di 12 tabel, reset password) siap untuk model berlangganan; data sensitif (langganan & pembayaran) tetap dijaga verifikasi JWT di sisi server. | ✅ |
 | **Data nyata** | **6 komoditas** real per-kab: beras premium & medium, cabai merah & rawit, bawang merah & putih + harga PIHPS 5 tahun | ✅ |
 
-> **Kualitas:** 523 tes otomatis lulus (524 terkumpul, 1 di-skip) — engine teruji, dapat direproduksi, dan jujur soal keterbatasannya (lihat [Pengujian & Skenario](#pengujian--skenario) dan Phase 3).
+> **Kualitas:** 544 tes otomatis lulus (552 terkumpul, 8 di-skip) — engine teruji, dapat direproduksi, dan jujur soal keterbatasannya (lihat [Pengujian & Skenario](#pengujian--skenario) dan Phase 3).
 >
 > 📁 Bukti lengkapnya ada di [**Bukti Pendukung**](#-bukti-pendukung) setelah Phase 3: lima kategori, termasuk [bukti pengujian](docs/evidence/pengujian.md) dan [usability testing dengan 5 pengguna nyata](docs/evidence/usability-early-testing.md).
 
@@ -115,7 +115,7 @@ Tiga fungsi (Deteksi · Prediksi · Distribusi) berbagi satu sumber data nyata, 
 
 Karena output AgriFlow menggerakkan alokasi pangan antar-kabupaten yang menyentuh daerah IPM-rendah, klaim "adil" dan "robust" harus dapat diaudit ulang — bukan sekadar narasi. Suite uji mengunci angka food-balance sebagai *golden numbers* (reproducibility), menjaga parameter kebijakan dari pergeseran tak sengaja (regression-safety), dan menguji deteksi anomali secara adversarial.
 
-**524 tes terkumpul · 523 lulus · 1 di-skip · lintas-OS di CI.** ([keluaran mentah](docs/evidence/runs/pytest.txt))
+**552 tes terkumpul · 544 lulus · 8 di-skip · lintas-OS di CI.** ([keluaran mentah](docs/evidence/runs/pytest.txt))
 (Skip = `test_timesfm_importorskip`: dilewati jika pustaka TimesFM tak terpasang di runner; jalur forecasting tetap diuji via fallback + kontrak API.)
 
 Server produksi memuat **data BPS asli secara default** (`DATA_BACKEND=csv`, bawaan). Fixture sintetis 19-komoditas lama tetap dipakai di 13 file test (`DATA_BACKEND=demo`) untuk menguji logika engine di lebih banyak variasi komoditas — tidak pernah disajikan ke pengguna.
@@ -125,7 +125,7 @@ Server produksi memuat **data BPS asli secara default** (`DATA_BACKEND=csv`, baw
 | Unit per-layer (L0–L3) | 73 | Tier IPM, constraint jarak/perishability, skor, alokasi equity |
 | 25 skenario edge-case (A–F) | 64 | Volume, spasial, temporal, disrupsi, politis, kualitas |
 | Validasi data nyata BPS/PIHPS | 57 | Food-balance beras + hortikultura 2022, pipeline reproducible |
-| Deteksi anomali harga | 49 | S-H-ESD sadar-musiman pada residual deseasonalized |
+| Deteksi anomali harga | 49 | Hampel/MAD sadar-musiman pada residual deseasonalized (sebelumnya berlabel S-H-ESD) |
 | Forecast & API | 40 | Endpoint forecast/anomali + fallback |
 | Baseline & equity | 39 | greedy/uniform/proporsional vs AgriFlow + skenario langka pasokan |
 | Ingest & integrasi | 73 | DB loader, ingest PIHPS, jarak OSRM, bot WhatsApp |
@@ -209,8 +209,8 @@ Engine sudah siap memproses data apa pun; yang membatasi adalah ketersediaan dat
 
 Dua batas ini kami ukur sendiri terhadap performa maksimal engine, dengan benchmark yang di-commit dan dapat direproduksi juri.
 
-1. Allocator belum optimal. Diuji terhadap optimum LP transportation eksak pada data BPS asli: tier stable meninggalkan 25,4% welfare berbobot-ekuitas, tier greedy 11,1%. Bukti nyata: permintaan cabai_merah Sumenep terisi 26% padahal pasokan terjangkau (2.662 ton, radius 200 km) melebihi kebutuhan (1.418 ton), greedy mengalokasikannya lebih dulu ke tempat lain. Jadi ini soal optimalitas, bukan kelangkaan. Rencana: ganti ke solver capacitated min-cost-flow / entropic-OT (milidetik pada skala provinsi, provably optimal); greedy tetap sebagai v1. Akar: `matching_engine/allocation.py:307`. Benchmark: `benchmarks/greedy_vs_optimal.py`.
-2. Satukan detektor anomali. Panel anomali pengguna sudah pakai S-H-ESD robust (`analysis/price_anomaly.py`). Namun gerbang pre-filter D3 internal (`matching_engine/engine.py:62`) masih z-score 3σ non-robust, pada 70.953 observasi PIHPS asli hanya me-recall 14,4% anomali tervalidasi, dan flag D3 mengeluarkan node dari matching sepenuhnya. Rencana: arahkan D3 ke output S-H-ESD yang sama (perlu ubah kontrak `historical_prices`). Benchmark: `benchmarks/anomaly_detector_gap.py`.
+1. ~~Allocator belum optimal.~~ **Ditutup di v1.1.** Diuji terhadap optimum LP transportation eksak pada data BPS asli: tier stable meninggalkan 25,4% welfare berbobot-ekuitas, tier greedy 11,1%. Bukti nyata: permintaan cabai_merah Sumenep terisi 26% padahal pasokan terjangkau (2.662 ton, radius 200 km) melebihi kebutuhan (1.418 ton), greedy mengalokasikannya lebih dulu ke tempat lain. Jadi ini soal optimalitas, bukan kelangkaan. `ALLOCATOR=lp` sekarang jadi default di API, memakai LP transportation berkapasitas (scipy HiGHS) dengan equity di dalam objective, welfare terukur +3,9% vs greedy pada data BPS asli; greedy tetap tersedia sebagai fallback. Lihat [Backend v1.1](#backend-v11-agustus-2026) dan `benchmarks/output/lp_allocator.json`. Akar lama: `matching_engine/allocation.py:307`.
+2. ~~Satukan detektor anomali.~~ **Ditutup di v1.1.** Panel anomali pengguna sudah pakai S-H-ESD robust (`analysis/price_anomaly.py`). Namun gerbang pre-filter D3 internal (`matching_engine/engine.py:62`) masih z-score 3σ non-robust, pada 70.953 observasi PIHPS asli hanya me-recall 14,4% anomali tervalidasi, dan flag D3 mengeluarkan node dari matching sepenuhnya. Sekarang gerbang D3 memakai output scanner Hampel/MAD yang sama dengan panel pengguna (`analysis/anomaly_gate.py`); label API `hampel_mad_v2`, bukan S-H-ESD. Lihat [Backend v1.1](#backend-v11-agustus-2026).
 
 ## Scaling up
 
@@ -223,13 +223,28 @@ Peningkatan skala nasional dibatasi laju keterbukaan data publik per-kabupaten, 
 ```bash
 pip install -r requirements.txt
 python examples/run_demo_real.py   # demo matching pada data BPS asli 2022
-pytest tests/                      # 523 lulus, 1 di-skip
+pytest tests/                      # 544 lulus, 8 di-skip
 ```
 
 Semua angka pengujian yang dikutip di halaman ini dapat dijalankan ulang lewat perintah
 yang tercantum di [Bukti Pengujian](docs/evidence/README.md).
 
 Detail engineering lengkap ada di [`README_v12.md`](README_v12.md).
+
+### Backend v1.1 (Agustus 2026)
+
+Perubahan sisi server yang menutup utang teknis Phase 3 butir 1 dan 2 serta temuan audit F1, F3, F7. Semua terverifikasi 544 tes lulus (552 terkumpul, 8 di-skip).
+
+| Perubahan | Di mana | Bukti |
+|---|---|---|
+| Allocator L3 optimal: LP transportasi berkapasitas (scipy HiGHS), equity di dalam objective; greedy tetap fallback | `matching_engine/allocation.py::lp_optimal_allocate`, `ALLOCATOR=lp` default di API | `python benchmarks/lp_allocator.py` (welfare vs greedy dicatat di `run_metadata.welfare_gain_pct`) |
+| Satu detektor anomali: gerbang D3 memakai output scanner Hampel/MAD yang sama dengan panel; label API `hampel_mad_v2` (bukan S-H-ESD) | `analysis/anomaly_gate.py`, `run_matching(anomaly_keys=...)` | `run_metadata.anomaly_gate == "batch_hampel_mad"` |
+| Interval prakiraan terkalibrasi: split-conformal rolling-origin, coverage 80% terukur (sebelumnya 42%) pada MAPE 10,8% yang sama | `analysis/forecast_timesfm.py`, field `interval_method` | `python analysis/backtest_baseline.py` |
+| Bug kalender (audit F1): Ramadan eksplisit menang atas SCHOOL_START; kebijakan impor dikomposisikan di atas profil event | `matching_engine/engine.py`, `scoring.apply_import_policy` | `tests/test_backend_v11.py::TestCalendarPriority` |
+| Endpoint baru: `/api/v1/meta` (data per), `/api/v1/summary` (KPI dihitung), `/api/v1/report.csv`, `/api/v1/matches/explain`, `POST /api/v1/simulate` (preset: semeru, banjir_sentra_padi, banjir_madura, ramadan, bbm_20, impor, suramadu_tutup) | `whatsapp_bot/server.py` | `tests/test_backend_v11.py::TestApiV11` |
+| Kartu match membawa `breakdown` 5 dimensi, `base_score`, `equity_multiplier`, `why` | `_serialize_match` | `GET /api/v1/matches` |
+| Parameter `city` menerima nama kota (audit F7) | `_resolve_city` | `GET /api/v1/forecast?commodity=cabai_rawit&city=Kota%20Surabaya` |
+| Refresh harian artefak (anomali, forecast, backtest) lewat GitHub Actions | `.github/workflows/refresh-data.yml` | commit otomatis `data: daily refresh ...` |
 
 ---
 
@@ -301,7 +316,7 @@ belum punya rilis bernomor.
 
 | Item yang diminta | Status | Bukti |
 |---|:---:|---|
-| Test case | ✅ | [523 lulus, 1 skip](docs/evidence/runs/pytest.txt) · [`tests/`](tests) · [CI 4 leg](.github/workflows/test.yml) |
+| Test case | ✅ | [544 lulus, 8 skip](docs/evidence/runs/pytest.txt) · [`tests/`](tests) · [CI 4 leg](.github/workflows/test.yml) |
 | Hasil eksperimen | ✅ | greedy vs optimal · [sensitivitas bobot](docs/evidence/runs/weight_sensitivity.txt) · [gap dua detektor](docs/evidence/runs/anomaly_detector_gap.txt) |
 | Model evaluation | ✅ | [Backtest holdout, MAPE 10,8%](docs/evidence/runs/backtest_baseline.txt) |
 | Performance test | ✅ | [latency](docs/evidence/runs/latency.txt) · [skala nasional](docs/evidence/runs/national_scale.txt) · [beban dashboard](docs/evidence/runs/dashboard_load.txt) |

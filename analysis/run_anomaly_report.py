@@ -7,7 +7,7 @@ Usage (from project root):
     python analysis/run_anomaly_report.py --window 14 --k 3.0 --commodity cabai_rawit
     python analysis/run_anomaly_report.py --compare   # show BEFORE vs AFTER flag counts
 
-Method v2: S-H-ESD (Seasonal-Hybrid ESD).
+Method v2: Hampel/MAD (deseasonalised) (Seasonal-Hybrid ESD).
   v1 was rolling-median + MAD on raw prices; this is deseasonalise first,
   then MAD on residuals, with persistence and low-vol gates.
   Result: ~70 % reduction in flag count (14,261 -> 4,192 on 2021-2025 Jatim data).
@@ -86,25 +86,25 @@ def _run_v1_count() -> int:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="AgriFlow price anomaly report (S-H-ESD v2)")
+    parser = argparse.ArgumentParser(description="AgriFlow price anomaly report (Hampel/MAD v2)")
     parser.add_argument("--top",      type=int,   default=15,   help="Top N to show (default 15)")
     parser.add_argument("--window",   type=int,   default=30,   help="Rolling window size (default 30)")
     parser.add_argument("--k",        type=float, default=3.0,  help="MAD sensitivity k (default 3.0)")
     parser.add_argument("--persist",  type=int,   default=2,    help="Persistence threshold (default 2)")
     parser.add_argument("--commodity", type=str,  default=None, help="Filter to one commodity code")
     parser.add_argument("--compare",  action="store_true",
-                        help="Show BEFORE (v1 raw-price MAD) vs AFTER (S-H-ESD v2) counts")
+                        help="Show BEFORE (v1 raw-price MAD) vs AFTER (Hampel/MAD v2) counts")
     args = parser.parse_args()
 
     print()
     print("=" * 72)
-    print("  AgriFlow -- Deteksi Anomali Harga (S-H-ESD v2, PIHPS Jatim 2021-2025)")
+    print("  AgriFlow -- Deteksi Anomali Harga (Hampel/MAD v2, PIHPS Jatim 2021-2025)")
     print("=" * 72)
     print(f"  Data      : {PRICE_DIR}")
     print(f"  Window    : {args.window} observations")
     print(f"  Threshold : k={args.k}  (|dev| > {args.k} * 1.4826 * MAD on RESIDUAL)")
     print(f"  Persist   : >= {args.persist} consecutive flagged observations")
-    print(f"  Method    : S-H-ESD -- deseasonalise, then robust MAD on residual")
+    print(f"  Method    : Hampel/MAD (deseasonalised) -- deseasonalise, then robust MAD on residual")
     print(f"              (Hochenbaum/Vallis/Kejariwal arXiv:1704.07706)")
     print(f"              NOT 'AI'; interpretable statistical detector")
     print()
@@ -115,7 +115,7 @@ def main() -> None:
         before_count = _run_v1_count()
         print(f"done. {before_count:,} flags.")
 
-    print("  Running S-H-ESD v2 ...", end=" ", flush=True)
+    print("  Running Hampel/MAD v2 ...", end=" ", flush=True)
     anomalies = scan_all(
         PRICE_DIR,
         window=args.window,
@@ -130,7 +130,7 @@ def main() -> None:
         print()
         print("  BEFORE vs AFTER:")
         print(f"    v1 (raw-price rolling-MAD)  : {before_count:>7,} flags")
-        print(f"    v2 (S-H-ESD, deseasonalised): {after_count:>7,} flags")
+        print(f"    v2 (Hampel/MAD (deseasonalised), deseasonalised): {after_count:>7,} flags")
         print(f"    Reduction                   : {reduction:>6.1f} %")
 
     print()
@@ -164,7 +164,7 @@ def main() -> None:
         )
 
     print()
-    print("  Catatan keterbatasan (S-H-ESD v2):")
+    print("  Catatan keterbatasan (Hampel/MAD v2):")
     print("  - Seasonal komponen: monthly median -- Ramadan (Hijri) drifts ~11 hr/thn;")
     print("    spike Ramadan di tanggal masehi tak biasa masih bisa muncul parsial.")
     print("  - Trend window = rolling median; lag 15-obs saat price-regime shift cepat.")

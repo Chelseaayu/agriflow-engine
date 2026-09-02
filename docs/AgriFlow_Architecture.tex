@@ -169,26 +169,39 @@ musim hari raya~\cite{eidpihps2026} \emph{material} terhadap akurasi --- karenan
 menambahkan kovariat (kalender Ramadan, indeks ENSO) yang secara teknis dapat di-\emph{retrofit}
 ke foundation model~\cite{chronosx2025}.
 
+\subsection{Update v1.1: interval terkalibrasi}
+Sejak v1.1, baseline yang dilayani ke pengguna membawa \emph{split-conformal rolling-origin
+band}: kalibrasi dilakukan pada 36 origin backtest $\times$ 30 hari, dan cakupan interval P10/P90
+terukur naik dari 42\% menjadi \textbf{80\%} pada MAPE 10,8\% yang sama (tidak ada trade-off
+akurasi titik demi cakupan). Ini menutup keterbatasan kalibrasi yang sebelumnya dicatat di bagian
+ini. Kandidat model berikutnya juga bergeser: alih-alih upgrade ke TimesFM 2.0, kandidat paling
+relevan sekarang adalah \textbf{Chronos-2}~\cite{chronosx2025}, karena arsitekturnya
+\emph{covariate-aware} secara native (menerima kalender Ramadan dan indeks ENSO tanpa retrofit
+terpisah), sejalan dengan kebutuhan kovariat eksogen yang sudah diidentifikasi di atas.
+
 % =====================================================================
 \section{Deteksi --- Anomali Harga}
 
 \subsection{Metode dan cara kerja}
-Deteksi anomali memakai pendekatan \textbf{Seasonal-Hybrid ESD (S-H-ESD)}~\cite{shesd2017}:
-(1) \emph{deseasonalize} deret (buang trend + komponen musiman), lalu (2) terapkan statistik
-\emph{robust} median + MAD pada \emph{residual}, dengan flag
-$|r - \tilde{r}| > k \cdot 1.4826 \cdot \mathrm{MAD}$. Ditambahkan \emph{persistence threshold}
-(flag hanya jika bertahan $\geq 2$ observasi) dan \emph{floor} skala untuk komoditas
-bervolatilitas-rendah (beras).
+Deteksi anomali memakai \textbf{deseasonalize + rolling Hampel/MAD}: (1) \emph{deseasonalize}
+deret (buang trend + komponen musiman), lalu (2) terapkan statistik \emph{robust} median + MAD
+bergulir pada \emph{residual}, dengan flag $|r - \tilde{r}| > k \cdot 1.4826 \cdot \mathrm{MAD}$.
+Ditambahkan \emph{persistence threshold} (flag hanya jika bertahan $\geq 2$ observasi) dan
+\emph{floor} skala untuk komoditas bervolatilitas-rendah (beras). Metode ini terinspirasi dari
+uji \emph{Generalized ESD} berbasis Seasonal-Hybrid ESD (S-H-ESD)~\cite{shesd2017}, tapi bukan
+implementasi langsungnya: yang dipakai adalah gerbang Hampel/MAD deseasonalized di atas, bukan
+uji ESD generalized itu sendiri. README dan kode sebelumnya keliru melabelinya "S-H-ESD"; label
+API sejak v1.1 adalah \code{hampel\_mad\_v2}.
 
 \subsection{Alasan pemilihan: mengapa BUKAN deep learning}
 Benchmark TSAD yang andal (NeurIPS~2024) menunjukkan bahwa di bawah evaluasi yang adil, detektor
 transformer (mis. AnomalyTransformer/TranAD) \emph{tidak} secara reliabel mengungguli metode
 statistik sederhana --- keunggulan mereka sebagian artefak metrik \emph{point-adjustment} yang
 bias~\cite{liu2024}. Untuk konteks kebijakan di mana \emph{interpretability} menentukan, memilih
-S-H-ESD adalah keputusan yang \emph{defensible}, bukan malas.
+Hampel/MAD deseasonalized (terinspirasi S-H-ESD) adalah keputusan yang \emph{defensible}, bukan malas.
 
 \subsection{Efektivitas dan validasi}
-Pada harga PIHPS Jawa Timur 2021--2025, upgrade ke S-H-ESD memangkas jumlah flag
+Pada harga PIHPS Jawa Timur 2021--2025, upgrade ke Hampel/MAD deseasonalized memangkas jumlah flag
 $\sim$\textbf{60\%} (14.261 $\rightarrow$ 5.686) dengan menyaring \emph{noise} musiman rutin
 sambil \textbf{mempertahankan kejadian nyata}: lonjakan bawang merah Probolinggo $+$73--81\%
 pada April 2024 (pasca-Idul Fitri) tetap terdeteksi sebagai event \emph{sustained}. Validasi
@@ -210,8 +223,11 @@ tahun acuan konsisten 2022. Seluruh pipeline reproducible dan diuji otomatis (40
 \begin{itemize}
   \item Data nyata 5 komoditas, tahun 2022; daging \& telur menunggu data produksi per-kab lengkap.
   \item Konsumsi cabai/bawang memakai rata-rata nasional $\times$ populasi (proxy); beras sudah per-kab.
-  \item Equity multiplier post-score (heuristik) $\rightarrow$ migrasi ke penalty/leximin
-        in-objective~\cite{firouz2021,hakimifar2022}.
+  \item \textbf{Selesai di v1.1.} Equity multiplier post-score (heuristik) $\rightarrow$ migrasi ke
+        penalty in-objective~\cite{firouz2021,hakimifar2022}: allocator L3 sekarang solve LP
+        transportation optimum (scipy HiGHS, \code{ALLOCATOR=lp}) dengan equity sebagai
+        \emph{weighted-sum} di dalam objective, bukan leximin penuh; leximin tetap di roadmap
+        sebagai penyempurnaan berikutnya.
   \item Tanpa \emph{provable bound} $\rightarrow$ adopsi power-of-two-choices~\cite{diaby2024}.
   \item Prediksi univariate $\rightarrow$ tambah kovariat eksogen (ENSO/Ramadan)~\cite{alanshari2025,chronosx2025}.
   \item Skala provinsi (Jatim) siap; nasional 514 kab perlu spatial partitioning + precompute.

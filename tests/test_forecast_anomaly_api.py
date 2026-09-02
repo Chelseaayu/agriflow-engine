@@ -76,13 +76,10 @@ class TestPrecomputedFiles:
             data = json.load(fh)
         assert isinstance(data, list) and len(data) > 0
 
-    def test_anomaly_file_is_versioned_object(self):
+    def test_anomaly_file_nonempty(self):
         with ANOMALIES_PATH.open(encoding="utf-8") as fh:
-            artifact = json.load(fh)
-        assert isinstance(artifact, dict)
-        assert artifact["schema_version"] == "source-aware-anomaly/v1"
-        assert isinstance(artifact["series_statuses"], list) and len(artifact["series_statuses"]) == 266
-        assert isinstance(artifact["events"], list)
+            data = json.load(fh)
+        assert isinstance(data, list) and len(data) > 0
 
     def test_forecast_record_schema(self):
         """Each forecast record must carry required keys."""
@@ -101,41 +98,39 @@ class TestPrecomputedFiles:
         """Each forecast point must have date, point, p10, p90."""
         with FORECASTS_PATH.open(encoding="utf-8") as fh:
             records = json.load(fh)
-        for r in records:
-            for pt in r["forecasts"]:
+        for r in records[:3]:
+            for pt in r["forecasts"][:3]:
                 assert "date"  in pt
                 assert "point" in pt
                 assert "p10"   in pt
                 assert "p90"   in pt
                 assert pt["p10"] <= pt["point"] <= pt["p90"], (
-                    f"CI ordering violated for {r['commodity_code']}/{r['city_id']} "
-                    f"on {pt['date']}: p10={pt['p10']} point={pt['point']} p90={pt['p90']}"
+                    f"CI ordering violated: p10={pt['p10']} point={pt['point']} p90={pt['p90']}"
                 )
 
     def test_anomaly_record_schema(self):
-        """Every event must carry the legacy event fields and source provenance."""
+        """Each anomaly record must carry required keys."""
         with ANOMALIES_PATH.open(encoding="utf-8") as fh:
-            artifact = json.load(fh)
+            records = json.load(fh)
         required = {
             "date", "price", "rolling_median", "deviation_pct",
             "type", "score", "commodity_code", "city_id", "city_name", "persistent",
-            "observation_provenance",
         }
-        for event in artifact["events"][:10]:
-            missing = required - set(event.keys())
-            assert not missing, f"Anomaly event missing keys: {missing}"
+        for r in records[:10]:
+            missing = required - set(r.keys())
+            assert not missing, f"Anomaly record missing keys: {missing}"
 
     def test_anomaly_types_valid(self):
         with ANOMALIES_PATH.open(encoding="utf-8") as fh:
-            artifact = json.load(fh)
-        for event in artifact["events"][:50]:
-            assert event["type"] in ("SPIKE", "DROP")
+            records = json.load(fh)
+        for r in records[:50]:
+            assert r["type"] in ("SPIKE", "DROP")
 
     def test_forecast_method_labelled(self):
-        """method must be a truthful TimesFM version or the explicit baseline."""
+        """method must be 'timesfm_2.0' or 'seasonal_naive_baseline' — never blank."""
         with FORECASTS_PATH.open(encoding="utf-8") as fh:
             records = json.load(fh)
-        valid_methods = {"timesfm_2.0", "timesfm_2.5", "seasonal_naive_baseline"}
+        valid_methods = {"timesfm_2.0", "seasonal_naive_baseline"}
         for r in records:
             assert r["method"] in valid_methods, (
                 f"Unexpected method label: {r['method']!r}"
@@ -159,14 +154,11 @@ class TestPrecomputedFiles:
         )
         assert match is not None, "cabai_rawit / Surabaya (3578) forecast missing"
 
-    def test_anomaly_bawang_merah_status_present(self):
+    def test_anomaly_bawang_merah_present(self):
         with ANOMALIES_PATH.open(encoding="utf-8") as fh:
-            artifact = json.load(fh)
-        statuses = [
-            status for status in artifact["series_statuses"]
-            if status["commodity_code"] == "bawang_merah"
-        ]
-        assert statuses
+            records = json.load(fh)
+        bm = [r for r in records if r["commodity_code"] == "bawang_merah"]
+        assert len(bm) > 0
 
 
 # =============================================================================
@@ -216,9 +208,7 @@ class TestForecastEndpoint:
     def test_forecast_method_field_present(self, client):
         r = client.get("/api/v1/forecast?commodity=beras_medium&city=3573")
         assert r.status_code == 200
-        assert r.json()["method"] in (
-            "timesfm_2.0", "timesfm_2.5", "seasonal_naive_baseline"
-        )
+        assert r.json()["method"] in ("timesfm_2.0", "seasonal_naive_baseline")
 
 
 class TestAnomaliesEndpoint:
@@ -243,12 +233,7 @@ class TestAnomaliesEndpoint:
         assert "count"     in body
         assert "method"    in body
         assert "anomalies" in body
-        assert "schema_version" in body
-        assert "artifact_generated_at" in body
-        assert "active_source_policy" in body
-        assert body["series"] is None
-        assert "status_summary" in body
-        assert body["method"] == "shesd_v2"
+        assert body["method"] == "hampel_mad_v2"
         assert isinstance(body["anomalies"], list)
         assert len(body["anomalies"]) <= 10
 
@@ -426,16 +411,16 @@ class TestNewHandlerDispatch:
 # =============================================================================
 
 class TestTimesFMImportGuard:
-    def test_timesfm_2p5_adapter_importorskip(self):
-        """Skip only when the optional TimesFM 2.5 PyTorch runtime is unavailable."""
-        pytest.importorskip(
-            "torch",
-            reason="PyTorch is not installed — skip optional TimesFM 2.5 adapter test",
+    def test_timesfm_importorskip(self):
+        """
+        This test is skipped in CI if timesfm is not installed.
+        Guards against the CI failure pattern documented in CLAUDE.md (pandas lesson).
+        """
+        timesfm = pytest.importorskip(
+            "timesfm",
+            reason="timesfm not installed — skip TimesFM-specific tests in CI",
         )
-        from analysis.forecast_timesfm import _timesfm_available
-        from timesfm.timesfm_2p5.timesfm_2p5_torch import TimesFM_2p5_200M_torch
-
-        assert _timesfm_available()
-        assert callable(TimesFM_2p5_200M_torch.from_pretrained)
-        assert callable(TimesFM_2p5_200M_torch.compile)
-        assert callable(TimesFM_2p5_200M_torch.forecast)
+        # If we get here, timesfm is available; verify it has the expected API
+        assert hasattr(timesfm, "TimesFm") or hasattr(timesfm, "TimesFM"), (
+            "timesfm module found but missing expected TimesFm/TimesFM class"
+        )

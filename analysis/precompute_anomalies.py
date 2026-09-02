@@ -1,5 +1,5 @@
 """
-analysis/precompute_anomalies.py  --  Precompute all S-H-ESD anomalies to JSON.
+analysis/precompute_anomalies.py  --  Precompute all Hampel/MAD (deseasonalised) anomalies to JSON.
 
 Run offline (locally or in CI) to produce sample_data/anomalies/anomalies_all.json.
 The backend serves from this file at runtime -- zero runtime computation on HF Space.
@@ -33,6 +33,9 @@ from analysis.price_anomaly import (
     build_source_aware_anomaly_result,
 )
 from db.price_ingest import load_source_price_history_csvs, select_active_prices
+
+# Honest method label served by the API (was "shesd_v2" until v1.1, see audit F3).
+ANOMALY_METHOD = "hampel_mad_v2"
 
 
 def _utc_timestamp(value: datetime.datetime | None = None) -> datetime.datetime:
@@ -100,9 +103,25 @@ def main(
     )
     return artifact
 
+    # v1.1: provenance sidecar so the API can report "data per" honestly.
+    import datetime as _dt
+    dates = sorted(r["date"] for r in records)
+    meta = {
+        "method": ANOMALY_METHOD,
+        "generated_at": _dt.datetime.now(_dt.timezone.utc).isoformat(timespec="seconds"),
+        "params": {"window": 30, "k": 3.0, "trend_window": 30, "persist": 2},
+        "n_records": len(records),
+        "first_anomaly_date": dates[0] if dates else None,
+        "last_anomaly_date": dates[-1] if dates else None,
+        "price_dir": str(price_dir),
+    }
+    with (out_dir / "meta.json").open("w", encoding="utf-8") as fh:
+        json.dump(meta, fh, ensure_ascii=False, indent=2)
+    print(f"  Wrote provenance to {out_dir / 'meta.json'}")
+
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Precompute S-H-ESD anomaly scan to JSON.")
+    parser = argparse.ArgumentParser(description="Precompute Hampel/MAD anomaly scan to JSON.")
     parser.add_argument(
         "--price-dir",
         type=Path,

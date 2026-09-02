@@ -31,7 +31,14 @@ export function getSupabase(): SupabaseClient | null {
   // Created lazily and memoized: instantiating per render would drop the
   // in-memory session and log the user out on every navigation.
   if (!client) {
-    client = createBrowserClient(URL!, ANON_KEY!);
+    // Pin the session-cookie flags instead of leaning on library defaults:
+    // Lax keeps the session on same-site navigations without riding along on
+    // cross-site requests, Secure keeps it off plaintext HTTP. httpOnly is NOT
+    // an option here — this browser client must read the session from JS, so
+    // the model is short-lived JWTs revalidated server-side (proxy.ts getUser).
+    client = createBrowserClient(URL!, ANON_KEY!, {
+      cookieOptions: { sameSite: "lax", secure: true },
+    });
   }
   return client;
 }

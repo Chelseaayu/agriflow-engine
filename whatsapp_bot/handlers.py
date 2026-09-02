@@ -515,6 +515,8 @@ def handle_forecast(intent: Intent, data: EngineData) -> str:
     method_note = ""
     if method == "seasonal_naive_baseline":
         method_note = "\n[Baseline statistik — bukan TimesFM]"
+    if match.get("interval_method") == "split_conformal_rolling_origin":
+        method_note += "\n[Rentang P10–P90 terkalibrasi 80% pada backtest]"
 
     lines = [
         f"Prediksi {com_name} di {city_name} (30 hari):{method_note}",

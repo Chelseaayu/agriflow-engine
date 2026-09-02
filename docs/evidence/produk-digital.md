@@ -92,6 +92,25 @@ bisa mengoreksi sendiri. Kami cantumkan ini apa adanya: penanganan galatnya bena
 parameter `city` yang menuntut kode IHK memang belum intuitif, dan itu tercatat sebagai temuan
 terbuka di [laporan audit](../AgriFlow_Audit_2026-07.pdf).
 
+### Endpoint baru di v1.1 (belum live di API produksi di atas)
+
+Kode server sudah punya endpoint berikut, teruji di [`tests/test_backend_v11.py`](../../tests/test_backend_v11.py),
+tetapi **HF Space produksi di atas belum di-redeploy dengan kode v1.1** (lihat
+[`docs/DEPLOY_V11.md`](../DEPLOY_V11.md)), jadi tidak kami klaim sebagai respons live sampai
+redeploy dilakukan dan diverifikasi ulang dengan `curl`:
+
+| Endpoint | Fungsi |
+|---|---|
+| `/api/v1/meta` | Metadata data-per (tanggal data, versi engine, allocator aktif) |
+| `/api/v1/summary` | KPI teragregasi (welfare, coverage, jumlah match) |
+| `/api/v1/report.csv` | Ekspor laporan matching sebagai CSV |
+| `/api/v1/matches/explain` | Rincian skor 5 dimensi + alasan tekstual per match |
+| `POST /api/v1/simulate` | Simulasi skenario what-if (preset: semeru, banjir_sentra_padi, banjir_madura, ramadan, bbm_20, impor, suramadu_tutup) | 
+| `city=Kota Surabaya` pada `/api/v1/forecast` | Sekarang diterima langsung (audit F7), tidak lagi menuntut kode IHK |
+
+Parameter `city` menerima nama kota adalah perbaikan langsung atas temuan galat yang
+disebut di paragraf sebelumnya.
+
 ### Dua hal yang jujur perlu disebut tentang API produksi
 
 `GET /health` melaporkan `"mock_mode": true` dan `"gemini_mock": true`. Artinya: **data pangan
@@ -122,4 +141,4 @@ rekomendasi konkret lengkap dengan jarak, skor kecocokan, dan tingkat keyakinan.
 | L3 | Alokasi dengan penyeimbangan equity | [`allocation.py`](../../matching_engine/allocation.py) |
 
 Enginenya deterministik dan tidak memanggil layanan luar, sehingga hasilnya dapat direproduksi
-persis oleh siapa pun. Seluruh perilakunya dikunci [523 tes otomatis](pengujian.md#1-test-case).
+persis oleh siapa pun. Seluruh perilakunya dikunci [544 tes otomatis](pengujian.md#1-test-case).

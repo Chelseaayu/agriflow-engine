@@ -1,0 +1,77 @@
+{
+  "generated_at": "2026-08-28T14:13:05+00:00",
+  "results": [
+    {
+      "label": "real BPS 2022, 6 komoditas (served)",
+      "n_surplus": 106,
+      "n_deficit": 122,
+      "greedy": {
+        "matches": 84,
+        "matched_tons": 467044.9,
+        "coverage_pct": 82.12,
+        "welfare": 41099050.51,
+        "low_ipm_fulfillment_pct": 62.0,
+        "latency_p50_ms": 2.95,
+        "latency_p99_ms": 4.49
+      },
+      "lp": {
+        "matches": 101,
+        "matched_tons": 486606.0,
+        "coverage_pct": 85.56,
+        "welfare": 42692430.75,
+        "low_ipm_fulfillment_pct": 62.0,
+        "latency_p50_ms": 10.29,
+        "latency_p99_ms": 334.92
+      },
+      "welfare_gain_pct": 3.88
+    },
+    {
+      "label": "synthetic 19-komoditas fixture (tests only)",
+      "n_surplus": 40,
+      "n_deficit": 33,
+      "greedy": {
+        "matches": 30,
+        "matched_tons": 4620.0,
+        "coverage_pct": 88.02,
+        "welfare": 372966.88,
+        "low_ipm_fulfillment_pct": 100.0,
+        "latency_p50_ms": 0.29,
+        "latency_p99_ms": 0.36
+      },
+      "lp": {
+        "matches": 43,
+        "matched_tons": 5212.0,
+        "coverage_pct": 99.3,
+        "welfare": 417768.07,
+        "low_ipm_fulfillment_pct": 100.0,
+        "latency_p50_ms": 1.33,
+        "latency_p99_ms": 1.67
+      },
+      "welfare_gain_pct": 12.01
+    },
+    {
+      "label": "supply-constrained fixture (La Nina)",
+      "n_surplus": 34,
+      "n_deficit": 33,
+      "greedy": {
+        "matches": 29,
+        "matched_tons": 3490.0,
+        "coverage_pct": 66.49,
+        "welfare": 279334.61,
+        "low_ipm_fulfillment_pct": 100.0,
+        "latency_p50_ms": 0.25,
+        "latency_p99_ms": 0.28
+      },
+      "lp": {
+        "matches": 40,
+        "matched_tons": 3682.0,
+        "coverage_pct": 70.15,
+        "welfare": 292724.52,
+        "low_ipm_fulfillment_pct": 100.0,
+        "latency_p50_ms": 1.16,
+        "latency_p99_ms": 1.36
+      },
+      "welfare_gain_pct": 4.79
+    }
+  ]
+}

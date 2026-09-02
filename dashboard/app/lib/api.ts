@@ -1,11 +1,14 @@
-// Typed thin wrapper around the FastAPI dashboard endpoints.
+// Typed thin wrapper around the FastAPI dashboard endpoints (v1.1).
+//
+// Every number the dashboard shows comes through here. There are no
+// fallbacks: when the API is unreachable the caller gets an error and the UI
+// says so, instead of rendering invented data (audit temuan 6, review v2).
 
 import { getSupabase } from "./supabase";
 
-const LOCAL_DATA_MODE = process.env.NEXT_PUBLIC_LOCAL_DATA_MODE === "true";
-const API_BASE = LOCAL_DATA_MODE
-  ? ""
-  : process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "http://localhost:8000";
+export const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
+  "http://localhost:8000";
 
 export type Commodity = { code: string; nama: string };
 
@@ -45,21 +48,25 @@ export type SurplusDeficitResponse = {
   totals: { surplus_tons: number; deficit_tons: number; balance_tons: number };
 };
 
+export type Breakdown = {
+  distance: number;
+  volume: number;
+  price: number;
+  perishability: number;
+  climate: number;
+};
+
+export type MatchEnd = {
+  kab_id: string;
+  kab_nama: string;
+  lat: number;
+  lng: number;
+  price_per_kg: number;
+};
+
 export type Match = {
-  surplus: {
-    kab_id: string;
-    kab_nama: string;
-    lat: number;
-    lng: number;
-    price_per_kg: number;
-  };
-  deficit: {
-    kab_id: string;
-    kab_nama: string;
-    lat: number;
-    lng: number;
-    price_per_kg: number;
-  };
+  surplus: MatchEnd;
+  deficit: MatchEnd;
   commodity_code: string;
   commodity_nama: string;
   matched_volume_tons: number;
@@ -67,73 +74,44 @@ export type Match = {
   final_score: number;
   confidence: string;
   flags: string[];
+  // v1.1 explainability
+  base_score: number;
+  equity_multiplier: number;
+  segment_multiplier: number;
+  deficit_ipm: number;
+  breakdown: Breakdown;
+  price_spread_idr_per_kg: number;
+  gross_arbitrage_idr: number;
+  notes: string;
+  why: string[];
 };
 
 export type MatchesResponse = { count: number; matches: Match[] };
 
-// ---------------------------------------------------------------------------
-// Forecast types
-// ---------------------------------------------------------------------------
-
-export type ForecastPoint = {
-  date: string;   // ISO 8601
-  point: number;  // IDR/kg
-  p10: number;
-  p90: number;
-};
+export type ForecastPoint = { date: string; point: number; p10: number; p90: number };
 
 export type ForecastResponse = {
-  commodity_code:   string;
-  city_id:          string;
-  city_name:        string;
-  method:           string;  // "timesfm_2.0" | "seasonal_naive_baseline"
-  generated_at:     string;
-  horizon_days:     number;
-  history_end_date: string;
-  forecasts:        ForecastPoint[];
-};
-
-// ---------------------------------------------------------------------------
-// Anomaly types
-// ---------------------------------------------------------------------------
-
-export type AnomalySeriesStatus =
-  | "DETECTABLE"
-  | "INSUFFICIENT_HISTORY"
-  | "NO_ACTIVE_HISTORY"
-  | "OUT_OF_COVERAGE";
-
-export type AnomalyObservationProvenance = {
-  data_source: "SISKAPERBAPO" | "PIHPS";
-  observation_date: string;
-  price_per_kg: number;
-};
-
-export type AnomalyMarketQuality = {
-  market_count?: number;
-  mean?: number;
-  min?: number;
-  max?: number;
-  median?: number;
-  coverage?: number;
-  confidence?: string;
-};
-
-export type AnomalySeries = {
+  commodity_code: string;
   city_id: string;
   city_name: string;
+  method: string; // "timesfm_2.0" | "seasonal_naive_baseline"
+  interval_method?: string; // "split_conformal_rolling_origin" | "same_month_mad"
+  interval_target_coverage?: number | null;
+  calibration_residuals?: number;
+  generated_at: string;
+  horizon_days: number;
+  history_end_date: string;
+  forecasts: ForecastPoint[];
+};
+
+export type PriceHistoryResponse = {
   commodity_code: string;
-  series_status: AnomalySeriesStatus;
-  history_start_date: string | null;
-  latest_observation_date: string | null;
-  observation_count: number;
-  history_coverage_ratio: number | null;
-  history_confidence: "HIGH" | "MEDIUM" | "LOW" | null;
-  active_history_source_counts: Record<"SISKAPERBAPO" | "PIHPS", number>;
-  latest_observation_source: "SISKAPERBAPO" | "PIHPS" | null;
-  observation_freshness_days: number | null;
-  market_quality: AnomalyMarketQuality | null;
-  market_quality_availability: string | null;
+  city_id: string;
+  city_name: string;
+  source: string;
+  history_end_date: string;
+  n: number;
+  points: { date: string; price: number }[];
 };
 
 export type AnomalyRecord = {
@@ -147,25 +125,145 @@ export type AnomalyRecord = {
   city_id: string;
   city_name: string;
   persistent: boolean;
-  observation_provenance: AnomalyObservationProvenance;
 };
 
-export type AnomalyStatusSummary = Partial<Record<AnomalySeriesStatus, number>>;
+export type AnomaliesResponse = { count: number; method: string; anomalies: AnomalyRecord[] };
 
-export type AnomaliesResponse = {
-  schema_version: string;
-  artifact_generated_at: string;
-  active_source_policy: string;
-  count: number;
-  method: string;
-  anomalies: AnomalyRecord[];
-  series: AnomalySeries | null;
-  status_summary: AnomalyStatusSummary | null;
+export type Meta = {
+  engine_version: string;
+  git_commit: string | null;
+  data_backend: string;
+  allocator: string | null;
+  anomaly_gate: string | null;
+  anomaly_method: string;
+  anomaly_gate_window_days: number;
+  anomaly_gate_active_pairs: number;
+  data_as_of: {
+    price_history_end: string | null;
+    anomaly_scan_generated_at: string | null;
+    anomaly_last_date: string | null;
+    forecast_generated_at: string | null;
+    forecast_history_end: string | null;
+    forecast_interval_methods: string[];
+    bps_reference_year: number;
+    ipm_year: number;
+    road_distance: string;
+  };
+  coverage: { kabupaten: number; commodities: string[]; forecast_series: number; matches: number };
+  engine_run: {
+    latency_ms: number | null;
+    welfare: number | null;
+    welfare_greedy: number | null;
+    welfare_gain_pct: number | null;
+    matched_tons: number | null;
+    candidate_pairs_evaluated: number | null;
+    active_event: string | null;
+  };
 };
 
-// ---------------------------------------------------------------------------
-// Fetch helper + API object
-// ---------------------------------------------------------------------------
+export type CommoditySummary = {
+  surplus_tons: number;
+  deficit_tons: number;
+  matched_tons: number;
+  coverage_pct: number | null;
+  n_matches: number;
+  n_surplus_kab: number;
+  n_deficit_kab: number;
+  gross_arbitrage_idr: number;
+  equity_boosted_matches: number;
+  low_ipm_deficit_fulfillment_pct: number | null;
+  unmatched_deficit_kab: string[];
+};
+
+export type SummaryTotals = {
+  surplus_tons: number;
+  deficit_tons: number;
+  matched_tons: number;
+  coverage_pct: number | null;
+  n_matches: number;
+  gross_arbitrage_idr: number;
+};
+
+export type Summary = {
+  data_as_of: { price_history_end: string | null; bps_reference_year: number };
+  per_commodity: Record<string, CommoditySummary>;
+  totals: SummaryTotals;
+  engine: {
+    allocator: string | null;
+    welfare: number | null;
+    welfare_gain_pct_vs_greedy: number | null;
+    latency_ms: number | null;
+    anomaly_gate: string | null;
+  };
+};
+
+export type ExplainRow = {
+  surplus_kab_id: string;
+  surplus_kab: string;
+  available_tons: number;
+  distance_km: number;
+  base_score: number;
+  equity_multiplier: number;
+  final_score: number;
+  breakdown: Breakdown;
+  chosen: boolean;
+  allocated_tons: number;
+};
+
+export type ExplainResponse = {
+  deficit: {
+    kab_id: string; kab_nama: string; ipm: number; volume_tons: number;
+    price_per_kg: number; commodity_code: string;
+  };
+  weights_used: Record<string, number>;
+  allocator: string | null;
+  n_viable_suppliers: number;
+  ranking: ExplainRow[];
+  reason_not_chosen: string;
+};
+
+export type SimulateRequest = {
+  presets?: string[];
+  unreachable_kab?: string[];
+  humanitarian_kab?: string[];
+  blackout_kab?: string[];
+  ramadan?: boolean;
+  bbm_pct?: number;
+  import_policy?: boolean;
+  commodity?: string | null;
+  reference_date?: string | null;
+  allocator?: string | null;
+  limit?: number;
+};
+
+export type SimulateResponse = {
+  scenario: {
+    labels: string[];
+    applied: {
+      unreachable_kab: string[]; humanitarian_kab: string[]; blackout_kab: string[];
+      ramadan: boolean; bbm_pct: number; import_policy: boolean;
+    };
+    allocator: string | null;
+    active_event: string | null;
+    weights_used: Record<string, number> | null;
+  };
+  baseline: SummaryTotals;
+  result: SummaryTotals;
+  delta: {
+    matched_tons: number;
+    coverage_pct: number | null;
+    n_matches: number;
+    welfare: number;
+    latency_ms: number | null;
+  };
+  removed_matches: Match[];
+  added_matches: Match[];
+  matches: Match[];
+  warnings: string[];
+  external_opportunities: string[];
+};
+
+export type ChatResponse = { reply: string };
 
 // Thrown when the API rejects our token. Callers can catch this specifically
 // to send the user back to /login instead of showing a generic error.
@@ -176,43 +274,39 @@ export class UnauthorizedError extends Error {
   }
 }
 
-export class ApiError extends Error {
-  constructor(
-    public readonly path: string,
-    public readonly status: number,
-    public readonly detail: unknown = null,
-  ) {
-    super(`${path} failed: ${status}`);
-    this.name = "ApiError";
+async function authHeaders(): Promise<Record<string, string>> {
+  const headers: Record<string, string> = {};
+  // Attach the Supabase access token when there is a session. getSession()
+  // refreshes it if it is close to expiry, so a tab left open overnight sends
+  // a live token rather than a stale one.
+  const supabase = getSupabase();
+  if (supabase) {
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    if (token) headers.Authorization = `Bearer ${token}`;
   }
+  return headers;
 }
 
 async function fetchJson<T>(path: string): Promise<T> {
-  const headers: Record<string, string> = {};
-
-  // Local artifact mode is self-contained and deliberately bypasses Supabase.
-  if (!LOCAL_DATA_MODE) {
-    // Attach the Supabase access token when there is a session. getSession()
-    // refreshes it if it is close to expiry, so a tab left open overnight sends
-    // a live token rather than a stale one.
-    const supabase = getSupabase();
-    if (supabase) {
-      const { data } = await supabase.auth.getSession();
-      const token = data.session?.access_token;
-      if (token) headers.Authorization = `Bearer ${token}`;
-    }
-  }
-
+  const headers = await authHeaders();
   const r = await fetch(`${API_BASE}${path}`, { cache: "no-store", headers });
   if (r.status === 401) throw new UnauthorizedError(path);
+  if (!r.ok) throw new Error(`${path} failed: ${r.status}`);
+  return r.json() as Promise<T>;
+}
+
+async function postJson<T>(path: string, body: unknown): Promise<T> {
+  const headers = await authHeaders();
+  headers["Content-Type"] = "application/json";
+  const r = await fetch(`${API_BASE}${path}`, {
+    method: "POST", cache: "no-store", headers, body: JSON.stringify(body),
+  });
+  if (r.status === 401) throw new UnauthorizedError(path);
   if (!r.ok) {
-    let detail: unknown = null;
-    try {
-      detail = await r.json();
-    } catch {
-      // Non-JSON errors still retain their HTTP status for callers.
-    }
-    throw new ApiError(path, r.status, detail);
+    let detail = "";
+    try { detail = JSON.stringify((await r.json()).detail); } catch { /* ignore */ }
+    throw new Error(`${path} failed: ${r.status} ${detail}`);
   }
   return r.json() as Promise<T>;
 }
@@ -231,16 +325,22 @@ export const api = {
     if (params.limit) q.set("limit", String(params.limit));
     return fetchJson<MatchesResponse>(`/api/v1/matches?${q.toString()}`);
   },
+  explain: (params: { deficit_kab_id: string; commodity: string; limit?: number }) => {
+    const q = new URLSearchParams({
+      deficit_kab_id: params.deficit_kab_id, commodity: params.commodity,
+      limit: String(params.limit ?? 6),
+    });
+    return fetchJson<ExplainResponse>(`/api/v1/matches/explain?${q.toString()}`);
+  },
   forecast: (params: { commodity: string; city: string }) =>
     fetchJson<ForecastResponse>(
       `/api/v1/forecast?commodity=${encodeURIComponent(params.commodity)}&city=${encodeURIComponent(params.city)}`,
     ),
-  anomalies: (params: {
-    commodity?: string;
-    city?: string;
-    limit?: number;
-    since?: string;
-  }) => {
+  priceHistory: (params: { commodity: string; city: string; days?: number }) =>
+    fetchJson<PriceHistoryResponse>(
+      `/api/v1/price-history?commodity=${encodeURIComponent(params.commodity)}&city=${encodeURIComponent(params.city)}&days=${params.days ?? 90}`,
+    ),
+  anomalies: (params: { commodity?: string; city?: string; limit?: number; since?: string }) => {
     const q = new URLSearchParams();
     if (params.commodity) q.set("commodity", params.commodity);
     if (params.city) q.set("city", params.city);
@@ -248,10 +348,16 @@ export const api = {
     if (params.since) q.set("since", params.since);
     return fetchJson<AnomaliesResponse>(`/api/v1/anomalies?${q.toString()}`);
   },
+  meta: () => fetchJson<Meta>("/api/v1/meta"),
+  summary: (commodity?: string) =>
+    fetchJson<Summary>(`/api/v1/summary${commodity ? `?commodity=${encodeURIComponent(commodity)}` : ""}`),
+  simulatePresets: () => fetchJson<Record<string, string>>("/api/v1/simulate/presets"),
+  simulate: (body: SimulateRequest) => postJson<SimulateResponse>("/api/v1/simulate", body),
+  chat: (message: string) => postJson<ChatResponse>("/chat", { message }),
+  reportCsvUrl: (commodity?: string) =>
+    `${API_BASE}/api/v1/report.csv${commodity ? `?commodity=${encodeURIComponent(commodity)}` : ""}`,
   // Plan + remaining free-tier quota for a WhatsApp number. The API hashes the
   // number server-side; it is never stored in raw form.
   billingStatus: (phone: string) =>
-    fetchJson<BillingStatus>(
-      `/billing/status?phone=${encodeURIComponent(phone)}`,
-    ),
+    fetchJson<BillingStatus>(`/billing/status?phone=${encodeURIComponent(phone)}`),
 };

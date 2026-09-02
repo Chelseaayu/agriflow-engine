@@ -10,7 +10,7 @@
 import {
   createContext, useCallback, useContext, useEffect, useMemo, useState,
 } from "react";
-import type { Session, User } from "@supabase/supabase-js";
+import type { Provider, Session, User } from "@supabase/supabase-js";
 import { getSupabase, isAuthConfigured } from "./supabase";
 import {
   credentialsMatch, currentDevUser, enterDev, exitDev, DEV_LOGIN_ENABLED,
@@ -27,13 +27,35 @@ function makeDevUser(email: string): User {
 
 type AuthResult = { error: string | null };
 
+// Collapse raw Supabase error strings into neutral Indonesian copy before they
+// reach the UI. Raw messages are English and occasionally too specific: showing
+// them verbatim leaks implementation detail and, for some flows, whether an
+// account exists (user enumeration). Sign-in failures all become one string on
+// purpose; "wrong password" and "unknown email" must be indistinguishable.
+function toNeutralError(
+  error: { message?: string; status?: number } | null,
+): string | null {
+  if (!error) return null;
+  const msg = (error.message ?? "").toLowerCase();
+  if (error.status === 429 || msg.includes("rate limit")) {
+    return "Terlalu banyak percobaan. Coba lagi beberapa menit lagi.";
+  }
+  if (msg.includes("invalid login credentials")) {
+    return "Email atau kata sandi salah.";
+  }
+  if (msg.includes("password")) {
+    return "Kata sandi belum memenuhi ketentuan. Gunakan minimal 8 karakter.";
+  }
+  return "Terjadi kendala saat memproses permintaan. Silakan coba lagi.";
+}
+
 type AuthContextValue = {
   user: User | null;
   session: Session | null;
   loading: boolean;
   configured: boolean;
   signIn: (email: string, password: string) => Promise<AuthResult>;
-  signUp: (email: string, password: string) => Promise<AuthResult>;
+  signInWithOAuth: (provider: Provider, nextPath?: string) => Promise<AuthResult>;
   signOut: () => Promise<void>;
   requestPasswordReset: (email: string) => Promise<AuthResult>;
   updatePassword: (newPassword: string) => Promise<AuthResult>;
@@ -47,26 +69,21 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const configured = isAuthConfigured();
   const [session, setSession] = useState<Session | null>(null);
-  const [devUser, setDevUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(configured);
-
-  // Restore a dev-login session from its cookie on mount. Client-only, and a
-  // no-op unless NEXT_PUBLIC_DEV_LOGIN is on, so production carries no trace.
-  useEffect(() => {
+  // Restore a dev-login session from its cookie. Lazy initialiser, client
+  // only, and a no-op unless NEXT_PUBLIC_DEV_LOGIN is on, so production
+  // carries no trace and never diverges between server and client render.
+  const [devUser, setDevUser] = useState<User | null>(() => {
+    if (!DEV_LOGIN_ENABLED || typeof document === "undefined") return null;
     const email = currentDevUser();
-    if (email) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- restores the client-only development session.
-      setDevUser(makeDevUser(email));
-    }
-  }, []);
+    return email ? makeDevUser(email) : null;
+  });
+  const [loading, setLoading] = useState(configured);
 
   useEffect(() => {
     const supabase = getSupabase();
-    if (!supabase) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- marks client-only auth initialization as complete.
-      setLoading(false);
-      return;
-    }
+    // No client means auth is not configured, and `loading` was already
+    // initialised to false from `configured`, so nothing to reset here.
+    if (!supabase) return;
     let active = true;
 
     supabase.auth.getSession().then(({ data }) => {
@@ -99,15 +116,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const supabase = getSupabase();
     if (!supabase) return { error: NOT_CONFIGURED };
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error: error?.message ?? null };
+    return { error: toNeutralError(error) };
   }, []);
 
-  const signUp = useCallback(async (email: string, password: string) => {
-    const supabase = getSupabase();
-    if (!supabase) return { error: NOT_CONFIGURED };
-    const { error } = await supabase.auth.signUp({ email, password });
-    return { error: error?.message ?? null };
-  }, []);
+  // Social login (Google today, any Supabase Provider tomorrow). Self-serve
+  // email/password signup is gone on purpose: accounts come from OAuth or are
+  // provisioned by an admin, which removes the password-policy and
+  // leaked-password surface from this app entirely. The browser leaves the
+  // page for the provider's consent screen, so on success nothing after the
+  // call runs; redirectTo brings the visitor back to the page they wanted
+  // (and must be listed in Supabase's Authentication > URL Configuration
+  // allow-list, or Supabase falls back to the Site URL).
+  const signInWithOAuth = useCallback(
+    async (provider: Provider, nextPath: string = "/dashboard") => {
+      const supabase = getSupabase();
+      if (!supabase) return { error: NOT_CONFIGURED };
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: { redirectTo: `${window.location.origin}${nextPath}` },
+      });
+      return { error: toNeutralError(error) };
+    },
+    [],
+  );
 
   const signOut = useCallback(async () => {
     await getSupabase()?.auth.signOut();
@@ -129,7 +160,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
     });
-    return { error: error?.message ?? null };
+    return { error: toNeutralError(error) };
   }, []);
 
   // Step 2: called from /reset-password once the recovery link has been
@@ -140,7 +171,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const supabase = getSupabase();
     if (!supabase) return { error: NOT_CONFIGURED };
     const { error } = await supabase.auth.updateUser({ password: newPassword });
-    return { error: error?.message ?? null };
+    return { error: toNeutralError(error) };
   }, []);
 
   const value = useMemo<AuthContextValue>(
@@ -151,12 +182,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       loading,
       configured: configured || DEV_LOGIN_ENABLED,
       signIn,
-      signUp,
+      signInWithOAuth,
       signOut,
       requestPasswordReset,
       updatePassword,
     }),
-    [session, devUser, loading, configured, signIn, signUp, signOut,
+    [session, devUser, loading, configured, signIn, signInWithOAuth, signOut,
      requestPasswordReset, updatePassword],
   );
 

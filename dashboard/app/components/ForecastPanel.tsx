@@ -1,257 +1,103 @@
 "use client";
 
 /**
- * ForecastPanel — 30-day price forecast chart + CI band.
- *
- * Renders a lightweight SVG line chart (no external charting lib) consistent
- * with the existing dashboard aesthetic.  The CI band (P10-P90) is rendered as
- * a filled area; the point forecast is a line; history end date is marked.
- *
- * Props:
- *   forecast      ForecastResponse | null  — null while loading
- *   loading       boolean
- *   error         string | null
+ * ForecastPanel: 90 days of observed prices and the 30-day forecast on one
+ * axis, with the P10 to P90 band. The interval label comes from the API
+ * (split conformal since v1.1) and the point method is always shown.
  */
 
 import { useMemo } from "react";
-import type { ForecastPoint, ForecastResponse } from "../lib/api";
+import type { ForecastResponse, PriceHistoryResponse } from "../lib/api";
+import { fmtDate, fmtIdr } from "../lib/format";
 
-// ---------------------------------------------------------------------------
-// Format helpers
-// ---------------------------------------------------------------------------
+const W = 640, H = 200, PL = 56, PR = 12, PT = 14, PB = 28;
 
-function fmtIdr(n: number): string {
-  if (n >= 1_000_000) return "Rp " + (n / 1_000_000).toFixed(1) + "jt";
-  if (n >= 1_000)     return "Rp " + (n / 1_000).toFixed(0) + "k";
-  return "Rp " + n.toFixed(0);
-}
-
-function fmtDate(iso: string): string {
-  const d = new Date(iso);
-  return d.toLocaleDateString("id-ID", { day: "numeric", month: "short" });
-}
-
-// ---------------------------------------------------------------------------
-// SVG chart
-// ---------------------------------------------------------------------------
-
-const CHART_W  = 520;
-const CHART_H  = 160;
-const PAD_L    = 52;
-const PAD_R    = 16;
-const PAD_T    = 12;
-const PAD_B    = 28;
-
-type ChartProps = {
-  forecasts: ForecastPoint[];
-};
-
-function ForecastChart({ forecasts }: ChartProps) {
-  const plotW = CHART_W - PAD_L - PAD_R;
-  const plotH = CHART_H - PAD_T - PAD_B;
-
-  const { minP, maxP, xScale, yScale, bandPath, linePath, ticks } =
-    useMemo(() => {
-      const all = forecasts.flatMap((pt) => [pt.p10, pt.p90]);
-      const minP = Math.min(...all);
-      const maxP = Math.max(...all);
-      const pad  = (maxP - minP) * 0.1 || 1000;
-      const lo   = minP - pad;
-      const hi   = maxP + pad;
-      const n    = forecasts.length;
-
-      const xScale = (i: number) => PAD_L + (i / (n - 1)) * plotW;
-      const yScale = (v: number) => PAD_T + plotH - ((v - lo) / (hi - lo)) * plotH;
-
-      // CI band (p10 → p90 reversed)
-      const fwd  = forecasts.map((pt, i) => `${xScale(i)},${yScale(pt.p90)}`).join(" ");
-      const bwd  = [...forecasts].reverse().map((pt, i) =>
-        `${xScale(n - 1 - i)},${yScale(pt.p10)}`
-      ).join(" ");
-      const bandPath = `M ${fwd} L ${bwd} Z`;
-
-      // Point forecast line
-      const linePath = "M " + forecasts
-        .map((pt, i) => `${xScale(i)},${yScale(pt.point)}`)
-        .join(" L ");
-
-      // X-axis ticks: day 1, 8, 15, 22, 30
-      const tickIdxs = [0, 7, 14, 21, n - 1];
-      const ticks = tickIdxs.filter((i) => i < n).map((i) => ({
-        x:    xScale(i),
-        label: fmtDate(forecasts[i].date),
-      }));
-
-      // Y-axis ticks: 3 evenly spaced
-      const yTicks = [lo + (hi - lo) * 0.1, lo + (hi - lo) * 0.5, lo + (hi - lo) * 0.9];
-
-      return { minP, maxP, xScale, yScale, bandPath, linePath, ticks, yTicks };
-    }, [forecasts]);
-
-  const yTickVals = useMemo(() => {
-    const all = forecasts.flatMap((pt) => [pt.p10, pt.p90]);
-    const lo   = Math.min(...all) - (Math.max(...all) - Math.min(...all)) * 0.1;
-    const hi   = Math.max(...all) + (Math.max(...all) - Math.min(...all)) * 0.1;
-    return [
-      lo + (hi - lo) * 0.1,
-      lo + (hi - lo) * 0.5,
-      lo + (hi - lo) * 0.9,
-    ].map((v) => ({
-      y:     PAD_T + CHART_H - PAD_T - PAD_B - ((v - lo) / (hi - lo)) * (CHART_H - PAD_T - PAD_B),
-      label: fmtIdr(v),
-    }));
-  }, [forecasts]);
+function Chart({ history, forecast }: { history: PriceHistoryResponse | null; forecast: ForecastResponse }) {
+  const model = useMemo(() => {
+    const hist = history?.points ?? [];
+    const fc = forecast.forecasts;
+    const n = hist.length + fc.length;
+    const vals = [...hist.map((p) => p.price), ...fc.flatMap((p) => [p.p10, p.p90, p.point])];
+    let lo = Math.min(...vals), hi = Math.max(...vals);
+    const pad = (hi - lo) * 0.12 || 1000;
+    lo -= pad; hi += pad;
+    const plotW = W - PL - PR, plotH = H - PT - PB;
+    const x = (i: number) => PL + (n <= 1 ? 0 : (i / (n - 1)) * plotW);
+    const y = (v: number) => PT + plotH - ((v - lo) / (hi - lo)) * plotH;
+    const histPath = hist.length ? "M " + hist.map((p, i) => `${x(i)},${y(p.price)}`).join(" L ") : "";
+    const off = hist.length;
+    const fcPath = "M " + fc.map((p, i) => `${x(off + i)},${y(p.point)}`).join(" L ");
+    const band = `M ${fc.map((p, i) => `${x(off + i)},${y(p.p90)}`).join(" L ")} L ${[...fc].reverse().map((p, i) => `${x(off + fc.length - 1 - i)},${y(p.p10)}`).join(" L ")} Z`;
+    const splitX = hist.length ? x(off - 1) : x(0);
+    const ticks: { x: number; label: string }[] = [];
+    const all = [...hist.map((p) => p.date), ...fc.map((p) => p.date)];
+    const step = Math.max(1, Math.round(n / 6));
+    for (let i = 0; i < n; i += step) ticks.push({ x: x(i), label: fmtDate(all[i], false) });
+    const yt = [0.1, 0.5, 0.9].map((f) => ({ y: y(lo + (hi - lo) * f), label: fmtIdr(lo + (hi - lo) * f, { compact: true }) }));
+    return { histPath, fcPath, band, splitX, ticks, yt, lo, hi };
+  }, [history, forecast]);
 
   return (
-    <svg
-      viewBox={`0 0 ${CHART_W} ${CHART_H}`}
-      className="w-full"
-      style={{ height: CHART_H }}
-    >
-      {/* Y grid lines + labels */}
-      {yTickVals.map((t, i) => (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="Harga observasi dan prakiraan 30 hari">
+      {model.yt.map((t, i) => (
         <g key={i}>
-          <line
-            x1={PAD_L} y1={t.y} x2={CHART_W - PAD_R} y2={t.y}
-            stroke="#e4e4e7" strokeWidth={1}
-          />
-          <text
-            x={PAD_L - 4} y={t.y + 4}
-            textAnchor="end"
-            fontSize={9}
-            fill="#71717a"
-          >
-            {t.label}
-          </text>
+          <line x1={PL} y1={t.y} x2={W - PR} y2={t.y} stroke="#e4e4e7" strokeWidth={1} />
+          <text x={PL - 4} y={t.y + 3} textAnchor="end" fontSize={9} fill="#71717a">{t.label}</text>
         </g>
       ))}
-
-      {/* CI band */}
-      <path d={bandPath} fill="#6366f1" fillOpacity={0.12} />
-
-      {/* Point forecast line */}
-      <path
-        d={linePath}
-        fill="none"
-        stroke="#6366f1"
-        strokeWidth={2}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-
-      {/* X-axis ticks */}
-      {ticks.map((t) => (
-        <g key={t.x}>
-          <line
-            x1={t.x} y1={CHART_H - PAD_B} x2={t.x} y2={CHART_H - PAD_B + 4}
-            stroke="#a1a1aa" strokeWidth={1}
-          />
-          <text
-            x={t.x} y={CHART_H - PAD_B + 13}
-            textAnchor="middle"
-            fontSize={9}
-            fill="#71717a"
-          >
-            {t.label}
-          </text>
-        </g>
+      <path d={model.band} fill="#5b7245" fillOpacity={0.16} />
+      {model.histPath && <path d={model.histPath} fill="none" stroke="#27272a" strokeWidth={1.6} strokeLinejoin="round" />}
+      <path d={model.fcPath} fill="none" stroke="#5b7245" strokeWidth={2.2} strokeLinejoin="round" />
+      <line x1={model.splitX} y1={PT} x2={model.splitX} y2={H - PB} stroke="#a1a1aa" strokeDasharray="3 3" />
+      <text x={model.splitX + 3} y={PT + 9} fontSize={8} fill="#71717a">prakiraan →</text>
+      {model.ticks.map((t) => (
+        <text key={t.x} x={t.x} y={H - PB + 13} textAnchor="middle" fontSize={9} fill="#71717a">{t.label}</text>
       ))}
-
-      {/* X axis line */}
-      <line
-        x1={PAD_L} y1={CHART_H - PAD_B}
-        x2={CHART_W - PAD_R} y2={CHART_H - PAD_B}
-        stroke="#d4d4d8" strokeWidth={1}
-      />
+      <line x1={PL} y1={H - PB} x2={W - PR} y2={H - PB} stroke="#d4d4d8" />
     </svg>
   );
 }
 
-// ---------------------------------------------------------------------------
-// Main panel
-// ---------------------------------------------------------------------------
-
-type Props = {
-  forecast: ForecastResponse | null;
-  loading:  boolean;
-  error:    string | null;
-};
-
-export default function ForecastPanel({ forecast, loading, error }: Props) {
-  if (error) {
-    return (
-      <div className="border border-rose-200 rounded-lg p-3 bg-rose-50 text-xs text-rose-700">
-        {error}
-      </div>
-    );
-  }
-
-  if (loading || !forecast) {
-    return (
-      <div className="border border-zinc-200 rounded-lg p-3 text-xs text-zinc-400 animate-pulse">
-        Memuat forecast...
-      </div>
-    );
-  }
+export default function ForecastPanel({ forecast, history, loading, error }: {
+  forecast: ForecastResponse | null; history: PriceHistoryResponse | null; loading: boolean; error: string | null;
+}) {
+  if (error) return <div className="rounded-lg p-3 bg-rose-50 text-xs text-rose-700 border border-rose-200">{error}</div>;
+  if (loading) return <div className="rounded-lg p-3 text-xs text-zinc-400 animate-pulse">Memuat prakiraan...</div>;
+  if (!forecast) return <div className="rounded-lg p-3 text-xs text-zinc-500">Belum ada prakiraan untuk pasangan komoditas dan kota ini. Prakiraan tersedia untuk 8 kota IHK PIHPS.</div>;
 
   const isBaseline = forecast.method === "seasonal_naive_baseline";
-  const first      = forecast.forecasts[0];
-  const last       = forecast.forecasts[forecast.forecasts.length - 1];
+  const conformal = forecast.interval_method === "split_conformal_rolling_origin";
+  const first = forecast.forecasts[0];
+  const last = forecast.forecasts[forecast.forecasts.length - 1];
+  const lastObs = history?.points[history.points.length - 1];
 
   return (
-    <div className="border border-zinc-200 rounded-lg bg-white overflow-hidden">
-      {/* Header */}
-      <div className="px-3 py-2 border-b border-zinc-100 flex items-center justify-between">
+    <div className="flex flex-col">
+      <div className="px-3 py-2 border-b border-zinc-100 flex items-center justify-between gap-2 flex-wrap">
         <div>
-          <span className="text-xs font-semibold text-zinc-800">
-            Forecast 30 hari — {forecast.city_name}
-          </span>
-          <span className="ml-2 text-[10px] text-zinc-400">
-            s.d. {forecast.history_end_date}
-          </span>
+          <span className="text-xs font-semibold text-zinc-800">Harga {forecast.city_name}: 90 hari observasi + 30 hari prakiraan</span>
+          <span className="ml-2 text-[10px] text-zinc-400">observasi s.d. {fmtDate(forecast.history_end_date)}</span>
         </div>
-        {isBaseline && (
-          <span className="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-medium">
-            baseline statistik
+        <div className="flex gap-1.5">
+          <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${isBaseline ? "bg-amber-100 text-amber-800" : "bg-indigo-100 text-indigo-800"}`}>
+            {isBaseline ? "seasonal-naive baseline" : forecast.method}
           </span>
-        )}
+          {conformal && <span className="text-[10px] px-1.5 py-0.5 rounded font-medium bg-emerald-100 text-emerald-800">pita 80% terkalibrasi (conformal)</span>}
+        </div>
       </div>
-
-      {/* Chart */}
-      <div className="px-2 pt-1">
-        <ForecastChart forecasts={forecast.forecasts} />
+      <div className="px-2 pt-1"><Chart history={history} forecast={forecast} /></div>
+      <div className="px-3 py-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] border-t border-zinc-100">
+        {lastObs && <span className="text-zinc-500">Observasi terakhir: <b className="text-zinc-800">{fmtIdr(lastObs.price)}/kg</b></span>}
+        <span className="text-zinc-500">Hari 1 ({fmtDate(first.date, false)}): <b className="text-zinc-800">{fmtIdr(first.point)}/kg</b></span>
+        <span className="text-zinc-500">Hari 30 ({fmtDate(last.date, false)}): <b className="text-zinc-800">{fmtIdr(last.point)}/kg</b></span>
+        <span className="text-zinc-400">Rentang hari 30: {fmtIdr(last.p10)} sampai {fmtIdr(last.p90)}</span>
       </div>
-
-      {/* Summary row */}
-      <div className="px-3 py-2 flex gap-4 text-[11px] border-t border-zinc-100">
-        <span className="text-zinc-500">
-          Hari 1 ({fmtDate(first.date)}):{" "}
-          <span className="font-semibold text-zinc-800">{fmtIdr(first.point)}/kg</span>
-        </span>
-        <span className="text-zinc-500">
-          Hari 30 ({fmtDate(last.date)}):{" "}
-          <span className="font-semibold text-zinc-800">{fmtIdr(last.point)}/kg</span>
-        </span>
-        <span className="text-zinc-400">
-          CI: {fmtIdr(last.p10)} – {fmtIdr(last.p90)}
-        </span>
-      </div>
-
-      {/* Legend */}
-      <div className="px-3 pb-2 flex gap-3 text-[10px] text-zinc-500">
-        <span className="flex items-center gap-1">
-          <span className="w-4 h-0.5 bg-indigo-500 inline-block" />
-          Point
-        </span>
-        <span className="flex items-center gap-1">
-          <span className="w-4 h-3 bg-indigo-400/20 border border-indigo-300/30 inline-block rounded-sm" />
-          P10–P90
-        </span>
-        {isBaseline && (
-          <span className="text-amber-600 ml-1">
-            * Seasonal-naive baseline, bukan TimesFM
-          </span>
-        )}
+      <div className="px-3 pb-2 flex flex-wrap gap-3 text-[10px] text-zinc-500">
+        <span className="flex items-center gap-1"><span className="w-4 h-0.5 bg-zinc-800 inline-block" /> observasi PIHPS</span>
+        <span className="flex items-center gap-1"><span className="w-4 h-0.5 bg-[#5b7245] inline-block" /> prakiraan titik</span>
+        <span className="flex items-center gap-1"><span className="w-4 h-3 bg-[#5b7245]/20 inline-block rounded-sm" /> P10 sampai P90</span>
+        {isBaseline && <span className="text-amber-700">Median bulan-yang-sama, bukan foundation model. MAPE backtest 10,8%.</span>}
+        {conformal && forecast.calibration_residuals ? <span>Kalibrasi pada {forecast.calibration_residuals} residual rolling-origin.</span> : null}
       </div>
     </div>
   );

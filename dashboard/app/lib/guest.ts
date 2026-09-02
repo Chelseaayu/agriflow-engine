@@ -19,11 +19,11 @@ const GUEST_MAX_AGE = 12 * 60 * 60;
 
 export function enterGuest(): void {
   document.cookie =
-    `${GUEST_COOKIE}=1; path=/; max-age=${GUEST_MAX_AGE}; SameSite=Lax`;
+    `${GUEST_COOKIE}=1; path=/; max-age=${GUEST_MAX_AGE}; SameSite=Lax; Secure`;
 }
 
 export function exitGuest(): void {
-  document.cookie = `${GUEST_COOKIE}=; path=/; max-age=0; SameSite=Lax`;
+  document.cookie = `${GUEST_COOKIE}=; path=/; max-age=0; SameSite=Lax; Secure`;
 }
 
 export function isGuest(): boolean {

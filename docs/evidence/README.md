@@ -54,7 +54,7 @@ berjalan**, bukan mockup.
 
 ### 2. Bukti pengujian → [selengkapnya](pengujian.md)
 
-523 tes lulus lintas OS di CI, backtest model dengan MAPE 10,8%, uji performa sampai skala
+544 tes lulus lintas OS di CI, backtest model dengan MAPE 10,8% dan interval terkalibrasi 80%, uji performa sampai skala
 nasional, A/B test jarak jalan, 25 skenario simulasi, uji keamanan awal, error log terstruktur,
 dan laporan audit menyeluruh. Yang belum ada hanya UAT.
 

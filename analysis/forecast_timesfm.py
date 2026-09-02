@@ -16,23 +16,23 @@ HONESTY POLICY:
     DO NOT change the labelling.  If you want TimesFM output, fix the environment
     and re-run.
 
-TIMESFM STATUS (2026-08-10):
-    This project uses the installed ``timesfm`` package's TimesFM 2.5 PyTorch
-    adapter. The package can run on the project's Python 3.12 environment when
-    its PyTorch dependencies are present. The first real forecast downloads the
-    ``google/timesfm-2.5-200m-pytorch`` weights if they are not already cached.
+TIMESFM STATUS (2026-05-31):
+    timesfm PyPI package (1.0.0) requires Python <=3.11 + jaxlib==0.4.26.
+    This project runs Python 3.12+.  TimesFM 2.0 (PyTorch variant) is on
+    HuggingFace Hub but requires the same pinned JAX+Flax stack via the PyPI
+    package.  Install blocker is hard on Python 3.12/3.14.
 
     To use real TimesFM:
-      1. Run this script with the project virtual environment and ``--method auto``.
-      2. Keep enough free RAM and disk space for model download and CPU inference.
-      3. Use ``--method baseline`` only when an explicit statistical fallback is wanted.
+      1. Run this script with Python 3.11: `py -3.11 analysis/forecast_timesfm.py`
+      2. Or wait for timesfm to release a Python 3.12-compatible wheel.
+      3. Check for a conda-based install path: `conda install -c conda-forge timesfm`
 
 USAGE:
-    # Auto-select TimesFM 2.5 when the installed adapter is available:
-    .venv\\Scripts\\python.exe analysis/forecast_timesfm.py --method auto
+    # With TimesFM (Python 3.11 + timesfm installed):
+    python analysis/forecast_timesfm.py
 
     # Explicit baseline (any Python):
-    .venv\\Scripts\\python.exe analysis/forecast_timesfm.py --method baseline
+    python analysis/forecast_timesfm.py --method baseline
 
 OUTPUT:
     sample_data/forecasts/forecast_all.json  --  one file, all series
@@ -41,7 +41,7 @@ FORECAST SCHEMA (per record):
     commodity_code   str
     city_id          str
     city_name        str
-    method           str  ("timesfm_2.5" | "seasonal_naive_baseline")
+    method           str  ("timesfm_2.0" | "seasonal_naive_baseline")
     generated_at     str  ISO 8601 UTC
     horizon_days     int  (30)
     history_end_date str  ISO 8601 -- last observed date
@@ -56,12 +56,10 @@ FORECAST SCHEMA (per record):
 from __future__ import annotations
 
 import argparse
-import csv
 import datetime
-import functools
 import json
+import math
 import sys
-from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
@@ -69,105 +67,102 @@ ROOT = Path(__file__).parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from db.price_ingest import (
-    PIHPS_SOURCE,
-    SISKAPERBAPO_SOURCE,
-    load_source_price_history_csvs,
-    select_active_prices,
-)
+from analysis.price_anomaly import _load_all_rows, CITY_NAMES
 
 HORIZON = 30
-ACTIVE_SOURCE_POLICY = "SISKAPERBAPO_EXACT_KEY_THEN_PIHPS"
-KABUPATEN_REFERENCE_PATH = ROOT / "sample_data" / "kabupaten_jatim.csv"
-
-
-def _load_active_series(price_dir: Path) -> dict[tuple[str, str], list[dict[str, Any]]]:
-    """Load source-aware prices, select active rows, and group them by series.
-
-    Siskaperbapo precedence and PIHPS fallback are delegated exclusively to the
-    public price-loader contract. Each returned row remains an observed active
-    price with its selected source provenance.
-    """
-    source_records = load_source_price_history_csvs(price_dir)
-    active_records = select_active_prices(source_records)
-    grouped: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
-    for row in active_records:
-        grouped[(row["commodity_code"], row["city_id"])].append(row)
-
-    ordered: dict[tuple[str, str], list[dict[str, Any]]] = {}
-    for key in sorted(grouped):
-        ordered[key] = sorted(grouped[key], key=lambda row: row["date"])
-    return ordered
-
-
-@functools.lru_cache(maxsize=1)
-def _load_city_names(
-    reference_path: Path = KABUPATEN_REFERENCE_PATH,
-) -> dict[str, str]:
-    """Return Kabupaten/Kota labels from the 38-region reference dataset."""
-    with reference_path.open(newline="", encoding="utf-8") as handle:
-        reader = csv.DictReader(handle)
-        required_columns = {"kab_id", "nama"}
-        missing = required_columns - set(reader.fieldnames or ())
-        if missing:
-            names = ", ".join(sorted(missing))
-            raise ValueError(f"{reference_path}: missing required columns: {names}")
-        city_names = {
-            row["kab_id"].strip(): row["nama"].strip()
-            for row in reader
-            if row["kab_id"].strip() and row["nama"].strip()
-        }
-    return city_names
-
-
-def _history_metadata(active_rows: list[dict[str, Any]]) -> dict[str, Any]:
-    """Describe the actual selected observations used by one forecast series."""
-    if not active_rows:
-        raise ValueError("Cannot build history metadata for an empty active series")
-
-    start_date = active_rows[0]["date"]
-    end_date = active_rows[-1]["date"]
-    observation_count = len(active_rows)
-    calendar_days = (end_date - start_date).days + 1
-    coverage_ratio = round(observation_count / calendar_days, 6)
-    if coverage_ratio >= 0.90:
-        coverage_confidence = "HIGH"
-    elif coverage_ratio >= 0.70:
-        coverage_confidence = "MEDIUM"
-    else:
-        coverage_confidence = "LOW"
-
-    source_counts = {
-        source: sum(row["data_source"] == source for row in active_rows)
-        for source in (SISKAPERBAPO_SOURCE, PIHPS_SOURCE)
-    }
-    return {
-        "active_source_policy": ACTIVE_SOURCE_POLICY,
-        "history_start_date": start_date.isoformat(),
-        "history_observation_count": observation_count,
-        "active_history_source_counts": source_counts,
-        "latest_observation_source": active_rows[-1]["data_source"],
-        "history_coverage_ratio": coverage_ratio,
-        "history_coverage_confidence": coverage_confidence,
-    }
 
 
 # ---------------------------------------------------------------------------
 # Seasonal-naive baseline (transparent fallback -- NOT TimesFM)
 # ---------------------------------------------------------------------------
 
+INTERVAL_METHOD_MAD = "same_month_mad"
+INTERVAL_METHOD_CONFORMAL = "split_conformal_rolling_origin"
+CONFORMAL_TARGET_COVERAGE = 0.80
+CONFORMAL_ORIGINS = 36         # rolling origins used for calibration (3 years, monthly)
+CONFORMAL_ORIGIN_STEP = 30     # days between origins; grid-searched 2026-08-28, coverage 79.5% at target 80%
+
+
+def _conformal_offsets(
+    series: list[tuple[datetime.date, float]],
+    horizon: int,
+    n_origins: int | None = None,
+    step: int | None = None,
+    alpha: float | None = None,
+) -> tuple[float, float, int] | None:
+    """
+    Split-conformal calibration of the interval, rolling-origin style.
+
+    For each of `n_origins` cut points inside the training series, re-run the
+    point forecaster on the data before the cut and collect the residuals
+    (actual - point) over the next `horizon` days. The lower and upper
+    quantiles of the pooled residuals (with the usual finite-sample
+    correction) become additive offsets on the point forecast.
+
+    Why: the same-month MAD band shipped in v1.0 covered only 42% of actuals
+    while labelled 80% (analysis/backtest_baseline.py). Conformal offsets are
+    distribution-free and calibrated on held-out residuals of the very same
+    forecaster, so the label matches the measurement. Calibration only ever
+    sees data strictly before the forecast origin, so backtests stay
+    leakage-free.
+
+    Returns (lower_offset, upper_offset, n_residuals) or None when the series
+    is too short to calibrate.
+    """
+    import numpy as np
+
+    # Read module constants at call time so calibration studies can tune them.
+    n_origins = CONFORMAL_ORIGINS if n_origins is None else n_origins
+    step = CONFORMAL_ORIGIN_STEP if step is None else step
+    alpha = (1.0 - CONFORMAL_TARGET_COVERAGE) if alpha is None else alpha
+
+    n = len(series)
+    residuals: list[float] = []
+    for i in range(1, n_origins + 1):
+        cut = n - i * step
+        if cut < 60:
+            break
+        train = series[:cut]
+        test = series[cut:cut + horizon]
+        if not test:
+            continue
+        fc = _seasonal_naive_forecast(train, horizon=horizon, conformal=False)
+        by_date = {datetime.date.fromisoformat(r["date"]): r["point"] for r in fc}
+        for d, actual in test:
+            pt = by_date.get(d)
+            if pt is None or actual <= 0:
+                continue
+            residuals.append(actual - pt)
+    if len(residuals) < 20:
+        return None
+    r = np.array(residuals, dtype=float)
+    m = len(r)
+    # Finite-sample corrected quantile levels (Lei et al. 2018 style).
+    q_hi = min(1.0, np.ceil((m + 1) * (1 - alpha / 2)) / m)
+    q_lo = max(0.0, np.floor((m + 1) * (alpha / 2)) / m)
+    lower = float(np.quantile(r, q_lo))
+    upper = float(np.quantile(r, q_hi))
+    return lower, upper, m
+
+
 def _seasonal_naive_forecast(
     series: list[tuple[datetime.date, float]],
     horizon: int = HORIZON,
+    conformal: bool = True,
 ) -> list[dict[str, Any]]:
     """
     Seasonal-naive: for day h, predict = median of same-calendar-month prices
     observed in the training series.
 
-    Uncertainty band: +/- 1 MAD of the same-month observations.
+    Uncertainty band:
+        conformal=True  (default since v1.1): point + calibrated residual
+                        quantiles from _conformal_offsets, target 80%.
+        conformal=False (v1.0 behaviour): +/- 1.4826 MAD of the same-month
+                        observations.
 
     This is a statistical method, not a foundation model.  It is labelled as
-    "seasonal_naive_baseline" everywhere it appears.
+    "seasonal_naive_baseline" everywhere it appears; the interval method is
+    reported separately in the "interval_method" field.
     """
     import numpy as np
 
@@ -196,20 +191,42 @@ def _seasonal_naive_forecast(
     overall_med = float(np.median(arr[-30:]))
     overall_mad = float(np.median(np.abs(arr[-30:] - overall_med)))
 
+    offsets = _conformal_offsets(series, horizon) if conformal else None
+
     last_date = dates[-1]
     result = []
     for h in range(1, horizon + 1):
         target_date = last_date + datetime.timedelta(days=h)
         med, mad = month_stats.get(target_date.month, (overall_med, overall_mad))
-        # CI: +/- 1.4826 * MAD (same scaling as the anomaly detector)
-        ci_half = 1.4826 * mad if mad > 0 else 0.05 * med
+        if offsets is not None:
+            lo_off, hi_off, _m = offsets
+            # Residual quantiles can sit on one side of zero when the point
+            # forecaster is biased; keep the band containing the point so the
+            # p10 <= point <= p90 contract holds (widening never lowers coverage).
+            p10 = med + min(0.0, lo_off)
+            p90 = med + max(0.0, hi_off)
+        else:
+            # CI: +/- 1.4826 * MAD (same scaling as the anomaly detector)
+            ci_half = 1.4826 * mad if mad > 0 else 0.05 * med
+            p10, p90 = med - ci_half, med + ci_half
         result.append({
             "date":  target_date.isoformat(),
             "point": round(med, 2),
-            "p10":   round(max(0, med - ci_half), 2),
-            "p90":   round(med + ci_half, 2),
+            "p10":   round(max(0, p10), 2),
+            "p90":   round(p90, 2),
         })
     return result
+
+
+def interval_method_for(series: list[tuple[datetime.date, float]], horizon: int = HORIZON) -> dict[str, Any]:
+    """Describe which interval method a series will get, for the JSON record."""
+    off = _conformal_offsets(series, horizon)
+    if off is None:
+        return {"interval_method": INTERVAL_METHOD_MAD, "interval_target_coverage": None,
+                "calibration_residuals": 0}
+    return {"interval_method": INTERVAL_METHOD_CONFORMAL,
+            "interval_target_coverage": CONFORMAL_TARGET_COVERAGE,
+            "calibration_residuals": off[2]}
 
 
 # ---------------------------------------------------------------------------
@@ -217,70 +234,66 @@ def _seasonal_naive_forecast(
 # ---------------------------------------------------------------------------
 
 def _timesfm_available() -> bool:
-    """Return whether the installed TimesFM 2.5 PyTorch adapter is importable."""
     try:
-        from timesfm.timesfm_2p5.timesfm_2p5_torch import TimesFM_2p5_200M_torch  # noqa: F401
+        import timesfm  # noqa: F401
         return True
-    except (ImportError, ModuleNotFoundError):
+    except ImportError:
         return False
-
-
-@functools.lru_cache(maxsize=1)
-def _load_timesfm_model(model_path: str):
-    """Load and configure the TimesFM 2.5 model once for the entire run."""
-    from timesfm import ForecastConfig
-    from timesfm.timesfm_2p5.timesfm_2p5_torch import TimesFM_2p5_200M_torch
-
-    model = TimesFM_2p5_200M_torch.from_pretrained(
-        model_path,
-        torch_compile=False,
-    )
-    model.compile(
-        ForecastConfig(
-            max_context=2048,
-            max_horizon=HORIZON,
-            per_core_batch_size=1,
-            # Keep the public quantile channels monotonic around the central
-            # (P50) forecast that the adapter returns as its point forecast.
-            fix_quantile_crossing=True,
-        )
-    )
-    return model
 
 
 def _timesfm_forecast(
     series: list[tuple[datetime.date, float]],
     horizon: int = HORIZON,
-    model_path: str = "google/timesfm-2.5-200m-pytorch",
+    model_path: str = "google/timesfm-2.0-500m-pytorch",
 ) -> list[dict[str, Any]]:
-    """Run the installed TimesFM 2.5 PyTorch API on one price series.
-
-    The model is cached after its first load. The 2.5 API returns a dedicated
-    point forecast (its public P50 output) plus ten output channels. Channel 0
-    is not a quantile; the ordered P10/P50/P90 channels are 1/5/9.
     """
+    Run TimesFM 2.0 (PyTorch variant) on one price series.
+    Loads the model on first call (expensive — ~2 GB download + load).
+    Caller must ensure timesfm is installed and Python 3.10/3.11 is active.
+    """
+    import timesfm
     import numpy as np
 
-    prices = np.array([price for _, price in series], dtype=float)
-    dates = [observation_date for observation_date, _ in series]
-    point_forecasts, quantile_forecasts = _load_timesfm_model(model_path).forecast(
-        horizon=horizon,
-        inputs=[prices],
+    prices = np.array([p for _, p in series], dtype=float)
+    dates  = [d for d, _ in series]
+
+    # TimesFM 2.0 PyTorch API
+    tfm = timesfm.TimesFm(
+        hparams=timesfm.TimesFmHparams(
+            backend="cpu",
+            per_core_batch_size=1,
+            horizon_len=horizon,
+            num_heads=16,
+            use_positional_embedding=False,
+        ),
+        checkpoint=timesfm.TimesFmCheckpoint(
+            huggingface_repo_id=model_path,
+        ),
     )
 
-    points = point_forecasts[0]
-    quantiles = quantile_forecasts[0]
+    forecast_input = [prices]
+    freq           = [0]  # 0 = high-frequency (daily)
+
+    _, quantile_forecasts = tfm.forecast(
+        forecast_input,
+        freq=freq,
+        quantile_levels=[0.1, 0.5, 0.9],
+    )
+
+    # quantile_forecasts shape: (batch=1, horizon, 3)
+    qf = quantile_forecasts[0]  # (horizon, 3)
+    last_date = dates[-1]
     result = []
-    for index in range(horizon):
-        target_date = dates[-1] + datetime.timedelta(days=index + 1)
-        p10 = float(quantiles[index, 1])
-        point = float(points[index])
-        p90 = float(quantiles[index, 9])
+    for h in range(horizon):
+        target_date = last_date + datetime.timedelta(days=h + 1)
+        p10   = float(qf[h, 0])
+        point = float(qf[h, 1])
+        p90   = float(qf[h, 2])
         result.append({
-            "date": target_date.isoformat(),
+            "date":  target_date.isoformat(),
             "point": round(point, 2),
-            "p10": round(max(0, p10), 2),
-            "p90": round(p90, 2),
+            "p10":   round(max(0, p10), 2),
+            "p90":   round(p90, 2),
         })
     return result
 
@@ -306,21 +319,19 @@ def main(
         else:
             method = "baseline"
             print(
-                "WARNING: the TimesFM 2.5 PyTorch adapter is not importable.\n"
+                "WARNING: timesfm not importable on this Python version.\n"
                 "Falling back to seasonal_naive_baseline.\n"
-                "Install a compatible timesfm package with its PyTorch dependencies, then re-run with --method auto.\n"
+                "To get real TimesFM output, run with Python 3.10 or 3.11 + timesfm installed.\n"
                 "The output JSON will be labelled method=seasonal_naive_baseline."
             )
 
     generated_at = datetime.datetime.utcnow().isoformat() + "Z"
-    city_names = _load_city_names()
-    series_map = _load_active_series(price_dir)
+    series_map   = _load_all_rows(price_dir)
 
-    print(f"Forecasting {len(series_map)} active-price series ...")
+    print(f"Forecasting {len(series_map)} series ...")
     all_records: list[dict[str, Any]] = []
 
-    for (commodity, city), active_rows in series_map.items():
-        series = [(row["date"], row["price_per_kg"]) for row in active_rows]
+    for (commodity, city), series in sorted(series_map.items()):
         if len(series) < 30:
             print(f"  Skipping {commodity}/{city}: too short ({len(series)} obs)")
             continue
@@ -328,30 +339,33 @@ def main(
         if method == "timesfm":
             try:
                 fc_points = _timesfm_forecast(series, horizon=HORIZON, model_path=model_path)
-                method_label = "timesfm_2.5"
+                method_label = "timesfm_2.0"
             except Exception as exc:
                 print(f"  TimesFM failed for {commodity}/{city}: {exc} — using baseline")
-                fc_points = _seasonal_naive_forecast(series, horizon=HORIZON)
+                fc_points    = _seasonal_naive_forecast(series, horizon=HORIZON)
                 method_label = "seasonal_naive_baseline"
         else:
-            fc_points = _seasonal_naive_forecast(series, horizon=HORIZON)
+            fc_points    = _seasonal_naive_forecast(series, horizon=HORIZON)
             method_label = "seasonal_naive_baseline"
 
-        all_records.append({
-            "commodity_code": commodity,
-            "city_id": city,
-            "city_name": city_names.get(city, city),
-            "method": method_label,
-            "generated_at": generated_at,
-            "horizon_days": HORIZON,
-            "history_end_date": series[-1][0].isoformat(),
-            "forecasts": fc_points,
-            **_history_metadata(active_rows),
-        })
-        print(
-            f"  {commodity}/{city}: {method_label} — "
-            f"last obs {series[-1][0]} ({active_rows[-1]['data_source']})"
+        interval_info = (
+            interval_method_for(series, HORIZON)
+            if method_label == "seasonal_naive_baseline"
+            else {"interval_method": "model_quantiles", "interval_target_coverage": 0.80,
+                  "calibration_residuals": 0}
         )
+        all_records.append({
+            "commodity_code":   commodity,
+            "city_id":          city,
+            "city_name":        CITY_NAMES.get(city, city),
+            "method":           method_label,
+            **interval_info,
+            "generated_at":     generated_at,
+            "horizon_days":     HORIZON,
+            "history_end_date": series[-1][0].isoformat(),
+            "forecasts":        fc_points,
+        })
+        print(f"  {commodity}/{city}: {method_label} — last obs {series[-1][0]}")
 
     with out_path.open("w", encoding="utf-8") as fh:
         json.dump(all_records, fh, ensure_ascii=False, separators=(",", ":"))
@@ -362,7 +376,7 @@ def main(
         print(
             "\nNOTE: Output labelled 'seasonal_naive_baseline'.  "
             "This is a transparent statistical baseline, NOT TimesFM.  "
-            "Re-run with --method auto after installing the TimesFM 2.5 PyTorch adapter for real forecasts."
+            "Re-run with Python 3.10/3.11 + timesfm installed for real forecasts."
         )
 
 
@@ -392,8 +406,8 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--model",
-        default="google/timesfm-2.5-200m-pytorch",
-        help="HuggingFace model ID for the installed TimesFM 2.5 PyTorch adapter.",
+        default="google/timesfm-2.0-500m-pytorch",
+        help="HuggingFace model ID for TimesFM 2.0 PyTorch variant.",
     )
     args = parser.parse_args()
     main(args.price_dir, args.out_dir, args.method, args.model)

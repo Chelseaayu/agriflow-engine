@@ -10,6 +10,7 @@ E5 — BBM naik: max_distance shrink, biaya logistik naik
 import concurrent.futures
 
 import pytest
+from datetime import datetime
 
 from matching_engine.engine import run_matching
 from matching_engine.constraints import (
@@ -229,8 +230,12 @@ class TestE4_ImportPolicy:
         s = make_supply(kediri_kab, bawang_merah, volume=50, price=25000)
         d = make_demand(surabaya, bawang_merah, volume=50, price=40000)
 
+        # reference_date dipancang di luar semua window event (audit F1):
+        # tanpa event, komposisi import policy harus identik dengan
+        # IMPORT_POLICY_WEIGHTS lama.
         report = run_matching([s], [d], logistics=logistics_normal,
-                                import_policy_active=True)
+                                import_policy_active=True,
+                                reference_date=datetime(2026, 5, 4))
         # Weights harus IMPORT_POLICY_WEIGHTS
         assert report.run_metadata["weights_used"] == IMPORT_POLICY_WEIGHTS
         # Warning harus muncul

@@ -31,6 +31,13 @@ const PUBLIC_PREFIXES = ["/login", "/forgot-password", "/reset-password"];
 
 export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
+
+  // The public landing. Exact match only: "/" cannot go into PUBLIC_PREFIXES
+  // because every path startsWith "/", which would un-gate the whole site.
+  // Short-circuited before the Supabase call so the landing costs no auth
+  // round-trip.
+  if (path === "/") return NextResponse.next({ request });
+
   const isPublic = PUBLIC_PREFIXES.some((p) => path.startsWith(p));
   const hasGuest = request.cookies.get(GUEST_COOKIE)?.value === "1";
   // Dev-login cookie (see app/lib/devauth.ts). Only honoured when dev login is
@@ -87,7 +94,7 @@ export async function proxy(request: NextRequest) {
   // Guests are NOT redirected away from /login, so they can upgrade to a real
   // account whenever they want.
   if (path.startsWith("/login") && user) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   // Auth pages are always reachable.

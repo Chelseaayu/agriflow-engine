@@ -10,22 +10,20 @@
 //                   return to /login, where they can sign in for real
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../lib/auth";
 import { exitGuest, isGuest } from "../lib/guest";
 
+// The guest cookie is not reactive; read it through useSyncExternalStore so
+// the server snapshot (false) and the client snapshot stay consistent without
+// a setState-in-effect.
+const noSubscribe = () => () => {};
+
 export default function AccountMenu() {
   const { user, loading } = useAuth();
   const router = useRouter();
-
-  // The guest cookie is not reactive, so read it once on mount. Client-only:
-  // isGuest() returns false during SSR, which is fine (the menu is decorative).
-  const [guest, setGuest] = useState(false);
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- the guest cookie is readable only after client mount.
-    setGuest(isGuest());
-  }, []);
+  const guest = useSyncExternalStore(noSubscribe, isGuest, () => false);
 
   if (loading) return null;
 

@@ -35,7 +35,7 @@ export default function AccountPage() {
   if (!configured) {
     return (
       <main className="flex-1 p-6 max-w-2xl mx-auto">
-        <Link href="/" className="text-sm text-slate-500 hover:text-slate-800">← Kembali ke peta</Link>
+        <Link href="/dashboard" className="text-sm text-slate-500 hover:text-slate-800">← Kembali ke peta</Link>
         <p className="mt-6 rounded-lg bg-amber-50 border border-amber-200 p-4 text-sm text-amber-900">
           Login belum dikonfigurasi di lingkungan ini.
         </p>
@@ -61,7 +61,7 @@ export default function AccountPage() {
 
   return (
     <main className="flex-1 p-6 max-w-2xl mx-auto w-full">
-      <Link href="/" className="text-sm text-slate-500 hover:text-slate-800">← Kembali ke peta</Link>
+      <Link href="/dashboard" className="text-sm text-slate-500 hover:text-slate-800">← Kembali ke peta</Link>
 
       <h1 className="mt-6 text-2xl font-semibold text-slate-900">Akun</h1>
 
@@ -69,7 +69,7 @@ export default function AccountPage() {
         <p className="text-sm text-slate-500">Masuk sebagai</p>
         <p className="font-medium text-slate-900">{user.email}</p>
         <button
-          onClick={async () => { await signOut(); router.push("/"); }}
+          onClick={async () => { await signOut(); router.push("/login"); }}
           className="mt-4 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium
                      text-slate-700 hover:bg-slate-50"
         >

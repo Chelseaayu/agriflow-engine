@@ -7,28 +7,24 @@ import { useAuth } from "../lib/auth";
 import { enterGuest } from "../lib/guest";
 import { DEV_LOGIN_ENABLED, DEV_EMAIL, DEV_PASSWORD } from "../lib/devauth";
 
-type Mode = "signin" | "signup";
-
 export default function LoginForm() {
-  const { signIn, signUp, configured, user } = useAuth();
+  const { signIn, signInWithOAuth, configured, user } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
 
   // proxy.ts appends ?next= when it funnels someone off a gated page.
   // Only relative paths are honoured — accepting an absolute URL here would
   // make this an open redirect an attacker could point at their own site.
-  // Default to the map (/), which is the app's home, not /account.
+  // Default to /dashboard, the app's home; "/" is the public landing now.
   const rawNext = searchParams.get("next");
   const nextPath =
     rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//")
       ? rawNext
-      : "/";
+      : "/dashboard";
 
-  const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   // Send an already-signed-in visitor away from the login page. This runs in an
@@ -47,28 +43,27 @@ export default function LoginForm() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    setNotice(null);
     setBusy(true);
-    const fn = mode === "signin" ? signIn : signUp;
-    const { error } = await fn(email, password);
+    const { error } = await signIn(email, password);
     setBusy(false);
 
     if (error) {
       setError(error);
       return;
     }
-    if (mode === "signup") {
-      // Supabase may require email confirmation depending on project settings,
-      // so we cannot assume a session exists yet.
-      setNotice(
-        "Akun dibuat. Jika diminta, cek email Anda untuk tautan konfirmasi, lalu masuk.",
-      );
-      setMode("signin");
-      return;
-    }
     // Full navigation (not router.push) so the proxy re-runs and sees the
     // freshly-set session/dev cookie, letting the destination through.
     window.location.assign(nextPath);
+  }
+
+  async function onGoogle() {
+    setError(null);
+    setBusy(true);
+    // On success the browser leaves for Google's consent screen and comes back
+    // to nextPath with a session, so only the error path ever runs after this.
+    const { error } = await signInWithOAuth("google", nextPath);
+    setBusy(false);
+    if (error) setError(error);
   }
 
   function enterAsGuest() {
@@ -82,7 +77,7 @@ export default function LoginForm() {
     <main className="flex-1 flex items-center justify-center p-6 bg-slate-50">
       <div className="w-full max-w-sm">
         <h1 className="text-2xl font-semibold text-slate-900">
-          {mode === "signin" ? "Masuk ke AgriFlow" : "Buat akun AgriFlow"}
+          Masuk ke AgriFlow
         </h1>
         <p className="mt-1 text-sm text-slate-500">
           Untuk pelanggan dinas, TPID, dan mitra data.
@@ -101,6 +96,31 @@ export default function LoginForm() {
             Tamu</b> di bawah.
           </p>
         )}
+
+        <button
+          type="button"
+          onClick={onGoogle}
+          disabled={busy || !configured}
+          className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-lg
+                     border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium
+                     text-slate-700 hover:bg-slate-50 disabled:opacity-50
+                     disabled:cursor-not-allowed"
+        >
+          {/* Google "G" mark, inline so no asset or extra request is needed. */}
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1Z" />
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z" />
+            <path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84Z" />
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.16-3.16A11 11 0 0 0 2.18 7.06L5.84 9.9c.87-2.6 3.3-4.52 6.16-4.52Z" />
+          </svg>
+          Masuk dengan Google
+        </button>
+
+        <div className="mt-6 flex items-center gap-3">
+          <span className="h-px flex-1 bg-slate-200" />
+          <span className="text-xs text-slate-400">atau dengan email</span>
+          <span className="h-px flex-1 bg-slate-200" />
+        </div>
 
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
           <div>
@@ -127,42 +147,28 @@ export default function LoginForm() {
               <label htmlFor="password" className="block text-sm font-medium text-slate-700">
                 Kata sandi
               </label>
-              {mode === "signin" && (
-                <Link
-                  href={`/forgot-password${email ? `?email=${encodeURIComponent(email)}` : ""}`}
-                  className="text-sm text-emerald-700 hover:underline"
-                >
-                  Lupa kata sandi?
-                </Link>
-              )}
+              <Link
+                href={`/forgot-password${email ? `?email=${encodeURIComponent(email)}` : ""}`}
+                className="text-sm text-emerald-700 hover:underline"
+              >
+                Lupa kata sandi?
+              </Link>
             </div>
             <input
               id="password"
               type="password"
               required
-              // Enforce length only when CREATING a password (signup). On
-              // signin you are entering an existing one, so a length rule here
-              // is wrong, and it was also blocking the short dev-login password.
-              minLength={mode === "signup" ? 8 : undefined}
-              autoComplete={mode === "signin" ? "current-password" : "new-password"}
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm
                          focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600"
             />
-            {mode === "signup" && (
-              <p className="mt-1 text-xs text-slate-500">Minimal 8 karakter.</p>
-            )}
           </div>
 
           {error && (
             <p role="alert" className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-800">
               {error}
-            </p>
-          )}
-          {notice && (
-            <p className="rounded-lg bg-emerald-50 border border-emerald-200 p-3 text-sm text-emerald-900">
-              {notice}
             </p>
           )}
 
@@ -172,7 +178,7 @@ export default function LoginForm() {
             className="w-full rounded-lg bg-emerald-700 px-4 py-2.5 text-sm font-medium text-white
                        hover:bg-emerald-800 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {busy ? "Memproses…" : mode === "signin" ? "Masuk" : "Daftar"}
+            {busy ? "Memproses…" : "Masuk"}
           </button>
         </form>
 
@@ -195,18 +201,8 @@ export default function LoginForm() {
         </p>
 
         <p className="mt-6 text-center text-sm text-slate-600">
-          {mode === "signin" ? "Belum punya akun? " : "Sudah punya akun? "}
-          <button
-            type="button"
-            onClick={() => {
-              setMode(mode === "signin" ? "signup" : "signin");
-              setError(null);
-              setNotice(null);
-            }}
-            className="font-medium text-emerald-700 hover:underline"
-          >
-            {mode === "signin" ? "Daftar" : "Masuk"}
-          </button>
+          Belum punya akun? Masuk dengan Google di atas, atau hubungi tim
+          AgriFlow untuk akun dinas, TPID, dan mitra data.
         </p>
       </div>
     </main>

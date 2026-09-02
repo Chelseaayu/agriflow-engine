@@ -1,115 +1,151 @@
 "use client";
 
-import type {
-  AnomaliesResponse,
-  AnomalyRecord,
-} from "../lib/api";
+/**
+ * AnomalyPanel: recent price anomalies from the deseasonalised Hampel/MAD scanner.
+ *
+ * Shows a scrollable list of anomalies with SPIKE/DROP badges,
+ * deviation percentage, and city/commodity labels.
+ *
+ * Props:
+ *   anomalies   AnomalyRecord[]
+ *   loading     boolean
+ *   error       string | null
+ *   totalCount  number
+ */
+
+import type { AnomalyRecord } from "../lib/api";
+
+// ---------------------------------------------------------------------------
+// Format helpers
+// ---------------------------------------------------------------------------
 
 function fmtIdr(n: number): string {
   if (n >= 1_000_000) return "Rp " + (n / 1_000_000).toFixed(2) + "jt";
-  if (n >= 1_000) return "Rp " + (n / 1_000).toFixed(1) + "k";
+  if (n >= 1_000)     return "Rp " + (n / 1_000).toFixed(1) + "k";
   return "Rp " + n.toFixed(0);
 }
 
-function fmtDate(iso: string | null): string {
-  if (!iso) return "—";
-  const date = new Date(iso);
-  return Number.isNaN(date.getTime())
-    ? iso
-    : date.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
+function fmtDate(iso: string): string {
+  const d = new Date(iso);
+  return d.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
 }
 
 const COMMODITY_NAMES: Record<string, string> = {
-  cabai_rawit: "Cabai Rawit",
-  bawang_merah: "Bawang Merah",
-  bawang_putih: "Bawang Putih",
-  beras_medium: "Beras Medium",
+  cabai_rawit:   "Cabai Rawit",
+  bawang_merah:  "Bawang Merah",
+  bawang_putih:  "Bawang Putih",
+  beras_medium:  "Beras Medium",
   beras_premium: "Beras Premium",
-  daging_ayam: "Daging Ayam",
-  telur_ayam: "Telur Ayam",
+  daging_ayam:   "Daging Ayam",
+  telur_ayam:    "Telur Ayam",
 };
 
-function sourceLabel(source: string | null): string {
-  return source === "SISKAPERBAPO" ? "Siskaperbapo" : source === "PIHPS" ? "PIHPS" : "—";
-}
+// ---------------------------------------------------------------------------
+// Single anomaly row
+// ---------------------------------------------------------------------------
 
-function AnomalyRow({ anomaly }: { anomaly: AnomalyRecord }) {
-  const isSpike = anomaly.type === "SPIKE";
-  const sign = anomaly.deviation_pct >= 0 ? "+" : "";
-  const commodity = COMMODITY_NAMES[anomaly.commodity_code] ?? anomaly.commodity_code;
+function AnomalyRow({ a }: { a: AnomalyRecord }) {
+  const isSpike = a.type === "SPIKE";
+  const sign    = a.deviation_pct >= 0 ? "+" : "";
+  const comName = COMMODITY_NAMES[a.commodity_code] ?? a.commodity_code;
 
   return (
     <li className="px-3 py-2 hover:bg-zinc-50 flex items-start gap-2.5">
-      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded whitespace-nowrap mt-0.5 ${isSpike ? "bg-rose-100 text-rose-700" : "bg-sky-100 text-sky-700"}`}>
-        {anomaly.type}
+      {/* Badge */}
+      <span
+        className={`text-[10px] font-bold px-1.5 py-0.5 rounded whitespace-nowrap mt-0.5 ${
+          isSpike
+            ? "bg-rose-100 text-rose-700"
+            : "bg-sky-100 text-sky-700"
+        }`}
+      >
+        {a.type}
       </span>
+
+      {/* Content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline justify-between gap-1">
-          <span className="text-xs font-medium text-zinc-800 truncate">{commodity}</span>
+          <span className="text-xs font-medium text-zinc-800 truncate">{comName}</span>
           <span className={`text-xs font-mono ${isSpike ? "text-rose-600" : "text-sky-600"}`}>
-            {sign}{anomaly.deviation_pct.toFixed(1)}%
+            {sign}{a.deviation_pct.toFixed(1)}%
           </span>
         </div>
         <div className="text-[11px] text-zinc-500 mt-0.5">
-          {fmtDate(anomaly.date)} · {anomaly.city_name} · {fmtIdr(anomaly.price)}/kg
+          {fmtDate(a.date)} · {a.city_name} · {fmtIdr(a.price)}/kg
         </div>
         <div className="text-[10px] text-zinc-400 mt-0.5">
-          score {anomaly.score.toFixed(2)} · sumber observasi {sourceLabel(anomaly.observation_provenance.data_source)}
-          {anomaly.persistent && <span className="ml-1.5 text-indigo-500">persisten</span>}
+          score {a.score.toFixed(2)}
+          {a.persistent && (
+            <span className="ml-1.5 text-indigo-500">persisten</span>
+          )}
         </div>
       </div>
     </li>
   );
 }
 
+// ---------------------------------------------------------------------------
+// Main panel
+// ---------------------------------------------------------------------------
+
 type Props = {
-  response: AnomaliesResponse | null;
-  loading: boolean;
-  error: string | null;
+  anomalies:  AnomalyRecord[];
+  loading:    boolean;
+  error:      string | null;
+  totalCount: number;
 };
 
-export default function AnomalyPanel({ response, loading, error }: Props) {
+export default function AnomalyPanel({ anomalies, loading, error, totalCount }: Props) {
   if (error) {
-    return <div className="border border-rose-200 rounded-lg p-3 bg-rose-50 text-xs text-rose-700">{error}</div>;
+    return (
+      <div className="border border-rose-200 rounded-lg p-3 bg-rose-50 text-xs text-rose-700">
+        {error}
+      </div>
+    );
   }
-
-  if (loading) {
-    return <div className="border border-zinc-200 rounded-lg p-3 text-xs text-zinc-400 animate-pulse">Memuat anomali...</div>;
-  }
-
-  if (!response?.series) {
-    return <div className="border border-zinc-200 rounded-lg p-3 text-xs text-zinc-400">Pilih komoditas dan wilayah untuk melihat status anomali.</div>;
-  }
-
-  const { series, anomalies } = response;
-  const detectable = series.series_status === "DETECTABLE";
 
   return (
     <div className="border border-zinc-200 rounded-lg bg-white overflow-hidden">
+      {/* Header */}
       <div className="px-3 py-2 border-b border-zinc-100 flex items-center justify-between">
-        <span className="text-xs font-semibold text-zinc-800">Anomali Harga</span>
-        <span className="text-[10px] text-zinc-400">{response.count.toLocaleString("id-ID")} event</span>
+        <span className="text-xs font-semibold text-zinc-800">
+          Anomali harga (scanner Hampel/MAD, deseasonalised)
+        </span>
+        <span className="text-[10px] text-zinc-400">
+          {loading ? "memuat..." : `${totalCount.toLocaleString("id-ID")} total`}
+        </span>
       </div>
-      {detectable && anomalies.length === 0 && (
-        <div className="px-3 py-4 text-xs text-zinc-500">Tidak ada event detector dalam riwayat yang dapat dideteksi.</div>
-      )}
 
-      {!detectable && (
-        <div className="px-3 py-4 text-xs text-zinc-500">
-          Status {series.series_status}; data anomali belum dapat dideteksi untuk kombinasi ini.
+      {loading && (
+        <div className="px-3 py-4 text-xs text-zinc-400 animate-pulse">
+          Memuat anomali...
         </div>
       )}
 
-      {detectable && anomalies.length > 0 && (
+      {!loading && anomalies.length === 0 && (
+        <div className="px-3 py-4 text-xs text-zinc-400">
+          Tidak ada anomali untuk filter ini.
+        </div>
+      )}
+
+      {!loading && anomalies.length > 0 && (
         <>
           <ul className="divide-y divide-zinc-100 max-h-64 overflow-y-auto">
-            {anomalies.map((anomaly, index) => (
-              <AnomalyRow key={`${anomaly.date}-${anomaly.commodity_code}-${anomaly.city_id}-${index}`} anomaly={anomaly} />
+            {anomalies.map((a, i) => (
+              <AnomalyRow key={`${a.date}-${a.commodity_code}-${a.city_id}-${i}`} a={a} />
             ))}
           </ul>
+
+          {/* Legend */}
           <div className="px-3 py-1.5 border-t border-zinc-100 flex gap-3 text-[10px] text-zinc-500">
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-rose-200 inline-block" />SPIKE (harga naik)</span>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-sky-200 inline-block" />DROP (harga turun)</span>
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-sm bg-rose-200 inline-block" />
+              SPIKE (harga naik)
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-sm bg-sky-200 inline-block" />
+              DROP (harga turun)
+            </span>
             <span className="ml-1 text-indigo-400">persisten = ≥2 hari beruntun</span>
           </div>
         </>

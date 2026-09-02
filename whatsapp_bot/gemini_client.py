@@ -209,15 +209,18 @@ _VOLUME_RE = re.compile(r"(\d+(?:[.,]\d+)?)\s*(ton|kg|kuintal)", re.IGNORECASE)
 
 def _detect_commodity(message: str) -> Optional[str]:
     msg = message.lower()
-    # Sort by keyword length desc so "cabai merah" wins over "cabai"
-    candidates = sorted(
-        _COMMODITY_KEYWORDS.items(),
-        key=lambda kv: -max(len(k) for k in kv[1]),
+    # Rank every (keyword, code) pair globally by keyword length so the most
+    # specific phrase present in the message wins. v1.0 ranked per commodity
+    # by its longest keyword, which let "cabai" (via cabai_merah's 12-char
+    # "lombok abang") beat "cabai rawit" and answer a rawit question with
+    # cabai merah data.
+    pairs = sorted(
+        ((kw, code) for code, kws in _COMMODITY_KEYWORDS.items() for kw in kws),
+        key=lambda p: -len(p[0]),
     )
-    for code, keywords in candidates:
-        for kw in sorted(keywords, key=len, reverse=True):
-            if kw in msg:
-                return code
+    for kw, code in pairs:
+        if kw in msg:
+            return code
     return None
 
 

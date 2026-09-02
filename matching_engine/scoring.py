@@ -232,6 +232,33 @@ SCHOOL_START_WEIGHTS: Dict[str, float] = {
 }
 
 
+IMPORT_POLICY_PRICE_WEIGHT = IMPORT_POLICY_WEIGHTS["price"]
+
+
+def apply_import_policy(weights: Dict[str, float]) -> Dict[str, float]:
+    """
+    Compose the E4 import-policy adjustment on top of any weight profile.
+
+    Import policy is a regulatory condition; a calendar event (Ramadan, Natal,
+    Imlek, school start) is a seasonal one. They can hold at the same time,
+    so the price weight is lowered to the import-policy level and the other
+    four dimensions are rescaled proportionally to keep the total at 1.0.
+
+    When the base profile is DEFAULT_WEIGHTS the result is exactly
+    IMPORT_POLICY_WEIGHTS, which preserves the documented v9 behaviour.
+    """
+    if weights == DEFAULT_WEIGHTS:
+        return dict(IMPORT_POLICY_WEIGHTS)
+    if weights.get("price", 0.0) <= IMPORT_POLICY_PRICE_WEIGHT:
+        return dict(weights)
+    others = {k: v for k, v in weights.items() if k != "price"}
+    remaining = 1.0 - IMPORT_POLICY_PRICE_WEIGHT
+    others_total = sum(others.values()) or 1.0
+    composed = {k: round(v / others_total * remaining, 4) for k, v in others.items()}
+    composed["price"] = IMPORT_POLICY_PRICE_WEIGHT
+    return composed
+
+
 def compute_score(
     s: SupplyNode,
     d: DemandNode,

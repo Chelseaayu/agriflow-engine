@@ -15,12 +15,12 @@ export default function LoginForm() {
   // proxy.ts appends ?next= when it funnels someone off a gated page.
   // Only relative paths are honoured — accepting an absolute URL here would
   // make this an open redirect an attacker could point at their own site.
-  // Default to the map (/), which is the app's home, not /account.
+  // Default to /dashboard, the app's home; "/" is the public landing now.
   const rawNext = searchParams.get("next");
   const nextPath =
     rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//")
       ? rawNext
-      : "/";
+      : "/dashboard";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

@@ -1,126 +1,197 @@
-"use client";
+// Public landing page. Server-rendered and static except the GuestCta islands,
+// so a cold visit costs no auth round-trip (proxy.ts lets "/" through before
+// touching Supabase). Copy and structure follow the DRA landing brief:
+// hero with the real product as the visual, problem framing, feature tiles,
+// data provenance as a first-class trust element, then one repeated CTA.
+import Image from "next/image";
+import Link from "next/link";
+import GuestCta from "./components/GuestCta";
 
-// Dashboard shell. State lives here; every tab is a component under
-// components/tabs/. No mock data anywhere: the hooks in
-// hooks/useDashboardData.ts surface errors instead of inventing numbers.
+const primaryCta =
+  "inline-block rounded-lg bg-emerald-700 px-6 py-3 text-sm font-semibold text-white " +
+  "hover:bg-emerald-800 transition-colors";
+const secondaryCtaOnDark =
+  "inline-block rounded-lg border border-white/40 px-6 py-3 text-sm font-semibold " +
+  "text-white hover:bg-white/10 transition-colors";
 
-import { useCallback, useMemo, useState } from "react";
-import { useCoreData, useDistribution, useRecentAnomalies } from "./hooks/useDashboardData";
-import type { Match } from "./lib/api";
-import { deriveNotifications, type NotificationItem } from "./lib/notifications";
-import ChatWidget from "./components/ChatWidget";
-import ExplainDrawer from "./components/ExplainDrawer";
-import Sidebar, { type TabKey } from "./components/Sidebar";
-import TopBar from "./components/TopBar";
-import Tour from "./components/Tour";
-import Bantuan from "./components/tabs/Bantuan";
-import Beranda from "./components/tabs/Beranda";
-import Distribusi from "./components/tabs/Distribusi";
-import HargaTren from "./components/tabs/HargaTren";
-import Laporan from "./components/tabs/Laporan";
-import Notifikasi from "./components/tabs/Notifikasi";
-import PetaPasokan from "./components/tabs/PetaPasokan";
-import Simulasi from "./components/tabs/Simulasi";
+const features = [
+  {
+    title: "Alokasi optimal dengan bobot keadilan",
+    body:
+      "Allocator LP-optimal mengarahkan pasokan dari daerah surplus ke defisit dengan " +
+      "biaya distribusi terendah. Bobot ekuitas mendahulukan daerah tertinggal, bukan " +
+      "sekadar yang terdekat.",
+  },
+  {
+    title: "Prakiraan harga dengan pita ketidakpastian",
+    body:
+      "Prakiraan harga disertai conformal band, jadi Anda melihat rentang yang jujur, " +
+      "bukan satu angka yang seolah pasti.",
+  },
+  {
+    title: "Deteksi anomali yang tahan pencilan",
+    body:
+      "Lonjakan harga dan pasokan ditandai lewat gerbang Hampel/MAD, sehingga satu data " +
+      "ekstrem tidak menutupi sinyal yang sebenarnya.",
+  },
+  {
+    title: "Kartu match yang bisa dijelaskan",
+    body:
+      "Setiap rekomendasi punya kartu “Mengapa match ini”: asal, tujuan, jarak, dan " +
+      "alasannya. Tidak ada kotak hitam.",
+  },
+  {
+    title: "Bot WhatsApp, Indonesia dan Jawa",
+    body:
+      "Tanya lewat WhatsApp dalam bahasa Indonesia atau Jawa. Data yang sama, tanpa " +
+      "membuka dashboard.",
+  },
+];
 
-export default function Home() {
-  const [tab, setTab] = useState<TabKey>("beranda");
-  const [pickedCommodity, setCommodity] = useState("bawang_merah");
-  const [selectedKabId, setSelectedKabId] = useState<string | null>(null);
-  const [analysisCity, setAnalysisCity] = useState<string | null>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [tourStep, setTourStep] = useState<number | null>(null);
-  const [explain, setExplain] = useState<Match | null>(null);
-  const [read, setRead] = useState<Set<string>>(new Set());
+const sources = [
+  {
+    name: "BPS 2022",
+    body: "Produksi dan konsumsi pangan, 38 kabupaten/kota, enam komoditas.",
+  },
+  {
+    name: "PIHPS",
+    body: "Harga pangan harian sebagai dasar prakiraan dan deteksi anomali.",
+  },
+  {
+    name: "IPM 2024",
+    body: "Indeks Pembangunan Manusia sebagai dasar bobot keadilan antar daerah.",
+  },
+];
 
-  const core = useCoreData();
-  // First commodity from the API wins if the picked one is not served.
-  const commodity = core.commodities.length && !core.commodities.some((c) => c.code === pickedCommodity)
-    ? core.commodities[0].code
-    : pickedCommodity;
-  const dist = useDistribution(commodity, selectedKabId, 100);
-  const recent = useRecentAnomalies(6);
-
-  const notifications = useMemo(
-    () => deriveNotifications({ anomalies: recent.items, matches: dist.matches, summary: core.summary, meta: core.meta, commodities: core.commodities }),
-    [recent.items, dist.matches, core.summary, core.meta, core.commodities],
-  );
-  const unread = notifications.filter((n) => !read.has(n.id)).length;
-
-  const go = useCallback((t: TabKey) => { setTab(t); window.scrollTo({ top: 0 }); }, []);
-  const onNotificationAction = useCallback((n: NotificationItem) => {
-    setRead((r) => new Set(r).add(n.id));
-    if (!n.action) return;
-    if (n.action.commodity) setCommodity(n.action.commodity);
-    if (n.action.tab === "harga" && n.action.kabId) setAnalysisCity(n.action.kabId);
-    else if (n.action.kabId) setSelectedKabId(n.action.kabId);
-    go(n.action.tab as TabKey);
-  }, [go]);
-
-  const name = core.commodities.find((c) => c.code === commodity)?.nama ?? commodity;
-  const apiError = core.error;
-
+export default function LandingPage() {
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-[#5b7245] text-zinc-900 font-sans antialiased p-3 lg:p-6 gap-4 lg:gap-6 relative">
-      <Sidebar
-        active={tab}
-        onSelect={go}
-        badge={unread}
-        summary={core.summary}
-        meta={core.meta}
-        open={menuOpen}
-        onClose={() => setMenuOpen(false)}
-        onRefresh={() => { core.reload(); dist.reload(); }}
-        refreshing={core.loading || dist.loading}
-      />
-
-      <main className="flex-1 flex flex-col min-w-0 gap-4 lg:gap-6 lg:overflow-y-auto lg:h-[calc(100vh-3rem)]">
-        <TopBar
-          meta={core.meta}
-          apiError={apiError}
-          commodities={core.commodities}
-          commodity={commodity}
-          onCommodity={(c) => { setCommodity(c); setSelectedKabId(null); }}
-          notifications={notifications}
-          unread={unread}
-          onOpenNotifications={() => go("notifikasi")}
-          onOpenMenu={() => setMenuOpen(true)}
-          onTour={() => setTourStep(0)}
-          onNotificationAction={onNotificationAction}
-        />
-
-        {tab === "beranda" && (
-          <Beranda
-            commodity={commodity} commodities={core.commodities} sd={dist.sd} matches={dist.matches}
-            summary={core.summary} meta={core.meta} apiError={apiError} kabupaten={core.kabupaten}
-            selectedKabId={selectedKabId} onSelectKab={setSelectedKabId} onGo={go} onExplain={setExplain}
-            loading={dist.loading || core.loading}
+    <main className="min-h-screen bg-[#5b7245] text-white">
+      {/* Hero */}
+      <section className="px-6 pt-16 pb-12 md:pt-24">
+        <div className="mx-auto max-w-5xl text-center">
+          <p className="text-sm font-semibold uppercase tracking-widest text-white/70">
+            Platform Ketahanan Pangan Jawa Timur
+          </p>
+          <h1 className="mt-4 text-4xl md:text-5xl font-semibold leading-tight">
+            Surplus di satu daerah, defisit di daerah lain.
+            <br className="hidden md:block" /> AgriFlow memasangkannya.
+          </h1>
+          <p className="mx-auto mt-5 max-w-2xl text-lg text-white/80">
+            Pencocokan pasokan pangan untuk 38 kabupaten/kota dan enam komoditas,
+            dihitung optimal dari data resmi BPS dan PIHPS. Bukan kira-kira, dan
+            setiap rekomendasi bisa ditelusuri.
+          </p>
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <GuestCta className={primaryCta}>Lihat Dashboard sebagai Tamu</GuestCta>
+            <Link href="/login" className={secondaryCtaOnDark}>
+              Masuk untuk dinas &amp; mitra
+            </Link>
+          </div>
+          <p className="mt-5 text-xs text-white/60">
+            Data BPS 2022 · PIHPS harga harian · IPM 2024 &nbsp;·&nbsp; Engine v1.1.0 ·
+            544 uji otomatis lulus
+          </p>
+        </div>
+        <div className="mx-auto mt-10 max-w-5xl overflow-hidden rounded-xl border border-white/20 shadow-2xl">
+          <Image
+            src="/landing-hero.jpg"
+            alt="Dashboard AgriFlow: peta surplus-defisit Jawa Timur dengan rekomendasi match"
+            width={1568}
+            height={716}
+            priority
+            className="w-full h-auto"
           />
-        )}
-        {tab === "peta" && (
-          <PetaPasokan name={name} sd={dist.sd} matches={dist.matches} kabupaten={core.kabupaten} selectedKabId={selectedKabId} onSelectKab={setSelectedKabId} />
-        )}
-        {tab === "distribusi" && (
-          <Distribusi
-            commodity={commodity} name={name} sd={dist.sd} matches={dist.matches} meta={core.meta} kabupaten={core.kabupaten}
-            selectedKabId={selectedKabId} onSelectKab={setSelectedKabId} onExplain={setExplain} loading={dist.loading} error={dist.error}
-          />
-        )}
-        {tab === "simulasi" && (
-          <Simulasi commodity={commodity} name={name} sd={dist.sd} baselineMatches={dist.matches} kabupaten={core.kabupaten} onExplain={setExplain} />
-        )}
-        {tab === "harga" && (
-          <HargaTren commodity={commodity} commodities={core.commodities} kabupaten={core.kabupaten} meta={core.meta} initialCity={analysisCity} />
-        )}
-        {tab === "notifikasi" && (
-          <Notifikasi items={notifications} read={read} onRead={(id) => setRead((r) => new Set(r).add(id))} onAction={onNotificationAction} />
-        )}
-        {tab === "laporan" && <Laporan summary={core.summary} meta={core.meta} commodities={core.commodities} />}
-        {tab === "bantuan" && <Bantuan />}
-      </main>
+        </div>
+      </section>
 
-      <ChatWidget />
-      <ExplainDrawer match={explain} onClose={() => setExplain(null)} />
-      <Tour step={tourStep} onStep={setTourStep} onClose={() => setTourStep(null)} />
-    </div>
+      {/* Problem framing */}
+      <section className="bg-white px-6 py-16 text-slate-900">
+        <div className="mx-auto max-w-3xl text-center">
+          <h2 className="text-2xl md:text-3xl font-semibold">
+            Masalahnya bukan jumlah pangan, tapi arah distribusinya.
+          </h2>
+          <p className="mt-4 text-slate-600">
+            Di satu kabupaten hasil panen melimpah dan harga jatuh. Di kabupaten
+            sebelah pasokan tipis dan harga naik. Mencocokkan keduanya selama ini
+            manual dan lambat. AgriFlow mengubahnya menjadi keputusan berbasis data
+            yang bisa dipertanggungjawabkan.
+          </p>
+        </div>
+      </section>
+
+      {/* Feature tiles */}
+      <section className="bg-white px-6 pb-16 text-slate-900">
+        <div className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {features.map((f) => (
+            <div
+              key={f.title}
+              className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+            >
+              <h3 className="font-semibold">{f.title}</h3>
+              <p className="mt-2 text-sm text-slate-600">{f.body}</p>
+            </div>
+          ))}
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-5">
+            <h3 className="font-semibold text-emerald-900">
+              Coba tanpa membuat akun
+            </h3>
+            <p className="mt-2 text-sm text-emerald-800">
+              Mode Tamu membuka peta, rekomendasi, prakiraan, dan simulasi what-if
+              untuk peninjauan.
+            </p>
+            <GuestCta className="mt-4 inline-block rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800">
+              Buka sebagai Tamu
+            </GuestCta>
+          </div>
+        </div>
+      </section>
+
+      {/* Data provenance */}
+      <section className="bg-[#eef2e6] px-6 py-16 text-slate-900">
+        <div className="mx-auto max-w-5xl">
+          <h2 className="text-center text-2xl md:text-3xl font-semibold">
+            Angka yang bisa Anda pertanggungjawabkan.
+          </h2>
+          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+            {sources.map((s) => (
+              <div
+                key={s.name}
+                className="rounded-xl border border-slate-200 bg-white p-5 text-center"
+              >
+                <p className="text-lg font-semibold text-emerald-800">{s.name}</p>
+                <p className="mt-2 text-sm text-slate-600">{s.body}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mx-auto mt-8 max-w-2xl text-center text-sm text-slate-600">
+            Tidak ada data karangan. Bila sumber tidak memuat angkanya, dashboard
+            menampilkan kosong, bukan tebakan.
+          </p>
+          <p className="mx-auto mt-2 max-w-2xl text-center text-xs text-slate-500">
+            Engine v1.1.0. 544 uji otomatis lulus. Dibangun untuk konteks PIDI
+            DIGDAYA Bank Indonesia.
+          </p>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="px-6 py-16">
+        <div className="mx-auto max-w-3xl text-center">
+          <h2 className="text-2xl md:text-3xl font-semibold">
+            Coba sekarang, tanpa membuat akun.
+          </h2>
+          <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <GuestCta className={primaryCta}>Buka Dashboard sebagai Tamu</GuestCta>
+            <Link href="/login" className={secondaryCtaOnDark}>
+              Punya akun dinas? Masuk di sini.
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <footer className="border-t border-white/20 px-6 py-6 text-center text-xs text-white/60">
+        AgriFlow · Neraca pangan Jawa Timur · Data BPS, PIHPS, IPM
+      </footer>
+    </main>
   );
 }

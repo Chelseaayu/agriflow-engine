@@ -27,6 +27,28 @@ function makeDevUser(email: string): User {
 
 type AuthResult = { error: string | null };
 
+// Collapse raw Supabase error strings into neutral Indonesian copy before they
+// reach the UI. Raw messages are English and occasionally too specific: showing
+// them verbatim leaks implementation detail and, for some flows, whether an
+// account exists (user enumeration). Sign-in failures all become one string on
+// purpose; "wrong password" and "unknown email" must be indistinguishable.
+function toNeutralError(
+  error: { message?: string; status?: number } | null,
+): string | null {
+  if (!error) return null;
+  const msg = (error.message ?? "").toLowerCase();
+  if (error.status === 429 || msg.includes("rate limit")) {
+    return "Terlalu banyak percobaan. Coba lagi beberapa menit lagi.";
+  }
+  if (msg.includes("invalid login credentials")) {
+    return "Email atau kata sandi salah.";
+  }
+  if (msg.includes("password")) {
+    return "Kata sandi belum memenuhi ketentuan. Gunakan minimal 8 karakter.";
+  }
+  return "Terjadi kendala saat memproses permintaan. Silakan coba lagi.";
+}
+
 type AuthContextValue = {
   user: User | null;
   session: Session | null;
@@ -94,7 +116,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const supabase = getSupabase();
     if (!supabase) return { error: NOT_CONFIGURED };
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error: error?.message ?? null };
+    return { error: toNeutralError(error) };
   }, []);
 
   // Social login (Google today, any Supabase Provider tomorrow). Self-serve
@@ -106,14 +128,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // (and must be listed in Supabase's Authentication > URL Configuration
   // allow-list, or Supabase falls back to the Site URL).
   const signInWithOAuth = useCallback(
-    async (provider: Provider, nextPath: string = "/") => {
+    async (provider: Provider, nextPath: string = "/dashboard") => {
       const supabase = getSupabase();
       if (!supabase) return { error: NOT_CONFIGURED };
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: { redirectTo: `${window.location.origin}${nextPath}` },
       });
-      return { error: error?.message ?? null };
+      return { error: toNeutralError(error) };
     },
     [],
   );
@@ -138,7 +160,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
     });
-    return { error: error?.message ?? null };
+    return { error: toNeutralError(error) };
   }, []);
 
   // Step 2: called from /reset-password once the recovery link has been
@@ -149,7 +171,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const supabase = getSupabase();
     if (!supabase) return { error: NOT_CONFIGURED };
     const { error } = await supabase.auth.updateUser({ password: newPassword });
-    return { error: error?.message ?? null };
+    return { error: toNeutralError(error) };
   }, []);
 
   const value = useMemo<AuthContextValue>(

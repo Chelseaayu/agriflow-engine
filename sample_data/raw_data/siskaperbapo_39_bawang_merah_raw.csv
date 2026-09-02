@@ -286842,3 +286842,2181 @@ tanggal,kab_kota,pasar,komoditas_id,komoditas_nama,harga
 2026-08-13,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,30000
 2026-08-14,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,32000
 2026-08-15,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,32000
+2026-08-27,Kota Surabaya,Pasar Genteng,39,Bawang Merah / kg,25000
+2026-08-28,Kota Surabaya,Pasar Genteng,39,Bawang Merah / kg,30000
+2026-08-29,Kota Surabaya,Pasar Genteng,39,Bawang Merah / kg,30000
+2026-08-30,Kota Surabaya,Pasar Genteng,39,Bawang Merah / kg,30000
+2026-08-31,Kota Surabaya,Pasar Genteng,39,Bawang Merah / kg,30000
+2026-09-01,Kota Surabaya,Pasar Genteng,39,Bawang Merah / kg,30000
+2026-09-02,Kota Surabaya,Pasar Genteng,39,Bawang Merah / kg,25000
+2026-08-27,Kota Surabaya,Pasar Keputran,39,Bawang Merah / kg,38000
+2026-08-28,Kota Surabaya,Pasar Keputran,39,Bawang Merah / kg,38000
+2026-08-29,Kota Surabaya,Pasar Keputran,39,Bawang Merah / kg,38000
+2026-08-30,Kota Surabaya,Pasar Keputran,39,Bawang Merah / kg,38000
+2026-08-31,Kota Surabaya,Pasar Keputran,39,Bawang Merah / kg,38000
+2026-09-01,Kota Surabaya,Pasar Keputran,39,Bawang Merah / kg,38000
+2026-09-02,Kota Surabaya,Pasar Keputran,39,Bawang Merah / kg,38000
+2026-08-27,Kota Surabaya,Pasar Pucang Anom,39,Bawang Merah / kg,32000
+2026-08-28,Kota Surabaya,Pasar Pucang Anom,39,Bawang Merah / kg,32000
+2026-08-29,Kota Surabaya,Pasar Pucang Anom,39,Bawang Merah / kg,30000
+2026-08-30,Kota Surabaya,Pasar Pucang Anom,39,Bawang Merah / kg,30000
+2026-08-31,Kota Surabaya,Pasar Pucang Anom,39,Bawang Merah / kg,30000
+2026-09-01,Kota Surabaya,Pasar Pucang Anom,39,Bawang Merah / kg,30000
+2026-09-02,Kota Surabaya,Pasar Pucang Anom,39,Bawang Merah / kg,30000
+2026-08-27,Kota Surabaya,Pasar Soponyono,39,Bawang Merah / kg,27000
+2026-08-28,Kota Surabaya,Pasar Soponyono,39,Bawang Merah / kg,27000
+2026-08-29,Kota Surabaya,Pasar Soponyono,39,Bawang Merah / kg,28000
+2026-08-30,Kota Surabaya,Pasar Soponyono,39,Bawang Merah / kg,28000
+2026-08-31,Kota Surabaya,Pasar Soponyono,39,Bawang Merah / kg,28000
+2026-09-01,Kota Surabaya,Pasar Soponyono,39,Bawang Merah / kg,28000
+2026-09-02,Kota Surabaya,Pasar Soponyono,39,Bawang Merah / kg,28000
+2026-08-27,Kota Surabaya,Pasar Tambahrejo,39,Bawang Merah / kg,26000
+2026-08-28,Kota Surabaya,Pasar Tambahrejo,39,Bawang Merah / kg,28000
+2026-08-29,Kota Surabaya,Pasar Tambahrejo,39,Bawang Merah / kg,26000
+2026-08-30,Kota Surabaya,Pasar Tambahrejo,39,Bawang Merah / kg,28000
+2026-08-31,Kota Surabaya,Pasar Tambahrejo,39,Bawang Merah / kg,30000
+2026-09-01,Kota Surabaya,Pasar Tambahrejo,39,Bawang Merah / kg,30000
+2026-09-02,Kota Surabaya,Pasar Tambahrejo,39,Bawang Merah / kg,28000
+2026-08-27,Kota Surabaya,Pasar Wonokromo,39,Bawang Merah / kg,30000
+2026-08-28,Kota Surabaya,Pasar Wonokromo,39,Bawang Merah / kg,28000
+2026-08-29,Kota Surabaya,Pasar Wonokromo,39,Bawang Merah / kg,28000
+2026-08-30,Kota Surabaya,Pasar Wonokromo,39,Bawang Merah / kg,28000
+2026-08-31,Kota Surabaya,Pasar Wonokromo,39,Bawang Merah / kg,30000
+2026-09-01,Kota Surabaya,Pasar Wonokromo,39,Bawang Merah / kg,30000
+2026-09-02,Kota Surabaya,Pasar Wonokromo,39,Bawang Merah / kg,30000
+2026-08-27,Kota Malang,Pasar Besar,39,Bawang Merah / kg,27000
+2026-08-28,Kota Malang,Pasar Besar,39,Bawang Merah / kg,27000
+2026-08-29,Kota Malang,Pasar Besar,39,Bawang Merah / kg,27000
+2026-08-30,Kota Malang,Pasar Besar,39,Bawang Merah / kg,27000
+2026-08-31,Kota Malang,Pasar Besar,39,Bawang Merah / kg,35000
+2026-09-01,Kota Malang,Pasar Besar,39,Bawang Merah / kg,35000
+2026-09-02,Kota Malang,Pasar Besar,39,Bawang Merah / kg,35000
+2026-08-27,Kota Malang,Pasar Blimbing,39,Bawang Merah / kg,35000
+2026-08-28,Kota Malang,Pasar Blimbing,39,Bawang Merah / kg,32000
+2026-08-29,Kota Malang,Pasar Blimbing,39,Bawang Merah / kg,32000
+2026-08-30,Kota Malang,Pasar Blimbing,39,Bawang Merah / kg,32000
+2026-08-31,Kota Malang,Pasar Blimbing,39,Bawang Merah / kg,32000
+2026-09-01,Kota Malang,Pasar Blimbing,39,Bawang Merah / kg,32000
+2026-09-02,Kota Malang,Pasar Blimbing,39,Bawang Merah / kg,32000
+2026-08-27,Kota Malang,Pasar Dinoyo,39,Bawang Merah / kg,32000
+2026-08-28,Kota Malang,Pasar Dinoyo,39,Bawang Merah / kg,32000
+2026-08-29,Kota Malang,Pasar Dinoyo,39,Bawang Merah / kg,32000
+2026-08-30,Kota Malang,Pasar Dinoyo,39,Bawang Merah / kg,32000
+2026-08-31,Kota Malang,Pasar Dinoyo,39,Bawang Merah / kg,32000
+2026-09-01,Kota Malang,Pasar Dinoyo,39,Bawang Merah / kg,32000
+2026-09-02,Kota Malang,Pasar Dinoyo,39,Bawang Merah / kg,32000
+2026-08-27,Kota Malang,Pasar Klojen,39,Bawang Merah / kg,33000
+2026-08-28,Kota Malang,Pasar Klojen,39,Bawang Merah / kg,33000
+2026-08-29,Kota Malang,Pasar Klojen,39,Bawang Merah / kg,33000
+2026-08-30,Kota Malang,Pasar Klojen,39,Bawang Merah / kg,33000
+2026-08-31,Kota Malang,Pasar Klojen,39,Bawang Merah / kg,33000
+2026-09-01,Kota Malang,Pasar Klojen,39,Bawang Merah / kg,33000
+2026-09-02,Kota Malang,Pasar Klojen,39,Bawang Merah / kg,33000
+2026-08-27,Kota Malang,Pasar Oro-oro Dowo,39,Bawang Merah / kg,32000
+2026-08-28,Kota Malang,Pasar Oro-oro Dowo,39,Bawang Merah / kg,32000
+2026-08-29,Kota Malang,Pasar Oro-oro Dowo,39,Bawang Merah / kg,32000
+2026-08-30,Kota Malang,Pasar Oro-oro Dowo,39,Bawang Merah / kg,32000
+2026-08-31,Kota Malang,Pasar Oro-oro Dowo,39,Bawang Merah / kg,32000
+2026-09-01,Kota Malang,Pasar Oro-oro Dowo,39,Bawang Merah / kg,32000
+2026-09-02,Kota Malang,Pasar Oro-oro Dowo,39,Bawang Merah / kg,32000
+2026-08-27,Kota Malang,Pasar Tawangmangu,39,Bawang Merah / kg,30000
+2026-08-28,Kota Malang,Pasar Tawangmangu,39,Bawang Merah / kg,30000
+2026-08-29,Kota Malang,Pasar Tawangmangu,39,Bawang Merah / kg,30000
+2026-08-30,Kota Malang,Pasar Tawangmangu,39,Bawang Merah / kg,30000
+2026-08-31,Kota Malang,Pasar Tawangmangu,39,Bawang Merah / kg,30000
+2026-09-01,Kota Malang,Pasar Tawangmangu,39,Bawang Merah / kg,30000
+2026-09-02,Kota Malang,Pasar Tawangmangu,39,Bawang Merah / kg,30000
+2026-08-27,Kota Kediri,Pasar Bandar,39,Bawang Merah / kg,25000
+2026-08-28,Kota Kediri,Pasar Bandar,39,Bawang Merah / kg,25000
+2026-08-29,Kota Kediri,Pasar Bandar,39,Bawang Merah / kg,25000
+2026-08-30,Kota Kediri,Pasar Bandar,39,Bawang Merah / kg,25000
+2026-08-31,Kota Kediri,Pasar Bandar,39,Bawang Merah / kg,25000
+2026-09-01,Kota Kediri,Pasar Bandar,39,Bawang Merah / kg,25000
+2026-09-02,Kota Kediri,Pasar Bandar,39,Bawang Merah / kg,25000
+2026-08-27,Kota Kediri,Pasar Pahing,39,Bawang Merah / kg,28000
+2026-08-28,Kota Kediri,Pasar Pahing,39,Bawang Merah / kg,30000
+2026-08-29,Kota Kediri,Pasar Pahing,39,Bawang Merah / kg,30000
+2026-08-30,Kota Kediri,Pasar Pahing,39,Bawang Merah / kg,30000
+2026-08-31,Kota Kediri,Pasar Pahing,39,Bawang Merah / kg,30000
+2026-09-01,Kota Kediri,Pasar Pahing,39,Bawang Merah / kg,30000
+2026-09-02,Kota Kediri,Pasar Pahing,39,Bawang Merah / kg,26000
+2026-08-27,Kota Kediri,Pasar Setono Betek,39,Bawang Merah / kg,28000
+2026-08-28,Kota Kediri,Pasar Setono Betek,39,Bawang Merah / kg,28000
+2026-08-29,Kota Kediri,Pasar Setono Betek,39,Bawang Merah / kg,28000
+2026-08-30,Kota Kediri,Pasar Setono Betek,39,Bawang Merah / kg,25000
+2026-08-31,Kota Kediri,Pasar Setono Betek,39,Bawang Merah / kg,25000
+2026-09-01,Kota Kediri,Pasar Setono Betek,39,Bawang Merah / kg,26000
+2026-09-02,Kota Kediri,Pasar Setono Betek,39,Bawang Merah / kg,26000
+2026-08-27,Kabupaten Jember,Pasar Kreongan,39,Bawang Merah / kg,26000
+2026-08-28,Kabupaten Jember,Pasar Kreongan,39,Bawang Merah / kg,26000
+2026-08-29,Kabupaten Jember,Pasar Kreongan,39,Bawang Merah / kg,26000
+2026-08-30,Kabupaten Jember,Pasar Kreongan,39,Bawang Merah / kg,26000
+2026-08-31,Kabupaten Jember,Pasar Kreongan,39,Bawang Merah / kg,26000
+2026-09-01,Kabupaten Jember,Pasar Kreongan,39,Bawang Merah / kg,26000
+2026-09-02,Kabupaten Jember,Pasar Kreongan,39,Bawang Merah / kg,26000
+2026-08-27,Kabupaten Jember,Pasar Mangli,39,Bawang Merah / kg,28000
+2026-08-28,Kabupaten Jember,Pasar Mangli,39,Bawang Merah / kg,28000
+2026-08-29,Kabupaten Jember,Pasar Mangli,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Jember,Pasar Mangli,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Jember,Pasar Mangli,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Jember,Pasar Mangli,39,Bawang Merah / kg,28000
+2026-09-02,Kabupaten Jember,Pasar Mangli,39,Bawang Merah / kg,28000
+2026-08-27,Kabupaten Jember,Pasar Tanjung,39,Bawang Merah / kg,28000
+2026-08-28,Kabupaten Jember,Pasar Tanjung,39,Bawang Merah / kg,28000
+2026-08-29,Kabupaten Jember,Pasar Tanjung,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Jember,Pasar Tanjung,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Jember,Pasar Tanjung,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Jember,Pasar Tanjung,39,Bawang Merah / kg,28000
+2026-09-02,Kabupaten Jember,Pasar Tanjung,39,Bawang Merah / kg,28000
+2026-08-27,Kabupaten Jember,Pasar Tegal Besar,39,Bawang Merah / kg,30000
+2026-08-28,Kabupaten Jember,Pasar Tegal Besar,39,Bawang Merah / kg,30000
+2026-08-29,Kabupaten Jember,Pasar Tegal Besar,39,Bawang Merah / kg,30000
+2026-08-30,Kabupaten Jember,Pasar Tegal Besar,39,Bawang Merah / kg,30000
+2026-08-31,Kabupaten Jember,Pasar Tegal Besar,39,Bawang Merah / kg,30000
+2026-09-01,Kabupaten Jember,Pasar Tegal Besar,39,Bawang Merah / kg,30000
+2026-09-02,Kabupaten Jember,Pasar Tegal Besar,39,Bawang Merah / kg,30000
+2026-08-27,Kabupaten Jember,Pasar Wirolegi,39,Bawang Merah / kg,26000
+2026-08-28,Kabupaten Jember,Pasar Wirolegi,39,Bawang Merah / kg,26000
+2026-08-29,Kabupaten Jember,Pasar Wirolegi,39,Bawang Merah / kg,26000
+2026-08-30,Kabupaten Jember,Pasar Wirolegi,39,Bawang Merah / kg,26000
+2026-08-31,Kabupaten Jember,Pasar Wirolegi,39,Bawang Merah / kg,26000
+2026-09-01,Kabupaten Jember,Pasar Wirolegi,39,Bawang Merah / kg,26000
+2026-09-02,Kabupaten Jember,Pasar Wirolegi,39,Bawang Merah / kg,26000
+2026-08-27,Kabupaten Bangkalan,Pasar Baru Bancaran,39,Bawang Merah / kg,28000
+2026-08-28,Kabupaten Bangkalan,Pasar Baru Bancaran,39,Bawang Merah / kg,28000
+2026-08-29,Kabupaten Bangkalan,Pasar Baru Bancaran,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Bangkalan,Pasar Baru Bancaran,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Bangkalan,Pasar Baru Bancaran,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Bangkalan,Pasar Baru Bancaran,39,Bawang Merah / kg,28000
+2026-09-02,Kabupaten Bangkalan,Pasar Baru Bancaran,39,Bawang Merah / kg,28000
+2026-08-27,Kabupaten Bangkalan,Pasar Ki Lemah Duwur,39,Bawang Merah / kg,28000
+2026-08-28,Kabupaten Bangkalan,Pasar Ki Lemah Duwur,39,Bawang Merah / kg,28000
+2026-08-29,Kabupaten Bangkalan,Pasar Ki Lemah Duwur,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Bangkalan,Pasar Ki Lemah Duwur,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Bangkalan,Pasar Ki Lemah Duwur,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Bangkalan,Pasar Ki Lemah Duwur,39,Bawang Merah / kg,28000
+2026-09-02,Kabupaten Bangkalan,Pasar Ki Lemah Duwur,39,Bawang Merah / kg,28000
+2026-08-27,Kabupaten Bangkalan,Pasar Senenan,39,Bawang Merah / kg,28000
+2026-08-28,Kabupaten Bangkalan,Pasar Senenan,39,Bawang Merah / kg,28000
+2026-08-29,Kabupaten Bangkalan,Pasar Senenan,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Bangkalan,Pasar Senenan,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Bangkalan,Pasar Senenan,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Bangkalan,Pasar Senenan,39,Bawang Merah / kg,28000
+2026-09-02,Kabupaten Bangkalan,Pasar Senenan,39,Bawang Merah / kg,28000
+2026-08-27,Kabupaten Banyuwangi,Pasar Banyuwangi,39,Bawang Merah / kg,30000
+2026-08-28,Kabupaten Banyuwangi,Pasar Banyuwangi,39,Bawang Merah / kg,30000
+2026-08-29,Kabupaten Banyuwangi,Pasar Banyuwangi,39,Bawang Merah / kg,30000
+2026-08-30,Kabupaten Banyuwangi,Pasar Banyuwangi,39,Bawang Merah / kg,30000
+2026-08-31,Kabupaten Banyuwangi,Pasar Banyuwangi,39,Bawang Merah / kg,30000
+2026-09-01,Kabupaten Banyuwangi,Pasar Banyuwangi,39,Bawang Merah / kg,30000
+2026-09-02,Kabupaten Banyuwangi,Pasar Banyuwangi,39,Bawang Merah / kg,30000
+2026-08-27,Kabupaten Banyuwangi,Pasar Blambangan,39,Bawang Merah / kg,28000
+2026-08-28,Kabupaten Banyuwangi,Pasar Blambangan,39,Bawang Merah / kg,28000
+2026-08-29,Kabupaten Banyuwangi,Pasar Blambangan,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Banyuwangi,Pasar Blambangan,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Banyuwangi,Pasar Blambangan,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Banyuwangi,Pasar Blambangan,39,Bawang Merah / kg,28000
+2026-09-02,Kabupaten Banyuwangi,Pasar Blambangan,39,Bawang Merah / kg,28000
+2026-08-27,Kabupaten Banyuwangi,Pasar Genteng I,39,Bawang Merah / kg,23000
+2026-08-28,Kabupaten Banyuwangi,Pasar Genteng I,39,Bawang Merah / kg,23000
+2026-08-29,Kabupaten Banyuwangi,Pasar Genteng I,39,Bawang Merah / kg,23000
+2026-08-30,Kabupaten Banyuwangi,Pasar Genteng I,39,Bawang Merah / kg,23000
+2026-08-31,Kabupaten Banyuwangi,Pasar Genteng I,39,Bawang Merah / kg,23000
+2026-09-01,Kabupaten Banyuwangi,Pasar Genteng I,39,Bawang Merah / kg,23000
+2026-09-02,Kabupaten Banyuwangi,Pasar Genteng I,39,Bawang Merah / kg,23000
+2026-08-27,Kabupaten Banyuwangi,Pasar Jajag,39,Bawang Merah / kg,25000
+2026-08-28,Kabupaten Banyuwangi,Pasar Jajag,39,Bawang Merah / kg,25000
+2026-08-29,Kabupaten Banyuwangi,Pasar Jajag,39,Bawang Merah / kg,25000
+2026-08-30,Kabupaten Banyuwangi,Pasar Jajag,39,Bawang Merah / kg,25000
+2026-08-31,Kabupaten Banyuwangi,Pasar Jajag,39,Bawang Merah / kg,25000
+2026-09-01,Kabupaten Banyuwangi,Pasar Jajag,39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Banyuwangi,Pasar Jajag,39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Banyuwangi,Pasar Rogojampi,39,Bawang Merah / kg,25000
+2026-08-28,Kabupaten Banyuwangi,Pasar Rogojampi,39,Bawang Merah / kg,25000
+2026-08-29,Kabupaten Banyuwangi,Pasar Rogojampi,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Banyuwangi,Pasar Rogojampi,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Banyuwangi,Pasar Rogojampi,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Banyuwangi,Pasar Rogojampi,39,Bawang Merah / kg,28000
+2026-09-02,Kabupaten Banyuwangi,Pasar Rogojampi,39,Bawang Merah / kg,28000
+2026-08-27,Kabupaten Blitar,Pasar Lodoyo,39,Bawang Merah / kg,23000
+2026-08-28,Kabupaten Blitar,Pasar Lodoyo,39,Bawang Merah / kg,25000
+2026-08-29,Kabupaten Blitar,Pasar Lodoyo,39,Bawang Merah / kg,25000
+2026-08-30,Kabupaten Blitar,Pasar Lodoyo,39,Bawang Merah / kg,25000
+2026-08-31,Kabupaten Blitar,Pasar Lodoyo,39,Bawang Merah / kg,25000
+2026-09-01,Kabupaten Blitar,Pasar Lodoyo,39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Blitar,Pasar Lodoyo,39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Blitar,Pasar Wlingi,39,Bawang Merah / kg,22000
+2026-08-28,Kabupaten Blitar,Pasar Wlingi,39,Bawang Merah / kg,22000
+2026-08-29,Kabupaten Blitar,Pasar Wlingi,39,Bawang Merah / kg,22000
+2026-08-30,Kabupaten Blitar,Pasar Wlingi,39,Bawang Merah / kg,22000
+2026-08-31,Kabupaten Blitar,Pasar Wlingi,39,Bawang Merah / kg,22000
+2026-09-01,Kabupaten Blitar,Pasar Wlingi,39,Bawang Merah / kg,22000
+2026-09-02,Kabupaten Blitar,Pasar Wlingi,39,Bawang Merah / kg,22000
+2026-08-27,Kabupaten Bojonegoro,Pasar Kota Baru,39,Bawang Merah / kg,25000
+2026-08-28,Kabupaten Bojonegoro,Pasar Kota Baru,39,Bawang Merah / kg,25000
+2026-08-29,Kabupaten Bojonegoro,Pasar Kota Baru,39,Bawang Merah / kg,25000
+2026-08-30,Kabupaten Bojonegoro,Pasar Kota Baru,39,Bawang Merah / kg,25000
+2026-08-31,Kabupaten Bojonegoro,Pasar Kota Baru,39,Bawang Merah / kg,25000
+2026-09-01,Kabupaten Bojonegoro,Pasar Kota Baru,39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Bojonegoro,Pasar Kota Baru,39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Bojonegoro,Pasar Wisata (Pasar Kota Lama),39,Bawang Merah / kg,24000
+2026-08-28,Kabupaten Bojonegoro,Pasar Wisata (Pasar Kota Lama),39,Bawang Merah / kg,24000
+2026-08-29,Kabupaten Bojonegoro,Pasar Wisata (Pasar Kota Lama),39,Bawang Merah / kg,24000
+2026-08-30,Kabupaten Bojonegoro,Pasar Wisata (Pasar Kota Lama),39,Bawang Merah / kg,24000
+2026-08-31,Kabupaten Bojonegoro,Pasar Wisata (Pasar Kota Lama),39,Bawang Merah / kg,25000
+2026-09-01,Kabupaten Bojonegoro,Pasar Wisata (Pasar Kota Lama),39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Bojonegoro,Pasar Wisata (Pasar Kota Lama),39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Bondowoso,Pasar Induk Bondowoso,39,Bawang Merah / kg,28000
+2026-08-28,Kabupaten Bondowoso,Pasar Induk Bondowoso,39,Bawang Merah / kg,28000
+2026-08-29,Kabupaten Bondowoso,Pasar Induk Bondowoso,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Bondowoso,Pasar Induk Bondowoso,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Bondowoso,Pasar Induk Bondowoso,39,Bawang Merah / kg,30000
+2026-09-01,Kabupaten Bondowoso,Pasar Induk Bondowoso,39,Bawang Merah / kg,30000
+2026-09-02,Kabupaten Bondowoso,Pasar Induk Bondowoso,39,Bawang Merah / kg,29000
+2026-08-27,Kabupaten Bondowoso,Pasar Maesan,39,Bawang Merah / kg,28000
+2026-08-28,Kabupaten Bondowoso,Pasar Maesan,39,Bawang Merah / kg,28000
+2026-08-29,Kabupaten Bondowoso,Pasar Maesan,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Bondowoso,Pasar Maesan,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Bondowoso,Pasar Maesan,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Bondowoso,Pasar Maesan,39,Bawang Merah / kg,28000
+2026-09-02,Kabupaten Bondowoso,Pasar Maesan,39,Bawang Merah / kg,28000
+2026-08-27,Kabupaten Bondowoso,Pasar Prajekan,39,Bawang Merah / kg,27000
+2026-08-28,Kabupaten Bondowoso,Pasar Prajekan,39,Bawang Merah / kg,27000
+2026-08-29,Kabupaten Bondowoso,Pasar Prajekan,39,Bawang Merah / kg,27000
+2026-08-30,Kabupaten Bondowoso,Pasar Prajekan,39,Bawang Merah / kg,27000
+2026-08-31,Kabupaten Bondowoso,Pasar Prajekan,39,Bawang Merah / kg,27000
+2026-09-01,Kabupaten Bondowoso,Pasar Prajekan,39,Bawang Merah / kg,27000
+2026-09-02,Kabupaten Bondowoso,Pasar Prajekan,39,Bawang Merah / kg,27000
+2026-08-27,Kabupaten Bondowoso,Pasar Wonosari,39,Bawang Merah / kg,27000
+2026-08-28,Kabupaten Bondowoso,Pasar Wonosari,39,Bawang Merah / kg,27000
+2026-08-29,Kabupaten Bondowoso,Pasar Wonosari,39,Bawang Merah / kg,27000
+2026-08-30,Kabupaten Bondowoso,Pasar Wonosari,39,Bawang Merah / kg,27000
+2026-08-31,Kabupaten Bondowoso,Pasar Wonosari,39,Bawang Merah / kg,27000
+2026-09-01,Kabupaten Bondowoso,Pasar Wonosari,39,Bawang Merah / kg,27000
+2026-09-02,Kabupaten Bondowoso,Pasar Wonosari,39,Bawang Merah / kg,27000
+2026-08-27,Kabupaten Gresik,Pasar Baru,39,Bawang Merah / kg,28000
+2026-08-28,Kabupaten Gresik,Pasar Baru,39,Bawang Merah / kg,28000
+2026-08-29,Kabupaten Gresik,Pasar Baru,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Gresik,Pasar Baru,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Gresik,Pasar Baru,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Gresik,Pasar Baru,39,Bawang Merah / kg,28000
+2026-09-02,Kabupaten Gresik,Pasar Baru,39,Bawang Merah / kg,28000
+2026-08-27,Kabupaten Gresik,Pasar Kota,39,Bawang Merah / kg,35000
+2026-08-28,Kabupaten Gresik,Pasar Kota,39,Bawang Merah / kg,35000
+2026-08-29,Kabupaten Gresik,Pasar Kota,39,Bawang Merah / kg,35000
+2026-08-30,Kabupaten Gresik,Pasar Kota,39,Bawang Merah / kg,35000
+2026-08-31,Kabupaten Gresik,Pasar Kota,39,Bawang Merah / kg,35000
+2026-09-01,Kabupaten Gresik,Pasar Kota,39,Bawang Merah / kg,30000
+2026-09-02,Kabupaten Gresik,Pasar Kota,39,Bawang Merah / kg,30000
+2026-08-27,Kabupaten Gresik,Pasar Sidomoro,39,Bawang Merah / kg,25000
+2026-08-28,Kabupaten Gresik,Pasar Sidomoro,39,Bawang Merah / kg,25000
+2026-08-29,Kabupaten Gresik,Pasar Sidomoro,39,Bawang Merah / kg,25000
+2026-08-30,Kabupaten Gresik,Pasar Sidomoro,39,Bawang Merah / kg,25000
+2026-08-31,Kabupaten Gresik,Pasar Sidomoro,39,Bawang Merah / kg,25000
+2026-09-01,Kabupaten Gresik,Pasar Sidomoro,39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Gresik,Pasar Sidomoro,39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Jombang,Pasar Cukir,39,Bawang Merah / kg,24000
+2026-08-28,Kabupaten Jombang,Pasar Cukir,39,Bawang Merah / kg,24000
+2026-08-29,Kabupaten Jombang,Pasar Cukir,39,Bawang Merah / kg,24000
+2026-08-30,Kabupaten Jombang,Pasar Cukir,39,Bawang Merah / kg,24000
+2026-08-31,Kabupaten Jombang,Pasar Cukir,39,Bawang Merah / kg,24000
+2026-09-01,Kabupaten Jombang,Pasar Cukir,39,Bawang Merah / kg,22000
+2026-09-02,Kabupaten Jombang,Pasar Cukir,39,Bawang Merah / kg,22000
+2026-08-27,Kabupaten Jombang,Pasar Ploso,39,Bawang Merah / kg,25000
+2026-08-28,Kabupaten Jombang,Pasar Ploso,39,Bawang Merah / kg,25000
+2026-08-29,Kabupaten Jombang,Pasar Ploso,39,Bawang Merah / kg,25000
+2026-08-30,Kabupaten Jombang,Pasar Ploso,39,Bawang Merah / kg,25000
+2026-08-31,Kabupaten Jombang,Pasar Ploso,39,Bawang Merah / kg,25000
+2026-09-01,Kabupaten Jombang,Pasar Ploso,39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Jombang,Pasar Ploso,39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Jombang,Pasar Pon,39,Bawang Merah / kg,22000
+2026-08-28,Kabupaten Jombang,Pasar Pon,39,Bawang Merah / kg,22000
+2026-08-29,Kabupaten Jombang,Pasar Pon,39,Bawang Merah / kg,22000
+2026-08-30,Kabupaten Jombang,Pasar Pon,39,Bawang Merah / kg,22000
+2026-08-31,Kabupaten Jombang,Pasar Pon,39,Bawang Merah / kg,22000
+2026-09-01,Kabupaten Jombang,Pasar Pon,39,Bawang Merah / kg,22000
+2026-09-02,Kabupaten Jombang,Pasar Pon,39,Bawang Merah / kg,22000
+2026-08-27,Kabupaten Kediri,Pasar Gringging,39,Bawang Merah / kg,24000
+2026-08-28,Kabupaten Kediri,Pasar Gringging,39,Bawang Merah / kg,24000
+2026-08-29,Kabupaten Kediri,Pasar Gringging,39,Bawang Merah / kg,26000
+2026-08-30,Kabupaten Kediri,Pasar Gringging,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Kediri,Pasar Gringging,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Kediri,Pasar Gringging,39,Bawang Merah / kg,27000
+2026-09-02,Kabupaten Kediri,Pasar Gringging,39,Bawang Merah / kg,27000
+2026-08-27,Kabupaten Kediri,Pasar Ngadiluwih,39,Bawang Merah / kg,28000
+2026-08-28,Kabupaten Kediri,Pasar Ngadiluwih,39,Bawang Merah / kg,28000
+2026-08-29,Kabupaten Kediri,Pasar Ngadiluwih,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Kediri,Pasar Ngadiluwih,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Kediri,Pasar Ngadiluwih,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Kediri,Pasar Ngadiluwih,39,Bawang Merah / kg,28000
+2026-09-02,Kabupaten Kediri,Pasar Ngadiluwih,39,Bawang Merah / kg,28000
+2026-08-27,Kabupaten Kediri,Pasar Pamenang,39,Bawang Merah / kg,25000
+2026-08-28,Kabupaten Kediri,Pasar Pamenang,39,Bawang Merah / kg,25000
+2026-08-29,Kabupaten Kediri,Pasar Pamenang,39,Bawang Merah / kg,25000
+2026-08-30,Kabupaten Kediri,Pasar Pamenang,39,Bawang Merah / kg,25000
+2026-08-31,Kabupaten Kediri,Pasar Pamenang,39,Bawang Merah / kg,25000
+2026-09-01,Kabupaten Kediri,Pasar Pamenang,39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Kediri,Pasar Pamenang,39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Lamongan,Pasar Babat,39,Bawang Merah / kg,27000
+2026-08-28,Kabupaten Lamongan,Pasar Babat,39,Bawang Merah / kg,27000
+2026-08-29,Kabupaten Lamongan,Pasar Babat,39,Bawang Merah / kg,27000
+2026-08-30,Kabupaten Lamongan,Pasar Babat,39,Bawang Merah / kg,27000
+2026-08-31,Kabupaten Lamongan,Pasar Babat,39,Bawang Merah / kg,27000
+2026-09-01,Kabupaten Lamongan,Pasar Babat,39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Lamongan,Pasar Babat,39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Lamongan,Pasar Blimbing,39,Bawang Merah / kg,20000
+2026-08-28,Kabupaten Lamongan,Pasar Blimbing,39,Bawang Merah / kg,20000
+2026-08-29,Kabupaten Lamongan,Pasar Blimbing,39,Bawang Merah / kg,20000
+2026-08-30,Kabupaten Lamongan,Pasar Blimbing,39,Bawang Merah / kg,20000
+2026-08-31,Kabupaten Lamongan,Pasar Blimbing,39,Bawang Merah / kg,20000
+2026-09-01,Kabupaten Lamongan,Pasar Blimbing,39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Lamongan,Pasar Blimbing,39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Lamongan,Pasar Mantup,39,Bawang Merah / kg,26000
+2026-08-28,Kabupaten Lamongan,Pasar Mantup,39,Bawang Merah / kg,26000
+2026-08-29,Kabupaten Lamongan,Pasar Mantup,39,Bawang Merah / kg,26000
+2026-08-30,Kabupaten Lamongan,Pasar Mantup,39,Bawang Merah / kg,26000
+2026-08-31,Kabupaten Lamongan,Pasar Mantup,39,Bawang Merah / kg,26000
+2026-09-01,Kabupaten Lamongan,Pasar Mantup,39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Lamongan,Pasar Mantup,39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Lamongan,Pasar Sidoharjo,39,Bawang Merah / kg,22000
+2026-08-28,Kabupaten Lamongan,Pasar Sidoharjo,39,Bawang Merah / kg,22000
+2026-08-29,Kabupaten Lamongan,Pasar Sidoharjo,39,Bawang Merah / kg,22000
+2026-08-30,Kabupaten Lamongan,Pasar Sidoharjo,39,Bawang Merah / kg,22000
+2026-08-31,Kabupaten Lamongan,Pasar Sidoharjo,39,Bawang Merah / kg,22000
+2026-09-01,Kabupaten Lamongan,Pasar Sidoharjo,39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Lamongan,Pasar Sidoharjo,39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Lumajang,Pasar Baru,39,Bawang Merah / kg,25000
+2026-08-28,Kabupaten Lumajang,Pasar Baru,39,Bawang Merah / kg,25000
+2026-08-29,Kabupaten Lumajang,Pasar Baru,39,Bawang Merah / kg,25000
+2026-08-30,Kabupaten Lumajang,Pasar Baru,39,Bawang Merah / kg,25000
+2026-08-31,Kabupaten Lumajang,Pasar Baru,39,Bawang Merah / kg,25000
+2026-09-01,Kabupaten Lumajang,Pasar Baru,39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Lumajang,Pasar Baru,39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Lumajang,Pasar Pasirian,39,Bawang Merah / kg,26000
+2026-08-28,Kabupaten Lumajang,Pasar Pasirian,39,Bawang Merah / kg,26000
+2026-08-29,Kabupaten Lumajang,Pasar Pasirian,39,Bawang Merah / kg,26000
+2026-08-30,Kabupaten Lumajang,Pasar Pasirian,39,Bawang Merah / kg,26000
+2026-08-31,Kabupaten Lumajang,Pasar Pasirian,39,Bawang Merah / kg,26000
+2026-09-01,Kabupaten Lumajang,Pasar Pasirian,39,Bawang Merah / kg,26000
+2026-09-02,Kabupaten Lumajang,Pasar Pasirian,39,Bawang Merah / kg,26000
+2026-08-27,Kabupaten Lumajang,Pasar Sukodono,39,Bawang Merah / kg,25000
+2026-08-28,Kabupaten Lumajang,Pasar Sukodono,39,Bawang Merah / kg,25000
+2026-08-29,Kabupaten Lumajang,Pasar Sukodono,39,Bawang Merah / kg,25000
+2026-08-30,Kabupaten Lumajang,Pasar Sukodono,39,Bawang Merah / kg,25000
+2026-08-31,Kabupaten Lumajang,Pasar Sukodono,39,Bawang Merah / kg,25000
+2026-09-01,Kabupaten Lumajang,Pasar Sukodono,39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Lumajang,Pasar Sukodono,39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Madiun,Pasar Dolopo,39,Bawang Merah / kg,26600
+2026-08-28,Kabupaten Madiun,Pasar Dolopo,39,Bawang Merah / kg,26600
+2026-08-29,Kabupaten Madiun,Pasar Dolopo,39,Bawang Merah / kg,26600
+2026-08-30,Kabupaten Madiun,Pasar Dolopo,39,Bawang Merah / kg,26600
+2026-08-31,Kabupaten Madiun,Pasar Dolopo,39,Bawang Merah / kg,24600
+2026-09-01,Kabupaten Madiun,Pasar Dolopo,39,Bawang Merah / kg,24300
+2026-09-02,Kabupaten Madiun,Pasar Dolopo,39,Bawang Merah / kg,24300
+2026-08-27,Kabupaten Madiun,Pasar Dungus,39,Bawang Merah / kg,26000
+2026-08-28,Kabupaten Madiun,Pasar Dungus,39,Bawang Merah / kg,26000
+2026-08-29,Kabupaten Madiun,Pasar Dungus,39,Bawang Merah / kg,26000
+2026-08-30,Kabupaten Madiun,Pasar Dungus,39,Bawang Merah / kg,26000
+2026-08-31,Kabupaten Madiun,Pasar Dungus,39,Bawang Merah / kg,26000
+2026-09-01,Kabupaten Madiun,Pasar Dungus,39,Bawang Merah / kg,26000
+2026-09-02,Kabupaten Madiun,Pasar Dungus,39,Bawang Merah / kg,24000
+2026-08-27,Kabupaten Madiun,Pasar Pagotan,39,Bawang Merah / kg,26000
+2026-08-28,Kabupaten Madiun,Pasar Pagotan,39,Bawang Merah / kg,26000
+2026-08-29,Kabupaten Madiun,Pasar Pagotan,39,Bawang Merah / kg,26000
+2026-08-30,Kabupaten Madiun,Pasar Pagotan,39,Bawang Merah / kg,26000
+2026-08-31,Kabupaten Madiun,Pasar Pagotan,39,Bawang Merah / kg,26000
+2026-09-01,Kabupaten Madiun,Pasar Pagotan,39,Bawang Merah / kg,26000
+2026-09-02,Kabupaten Madiun,Pasar Pagotan,39,Bawang Merah / kg,24000
+2026-08-27,Kabupaten Madiun,Pasar Umum Caruban,39,Bawang Merah / kg,20000
+2026-08-28,Kabupaten Madiun,Pasar Umum Caruban,39,Bawang Merah / kg,20000
+2026-08-29,Kabupaten Madiun,Pasar Umum Caruban,39,Bawang Merah / kg,20000
+2026-08-30,Kabupaten Madiun,Pasar Umum Caruban,39,Bawang Merah / kg,20000
+2026-08-31,Kabupaten Madiun,Pasar Umum Caruban,39,Bawang Merah / kg,20000
+2026-09-01,Kabupaten Madiun,Pasar Umum Caruban,39,Bawang Merah / kg,20000
+2026-09-02,Kabupaten Madiun,Pasar Umum Caruban,39,Bawang Merah / kg,20000
+2026-08-27,Kabupaten Magetan,Pasar Gorang Gareng I Kawedanan,39,Bawang Merah / kg,30000
+2026-08-28,Kabupaten Magetan,Pasar Gorang Gareng I Kawedanan,39,Bawang Merah / kg,30000
+2026-08-29,Kabupaten Magetan,Pasar Gorang Gareng I Kawedanan,39,Bawang Merah / kg,30000
+2026-08-30,Kabupaten Magetan,Pasar Gorang Gareng I Kawedanan,39,Bawang Merah / kg,30000
+2026-08-31,Kabupaten Magetan,Pasar Gorang Gareng I Kawedanan,39,Bawang Merah / kg,30000
+2026-09-01,Kabupaten Magetan,Pasar Gorang Gareng I Kawedanan,39,Bawang Merah / kg,30000
+2026-09-02,Kabupaten Magetan,Pasar Gorang Gareng I Kawedanan,39,Bawang Merah / kg,30000
+2026-08-27,Kabupaten Magetan,Pasar Maospati,39,Bawang Merah / kg,30000
+2026-08-28,Kabupaten Magetan,Pasar Maospati,39,Bawang Merah / kg,30000
+2026-08-29,Kabupaten Magetan,Pasar Maospati,39,Bawang Merah / kg,30000
+2026-08-30,Kabupaten Magetan,Pasar Maospati,39,Bawang Merah / kg,30000
+2026-08-31,Kabupaten Magetan,Pasar Maospati,39,Bawang Merah / kg,30000
+2026-09-01,Kabupaten Magetan,Pasar Maospati,39,Bawang Merah / kg,30000
+2026-09-02,Kabupaten Magetan,Pasar Maospati,39,Bawang Merah / kg,30000
+2026-08-27,Kabupaten Magetan,Pasar Sayur I,39,Bawang Merah / kg,28000
+2026-08-28,Kabupaten Magetan,Pasar Sayur I,39,Bawang Merah / kg,28000
+2026-08-29,Kabupaten Magetan,Pasar Sayur I,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Magetan,Pasar Sayur I,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Magetan,Pasar Sayur I,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Magetan,Pasar Sayur I,39,Bawang Merah / kg,28000
+2026-09-02,Kabupaten Magetan,Pasar Sayur I,39,Bawang Merah / kg,28000
+2026-08-27,Kabupaten Malang,Pasar Karang Ploso,39,Bawang Merah / kg,24000
+2026-08-28,Kabupaten Malang,Pasar Karang Ploso,39,Bawang Merah / kg,24000
+2026-08-29,Kabupaten Malang,Pasar Karang Ploso,39,Bawang Merah / kg,24000
+2026-08-30,Kabupaten Malang,Pasar Karang Ploso,39,Bawang Merah / kg,24000
+2026-08-31,Kabupaten Malang,Pasar Karang Ploso,39,Bawang Merah / kg,27000
+2026-09-01,Kabupaten Malang,Pasar Karang Ploso,39,Bawang Merah / kg,27000
+2026-09-02,Kabupaten Malang,Pasar Karang Ploso,39,Bawang Merah / kg,30000
+2026-08-27,Kabupaten Malang,Pasar Kepanjen,39,Bawang Merah / kg,24000
+2026-08-28,Kabupaten Malang,Pasar Kepanjen,39,Bawang Merah / kg,24000
+2026-08-29,Kabupaten Malang,Pasar Kepanjen,39,Bawang Merah / kg,24000
+2026-08-30,Kabupaten Malang,Pasar Kepanjen,39,Bawang Merah / kg,24000
+2026-08-31,Kabupaten Malang,Pasar Kepanjen,39,Bawang Merah / kg,24000
+2026-09-01,Kabupaten Malang,Pasar Kepanjen,39,Bawang Merah / kg,24000
+2026-09-02,Kabupaten Malang,Pasar Kepanjen,39,Bawang Merah / kg,24000
+2026-08-27,Kabupaten Malang,Pasar Lawang,39,Bawang Merah / kg,24000
+2026-08-28,Kabupaten Malang,Pasar Lawang,39,Bawang Merah / kg,24000
+2026-08-29,Kabupaten Malang,Pasar Lawang,39,Bawang Merah / kg,24000
+2026-08-30,Kabupaten Malang,Pasar Lawang,39,Bawang Merah / kg,24000
+2026-08-31,Kabupaten Malang,Pasar Lawang,39,Bawang Merah / kg,22000
+2026-09-01,Kabupaten Malang,Pasar Lawang,39,Bawang Merah / kg,22000
+2026-09-02,Kabupaten Malang,Pasar Lawang,39,Bawang Merah / kg,22000
+2026-08-27,Kabupaten Malang,Pasar Singosari,39,Bawang Merah / kg,28000
+2026-08-28,Kabupaten Malang,Pasar Singosari,39,Bawang Merah / kg,28000
+2026-08-29,Kabupaten Malang,Pasar Singosari,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Malang,Pasar Singosari,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Malang,Pasar Singosari,39,Bawang Merah / kg,27000
+2026-09-01,Kabupaten Malang,Pasar Singosari,39,Bawang Merah / kg,27000
+2026-09-02,Kabupaten Malang,Pasar Singosari,39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Malang,Pasar Turen,39,Bawang Merah / kg,28000
+2026-08-28,Kabupaten Malang,Pasar Turen,39,Bawang Merah / kg,28000
+2026-08-29,Kabupaten Malang,Pasar Turen,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Malang,Pasar Turen,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Malang,Pasar Turen,39,Bawang Merah / kg,26000
+2026-09-01,Kabupaten Malang,Pasar Turen,39,Bawang Merah / kg,26000
+2026-09-02,Kabupaten Malang,Pasar Turen,39,Bawang Merah / kg,26000
+2026-08-27,Kabupaten Mojokerto,Pasar Gempol  Kerep,39,Bawang Merah / kg,26000
+2026-08-28,Kabupaten Mojokerto,Pasar Gempol  Kerep,39,Bawang Merah / kg,26000
+2026-08-29,Kabupaten Mojokerto,Pasar Gempol  Kerep,39,Bawang Merah / kg,26000
+2026-08-30,Kabupaten Mojokerto,Pasar Gempol  Kerep,39,Bawang Merah / kg,26000
+2026-08-31,Kabupaten Mojokerto,Pasar Gempol  Kerep,39,Bawang Merah / kg,26000
+2026-09-01,Kabupaten Mojokerto,Pasar Gempol  Kerep,39,Bawang Merah / kg,21000
+2026-09-02,Kabupaten Mojokerto,Pasar Gempol  Kerep,39,Bawang Merah / kg,21000
+2026-08-27,Kabupaten Mojokerto,Pasar Kedung Maling,39,Bawang Merah / kg,27000
+2026-08-28,Kabupaten Mojokerto,Pasar Kedung Maling,39,Bawang Merah / kg,27000
+2026-08-29,Kabupaten Mojokerto,Pasar Kedung Maling,39,Bawang Merah / kg,27000
+2026-08-30,Kabupaten Mojokerto,Pasar Kedung Maling,39,Bawang Merah / kg,27000
+2026-08-31,Kabupaten Mojokerto,Pasar Kedung Maling,39,Bawang Merah / kg,27000
+2026-09-01,Kabupaten Mojokerto,Pasar Kedung Maling,39,Bawang Merah / kg,24000
+2026-09-02,Kabupaten Mojokerto,Pasar Kedung Maling,39,Bawang Merah / kg,24000
+2026-08-27,Kabupaten Mojokerto,Pasar Poh Jejer,39,Bawang Merah / kg,28000
+2026-08-28,Kabupaten Mojokerto,Pasar Poh Jejer,39,Bawang Merah / kg,28000
+2026-08-29,Kabupaten Mojokerto,Pasar Poh Jejer,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Mojokerto,Pasar Poh Jejer,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Mojokerto,Pasar Poh Jejer,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Mojokerto,Pasar Poh Jejer,39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Mojokerto,Pasar Poh Jejer,39,Bawang Merah / kg,26000
+2026-08-27,Kabupaten Mojokerto,Pasar Raya Mojosari,39,Bawang Merah / kg,27500
+2026-08-28,Kabupaten Mojokerto,Pasar Raya Mojosari,39,Bawang Merah / kg,27500
+2026-08-29,Kabupaten Mojokerto,Pasar Raya Mojosari,39,Bawang Merah / kg,27500
+2026-08-30,Kabupaten Mojokerto,Pasar Raya Mojosari,39,Bawang Merah / kg,27500
+2026-08-31,Kabupaten Mojokerto,Pasar Raya Mojosari,39,Bawang Merah / kg,27160
+2026-09-01,Kabupaten Mojokerto,Pasar Raya Mojosari,39,Bawang Merah / kg,27000
+2026-09-02,Kabupaten Mojokerto,Pasar Raya Mojosari,39,Bawang Merah / kg,27000
+2026-08-27,Kabupaten Nganjuk,Pasar Berbek,39,Bawang Merah / kg,23000
+2026-08-28,Kabupaten Nganjuk,Pasar Berbek,39,Bawang Merah / kg,23000
+2026-08-29,Kabupaten Nganjuk,Pasar Berbek,39,Bawang Merah / kg,23000
+2026-08-30,Kabupaten Nganjuk,Pasar Berbek,39,Bawang Merah / kg,23000
+2026-08-31,Kabupaten Nganjuk,Pasar Berbek,39,Bawang Merah / kg,23000
+2026-09-01,Kabupaten Nganjuk,Pasar Berbek,39,Bawang Merah / kg,23000
+2026-09-02,Kabupaten Nganjuk,Pasar Berbek,39,Bawang Merah / kg,23000
+2026-08-27,Kabupaten Nganjuk,Pasar Wage,39,Bawang Merah / kg,22000
+2026-08-28,Kabupaten Nganjuk,Pasar Wage,39,Bawang Merah / kg,22000
+2026-08-29,Kabupaten Nganjuk,Pasar Wage,39,Bawang Merah / kg,22000
+2026-08-30,Kabupaten Nganjuk,Pasar Wage,39,Bawang Merah / kg,22000
+2026-08-31,Kabupaten Nganjuk,Pasar Wage,39,Bawang Merah / kg,22000
+2026-09-01,Kabupaten Nganjuk,Pasar Wage,39,Bawang Merah / kg,22000
+2026-09-02,Kabupaten Nganjuk,Pasar Wage,39,Bawang Merah / kg,22000
+2026-08-27,Kabupaten Nganjuk,Pasar Warujayeng,39,Bawang Merah / kg,22000
+2026-08-28,Kabupaten Nganjuk,Pasar Warujayeng,39,Bawang Merah / kg,22000
+2026-08-29,Kabupaten Nganjuk,Pasar Warujayeng,39,Bawang Merah / kg,22000
+2026-08-30,Kabupaten Nganjuk,Pasar Warujayeng,39,Bawang Merah / kg,22000
+2026-08-31,Kabupaten Nganjuk,Pasar Warujayeng,39,Bawang Merah / kg,22000
+2026-09-01,Kabupaten Nganjuk,Pasar Warujayeng,39,Bawang Merah / kg,22000
+2026-09-02,Kabupaten Nganjuk,Pasar Warujayeng,39,Bawang Merah / kg,22000
+2026-08-27,Kabupaten Ngawi,Pasar Beran,39,Bawang Merah / kg,28000
+2026-08-28,Kabupaten Ngawi,Pasar Beran,39,Bawang Merah / kg,28000
+2026-08-29,Kabupaten Ngawi,Pasar Beran,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Ngawi,Pasar Beran,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Ngawi,Pasar Beran,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Ngawi,Pasar Beran,39,Bawang Merah / kg,28000
+2026-09-02,Kabupaten Ngawi,Pasar Beran,39,Bawang Merah / kg,28000
+2026-08-27,Kabupaten Ngawi,Pasar Besar Ngawi,39,Bawang Merah / kg,32000
+2026-08-28,Kabupaten Ngawi,Pasar Besar Ngawi,39,Bawang Merah / kg,32000
+2026-08-29,Kabupaten Ngawi,Pasar Besar Ngawi,39,Bawang Merah / kg,32000
+2026-08-30,Kabupaten Ngawi,Pasar Besar Ngawi,39,Bawang Merah / kg,32000
+2026-08-31,Kabupaten Ngawi,Pasar Besar Ngawi,39,Bawang Merah / kg,32000
+2026-09-01,Kabupaten Ngawi,Pasar Besar Ngawi,39,Bawang Merah / kg,32000
+2026-09-02,Kabupaten Ngawi,Pasar Besar Ngawi,39,Bawang Merah / kg,30000
+2026-08-27,Kabupaten Ngawi,Pasar Paron,39,Bawang Merah / kg,30000
+2026-08-28,Kabupaten Ngawi,Pasar Paron,39,Bawang Merah / kg,30000
+2026-08-29,Kabupaten Ngawi,Pasar Paron,39,Bawang Merah / kg,30000
+2026-08-30,Kabupaten Ngawi,Pasar Paron,39,Bawang Merah / kg,30000
+2026-08-31,Kabupaten Ngawi,Pasar Paron,39,Bawang Merah / kg,30000
+2026-09-01,Kabupaten Ngawi,Pasar Paron,39,Bawang Merah / kg,30000
+2026-09-02,Kabupaten Ngawi,Pasar Paron,39,Bawang Merah / kg,30000
+2026-08-27,Kabupaten Pacitan,Pasar Arjosari,39,Bawang Merah / kg,26000
+2026-08-28,Kabupaten Pacitan,Pasar Arjosari,39,Bawang Merah / kg,26000
+2026-08-29,Kabupaten Pacitan,Pasar Arjosari,39,Bawang Merah / kg,26000
+2026-08-30,Kabupaten Pacitan,Pasar Arjosari,39,Bawang Merah / kg,26000
+2026-08-31,Kabupaten Pacitan,Pasar Arjosari,39,Bawang Merah / kg,26000
+2026-09-01,Kabupaten Pacitan,Pasar Arjosari,39,Bawang Merah / kg,26000
+2026-09-02,Kabupaten Pacitan,Pasar Arjosari,39,Bawang Merah / kg,26000
+2026-08-27,Kabupaten Pacitan,Pasar Arjowinangun,39,Bawang Merah / kg,27000
+2026-08-28,Kabupaten Pacitan,Pasar Arjowinangun,39,Bawang Merah / kg,27000
+2026-08-29,Kabupaten Pacitan,Pasar Arjowinangun,39,Bawang Merah / kg,27000
+2026-08-30,Kabupaten Pacitan,Pasar Arjowinangun,39,Bawang Merah / kg,27000
+2026-08-31,Kabupaten Pacitan,Pasar Arjowinangun,39,Bawang Merah / kg,27000
+2026-09-01,Kabupaten Pacitan,Pasar Arjowinangun,39,Bawang Merah / kg,28000
+2026-09-02,Kabupaten Pacitan,Pasar Arjowinangun,39,Bawang Merah / kg,28000
+2026-08-27,Kabupaten Pacitan,Pasar Minulyo,39,Bawang Merah / kg,27000
+2026-08-28,Kabupaten Pacitan,Pasar Minulyo,39,Bawang Merah / kg,27000
+2026-08-29,Kabupaten Pacitan,Pasar Minulyo,39,Bawang Merah / kg,27000
+2026-08-30,Kabupaten Pacitan,Pasar Minulyo,39,Bawang Merah / kg,27000
+2026-08-31,Kabupaten Pacitan,Pasar Minulyo,39,Bawang Merah / kg,27000
+2026-09-01,Kabupaten Pacitan,Pasar Minulyo,39,Bawang Merah / kg,27000
+2026-09-02,Kabupaten Pacitan,Pasar Minulyo,39,Bawang Merah / kg,27000
+2026-08-27,Kabupaten Pamekasan,Pasar Kolpajung,39,Bawang Merah / kg,30000
+2026-08-28,Kabupaten Pamekasan,Pasar Kolpajung,39,Bawang Merah / kg,30000
+2026-08-29,Kabupaten Pamekasan,Pasar Kolpajung,39,Bawang Merah / kg,30000
+2026-08-30,Kabupaten Pamekasan,Pasar Kolpajung,39,Bawang Merah / kg,30000
+2026-08-31,Kabupaten Pamekasan,Pasar Kolpajung,39,Bawang Merah / kg,30000
+2026-09-01,Kabupaten Pamekasan,Pasar Kolpajung,39,Bawang Merah / kg,30000
+2026-09-02,Kabupaten Pamekasan,Pasar Kolpajung,39,Bawang Merah / kg,30000
+2026-08-27,Kabupaten Pamekasan,Pasar Waru,39,Bawang Merah / kg,30000
+2026-08-28,Kabupaten Pamekasan,Pasar Waru,39,Bawang Merah / kg,30000
+2026-08-29,Kabupaten Pamekasan,Pasar Waru,39,Bawang Merah / kg,30000
+2026-08-30,Kabupaten Pamekasan,Pasar Waru,39,Bawang Merah / kg,30000
+2026-08-31,Kabupaten Pamekasan,Pasar Waru,39,Bawang Merah / kg,30000
+2026-09-01,Kabupaten Pamekasan,Pasar Waru,39,Bawang Merah / kg,30000
+2026-09-02,Kabupaten Pamekasan,Pasar Waru,39,Bawang Merah / kg,30000
+2026-08-27,Kabupaten Pasuruan,Pasar Bangil,39,Bawang Merah / kg,28000
+2026-08-28,Kabupaten Pasuruan,Pasar Bangil,39,Bawang Merah / kg,28000
+2026-08-29,Kabupaten Pasuruan,Pasar Bangil,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Pasuruan,Pasar Bangil,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Pasuruan,Pasar Bangil,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Pasuruan,Pasar Bangil,39,Bawang Merah / kg,28000
+2026-09-02,Kabupaten Pasuruan,Pasar Bangil,39,Bawang Merah / kg,28000
+2026-08-27,Kabupaten Pasuruan,Pasar Pandaan,39,Bawang Merah / kg,29000
+2026-08-28,Kabupaten Pasuruan,Pasar Pandaan,39,Bawang Merah / kg,29000
+2026-08-29,Kabupaten Pasuruan,Pasar Pandaan,39,Bawang Merah / kg,29000
+2026-08-30,Kabupaten Pasuruan,Pasar Pandaan,39,Bawang Merah / kg,29000
+2026-08-31,Kabupaten Pasuruan,Pasar Pandaan,39,Bawang Merah / kg,29000
+2026-09-01,Kabupaten Pasuruan,Pasar Pandaan,39,Bawang Merah / kg,29000
+2026-09-02,Kabupaten Pasuruan,Pasar Pandaan,39,Bawang Merah / kg,29000
+2026-08-27,Kabupaten Pasuruan,Pasar Sukorejo,39,Bawang Merah / kg,32000
+2026-08-28,Kabupaten Pasuruan,Pasar Sukorejo,39,Bawang Merah / kg,32000
+2026-08-29,Kabupaten Pasuruan,Pasar Sukorejo,39,Bawang Merah / kg,32000
+2026-08-30,Kabupaten Pasuruan,Pasar Sukorejo,39,Bawang Merah / kg,32000
+2026-08-31,Kabupaten Pasuruan,Pasar Sukorejo,39,Bawang Merah / kg,32000
+2026-09-01,Kabupaten Pasuruan,Pasar Sukorejo,39,Bawang Merah / kg,32000
+2026-09-02,Kabupaten Pasuruan,Pasar Sukorejo,39,Bawang Merah / kg,30000
+2026-08-27,Kabupaten Ponorogo,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-28,Kabupaten Ponorogo,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-29,Kabupaten Ponorogo,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-30,Kabupaten Ponorogo,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-31,Kabupaten Ponorogo,Pasar Legi,39,Bawang Merah / kg,25000
+2026-09-01,Kabupaten Ponorogo,Pasar Legi,39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Ponorogo,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Ponorogo,Pasar Sumoroto,39,Bawang Merah / kg,28000
+2026-08-28,Kabupaten Ponorogo,Pasar Sumoroto,39,Bawang Merah / kg,28000
+2026-08-29,Kabupaten Ponorogo,Pasar Sumoroto,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Ponorogo,Pasar Sumoroto,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Ponorogo,Pasar Sumoroto,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Ponorogo,Pasar Sumoroto,39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Ponorogo,Pasar Sumoroto,39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Probolinggo,Pasar Dringu,39,Bawang Merah / kg,32000
+2026-08-28,Kabupaten Probolinggo,Pasar Dringu,39,Bawang Merah / kg,32000
+2026-08-29,Kabupaten Probolinggo,Pasar Dringu,39,Bawang Merah / kg,32000
+2026-08-30,Kabupaten Probolinggo,Pasar Dringu,39,Bawang Merah / kg,30000
+2026-08-31,Kabupaten Probolinggo,Pasar Dringu,39,Bawang Merah / kg,30000
+2026-09-01,Kabupaten Probolinggo,Pasar Dringu,39,Bawang Merah / kg,30000
+2026-09-02,Kabupaten Probolinggo,Pasar Dringu,39,Bawang Merah / kg,30000
+2026-08-27,Kabupaten Probolinggo,Pasar Leces,39,Bawang Merah / kg,30000
+2026-08-28,Kabupaten Probolinggo,Pasar Leces,39,Bawang Merah / kg,30000
+2026-08-29,Kabupaten Probolinggo,Pasar Leces,39,Bawang Merah / kg,30000
+2026-08-30,Kabupaten Probolinggo,Pasar Leces,39,Bawang Merah / kg,30000
+2026-08-31,Kabupaten Probolinggo,Pasar Leces,39,Bawang Merah / kg,30000
+2026-09-01,Kabupaten Probolinggo,Pasar Leces,39,Bawang Merah / kg,30000
+2026-09-02,Kabupaten Probolinggo,Pasar Leces,39,Bawang Merah / kg,30000
+2026-08-27,Kabupaten Probolinggo,Pasar Semampir,39,Bawang Merah / kg,35000
+2026-08-28,Kabupaten Probolinggo,Pasar Semampir,39,Bawang Merah / kg,35000
+2026-08-29,Kabupaten Probolinggo,Pasar Semampir,39,Bawang Merah / kg,35000
+2026-08-30,Kabupaten Probolinggo,Pasar Semampir,39,Bawang Merah / kg,35000
+2026-08-31,Kabupaten Probolinggo,Pasar Semampir,39,Bawang Merah / kg,35000
+2026-09-01,Kabupaten Probolinggo,Pasar Semampir,39,Bawang Merah / kg,35000
+2026-09-02,Kabupaten Probolinggo,Pasar Semampir,39,Bawang Merah / kg,35000
+2026-08-27,Kabupaten Sampang,Pasar Rongtengah,39,Bawang Merah / kg,35000
+2026-08-28,Kabupaten Sampang,Pasar Rongtengah,39,Bawang Merah / kg,30000
+2026-08-29,Kabupaten Sampang,Pasar Rongtengah,39,Bawang Merah / kg,30000
+2026-08-30,Kabupaten Sampang,Pasar Rongtengah,39,Bawang Merah / kg,30000
+2026-08-31,Kabupaten Sampang,Pasar Rongtengah,39,Bawang Merah / kg,32000
+2026-09-01,Kabupaten Sampang,Pasar Rongtengah,39,Bawang Merah / kg,32000
+2026-09-02,Kabupaten Sampang,Pasar Rongtengah,39,Bawang Merah / kg,32000
+2026-08-27,Kabupaten Sampang,Pasar Srimangunan,39,Bawang Merah / kg,26000
+2026-08-28,Kabupaten Sampang,Pasar Srimangunan,39,Bawang Merah / kg,26000
+2026-08-29,Kabupaten Sampang,Pasar Srimangunan,39,Bawang Merah / kg,26000
+2026-08-30,Kabupaten Sampang,Pasar Srimangunan,39,Bawang Merah / kg,26000
+2026-08-31,Kabupaten Sampang,Pasar Srimangunan,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Sampang,Pasar Srimangunan,39,Bawang Merah / kg,28000
+2026-09-02,Kabupaten Sampang,Pasar Srimangunan,39,Bawang Merah / kg,28000
+2026-08-27,Kabupaten Sidoarjo,Pasar Krian,39,Bawang Merah / kg,23000
+2026-08-28,Kabupaten Sidoarjo,Pasar Krian,39,Bawang Merah / kg,23000
+2026-08-29,Kabupaten Sidoarjo,Pasar Krian,39,Bawang Merah / kg,23000
+2026-08-30,Kabupaten Sidoarjo,Pasar Krian,39,Bawang Merah / kg,22000
+2026-08-31,Kabupaten Sidoarjo,Pasar Krian,39,Bawang Merah / kg,22000
+2026-09-01,Kabupaten Sidoarjo,Pasar Krian,39,Bawang Merah / kg,22000
+2026-09-02,Kabupaten Sidoarjo,Pasar Krian,39,Bawang Merah / kg,22000
+2026-08-27,Kabupaten Sidoarjo,Pasar Larangan,39,Bawang Merah / kg,27700
+2026-08-28,Kabupaten Sidoarjo,Pasar Larangan,39,Bawang Merah / kg,27700
+2026-08-29,Kabupaten Sidoarjo,Pasar Larangan,39,Bawang Merah / kg,27000
+2026-08-30,Kabupaten Sidoarjo,Pasar Larangan,39,Bawang Merah / kg,27000
+2026-08-31,Kabupaten Sidoarjo,Pasar Larangan,39,Bawang Merah / kg,27400
+2026-09-01,Kabupaten Sidoarjo,Pasar Larangan,39,Bawang Merah / kg,27400
+2026-09-02,Kabupaten Sidoarjo,Pasar Larangan,39,Bawang Merah / kg,27400
+2026-08-27,Kabupaten Situbondo,Pasar Ardirejo,39,Bawang Merah / kg,24000
+2026-08-28,Kabupaten Situbondo,Pasar Ardirejo,39,Bawang Merah / kg,24000
+2026-08-29,Kabupaten Situbondo,Pasar Ardirejo,39,Bawang Merah / kg,24000
+2026-08-30,Kabupaten Situbondo,Pasar Ardirejo,39,Bawang Merah / kg,24000
+2026-08-31,Kabupaten Situbondo,Pasar Ardirejo,39,Bawang Merah / kg,24000
+2026-09-01,Kabupaten Situbondo,Pasar Ardirejo,39,Bawang Merah / kg,24000
+2026-09-02,Kabupaten Situbondo,Pasar Ardirejo,39,Bawang Merah / kg,24000
+2026-08-27,Kabupaten Situbondo,Pasar Mimbaan Baru,39,Bawang Merah / kg,25000
+2026-08-28,Kabupaten Situbondo,Pasar Mimbaan Baru,39,Bawang Merah / kg,25000
+2026-08-29,Kabupaten Situbondo,Pasar Mimbaan Baru,39,Bawang Merah / kg,25000
+2026-08-30,Kabupaten Situbondo,Pasar Mimbaan Baru,39,Bawang Merah / kg,25000
+2026-08-31,Kabupaten Situbondo,Pasar Mimbaan Baru,39,Bawang Merah / kg,25000
+2026-09-01,Kabupaten Situbondo,Pasar Mimbaan Baru,39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Situbondo,Pasar Mimbaan Baru,39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Situbondo,Pasar Sumber Kolak,39,Bawang Merah / kg,25000
+2026-08-28,Kabupaten Situbondo,Pasar Sumber Kolak,39,Bawang Merah / kg,25000
+2026-08-29,Kabupaten Situbondo,Pasar Sumber Kolak,39,Bawang Merah / kg,25000
+2026-08-30,Kabupaten Situbondo,Pasar Sumber Kolak,39,Bawang Merah / kg,25000
+2026-08-31,Kabupaten Situbondo,Pasar Sumber Kolak,39,Bawang Merah / kg,26000
+2026-09-01,Kabupaten Situbondo,Pasar Sumber Kolak,39,Bawang Merah / kg,26000
+2026-09-02,Kabupaten Situbondo,Pasar Sumber Kolak,39,Bawang Merah / kg,26000
+2026-08-27,Kabupaten Sumenep,Pasar Anom Baru,39,Bawang Merah / kg,30000
+2026-08-28,Kabupaten Sumenep,Pasar Anom Baru,39,Bawang Merah / kg,30000
+2026-08-29,Kabupaten Sumenep,Pasar Anom Baru,39,Bawang Merah / kg,30000
+2026-08-30,Kabupaten Sumenep,Pasar Anom Baru,39,Bawang Merah / kg,30000
+2026-08-31,Kabupaten Sumenep,Pasar Anom Baru,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Sumenep,Pasar Anom Baru,39,Bawang Merah / kg,28000
+2026-09-02,Kabupaten Sumenep,Pasar Anom Baru,39,Bawang Merah / kg,28000
+2026-08-27,Kabupaten Sumenep,Pasar Bangkal,39,Bawang Merah / kg,28000
+2026-08-28,Kabupaten Sumenep,Pasar Bangkal,39,Bawang Merah / kg,28000
+2026-08-29,Kabupaten Sumenep,Pasar Bangkal,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Sumenep,Pasar Bangkal,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Sumenep,Pasar Bangkal,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Sumenep,Pasar Bangkal,39,Bawang Merah / kg,28000
+2026-09-02,Kabupaten Sumenep,Pasar Bangkal,39,Bawang Merah / kg,28000
+2026-08-27,Kabupaten Trenggalek,Pasar Basah,39,Bawang Merah / kg,22000
+2026-08-28,Kabupaten Trenggalek,Pasar Basah,39,Bawang Merah / kg,22000
+2026-08-29,Kabupaten Trenggalek,Pasar Basah,39,Bawang Merah / kg,22000
+2026-08-30,Kabupaten Trenggalek,Pasar Basah,39,Bawang Merah / kg,22000
+2026-08-31,Kabupaten Trenggalek,Pasar Basah,39,Bawang Merah / kg,22000
+2026-09-01,Kabupaten Trenggalek,Pasar Basah,39,Bawang Merah / kg,20000
+2026-09-02,Kabupaten Trenggalek,Pasar Basah,39,Bawang Merah / kg,20000
+2026-08-27,Kabupaten Trenggalek,Pasar Subuh,39,Bawang Merah / kg,24000
+2026-08-28,Kabupaten Trenggalek,Pasar Subuh,39,Bawang Merah / kg,24000
+2026-08-29,Kabupaten Trenggalek,Pasar Subuh,39,Bawang Merah / kg,24000
+2026-08-30,Kabupaten Trenggalek,Pasar Subuh,39,Bawang Merah / kg,24000
+2026-08-31,Kabupaten Trenggalek,Pasar Subuh,39,Bawang Merah / kg,24000
+2026-09-01,Kabupaten Trenggalek,Pasar Subuh,39,Bawang Merah / kg,24000
+2026-09-02,Kabupaten Trenggalek,Pasar Subuh,39,Bawang Merah / kg,24000
+2026-08-27,Kabupaten Tuban,Pasar Bangilan,39,Bawang Merah / kg,25000
+2026-08-28,Kabupaten Tuban,Pasar Bangilan,39,Bawang Merah / kg,25000
+2026-08-29,Kabupaten Tuban,Pasar Bangilan,39,Bawang Merah / kg,25000
+2026-08-30,Kabupaten Tuban,Pasar Bangilan,39,Bawang Merah / kg,25000
+2026-08-31,Kabupaten Tuban,Pasar Bangilan,39,Bawang Merah / kg,25000
+2026-09-01,Kabupaten Tuban,Pasar Bangilan,39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Tuban,Pasar Bangilan,39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Tuban,Pasar Baru Tuban,39,Bawang Merah / kg,27000
+2026-08-28,Kabupaten Tuban,Pasar Baru Tuban,39,Bawang Merah / kg,27000
+2026-08-29,Kabupaten Tuban,Pasar Baru Tuban,39,Bawang Merah / kg,27000
+2026-08-30,Kabupaten Tuban,Pasar Baru Tuban,39,Bawang Merah / kg,27000
+2026-08-31,Kabupaten Tuban,Pasar Baru Tuban,39,Bawang Merah / kg,27000
+2026-09-01,Kabupaten Tuban,Pasar Baru Tuban,39,Bawang Merah / kg,27000
+2026-09-02,Kabupaten Tuban,Pasar Baru Tuban,39,Bawang Merah / kg,24000
+2026-08-27,Kabupaten Tuban,Pasar Jatirogo,39,Bawang Merah / kg,25000
+2026-08-28,Kabupaten Tuban,Pasar Jatirogo,39,Bawang Merah / kg,25000
+2026-08-29,Kabupaten Tuban,Pasar Jatirogo,39,Bawang Merah / kg,25000
+2026-08-30,Kabupaten Tuban,Pasar Jatirogo,39,Bawang Merah / kg,25000
+2026-08-31,Kabupaten Tuban,Pasar Jatirogo,39,Bawang Merah / kg,25000
+2026-09-01,Kabupaten Tuban,Pasar Jatirogo,39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Tuban,Pasar Jatirogo,39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Tulungagung,Pasar Bandung,39,Bawang Merah / kg,23000
+2026-08-28,Kabupaten Tulungagung,Pasar Bandung,39,Bawang Merah / kg,24000
+2026-08-29,Kabupaten Tulungagung,Pasar Bandung,39,Bawang Merah / kg,26000
+2026-08-30,Kabupaten Tulungagung,Pasar Bandung,39,Bawang Merah / kg,26000
+2026-08-31,Kabupaten Tulungagung,Pasar Bandung,39,Bawang Merah / kg,26000
+2026-09-01,Kabupaten Tulungagung,Pasar Bandung,39,Bawang Merah / kg,26000
+2026-09-02,Kabupaten Tulungagung,Pasar Bandung,39,Bawang Merah / kg,26000
+2026-08-27,Kabupaten Tulungagung,Pasar Ngemplak,39,Bawang Merah / kg,28000
+2026-08-28,Kabupaten Tulungagung,Pasar Ngemplak,39,Bawang Merah / kg,28000
+2026-08-29,Kabupaten Tulungagung,Pasar Ngemplak,39,Bawang Merah / kg,28000
+2026-08-30,Kabupaten Tulungagung,Pasar Ngemplak,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Tulungagung,Pasar Ngemplak,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Tulungagung,Pasar Ngemplak,39,Bawang Merah / kg,28000
+2026-09-02,Kabupaten Tulungagung,Pasar Ngemplak,39,Bawang Merah / kg,28000
+2026-08-27,Kabupaten Tulungagung,Pasar Ngunut,39,Bawang Merah / kg,25000
+2026-08-28,Kabupaten Tulungagung,Pasar Ngunut,39,Bawang Merah / kg,25000
+2026-08-29,Kabupaten Tulungagung,Pasar Ngunut,39,Bawang Merah / kg,25000
+2026-08-30,Kabupaten Tulungagung,Pasar Ngunut,39,Bawang Merah / kg,25000
+2026-08-31,Kabupaten Tulungagung,Pasar Ngunut,39,Bawang Merah / kg,25000
+2026-09-01,Kabupaten Tulungagung,Pasar Ngunut,39,Bawang Merah / kg,25000
+2026-09-02,Kabupaten Tulungagung,Pasar Ngunut,39,Bawang Merah / kg,25000
+2026-08-27,Kabupaten Tulungagung,Pasar Tamanan,39,Bawang Merah / kg,27000
+2026-08-28,Kabupaten Tulungagung,Pasar Tamanan,39,Bawang Merah / kg,27000
+2026-08-29,Kabupaten Tulungagung,Pasar Tamanan,39,Bawang Merah / kg,27000
+2026-08-30,Kabupaten Tulungagung,Pasar Tamanan,39,Bawang Merah / kg,28000
+2026-08-31,Kabupaten Tulungagung,Pasar Tamanan,39,Bawang Merah / kg,28000
+2026-09-01,Kabupaten Tulungagung,Pasar Tamanan,39,Bawang Merah / kg,28000
+2026-09-02,Kabupaten Tulungagung,Pasar Tamanan,39,Bawang Merah / kg,28000
+2026-08-27,Kota Batu,Pasar Besar Kota Batu,39,Bawang Merah / kg,28000
+2026-08-28,Kota Batu,Pasar Besar Kota Batu,39,Bawang Merah / kg,28000
+2026-08-29,Kota Batu,Pasar Besar Kota Batu,39,Bawang Merah / kg,28000
+2026-08-30,Kota Batu,Pasar Besar Kota Batu,39,Bawang Merah / kg,28000
+2026-08-31,Kota Batu,Pasar Besar Kota Batu,39,Bawang Merah / kg,28000
+2026-09-01,Kota Batu,Pasar Besar Kota Batu,39,Bawang Merah / kg,28000
+2026-09-02,Kota Batu,Pasar Besar Kota Batu,39,Bawang Merah / kg,28000
+2026-08-27,Kota Batu,Pasar Gentengan,39,Bawang Merah / kg,35000
+2026-08-28,Kota Batu,Pasar Gentengan,39,Bawang Merah / kg,36000
+2026-08-29,Kota Batu,Pasar Gentengan,39,Bawang Merah / kg,38000
+2026-08-30,Kota Batu,Pasar Gentengan,39,Bawang Merah / kg,38000
+2026-08-31,Kota Batu,Pasar Gentengan,39,Bawang Merah / kg,38000
+2026-09-01,Kota Batu,Pasar Gentengan,39,Bawang Merah / kg,38000
+2026-09-02,Kota Batu,Pasar Gentengan,39,Bawang Merah / kg,38000
+2026-08-27,Kota Batu,Pasar Pesanggrahan,39,Bawang Merah / kg,28000
+2026-08-28,Kota Batu,Pasar Pesanggrahan,39,Bawang Merah / kg,28000
+2026-08-29,Kota Batu,Pasar Pesanggrahan,39,Bawang Merah / kg,28000
+2026-08-30,Kota Batu,Pasar Pesanggrahan,39,Bawang Merah / kg,28000
+2026-08-31,Kota Batu,Pasar Pesanggrahan,39,Bawang Merah / kg,28000
+2026-09-01,Kota Batu,Pasar Pesanggrahan,39,Bawang Merah / kg,28000
+2026-09-02,Kota Batu,Pasar Pesanggrahan,39,Bawang Merah / kg,28000
+2026-08-27,Kota Batu,Pasar Songgoriti,39,Bawang Merah / kg,40000
+2026-08-28,Kota Batu,Pasar Songgoriti,39,Bawang Merah / kg,40000
+2026-08-29,Kota Batu,Pasar Songgoriti,39,Bawang Merah / kg,33000
+2026-08-30,Kota Batu,Pasar Songgoriti,39,Bawang Merah / kg,33000
+2026-08-31,Kota Batu,Pasar Songgoriti,39,Bawang Merah / kg,33000
+2026-09-01,Kota Batu,Pasar Songgoriti,39,Bawang Merah / kg,38000
+2026-09-02,Kota Batu,Pasar Songgoriti,39,Bawang Merah / kg,38000
+2026-08-27,Kota Blitar,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-28,Kota Blitar,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-29,Kota Blitar,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-30,Kota Blitar,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-31,Kota Blitar,Pasar Legi,39,Bawang Merah / kg,25000
+2026-09-01,Kota Blitar,Pasar Legi,39,Bawang Merah / kg,25000
+2026-09-02,Kota Blitar,Pasar Legi,39,Bawang Merah / kg,27000
+2026-08-27,Kota Blitar,Pasar Pon,39,Bawang Merah / kg,25000
+2026-08-28,Kota Blitar,Pasar Pon,39,Bawang Merah / kg,25000
+2026-08-29,Kota Blitar,Pasar Pon,39,Bawang Merah / kg,25000
+2026-08-30,Kota Blitar,Pasar Pon,39,Bawang Merah / kg,25000
+2026-08-31,Kota Blitar,Pasar Pon,39,Bawang Merah / kg,25000
+2026-09-01,Kota Blitar,Pasar Pon,39,Bawang Merah / kg,25000
+2026-09-02,Kota Blitar,Pasar Pon,39,Bawang Merah / kg,27000
+2026-08-27,Kota Madiun,Pasar Besar,39,Bawang Merah / kg,29000
+2026-08-28,Kota Madiun,Pasar Besar,39,Bawang Merah / kg,29000
+2026-08-29,Kota Madiun,Pasar Besar,39,Bawang Merah / kg,29000
+2026-08-30,Kota Madiun,Pasar Besar,39,Bawang Merah / kg,29000
+2026-08-31,Kota Madiun,Pasar Besar,39,Bawang Merah / kg,27000
+2026-09-01,Kota Madiun,Pasar Besar,39,Bawang Merah / kg,27000
+2026-09-02,Kota Madiun,Pasar Besar,39,Bawang Merah / kg,27000
+2026-08-27,Kota Madiun,Pasar Sleko,39,Bawang Merah / kg,28000
+2026-08-28,Kota Madiun,Pasar Sleko,39,Bawang Merah / kg,28000
+2026-08-29,Kota Madiun,Pasar Sleko,39,Bawang Merah / kg,28000
+2026-08-30,Kota Madiun,Pasar Sleko,39,Bawang Merah / kg,28000
+2026-08-31,Kota Madiun,Pasar Sleko,39,Bawang Merah / kg,28000
+2026-09-01,Kota Madiun,Pasar Sleko,39,Bawang Merah / kg,28000
+2026-09-02,Kota Madiun,Pasar Sleko,39,Bawang Merah / kg,28000
+2026-08-27,Kota Madiun,Pasar Srijaya,39,Bawang Merah / kg,30000
+2026-08-28,Kota Madiun,Pasar Srijaya,39,Bawang Merah / kg,30000
+2026-08-29,Kota Madiun,Pasar Srijaya,39,Bawang Merah / kg,30000
+2026-08-30,Kota Madiun,Pasar Srijaya,39,Bawang Merah / kg,30000
+2026-08-31,Kota Madiun,Pasar Srijaya,39,Bawang Merah / kg,30000
+2026-09-01,Kota Madiun,Pasar Srijaya,39,Bawang Merah / kg,32000
+2026-09-02,Kota Madiun,Pasar Srijaya,39,Bawang Merah / kg,32000
+2026-08-27,Kota Mojokerto,Pasar Prajuritkulon,39,Bawang Merah / kg,26000
+2026-08-28,Kota Mojokerto,Pasar Prajuritkulon,39,Bawang Merah / kg,26000
+2026-08-29,Kota Mojokerto,Pasar Prajuritkulon,39,Bawang Merah / kg,26000
+2026-08-30,Kota Mojokerto,Pasar Prajuritkulon,39,Bawang Merah / kg,26000
+2026-08-31,Kota Mojokerto,Pasar Prajuritkulon,39,Bawang Merah / kg,25000
+2026-09-01,Kota Mojokerto,Pasar Prajuritkulon,39,Bawang Merah / kg,25000
+2026-09-02,Kota Mojokerto,Pasar Prajuritkulon,39,Bawang Merah / kg,26000
+2026-08-27,Kota Mojokerto,Pasar Tanjung Anyar,39,Bawang Merah / kg,25000
+2026-08-28,Kota Mojokerto,Pasar Tanjung Anyar,39,Bawang Merah / kg,25000
+2026-08-29,Kota Mojokerto,Pasar Tanjung Anyar,39,Bawang Merah / kg,25000
+2026-08-30,Kota Mojokerto,Pasar Tanjung Anyar,39,Bawang Merah / kg,25000
+2026-08-31,Kota Mojokerto,Pasar Tanjung Anyar,39,Bawang Merah / kg,25000
+2026-09-01,Kota Mojokerto,Pasar Tanjung Anyar,39,Bawang Merah / kg,25000
+2026-09-02,Kota Mojokerto,Pasar Tanjung Anyar,39,Bawang Merah / kg,25000
+2026-08-27,Kota Pasuruan,Pasar Besar,39,Bawang Merah / kg,26500
+2026-08-28,Kota Pasuruan,Pasar Besar,39,Bawang Merah / kg,26500
+2026-08-29,Kota Pasuruan,Pasar Besar,39,Bawang Merah / kg,26500
+2026-08-30,Kota Pasuruan,Pasar Besar,39,Bawang Merah / kg,26500
+2026-08-31,Kota Pasuruan,Pasar Besar,39,Bawang Merah / kg,26500
+2026-09-01,Kota Pasuruan,Pasar Besar,39,Bawang Merah / kg,25500
+2026-09-02,Kota Pasuruan,Pasar Besar,39,Bawang Merah / kg,25500
+2026-08-27,Kota Pasuruan,Pasar Kebonagung,39,Bawang Merah / kg,26500
+2026-08-28,Kota Pasuruan,Pasar Kebonagung,39,Bawang Merah / kg,26500
+2026-08-29,Kota Pasuruan,Pasar Kebonagung,39,Bawang Merah / kg,26500
+2026-08-30,Kota Pasuruan,Pasar Kebonagung,39,Bawang Merah / kg,26500
+2026-08-31,Kota Pasuruan,Pasar Kebonagung,39,Bawang Merah / kg,26500
+2026-09-01,Kota Pasuruan,Pasar Kebonagung,39,Bawang Merah / kg,25500
+2026-09-02,Kota Pasuruan,Pasar Kebonagung,39,Bawang Merah / kg,25500
+2026-08-27,Kota Probolinggo,Pasar Baru,39,Bawang Merah / kg,35000
+2026-08-28,Kota Probolinggo,Pasar Baru,39,Bawang Merah / kg,35000
+2026-08-29,Kota Probolinggo,Pasar Baru,39,Bawang Merah / kg,35000
+2026-08-30,Kota Probolinggo,Pasar Baru,39,Bawang Merah / kg,35000
+2026-08-31,Kota Probolinggo,Pasar Baru,39,Bawang Merah / kg,35000
+2026-09-01,Kota Probolinggo,Pasar Baru,39,Bawang Merah / kg,35000
+2026-09-02,Kota Probolinggo,Pasar Baru,39,Bawang Merah / kg,35000
+2026-08-27,Kota Probolinggo,Pasar Kronong,39,Bawang Merah / kg,31000
+2026-08-28,Kota Probolinggo,Pasar Kronong,39,Bawang Merah / kg,30000
+2026-08-29,Kota Probolinggo,Pasar Kronong,39,Bawang Merah / kg,30000
+2026-08-30,Kota Probolinggo,Pasar Kronong,39,Bawang Merah / kg,30000
+2026-08-31,Kota Probolinggo,Pasar Kronong,39,Bawang Merah / kg,30000
+2026-09-01,Kota Probolinggo,Pasar Kronong,39,Bawang Merah / kg,30000
+2026-09-02,Kota Probolinggo,Pasar Kronong,39,Bawang Merah / kg,30000
+2026-08-27,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,32000
+2026-08-28,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,32000
+2026-08-29,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,30000
+2026-08-30,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,30000
+2026-08-31,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,30000
+2026-09-01,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,32000
+2026-09-02,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,30000
+2026-08-20,Kota Surabaya,Pasar Genteng,39,Bawang Merah / kg,30000
+2026-08-21,Kota Surabaya,Pasar Genteng,39,Bawang Merah / kg,25000
+2026-08-22,Kota Surabaya,Pasar Genteng,39,Bawang Merah / kg,25000
+2026-08-23,Kota Surabaya,Pasar Genteng,39,Bawang Merah / kg,25000
+2026-08-24,Kota Surabaya,Pasar Genteng,39,Bawang Merah / kg,25000
+2026-08-25,Kota Surabaya,Pasar Genteng,39,Bawang Merah / kg,25000
+2026-08-26,Kota Surabaya,Pasar Genteng,39,Bawang Merah / kg,25000
+2026-08-20,Kota Surabaya,Pasar Keputran,39,Bawang Merah / kg,38000
+2026-08-21,Kota Surabaya,Pasar Keputran,39,Bawang Merah / kg,38000
+2026-08-22,Kota Surabaya,Pasar Keputran,39,Bawang Merah / kg,38000
+2026-08-23,Kota Surabaya,Pasar Keputran,39,Bawang Merah / kg,38000
+2026-08-24,Kota Surabaya,Pasar Keputran,39,Bawang Merah / kg,38000
+2026-08-25,Kota Surabaya,Pasar Keputran,39,Bawang Merah / kg,38000
+2026-08-26,Kota Surabaya,Pasar Keputran,39,Bawang Merah / kg,38000
+2026-08-20,Kota Surabaya,Pasar Pucang Anom,39,Bawang Merah / kg,30000
+2026-08-21,Kota Surabaya,Pasar Pucang Anom,39,Bawang Merah / kg,30000
+2026-08-22,Kota Surabaya,Pasar Pucang Anom,39,Bawang Merah / kg,35000
+2026-08-23,Kota Surabaya,Pasar Pucang Anom,39,Bawang Merah / kg,35000
+2026-08-24,Kota Surabaya,Pasar Pucang Anom,39,Bawang Merah / kg,32000
+2026-08-25,Kota Surabaya,Pasar Pucang Anom,39,Bawang Merah / kg,32000
+2026-08-26,Kota Surabaya,Pasar Pucang Anom,39,Bawang Merah / kg,32000
+2026-08-20,Kota Surabaya,Pasar Soponyono,39,Bawang Merah / kg,28000
+2026-08-21,Kota Surabaya,Pasar Soponyono,39,Bawang Merah / kg,28000
+2026-08-22,Kota Surabaya,Pasar Soponyono,39,Bawang Merah / kg,28000
+2026-08-23,Kota Surabaya,Pasar Soponyono,39,Bawang Merah / kg,28000
+2026-08-24,Kota Surabaya,Pasar Soponyono,39,Bawang Merah / kg,28000
+2026-08-25,Kota Surabaya,Pasar Soponyono,39,Bawang Merah / kg,28000
+2026-08-26,Kota Surabaya,Pasar Soponyono,39,Bawang Merah / kg,27000
+2026-08-20,Kota Surabaya,Pasar Tambahrejo,39,Bawang Merah / kg,32000
+2026-08-21,Kota Surabaya,Pasar Tambahrejo,39,Bawang Merah / kg,30000
+2026-08-22,Kota Surabaya,Pasar Tambahrejo,39,Bawang Merah / kg,28000
+2026-08-23,Kota Surabaya,Pasar Tambahrejo,39,Bawang Merah / kg,25000
+2026-08-24,Kota Surabaya,Pasar Tambahrejo,39,Bawang Merah / kg,28000
+2026-08-25,Kota Surabaya,Pasar Tambahrejo,39,Bawang Merah / kg,28000
+2026-08-26,Kota Surabaya,Pasar Tambahrejo,39,Bawang Merah / kg,30000
+2026-08-20,Kota Surabaya,Pasar Wonokromo,39,Bawang Merah / kg,28000
+2026-08-21,Kota Surabaya,Pasar Wonokromo,39,Bawang Merah / kg,30000
+2026-08-22,Kota Surabaya,Pasar Wonokromo,39,Bawang Merah / kg,30000
+2026-08-23,Kota Surabaya,Pasar Wonokromo,39,Bawang Merah / kg,30000
+2026-08-24,Kota Surabaya,Pasar Wonokromo,39,Bawang Merah / kg,30000
+2026-08-25,Kota Surabaya,Pasar Wonokromo,39,Bawang Merah / kg,30000
+2026-08-26,Kota Surabaya,Pasar Wonokromo,39,Bawang Merah / kg,30000
+2026-08-20,Kota Malang,Pasar Besar,39,Bawang Merah / kg,27000
+2026-08-21,Kota Malang,Pasar Besar,39,Bawang Merah / kg,27000
+2026-08-22,Kota Malang,Pasar Besar,39,Bawang Merah / kg,27000
+2026-08-23,Kota Malang,Pasar Besar,39,Bawang Merah / kg,27000
+2026-08-24,Kota Malang,Pasar Besar,39,Bawang Merah / kg,27000
+2026-08-25,Kota Malang,Pasar Besar,39,Bawang Merah / kg,27000
+2026-08-26,Kota Malang,Pasar Besar,39,Bawang Merah / kg,27000
+2026-08-20,Kota Malang,Pasar Blimbing,39,Bawang Merah / kg,35000
+2026-08-21,Kota Malang,Pasar Blimbing,39,Bawang Merah / kg,35000
+2026-08-22,Kota Malang,Pasar Blimbing,39,Bawang Merah / kg,35000
+2026-08-23,Kota Malang,Pasar Blimbing,39,Bawang Merah / kg,35000
+2026-08-24,Kota Malang,Pasar Blimbing,39,Bawang Merah / kg,35000
+2026-08-25,Kota Malang,Pasar Blimbing,39,Bawang Merah / kg,35000
+2026-08-26,Kota Malang,Pasar Blimbing,39,Bawang Merah / kg,35000
+2026-08-20,Kota Malang,Pasar Dinoyo,39,Bawang Merah / kg,30000
+2026-08-21,Kota Malang,Pasar Dinoyo,39,Bawang Merah / kg,30000
+2026-08-22,Kota Malang,Pasar Dinoyo,39,Bawang Merah / kg,30000
+2026-08-23,Kota Malang,Pasar Dinoyo,39,Bawang Merah / kg,30000
+2026-08-24,Kota Malang,Pasar Dinoyo,39,Bawang Merah / kg,30000
+2026-08-25,Kota Malang,Pasar Dinoyo,39,Bawang Merah / kg,30000
+2026-08-26,Kota Malang,Pasar Dinoyo,39,Bawang Merah / kg,30000
+2026-08-20,Kota Malang,Pasar Klojen,39,Bawang Merah / kg,35000
+2026-08-21,Kota Malang,Pasar Klojen,39,Bawang Merah / kg,35000
+2026-08-22,Kota Malang,Pasar Klojen,39,Bawang Merah / kg,35000
+2026-08-23,Kota Malang,Pasar Klojen,39,Bawang Merah / kg,35000
+2026-08-24,Kota Malang,Pasar Klojen,39,Bawang Merah / kg,35000
+2026-08-25,Kota Malang,Pasar Klojen,39,Bawang Merah / kg,35000
+2026-08-26,Kota Malang,Pasar Klojen,39,Bawang Merah / kg,35000
+2026-08-20,Kota Malang,Pasar Oro-oro Dowo,39,Bawang Merah / kg,32000
+2026-08-21,Kota Malang,Pasar Oro-oro Dowo,39,Bawang Merah / kg,32000
+2026-08-22,Kota Malang,Pasar Oro-oro Dowo,39,Bawang Merah / kg,32000
+2026-08-23,Kota Malang,Pasar Oro-oro Dowo,39,Bawang Merah / kg,32000
+2026-08-24,Kota Malang,Pasar Oro-oro Dowo,39,Bawang Merah / kg,32000
+2026-08-25,Kota Malang,Pasar Oro-oro Dowo,39,Bawang Merah / kg,32000
+2026-08-26,Kota Malang,Pasar Oro-oro Dowo,39,Bawang Merah / kg,32000
+2026-08-20,Kota Malang,Pasar Tawangmangu,39,Bawang Merah / kg,30000
+2026-08-21,Kota Malang,Pasar Tawangmangu,39,Bawang Merah / kg,30000
+2026-08-22,Kota Malang,Pasar Tawangmangu,39,Bawang Merah / kg,30000
+2026-08-23,Kota Malang,Pasar Tawangmangu,39,Bawang Merah / kg,30000
+2026-08-24,Kota Malang,Pasar Tawangmangu,39,Bawang Merah / kg,30000
+2026-08-25,Kota Malang,Pasar Tawangmangu,39,Bawang Merah / kg,30000
+2026-08-26,Kota Malang,Pasar Tawangmangu,39,Bawang Merah / kg,30000
+2026-08-20,Kota Kediri,Pasar Bandar,39,Bawang Merah / kg,25000
+2026-08-21,Kota Kediri,Pasar Bandar,39,Bawang Merah / kg,28000
+2026-08-22,Kota Kediri,Pasar Bandar,39,Bawang Merah / kg,23000
+2026-08-23,Kota Kediri,Pasar Bandar,39,Bawang Merah / kg,23000
+2026-08-24,Kota Kediri,Pasar Bandar,39,Bawang Merah / kg,22000
+2026-08-25,Kota Kediri,Pasar Bandar,39,Bawang Merah / kg,23000
+2026-08-26,Kota Kediri,Pasar Bandar,39,Bawang Merah / kg,25000
+2026-08-20,Kota Kediri,Pasar Pahing,39,Bawang Merah / kg,25000
+2026-08-21,Kota Kediri,Pasar Pahing,39,Bawang Merah / kg,25000
+2026-08-22,Kota Kediri,Pasar Pahing,39,Bawang Merah / kg,30000
+2026-08-23,Kota Kediri,Pasar Pahing,39,Bawang Merah / kg,30000
+2026-08-24,Kota Kediri,Pasar Pahing,39,Bawang Merah / kg,30000
+2026-08-25,Kota Kediri,Pasar Pahing,39,Bawang Merah / kg,28000
+2026-08-26,Kota Kediri,Pasar Pahing,39,Bawang Merah / kg,28000
+2026-08-20,Kota Kediri,Pasar Setono Betek,39,Bawang Merah / kg,26000
+2026-08-21,Kota Kediri,Pasar Setono Betek,39,Bawang Merah / kg,28000
+2026-08-22,Kota Kediri,Pasar Setono Betek,39,Bawang Merah / kg,28000
+2026-08-23,Kota Kediri,Pasar Setono Betek,39,Bawang Merah / kg,27000
+2026-08-24,Kota Kediri,Pasar Setono Betek,39,Bawang Merah / kg,27000
+2026-08-25,Kota Kediri,Pasar Setono Betek,39,Bawang Merah / kg,26000
+2026-08-26,Kota Kediri,Pasar Setono Betek,39,Bawang Merah / kg,26000
+2026-08-20,Kabupaten Jember,Pasar Kreongan,39,Bawang Merah / kg,27000
+2026-08-21,Kabupaten Jember,Pasar Kreongan,39,Bawang Merah / kg,27000
+2026-08-22,Kabupaten Jember,Pasar Kreongan,39,Bawang Merah / kg,27000
+2026-08-23,Kabupaten Jember,Pasar Kreongan,39,Bawang Merah / kg,27000
+2026-08-24,Kabupaten Jember,Pasar Kreongan,39,Bawang Merah / kg,27000
+2026-08-25,Kabupaten Jember,Pasar Kreongan,39,Bawang Merah / kg,27000
+2026-08-26,Kabupaten Jember,Pasar Kreongan,39,Bawang Merah / kg,26000
+2026-08-20,Kabupaten Jember,Pasar Mangli,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Jember,Pasar Mangli,39,Bawang Merah / kg,28000
+2026-08-22,Kabupaten Jember,Pasar Mangli,39,Bawang Merah / kg,28000
+2026-08-23,Kabupaten Jember,Pasar Mangli,39,Bawang Merah / kg,28000
+2026-08-24,Kabupaten Jember,Pasar Mangli,39,Bawang Merah / kg,28000
+2026-08-25,Kabupaten Jember,Pasar Mangli,39,Bawang Merah / kg,28000
+2026-08-26,Kabupaten Jember,Pasar Mangli,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Jember,Pasar Tanjung,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Jember,Pasar Tanjung,39,Bawang Merah / kg,28000
+2026-08-22,Kabupaten Jember,Pasar Tanjung,39,Bawang Merah / kg,28000
+2026-08-23,Kabupaten Jember,Pasar Tanjung,39,Bawang Merah / kg,28000
+2026-08-24,Kabupaten Jember,Pasar Tanjung,39,Bawang Merah / kg,28000
+2026-08-25,Kabupaten Jember,Pasar Tanjung,39,Bawang Merah / kg,28000
+2026-08-26,Kabupaten Jember,Pasar Tanjung,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Jember,Pasar Tegal Besar,39,Bawang Merah / kg,30000
+2026-08-21,Kabupaten Jember,Pasar Tegal Besar,39,Bawang Merah / kg,30000
+2026-08-22,Kabupaten Jember,Pasar Tegal Besar,39,Bawang Merah / kg,30000
+2026-08-23,Kabupaten Jember,Pasar Tegal Besar,39,Bawang Merah / kg,30000
+2026-08-24,Kabupaten Jember,Pasar Tegal Besar,39,Bawang Merah / kg,30000
+2026-08-25,Kabupaten Jember,Pasar Tegal Besar,39,Bawang Merah / kg,30000
+2026-08-26,Kabupaten Jember,Pasar Tegal Besar,39,Bawang Merah / kg,30000
+2026-08-20,Kabupaten Jember,Pasar Wirolegi,39,Bawang Merah / kg,26000
+2026-08-21,Kabupaten Jember,Pasar Wirolegi,39,Bawang Merah / kg,26000
+2026-08-22,Kabupaten Jember,Pasar Wirolegi,39,Bawang Merah / kg,26000
+2026-08-23,Kabupaten Jember,Pasar Wirolegi,39,Bawang Merah / kg,26000
+2026-08-24,Kabupaten Jember,Pasar Wirolegi,39,Bawang Merah / kg,26000
+2026-08-25,Kabupaten Jember,Pasar Wirolegi,39,Bawang Merah / kg,26000
+2026-08-26,Kabupaten Jember,Pasar Wirolegi,39,Bawang Merah / kg,26000
+2026-08-20,Kabupaten Bangkalan,Pasar Baru Bancaran,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Bangkalan,Pasar Baru Bancaran,39,Bawang Merah / kg,28000
+2026-08-22,Kabupaten Bangkalan,Pasar Baru Bancaran,39,Bawang Merah / kg,28000
+2026-08-23,Kabupaten Bangkalan,Pasar Baru Bancaran,39,Bawang Merah / kg,28000
+2026-08-24,Kabupaten Bangkalan,Pasar Baru Bancaran,39,Bawang Merah / kg,28000
+2026-08-25,Kabupaten Bangkalan,Pasar Baru Bancaran,39,Bawang Merah / kg,28000
+2026-08-26,Kabupaten Bangkalan,Pasar Baru Bancaran,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Bangkalan,Pasar Ki Lemah Duwur,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Bangkalan,Pasar Ki Lemah Duwur,39,Bawang Merah / kg,28000
+2026-08-22,Kabupaten Bangkalan,Pasar Ki Lemah Duwur,39,Bawang Merah / kg,28000
+2026-08-23,Kabupaten Bangkalan,Pasar Ki Lemah Duwur,39,Bawang Merah / kg,28000
+2026-08-24,Kabupaten Bangkalan,Pasar Ki Lemah Duwur,39,Bawang Merah / kg,28000
+2026-08-25,Kabupaten Bangkalan,Pasar Ki Lemah Duwur,39,Bawang Merah / kg,28000
+2026-08-26,Kabupaten Bangkalan,Pasar Ki Lemah Duwur,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Bangkalan,Pasar Senenan,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Bangkalan,Pasar Senenan,39,Bawang Merah / kg,28000
+2026-08-22,Kabupaten Bangkalan,Pasar Senenan,39,Bawang Merah / kg,28000
+2026-08-23,Kabupaten Bangkalan,Pasar Senenan,39,Bawang Merah / kg,28000
+2026-08-24,Kabupaten Bangkalan,Pasar Senenan,39,Bawang Merah / kg,28000
+2026-08-25,Kabupaten Bangkalan,Pasar Senenan,39,Bawang Merah / kg,28000
+2026-08-26,Kabupaten Bangkalan,Pasar Senenan,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Banyuwangi,Pasar Banyuwangi,39,Bawang Merah / kg,30000
+2026-08-21,Kabupaten Banyuwangi,Pasar Banyuwangi,39,Bawang Merah / kg,30000
+2026-08-22,Kabupaten Banyuwangi,Pasar Banyuwangi,39,Bawang Merah / kg,30000
+2026-08-23,Kabupaten Banyuwangi,Pasar Banyuwangi,39,Bawang Merah / kg,30000
+2026-08-24,Kabupaten Banyuwangi,Pasar Banyuwangi,39,Bawang Merah / kg,30000
+2026-08-25,Kabupaten Banyuwangi,Pasar Banyuwangi,39,Bawang Merah / kg,30000
+2026-08-26,Kabupaten Banyuwangi,Pasar Banyuwangi,39,Bawang Merah / kg,30000
+2026-08-20,Kabupaten Banyuwangi,Pasar Blambangan,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Banyuwangi,Pasar Blambangan,39,Bawang Merah / kg,28000
+2026-08-22,Kabupaten Banyuwangi,Pasar Blambangan,39,Bawang Merah / kg,28000
+2026-08-23,Kabupaten Banyuwangi,Pasar Blambangan,39,Bawang Merah / kg,28000
+2026-08-24,Kabupaten Banyuwangi,Pasar Blambangan,39,Bawang Merah / kg,28000
+2026-08-25,Kabupaten Banyuwangi,Pasar Blambangan,39,Bawang Merah / kg,28000
+2026-08-26,Kabupaten Banyuwangi,Pasar Blambangan,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Banyuwangi,Pasar Genteng I,39,Bawang Merah / kg,23000
+2026-08-21,Kabupaten Banyuwangi,Pasar Genteng I,39,Bawang Merah / kg,23000
+2026-08-22,Kabupaten Banyuwangi,Pasar Genteng I,39,Bawang Merah / kg,23000
+2026-08-23,Kabupaten Banyuwangi,Pasar Genteng I,39,Bawang Merah / kg,23000
+2026-08-24,Kabupaten Banyuwangi,Pasar Genteng I,39,Bawang Merah / kg,23000
+2026-08-25,Kabupaten Banyuwangi,Pasar Genteng I,39,Bawang Merah / kg,23000
+2026-08-26,Kabupaten Banyuwangi,Pasar Genteng I,39,Bawang Merah / kg,23000
+2026-08-20,Kabupaten Banyuwangi,Pasar Jajag,39,Bawang Merah / kg,25000
+2026-08-21,Kabupaten Banyuwangi,Pasar Jajag,39,Bawang Merah / kg,25000
+2026-08-22,Kabupaten Banyuwangi,Pasar Jajag,39,Bawang Merah / kg,25000
+2026-08-23,Kabupaten Banyuwangi,Pasar Jajag,39,Bawang Merah / kg,25000
+2026-08-24,Kabupaten Banyuwangi,Pasar Jajag,39,Bawang Merah / kg,25000
+2026-08-25,Kabupaten Banyuwangi,Pasar Jajag,39,Bawang Merah / kg,25000
+2026-08-26,Kabupaten Banyuwangi,Pasar Jajag,39,Bawang Merah / kg,25000
+2026-08-20,Kabupaten Banyuwangi,Pasar Rogojampi,39,Bawang Merah / kg,25000
+2026-08-21,Kabupaten Banyuwangi,Pasar Rogojampi,39,Bawang Merah / kg,30000
+2026-08-22,Kabupaten Banyuwangi,Pasar Rogojampi,39,Bawang Merah / kg,30000
+2026-08-23,Kabupaten Banyuwangi,Pasar Rogojampi,39,Bawang Merah / kg,30000
+2026-08-24,Kabupaten Banyuwangi,Pasar Rogojampi,39,Bawang Merah / kg,30000
+2026-08-25,Kabupaten Banyuwangi,Pasar Rogojampi,39,Bawang Merah / kg,28000
+2026-08-26,Kabupaten Banyuwangi,Pasar Rogojampi,39,Bawang Merah / kg,26000
+2026-08-20,Kabupaten Blitar,Pasar Lodoyo,39,Bawang Merah / kg,22000
+2026-08-21,Kabupaten Blitar,Pasar Lodoyo,39,Bawang Merah / kg,22000
+2026-08-22,Kabupaten Blitar,Pasar Lodoyo,39,Bawang Merah / kg,22000
+2026-08-23,Kabupaten Blitar,Pasar Lodoyo,39,Bawang Merah / kg,22000
+2026-08-24,Kabupaten Blitar,Pasar Lodoyo,39,Bawang Merah / kg,23000
+2026-08-25,Kabupaten Blitar,Pasar Lodoyo,39,Bawang Merah / kg,23000
+2026-08-26,Kabupaten Blitar,Pasar Lodoyo,39,Bawang Merah / kg,23000
+2026-08-20,Kabupaten Blitar,Pasar Wlingi,39,Bawang Merah / kg,22000
+2026-08-21,Kabupaten Blitar,Pasar Wlingi,39,Bawang Merah / kg,22000
+2026-08-22,Kabupaten Blitar,Pasar Wlingi,39,Bawang Merah / kg,22000
+2026-08-23,Kabupaten Blitar,Pasar Wlingi,39,Bawang Merah / kg,22000
+2026-08-24,Kabupaten Blitar,Pasar Wlingi,39,Bawang Merah / kg,23000
+2026-08-25,Kabupaten Blitar,Pasar Wlingi,39,Bawang Merah / kg,23000
+2026-08-26,Kabupaten Blitar,Pasar Wlingi,39,Bawang Merah / kg,22000
+2026-08-20,Kabupaten Bojonegoro,Pasar Kota Baru,39,Bawang Merah / kg,30000
+2026-08-21,Kabupaten Bojonegoro,Pasar Kota Baru,39,Bawang Merah / kg,30000
+2026-08-22,Kabupaten Bojonegoro,Pasar Kota Baru,39,Bawang Merah / kg,30000
+2026-08-23,Kabupaten Bojonegoro,Pasar Kota Baru,39,Bawang Merah / kg,30000
+2026-08-24,Kabupaten Bojonegoro,Pasar Kota Baru,39,Bawang Merah / kg,30000
+2026-08-25,Kabupaten Bojonegoro,Pasar Kota Baru,39,Bawang Merah / kg,30000
+2026-08-26,Kabupaten Bojonegoro,Pasar Kota Baru,39,Bawang Merah / kg,30000
+2026-08-20,Kabupaten Bojonegoro,Pasar Wisata (Pasar Kota Lama),39,Bawang Merah / kg,24000
+2026-08-21,Kabupaten Bojonegoro,Pasar Wisata (Pasar Kota Lama),39,Bawang Merah / kg,24000
+2026-08-22,Kabupaten Bojonegoro,Pasar Wisata (Pasar Kota Lama),39,Bawang Merah / kg,24000
+2026-08-23,Kabupaten Bojonegoro,Pasar Wisata (Pasar Kota Lama),39,Bawang Merah / kg,24000
+2026-08-24,Kabupaten Bojonegoro,Pasar Wisata (Pasar Kota Lama),39,Bawang Merah / kg,24000
+2026-08-25,Kabupaten Bojonegoro,Pasar Wisata (Pasar Kota Lama),39,Bawang Merah / kg,24000
+2026-08-26,Kabupaten Bojonegoro,Pasar Wisata (Pasar Kota Lama),39,Bawang Merah / kg,24000
+2026-08-20,Kabupaten Bondowoso,Pasar Induk Bondowoso,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Bondowoso,Pasar Induk Bondowoso,39,Bawang Merah / kg,28000
+2026-08-22,Kabupaten Bondowoso,Pasar Induk Bondowoso,39,Bawang Merah / kg,28000
+2026-08-23,Kabupaten Bondowoso,Pasar Induk Bondowoso,39,Bawang Merah / kg,28000
+2026-08-24,Kabupaten Bondowoso,Pasar Induk Bondowoso,39,Bawang Merah / kg,28000
+2026-08-25,Kabupaten Bondowoso,Pasar Induk Bondowoso,39,Bawang Merah / kg,28000
+2026-08-26,Kabupaten Bondowoso,Pasar Induk Bondowoso,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Bondowoso,Pasar Maesan,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Bondowoso,Pasar Maesan,39,Bawang Merah / kg,28000
+2026-08-22,Kabupaten Bondowoso,Pasar Maesan,39,Bawang Merah / kg,28000
+2026-08-23,Kabupaten Bondowoso,Pasar Maesan,39,Bawang Merah / kg,28000
+2026-08-24,Kabupaten Bondowoso,Pasar Maesan,39,Bawang Merah / kg,28000
+2026-08-25,Kabupaten Bondowoso,Pasar Maesan,39,Bawang Merah / kg,28000
+2026-08-26,Kabupaten Bondowoso,Pasar Maesan,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Bondowoso,Pasar Prajekan,39,Bawang Merah / kg,27000
+2026-08-21,Kabupaten Bondowoso,Pasar Prajekan,39,Bawang Merah / kg,27000
+2026-08-22,Kabupaten Bondowoso,Pasar Prajekan,39,Bawang Merah / kg,27000
+2026-08-23,Kabupaten Bondowoso,Pasar Prajekan,39,Bawang Merah / kg,27000
+2026-08-24,Kabupaten Bondowoso,Pasar Prajekan,39,Bawang Merah / kg,27000
+2026-08-25,Kabupaten Bondowoso,Pasar Prajekan,39,Bawang Merah / kg,27000
+2026-08-26,Kabupaten Bondowoso,Pasar Prajekan,39,Bawang Merah / kg,27000
+2026-08-20,Kabupaten Bondowoso,Pasar Wonosari,39,Bawang Merah / kg,27000
+2026-08-21,Kabupaten Bondowoso,Pasar Wonosari,39,Bawang Merah / kg,27000
+2026-08-22,Kabupaten Bondowoso,Pasar Wonosari,39,Bawang Merah / kg,27000
+2026-08-23,Kabupaten Bondowoso,Pasar Wonosari,39,Bawang Merah / kg,27000
+2026-08-24,Kabupaten Bondowoso,Pasar Wonosari,39,Bawang Merah / kg,28000
+2026-08-25,Kabupaten Bondowoso,Pasar Wonosari,39,Bawang Merah / kg,28000
+2026-08-26,Kabupaten Bondowoso,Pasar Wonosari,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Gresik,Pasar Baru,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Gresik,Pasar Baru,39,Bawang Merah / kg,28000
+2026-08-22,Kabupaten Gresik,Pasar Baru,39,Bawang Merah / kg,28000
+2026-08-23,Kabupaten Gresik,Pasar Baru,39,Bawang Merah / kg,28000
+2026-08-24,Kabupaten Gresik,Pasar Baru,39,Bawang Merah / kg,28000
+2026-08-25,Kabupaten Gresik,Pasar Baru,39,Bawang Merah / kg,28000
+2026-08-26,Kabupaten Gresik,Pasar Baru,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Gresik,Pasar Kota,39,Bawang Merah / kg,35000
+2026-08-21,Kabupaten Gresik,Pasar Kota,39,Bawang Merah / kg,35000
+2026-08-22,Kabupaten Gresik,Pasar Kota,39,Bawang Merah / kg,35000
+2026-08-23,Kabupaten Gresik,Pasar Kota,39,Bawang Merah / kg,35000
+2026-08-24,Kabupaten Gresik,Pasar Kota,39,Bawang Merah / kg,35000
+2026-08-25,Kabupaten Gresik,Pasar Kota,39,Bawang Merah / kg,35000
+2026-08-26,Kabupaten Gresik,Pasar Kota,39,Bawang Merah / kg,35000
+2026-08-20,Kabupaten Gresik,Pasar Sidomoro,39,Bawang Merah / kg,25000
+2026-08-21,Kabupaten Gresik,Pasar Sidomoro,39,Bawang Merah / kg,25000
+2026-08-22,Kabupaten Gresik,Pasar Sidomoro,39,Bawang Merah / kg,25000
+2026-08-23,Kabupaten Gresik,Pasar Sidomoro,39,Bawang Merah / kg,25000
+2026-08-24,Kabupaten Gresik,Pasar Sidomoro,39,Bawang Merah / kg,26000
+2026-08-25,Kabupaten Gresik,Pasar Sidomoro,39,Bawang Merah / kg,26000
+2026-08-26,Kabupaten Gresik,Pasar Sidomoro,39,Bawang Merah / kg,25000
+2026-08-20,Kabupaten Jombang,Pasar Cukir,39,Bawang Merah / kg,20000
+2026-08-21,Kabupaten Jombang,Pasar Cukir,39,Bawang Merah / kg,20000
+2026-08-22,Kabupaten Jombang,Pasar Cukir,39,Bawang Merah / kg,20000
+2026-08-23,Kabupaten Jombang,Pasar Cukir,39,Bawang Merah / kg,20000
+2026-08-24,Kabupaten Jombang,Pasar Cukir,39,Bawang Merah / kg,20000
+2026-08-25,Kabupaten Jombang,Pasar Cukir,39,Bawang Merah / kg,20000
+2026-08-26,Kabupaten Jombang,Pasar Cukir,39,Bawang Merah / kg,24000
+2026-08-20,Kabupaten Jombang,Pasar Ploso,39,Bawang Merah / kg,25000
+2026-08-21,Kabupaten Jombang,Pasar Ploso,39,Bawang Merah / kg,25000
+2026-08-22,Kabupaten Jombang,Pasar Ploso,39,Bawang Merah / kg,25000
+2026-08-23,Kabupaten Jombang,Pasar Ploso,39,Bawang Merah / kg,25000
+2026-08-24,Kabupaten Jombang,Pasar Ploso,39,Bawang Merah / kg,25000
+2026-08-25,Kabupaten Jombang,Pasar Ploso,39,Bawang Merah / kg,25000
+2026-08-26,Kabupaten Jombang,Pasar Ploso,39,Bawang Merah / kg,25000
+2026-08-20,Kabupaten Jombang,Pasar Pon,39,Bawang Merah / kg,22000
+2026-08-21,Kabupaten Jombang,Pasar Pon,39,Bawang Merah / kg,22000
+2026-08-22,Kabupaten Jombang,Pasar Pon,39,Bawang Merah / kg,22000
+2026-08-23,Kabupaten Jombang,Pasar Pon,39,Bawang Merah / kg,22000
+2026-08-24,Kabupaten Jombang,Pasar Pon,39,Bawang Merah / kg,22000
+2026-08-25,Kabupaten Jombang,Pasar Pon,39,Bawang Merah / kg,22000
+2026-08-26,Kabupaten Jombang,Pasar Pon,39,Bawang Merah / kg,22000
+2026-08-20,Kabupaten Kediri,Pasar Gringging,39,Bawang Merah / kg,24000
+2026-08-21,Kabupaten Kediri,Pasar Gringging,39,Bawang Merah / kg,24000
+2026-08-22,Kabupaten Kediri,Pasar Gringging,39,Bawang Merah / kg,24000
+2026-08-23,Kabupaten Kediri,Pasar Gringging,39,Bawang Merah / kg,24000
+2026-08-24,Kabupaten Kediri,Pasar Gringging,39,Bawang Merah / kg,24000
+2026-08-25,Kabupaten Kediri,Pasar Gringging,39,Bawang Merah / kg,24000
+2026-08-26,Kabupaten Kediri,Pasar Gringging,39,Bawang Merah / kg,24000
+2026-08-20,Kabupaten Kediri,Pasar Ngadiluwih,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Kediri,Pasar Ngadiluwih,39,Bawang Merah / kg,28000
+2026-08-22,Kabupaten Kediri,Pasar Ngadiluwih,39,Bawang Merah / kg,28000
+2026-08-23,Kabupaten Kediri,Pasar Ngadiluwih,39,Bawang Merah / kg,28000
+2026-08-24,Kabupaten Kediri,Pasar Ngadiluwih,39,Bawang Merah / kg,28000
+2026-08-25,Kabupaten Kediri,Pasar Ngadiluwih,39,Bawang Merah / kg,28000
+2026-08-26,Kabupaten Kediri,Pasar Ngadiluwih,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Kediri,Pasar Pamenang,39,Bawang Merah / kg,25000
+2026-08-21,Kabupaten Kediri,Pasar Pamenang,39,Bawang Merah / kg,25000
+2026-08-22,Kabupaten Kediri,Pasar Pamenang,39,Bawang Merah / kg,25000
+2026-08-23,Kabupaten Kediri,Pasar Pamenang,39,Bawang Merah / kg,25000
+2026-08-24,Kabupaten Kediri,Pasar Pamenang,39,Bawang Merah / kg,25000
+2026-08-25,Kabupaten Kediri,Pasar Pamenang,39,Bawang Merah / kg,25000
+2026-08-26,Kabupaten Kediri,Pasar Pamenang,39,Bawang Merah / kg,25000
+2026-08-20,Kabupaten Lamongan,Pasar Babat,39,Bawang Merah / kg,25000
+2026-08-21,Kabupaten Lamongan,Pasar Babat,39,Bawang Merah / kg,25000
+2026-08-22,Kabupaten Lamongan,Pasar Babat,39,Bawang Merah / kg,25000
+2026-08-23,Kabupaten Lamongan,Pasar Babat,39,Bawang Merah / kg,25000
+2026-08-24,Kabupaten Lamongan,Pasar Babat,39,Bawang Merah / kg,27000
+2026-08-25,Kabupaten Lamongan,Pasar Babat,39,Bawang Merah / kg,27000
+2026-08-26,Kabupaten Lamongan,Pasar Babat,39,Bawang Merah / kg,27000
+2026-08-20,Kabupaten Lamongan,Pasar Blimbing,39,Bawang Merah / kg,25000
+2026-08-21,Kabupaten Lamongan,Pasar Blimbing,39,Bawang Merah / kg,25000
+2026-08-22,Kabupaten Lamongan,Pasar Blimbing,39,Bawang Merah / kg,25000
+2026-08-23,Kabupaten Lamongan,Pasar Blimbing,39,Bawang Merah / kg,25000
+2026-08-24,Kabupaten Lamongan,Pasar Blimbing,39,Bawang Merah / kg,25000
+2026-08-25,Kabupaten Lamongan,Pasar Blimbing,39,Bawang Merah / kg,25000
+2026-08-26,Kabupaten Lamongan,Pasar Blimbing,39,Bawang Merah / kg,20000
+2026-08-20,Kabupaten Lamongan,Pasar Mantup,39,Bawang Merah / kg,25000
+2026-08-21,Kabupaten Lamongan,Pasar Mantup,39,Bawang Merah / kg,25000
+2026-08-22,Kabupaten Lamongan,Pasar Mantup,39,Bawang Merah / kg,25000
+2026-08-23,Kabupaten Lamongan,Pasar Mantup,39,Bawang Merah / kg,25000
+2026-08-24,Kabupaten Lamongan,Pasar Mantup,39,Bawang Merah / kg,25000
+2026-08-25,Kabupaten Lamongan,Pasar Mantup,39,Bawang Merah / kg,25000
+2026-08-26,Kabupaten Lamongan,Pasar Mantup,39,Bawang Merah / kg,26000
+2026-08-20,Kabupaten Lamongan,Pasar Sidoharjo,39,Bawang Merah / kg,25000
+2026-08-21,Kabupaten Lamongan,Pasar Sidoharjo,39,Bawang Merah / kg,25000
+2026-08-22,Kabupaten Lamongan,Pasar Sidoharjo,39,Bawang Merah / kg,25000
+2026-08-23,Kabupaten Lamongan,Pasar Sidoharjo,39,Bawang Merah / kg,25000
+2026-08-24,Kabupaten Lamongan,Pasar Sidoharjo,39,Bawang Merah / kg,25000
+2026-08-25,Kabupaten Lamongan,Pasar Sidoharjo,39,Bawang Merah / kg,25000
+2026-08-26,Kabupaten Lamongan,Pasar Sidoharjo,39,Bawang Merah / kg,22000
+2026-08-20,Kabupaten Lumajang,Pasar Baru,39,Bawang Merah / kg,25000
+2026-08-21,Kabupaten Lumajang,Pasar Baru,39,Bawang Merah / kg,25000
+2026-08-22,Kabupaten Lumajang,Pasar Baru,39,Bawang Merah / kg,25000
+2026-08-23,Kabupaten Lumajang,Pasar Baru,39,Bawang Merah / kg,25000
+2026-08-24,Kabupaten Lumajang,Pasar Baru,39,Bawang Merah / kg,25000
+2026-08-25,Kabupaten Lumajang,Pasar Baru,39,Bawang Merah / kg,25000
+2026-08-26,Kabupaten Lumajang,Pasar Baru,39,Bawang Merah / kg,25000
+2026-08-20,Kabupaten Lumajang,Pasar Pasirian,39,Bawang Merah / kg,30000
+2026-08-21,Kabupaten Lumajang,Pasar Pasirian,39,Bawang Merah / kg,30000
+2026-08-22,Kabupaten Lumajang,Pasar Pasirian,39,Bawang Merah / kg,30000
+2026-08-23,Kabupaten Lumajang,Pasar Pasirian,39,Bawang Merah / kg,30000
+2026-08-24,Kabupaten Lumajang,Pasar Pasirian,39,Bawang Merah / kg,26000
+2026-08-25,Kabupaten Lumajang,Pasar Pasirian,39,Bawang Merah / kg,26000
+2026-08-26,Kabupaten Lumajang,Pasar Pasirian,39,Bawang Merah / kg,26000
+2026-08-20,Kabupaten Lumajang,Pasar Sukodono,39,Bawang Merah / kg,25000
+2026-08-21,Kabupaten Lumajang,Pasar Sukodono,39,Bawang Merah / kg,25000
+2026-08-22,Kabupaten Lumajang,Pasar Sukodono,39,Bawang Merah / kg,25000
+2026-08-23,Kabupaten Lumajang,Pasar Sukodono,39,Bawang Merah / kg,25000
+2026-08-24,Kabupaten Lumajang,Pasar Sukodono,39,Bawang Merah / kg,25000
+2026-08-25,Kabupaten Lumajang,Pasar Sukodono,39,Bawang Merah / kg,25000
+2026-08-26,Kabupaten Lumajang,Pasar Sukodono,39,Bawang Merah / kg,25000
+2026-08-20,Kabupaten Madiun,Pasar Dolopo,39,Bawang Merah / kg,23600
+2026-08-21,Kabupaten Madiun,Pasar Dolopo,39,Bawang Merah / kg,23600
+2026-08-22,Kabupaten Madiun,Pasar Dolopo,39,Bawang Merah / kg,23600
+2026-08-23,Kabupaten Madiun,Pasar Dolopo,39,Bawang Merah / kg,23600
+2026-08-24,Kabupaten Madiun,Pasar Dolopo,39,Bawang Merah / kg,23600
+2026-08-25,Kabupaten Madiun,Pasar Dolopo,39,Bawang Merah / kg,23600
+2026-08-26,Kabupaten Madiun,Pasar Dolopo,39,Bawang Merah / kg,26600
+2026-08-20,Kabupaten Madiun,Pasar Dungus,39,Bawang Merah / kg,25000
+2026-08-21,Kabupaten Madiun,Pasar Dungus,39,Bawang Merah / kg,28000
+2026-08-22,Kabupaten Madiun,Pasar Dungus,39,Bawang Merah / kg,24000
+2026-08-23,Kabupaten Madiun,Pasar Dungus,39,Bawang Merah / kg,24000
+2026-08-24,Kabupaten Madiun,Pasar Dungus,39,Bawang Merah / kg,24300
+2026-08-25,Kabupaten Madiun,Pasar Dungus,39,Bawang Merah / kg,24300
+2026-08-26,Kabupaten Madiun,Pasar Dungus,39,Bawang Merah / kg,26000
+2026-08-20,Kabupaten Madiun,Pasar Pagotan,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Madiun,Pasar Pagotan,39,Bawang Merah / kg,28000
+2026-08-22,Kabupaten Madiun,Pasar Pagotan,39,Bawang Merah / kg,28000
+2026-08-23,Kabupaten Madiun,Pasar Pagotan,39,Bawang Merah / kg,28000
+2026-08-24,Kabupaten Madiun,Pasar Pagotan,39,Bawang Merah / kg,28000
+2026-08-25,Kabupaten Madiun,Pasar Pagotan,39,Bawang Merah / kg,26000
+2026-08-26,Kabupaten Madiun,Pasar Pagotan,39,Bawang Merah / kg,26000
+2026-08-20,Kabupaten Madiun,Pasar Umum Caruban,39,Bawang Merah / kg,24000
+2026-08-21,Kabupaten Madiun,Pasar Umum Caruban,39,Bawang Merah / kg,24000
+2026-08-22,Kabupaten Madiun,Pasar Umum Caruban,39,Bawang Merah / kg,24000
+2026-08-23,Kabupaten Madiun,Pasar Umum Caruban,39,Bawang Merah / kg,24000
+2026-08-24,Kabupaten Madiun,Pasar Umum Caruban,39,Bawang Merah / kg,24000
+2026-08-25,Kabupaten Madiun,Pasar Umum Caruban,39,Bawang Merah / kg,24000
+2026-08-26,Kabupaten Madiun,Pasar Umum Caruban,39,Bawang Merah / kg,24000
+2026-08-20,Kabupaten Magetan,Pasar Gorang Gareng I Kawedanan,39,Bawang Merah / kg,30000
+2026-08-21,Kabupaten Magetan,Pasar Gorang Gareng I Kawedanan,39,Bawang Merah / kg,30000
+2026-08-22,Kabupaten Magetan,Pasar Gorang Gareng I Kawedanan,39,Bawang Merah / kg,30000
+2026-08-23,Kabupaten Magetan,Pasar Gorang Gareng I Kawedanan,39,Bawang Merah / kg,30000
+2026-08-24,Kabupaten Magetan,Pasar Gorang Gareng I Kawedanan,39,Bawang Merah / kg,30000
+2026-08-25,Kabupaten Magetan,Pasar Gorang Gareng I Kawedanan,39,Bawang Merah / kg,30000
+2026-08-26,Kabupaten Magetan,Pasar Gorang Gareng I Kawedanan,39,Bawang Merah / kg,30000
+2026-08-20,Kabupaten Magetan,Pasar Maospati,39,Bawang Merah / kg,30000
+2026-08-21,Kabupaten Magetan,Pasar Maospati,39,Bawang Merah / kg,30000
+2026-08-22,Kabupaten Magetan,Pasar Maospati,39,Bawang Merah / kg,30000
+2026-08-23,Kabupaten Magetan,Pasar Maospati,39,Bawang Merah / kg,30000
+2026-08-24,Kabupaten Magetan,Pasar Maospati,39,Bawang Merah / kg,30000
+2026-08-25,Kabupaten Magetan,Pasar Maospati,39,Bawang Merah / kg,30000
+2026-08-26,Kabupaten Magetan,Pasar Maospati,39,Bawang Merah / kg,30000
+2026-08-20,Kabupaten Magetan,Pasar Sayur I,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Magetan,Pasar Sayur I,39,Bawang Merah / kg,28000
+2026-08-22,Kabupaten Magetan,Pasar Sayur I,39,Bawang Merah / kg,28000
+2026-08-23,Kabupaten Magetan,Pasar Sayur I,39,Bawang Merah / kg,28000
+2026-08-24,Kabupaten Magetan,Pasar Sayur I,39,Bawang Merah / kg,28000
+2026-08-25,Kabupaten Magetan,Pasar Sayur I,39,Bawang Merah / kg,28000
+2026-08-26,Kabupaten Magetan,Pasar Sayur I,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Malang,Pasar Karang Ploso,39,Bawang Merah / kg,25000
+2026-08-21,Kabupaten Malang,Pasar Karang Ploso,39,Bawang Merah / kg,24000
+2026-08-22,Kabupaten Malang,Pasar Karang Ploso,39,Bawang Merah / kg,24000
+2026-08-23,Kabupaten Malang,Pasar Karang Ploso,39,Bawang Merah / kg,24000
+2026-08-24,Kabupaten Malang,Pasar Karang Ploso,39,Bawang Merah / kg,26000
+2026-08-25,Kabupaten Malang,Pasar Karang Ploso,39,Bawang Merah / kg,25000
+2026-08-26,Kabupaten Malang,Pasar Karang Ploso,39,Bawang Merah / kg,25000
+2026-08-20,Kabupaten Malang,Pasar Kepanjen,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Malang,Pasar Kepanjen,39,Bawang Merah / kg,24500
+2026-08-22,Kabupaten Malang,Pasar Kepanjen,39,Bawang Merah / kg,24500
+2026-08-23,Kabupaten Malang,Pasar Kepanjen,39,Bawang Merah / kg,24500
+2026-08-24,Kabupaten Malang,Pasar Kepanjen,39,Bawang Merah / kg,24500
+2026-08-25,Kabupaten Malang,Pasar Kepanjen,39,Bawang Merah / kg,24500
+2026-08-26,Kabupaten Malang,Pasar Kepanjen,39,Bawang Merah / kg,24500
+2026-08-20,Kabupaten Malang,Pasar Lawang,39,Bawang Merah / kg,26000
+2026-08-21,Kabupaten Malang,Pasar Lawang,39,Bawang Merah / kg,23000
+2026-08-22,Kabupaten Malang,Pasar Lawang,39,Bawang Merah / kg,23000
+2026-08-23,Kabupaten Malang,Pasar Lawang,39,Bawang Merah / kg,23000
+2026-08-24,Kabupaten Malang,Pasar Lawang,39,Bawang Merah / kg,24000
+2026-08-25,Kabupaten Malang,Pasar Lawang,39,Bawang Merah / kg,24000
+2026-08-26,Kabupaten Malang,Pasar Lawang,39,Bawang Merah / kg,24000
+2026-08-20,Kabupaten Malang,Pasar Singosari,39,Bawang Merah / kg,24000
+2026-08-21,Kabupaten Malang,Pasar Singosari,39,Bawang Merah / kg,28000
+2026-08-22,Kabupaten Malang,Pasar Singosari,39,Bawang Merah / kg,28000
+2026-08-23,Kabupaten Malang,Pasar Singosari,39,Bawang Merah / kg,28000
+2026-08-24,Kabupaten Malang,Pasar Singosari,39,Bawang Merah / kg,28000
+2026-08-25,Kabupaten Malang,Pasar Singosari,39,Bawang Merah / kg,28000
+2026-08-26,Kabupaten Malang,Pasar Singosari,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Malang,Pasar Turen,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Malang,Pasar Turen,39,Bawang Merah / kg,28000
+2026-08-22,Kabupaten Malang,Pasar Turen,39,Bawang Merah / kg,28000
+2026-08-23,Kabupaten Malang,Pasar Turen,39,Bawang Merah / kg,28000
+2026-08-24,Kabupaten Malang,Pasar Turen,39,Bawang Merah / kg,28000
+2026-08-25,Kabupaten Malang,Pasar Turen,39,Bawang Merah / kg,28000
+2026-08-26,Kabupaten Malang,Pasar Turen,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Mojokerto,Pasar Gempol  Kerep,39,Bawang Merah / kg,26000
+2026-08-21,Kabupaten Mojokerto,Pasar Gempol  Kerep,39,Bawang Merah / kg,26000
+2026-08-22,Kabupaten Mojokerto,Pasar Gempol  Kerep,39,Bawang Merah / kg,26000
+2026-08-23,Kabupaten Mojokerto,Pasar Gempol  Kerep,39,Bawang Merah / kg,26000
+2026-08-24,Kabupaten Mojokerto,Pasar Gempol  Kerep,39,Bawang Merah / kg,26000
+2026-08-25,Kabupaten Mojokerto,Pasar Gempol  Kerep,39,Bawang Merah / kg,26000
+2026-08-26,Kabupaten Mojokerto,Pasar Gempol  Kerep,39,Bawang Merah / kg,26000
+2026-08-20,Kabupaten Mojokerto,Pasar Kedung Maling,39,Bawang Merah / kg,24000
+2026-08-21,Kabupaten Mojokerto,Pasar Kedung Maling,39,Bawang Merah / kg,24000
+2026-08-22,Kabupaten Mojokerto,Pasar Kedung Maling,39,Bawang Merah / kg,24000
+2026-08-23,Kabupaten Mojokerto,Pasar Kedung Maling,39,Bawang Merah / kg,24000
+2026-08-24,Kabupaten Mojokerto,Pasar Kedung Maling,39,Bawang Merah / kg,25000
+2026-08-25,Kabupaten Mojokerto,Pasar Kedung Maling,39,Bawang Merah / kg,25000
+2026-08-26,Kabupaten Mojokerto,Pasar Kedung Maling,39,Bawang Merah / kg,27000
+2026-08-20,Kabupaten Mojokerto,Pasar Poh Jejer,39,Bawang Merah / kg,26000
+2026-08-21,Kabupaten Mojokerto,Pasar Poh Jejer,39,Bawang Merah / kg,26000
+2026-08-22,Kabupaten Mojokerto,Pasar Poh Jejer,39,Bawang Merah / kg,26000
+2026-08-23,Kabupaten Mojokerto,Pasar Poh Jejer,39,Bawang Merah / kg,26000
+2026-08-24,Kabupaten Mojokerto,Pasar Poh Jejer,39,Bawang Merah / kg,26000
+2026-08-25,Kabupaten Mojokerto,Pasar Poh Jejer,39,Bawang Merah / kg,26000
+2026-08-26,Kabupaten Mojokerto,Pasar Poh Jejer,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Mojokerto,Pasar Raya Mojosari,39,Bawang Merah / kg,27500
+2026-08-21,Kabupaten Mojokerto,Pasar Raya Mojosari,39,Bawang Merah / kg,27500
+2026-08-22,Kabupaten Mojokerto,Pasar Raya Mojosari,39,Bawang Merah / kg,27500
+2026-08-23,Kabupaten Mojokerto,Pasar Raya Mojosari,39,Bawang Merah / kg,27500
+2026-08-24,Kabupaten Mojokerto,Pasar Raya Mojosari,39,Bawang Merah / kg,27500
+2026-08-25,Kabupaten Mojokerto,Pasar Raya Mojosari,39,Bawang Merah / kg,27500
+2026-08-26,Kabupaten Mojokerto,Pasar Raya Mojosari,39,Bawang Merah / kg,27500
+2026-08-20,Kabupaten Nganjuk,Pasar Berbek,39,Bawang Merah / kg,22000
+2026-08-21,Kabupaten Nganjuk,Pasar Berbek,39,Bawang Merah / kg,23000
+2026-08-22,Kabupaten Nganjuk,Pasar Berbek,39,Bawang Merah / kg,23000
+2026-08-23,Kabupaten Nganjuk,Pasar Berbek,39,Bawang Merah / kg,23000
+2026-08-24,Kabupaten Nganjuk,Pasar Berbek,39,Bawang Merah / kg,23000
+2026-08-25,Kabupaten Nganjuk,Pasar Berbek,39,Bawang Merah / kg,23000
+2026-08-26,Kabupaten Nganjuk,Pasar Berbek,39,Bawang Merah / kg,23000
+2026-08-20,Kabupaten Nganjuk,Pasar Wage,39,Bawang Merah / kg,22000
+2026-08-21,Kabupaten Nganjuk,Pasar Wage,39,Bawang Merah / kg,22000
+2026-08-22,Kabupaten Nganjuk,Pasar Wage,39,Bawang Merah / kg,22000
+2026-08-23,Kabupaten Nganjuk,Pasar Wage,39,Bawang Merah / kg,22000
+2026-08-24,Kabupaten Nganjuk,Pasar Wage,39,Bawang Merah / kg,22000
+2026-08-25,Kabupaten Nganjuk,Pasar Wage,39,Bawang Merah / kg,22000
+2026-08-26,Kabupaten Nganjuk,Pasar Wage,39,Bawang Merah / kg,22000
+2026-08-20,Kabupaten Nganjuk,Pasar Warujayeng,39,Bawang Merah / kg,23000
+2026-08-21,Kabupaten Nganjuk,Pasar Warujayeng,39,Bawang Merah / kg,23000
+2026-08-22,Kabupaten Nganjuk,Pasar Warujayeng,39,Bawang Merah / kg,23000
+2026-08-23,Kabupaten Nganjuk,Pasar Warujayeng,39,Bawang Merah / kg,23000
+2026-08-24,Kabupaten Nganjuk,Pasar Warujayeng,39,Bawang Merah / kg,23000
+2026-08-25,Kabupaten Nganjuk,Pasar Warujayeng,39,Bawang Merah / kg,22000
+2026-08-26,Kabupaten Nganjuk,Pasar Warujayeng,39,Bawang Merah / kg,22000
+2026-08-20,Kabupaten Ngawi,Pasar Beran,39,Bawang Merah / kg,26000
+2026-08-21,Kabupaten Ngawi,Pasar Beran,39,Bawang Merah / kg,26000
+2026-08-22,Kabupaten Ngawi,Pasar Beran,39,Bawang Merah / kg,28000
+2026-08-23,Kabupaten Ngawi,Pasar Beran,39,Bawang Merah / kg,28000
+2026-08-24,Kabupaten Ngawi,Pasar Beran,39,Bawang Merah / kg,28000
+2026-08-25,Kabupaten Ngawi,Pasar Beran,39,Bawang Merah / kg,28000
+2026-08-26,Kabupaten Ngawi,Pasar Beran,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Ngawi,Pasar Besar Ngawi,39,Bawang Merah / kg,30000
+2026-08-21,Kabupaten Ngawi,Pasar Besar Ngawi,39,Bawang Merah / kg,30000
+2026-08-22,Kabupaten Ngawi,Pasar Besar Ngawi,39,Bawang Merah / kg,32000
+2026-08-23,Kabupaten Ngawi,Pasar Besar Ngawi,39,Bawang Merah / kg,32000
+2026-08-24,Kabupaten Ngawi,Pasar Besar Ngawi,39,Bawang Merah / kg,32000
+2026-08-25,Kabupaten Ngawi,Pasar Besar Ngawi,39,Bawang Merah / kg,32000
+2026-08-26,Kabupaten Ngawi,Pasar Besar Ngawi,39,Bawang Merah / kg,32000
+2026-08-20,Kabupaten Ngawi,Pasar Paron,39,Bawang Merah / kg,26000
+2026-08-21,Kabupaten Ngawi,Pasar Paron,39,Bawang Merah / kg,26000
+2026-08-22,Kabupaten Ngawi,Pasar Paron,39,Bawang Merah / kg,28000
+2026-08-23,Kabupaten Ngawi,Pasar Paron,39,Bawang Merah / kg,28000
+2026-08-24,Kabupaten Ngawi,Pasar Paron,39,Bawang Merah / kg,28000
+2026-08-25,Kabupaten Ngawi,Pasar Paron,39,Bawang Merah / kg,28000
+2026-08-26,Kabupaten Ngawi,Pasar Paron,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Pacitan,Pasar Arjosari,39,Bawang Merah / kg,26000
+2026-08-21,Kabupaten Pacitan,Pasar Arjosari,39,Bawang Merah / kg,26000
+2026-08-22,Kabupaten Pacitan,Pasar Arjosari,39,Bawang Merah / kg,26000
+2026-08-23,Kabupaten Pacitan,Pasar Arjosari,39,Bawang Merah / kg,26000
+2026-08-24,Kabupaten Pacitan,Pasar Arjosari,39,Bawang Merah / kg,26000
+2026-08-25,Kabupaten Pacitan,Pasar Arjosari,39,Bawang Merah / kg,26000
+2026-08-26,Kabupaten Pacitan,Pasar Arjosari,39,Bawang Merah / kg,26000
+2026-08-20,Kabupaten Pacitan,Pasar Arjowinangun,39,Bawang Merah / kg,26000
+2026-08-21,Kabupaten Pacitan,Pasar Arjowinangun,39,Bawang Merah / kg,26000
+2026-08-22,Kabupaten Pacitan,Pasar Arjowinangun,39,Bawang Merah / kg,26000
+2026-08-23,Kabupaten Pacitan,Pasar Arjowinangun,39,Bawang Merah / kg,26000
+2026-08-24,Kabupaten Pacitan,Pasar Arjowinangun,39,Bawang Merah / kg,26000
+2026-08-25,Kabupaten Pacitan,Pasar Arjowinangun,39,Bawang Merah / kg,27000
+2026-08-26,Kabupaten Pacitan,Pasar Arjowinangun,39,Bawang Merah / kg,27000
+2026-08-20,Kabupaten Pacitan,Pasar Minulyo,39,Bawang Merah / kg,26000
+2026-08-21,Kabupaten Pacitan,Pasar Minulyo,39,Bawang Merah / kg,26000
+2026-08-22,Kabupaten Pacitan,Pasar Minulyo,39,Bawang Merah / kg,26000
+2026-08-23,Kabupaten Pacitan,Pasar Minulyo,39,Bawang Merah / kg,26000
+2026-08-24,Kabupaten Pacitan,Pasar Minulyo,39,Bawang Merah / kg,27000
+2026-08-25,Kabupaten Pacitan,Pasar Minulyo,39,Bawang Merah / kg,27000
+2026-08-26,Kabupaten Pacitan,Pasar Minulyo,39,Bawang Merah / kg,27000
+2026-08-20,Kabupaten Pamekasan,Pasar Kolpajung,39,Bawang Merah / kg,30000
+2026-08-21,Kabupaten Pamekasan,Pasar Kolpajung,39,Bawang Merah / kg,30000
+2026-08-22,Kabupaten Pamekasan,Pasar Kolpajung,39,Bawang Merah / kg,30000
+2026-08-23,Kabupaten Pamekasan,Pasar Kolpajung,39,Bawang Merah / kg,30000
+2026-08-24,Kabupaten Pamekasan,Pasar Kolpajung,39,Bawang Merah / kg,30000
+2026-08-25,Kabupaten Pamekasan,Pasar Kolpajung,39,Bawang Merah / kg,30000
+2026-08-26,Kabupaten Pamekasan,Pasar Kolpajung,39,Bawang Merah / kg,30000
+2026-08-20,Kabupaten Pamekasan,Pasar Waru,39,Bawang Merah / kg,30000
+2026-08-21,Kabupaten Pamekasan,Pasar Waru,39,Bawang Merah / kg,30000
+2026-08-22,Kabupaten Pamekasan,Pasar Waru,39,Bawang Merah / kg,30000
+2026-08-23,Kabupaten Pamekasan,Pasar Waru,39,Bawang Merah / kg,30000
+2026-08-24,Kabupaten Pamekasan,Pasar Waru,39,Bawang Merah / kg,30000
+2026-08-25,Kabupaten Pamekasan,Pasar Waru,39,Bawang Merah / kg,30000
+2026-08-26,Kabupaten Pamekasan,Pasar Waru,39,Bawang Merah / kg,30000
+2026-08-20,Kabupaten Pasuruan,Pasar Bangil,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Pasuruan,Pasar Bangil,39,Bawang Merah / kg,28000
+2026-08-22,Kabupaten Pasuruan,Pasar Bangil,39,Bawang Merah / kg,28000
+2026-08-23,Kabupaten Pasuruan,Pasar Bangil,39,Bawang Merah / kg,28000
+2026-08-24,Kabupaten Pasuruan,Pasar Bangil,39,Bawang Merah / kg,28000
+2026-08-25,Kabupaten Pasuruan,Pasar Bangil,39,Bawang Merah / kg,28000
+2026-08-26,Kabupaten Pasuruan,Pasar Bangil,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Pasuruan,Pasar Pandaan,39,Bawang Merah / kg,28300
+2026-08-21,Kabupaten Pasuruan,Pasar Pandaan,39,Bawang Merah / kg,28300
+2026-08-22,Kabupaten Pasuruan,Pasar Pandaan,39,Bawang Merah / kg,29000
+2026-08-23,Kabupaten Pasuruan,Pasar Pandaan,39,Bawang Merah / kg,28700
+2026-08-24,Kabupaten Pasuruan,Pasar Pandaan,39,Bawang Merah / kg,28300
+2026-08-25,Kabupaten Pasuruan,Pasar Pandaan,39,Bawang Merah / kg,28300
+2026-08-26,Kabupaten Pasuruan,Pasar Pandaan,39,Bawang Merah / kg,28300
+2026-08-20,Kabupaten Pasuruan,Pasar Sukorejo,39,Bawang Merah / kg,30000
+2026-08-21,Kabupaten Pasuruan,Pasar Sukorejo,39,Bawang Merah / kg,30000
+2026-08-22,Kabupaten Pasuruan,Pasar Sukorejo,39,Bawang Merah / kg,30000
+2026-08-23,Kabupaten Pasuruan,Pasar Sukorejo,39,Bawang Merah / kg,30000
+2026-08-24,Kabupaten Pasuruan,Pasar Sukorejo,39,Bawang Merah / kg,30000
+2026-08-25,Kabupaten Pasuruan,Pasar Sukorejo,39,Bawang Merah / kg,30000
+2026-08-26,Kabupaten Pasuruan,Pasar Sukorejo,39,Bawang Merah / kg,32000
+2026-08-20,Kabupaten Ponorogo,Pasar Legi,39,Bawang Merah / kg,26000
+2026-08-21,Kabupaten Ponorogo,Pasar Legi,39,Bawang Merah / kg,26000
+2026-08-22,Kabupaten Ponorogo,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-23,Kabupaten Ponorogo,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-24,Kabupaten Ponorogo,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-25,Kabupaten Ponorogo,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-26,Kabupaten Ponorogo,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-20,Kabupaten Ponorogo,Pasar Sumoroto,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Ponorogo,Pasar Sumoroto,39,Bawang Merah / kg,28000
+2026-08-22,Kabupaten Ponorogo,Pasar Sumoroto,39,Bawang Merah / kg,28000
+2026-08-23,Kabupaten Ponorogo,Pasar Sumoroto,39,Bawang Merah / kg,28000
+2026-08-24,Kabupaten Ponorogo,Pasar Sumoroto,39,Bawang Merah / kg,28000
+2026-08-25,Kabupaten Ponorogo,Pasar Sumoroto,39,Bawang Merah / kg,28000
+2026-08-26,Kabupaten Ponorogo,Pasar Sumoroto,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Probolinggo,Pasar Dringu,39,Bawang Merah / kg,32000
+2026-08-21,Kabupaten Probolinggo,Pasar Dringu,39,Bawang Merah / kg,32000
+2026-08-22,Kabupaten Probolinggo,Pasar Dringu,39,Bawang Merah / kg,32000
+2026-08-23,Kabupaten Probolinggo,Pasar Dringu,39,Bawang Merah / kg,32000
+2026-08-24,Kabupaten Probolinggo,Pasar Dringu,39,Bawang Merah / kg,32000
+2026-08-25,Kabupaten Probolinggo,Pasar Dringu,39,Bawang Merah / kg,32000
+2026-08-26,Kabupaten Probolinggo,Pasar Dringu,39,Bawang Merah / kg,32000
+2026-08-20,Kabupaten Probolinggo,Pasar Leces,39,Bawang Merah / kg,30000
+2026-08-21,Kabupaten Probolinggo,Pasar Leces,39,Bawang Merah / kg,30000
+2026-08-22,Kabupaten Probolinggo,Pasar Leces,39,Bawang Merah / kg,30000
+2026-08-23,Kabupaten Probolinggo,Pasar Leces,39,Bawang Merah / kg,30000
+2026-08-24,Kabupaten Probolinggo,Pasar Leces,39,Bawang Merah / kg,30000
+2026-08-25,Kabupaten Probolinggo,Pasar Leces,39,Bawang Merah / kg,30000
+2026-08-26,Kabupaten Probolinggo,Pasar Leces,39,Bawang Merah / kg,30000
+2026-08-20,Kabupaten Probolinggo,Pasar Semampir,39,Bawang Merah / kg,30000
+2026-08-21,Kabupaten Probolinggo,Pasar Semampir,39,Bawang Merah / kg,30000
+2026-08-22,Kabupaten Probolinggo,Pasar Semampir,39,Bawang Merah / kg,30000
+2026-08-23,Kabupaten Probolinggo,Pasar Semampir,39,Bawang Merah / kg,30000
+2026-08-24,Kabupaten Probolinggo,Pasar Semampir,39,Bawang Merah / kg,33000
+2026-08-25,Kabupaten Probolinggo,Pasar Semampir,39,Bawang Merah / kg,33000
+2026-08-26,Kabupaten Probolinggo,Pasar Semampir,39,Bawang Merah / kg,35000
+2026-08-20,Kabupaten Sampang,Pasar Rongtengah,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Sampang,Pasar Rongtengah,39,Bawang Merah / kg,30000
+2026-08-22,Kabupaten Sampang,Pasar Rongtengah,39,Bawang Merah / kg,30000
+2026-08-23,Kabupaten Sampang,Pasar Rongtengah,39,Bawang Merah / kg,30000
+2026-08-24,Kabupaten Sampang,Pasar Rongtengah,39,Bawang Merah / kg,35000
+2026-08-25,Kabupaten Sampang,Pasar Rongtengah,39,Bawang Merah / kg,35000
+2026-08-26,Kabupaten Sampang,Pasar Rongtengah,39,Bawang Merah / kg,35000
+2026-08-20,Kabupaten Sampang,Pasar Srimangunan,39,Bawang Merah / kg,25000
+2026-08-21,Kabupaten Sampang,Pasar Srimangunan,39,Bawang Merah / kg,25000
+2026-08-22,Kabupaten Sampang,Pasar Srimangunan,39,Bawang Merah / kg,25000
+2026-08-23,Kabupaten Sampang,Pasar Srimangunan,39,Bawang Merah / kg,25000
+2026-08-24,Kabupaten Sampang,Pasar Srimangunan,39,Bawang Merah / kg,26000
+2026-08-25,Kabupaten Sampang,Pasar Srimangunan,39,Bawang Merah / kg,26000
+2026-08-26,Kabupaten Sampang,Pasar Srimangunan,39,Bawang Merah / kg,26000
+2026-08-20,Kabupaten Sidoarjo,Pasar Krian,39,Bawang Merah / kg,24000
+2026-08-21,Kabupaten Sidoarjo,Pasar Krian,39,Bawang Merah / kg,24000
+2026-08-22,Kabupaten Sidoarjo,Pasar Krian,39,Bawang Merah / kg,24000
+2026-08-23,Kabupaten Sidoarjo,Pasar Krian,39,Bawang Merah / kg,24000
+2026-08-24,Kabupaten Sidoarjo,Pasar Krian,39,Bawang Merah / kg,23000
+2026-08-25,Kabupaten Sidoarjo,Pasar Krian,39,Bawang Merah / kg,23000
+2026-08-26,Kabupaten Sidoarjo,Pasar Krian,39,Bawang Merah / kg,23000
+2026-08-20,Kabupaten Sidoarjo,Pasar Larangan,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Sidoarjo,Pasar Larangan,39,Bawang Merah / kg,26000
+2026-08-22,Kabupaten Sidoarjo,Pasar Larangan,39,Bawang Merah / kg,26000
+2026-08-23,Kabupaten Sidoarjo,Pasar Larangan,39,Bawang Merah / kg,26000
+2026-08-24,Kabupaten Sidoarjo,Pasar Larangan,39,Bawang Merah / kg,27700
+2026-08-25,Kabupaten Sidoarjo,Pasar Larangan,39,Bawang Merah / kg,27700
+2026-08-26,Kabupaten Sidoarjo,Pasar Larangan,39,Bawang Merah / kg,27700
+2026-08-20,Kabupaten Situbondo,Pasar Ardirejo,39,Bawang Merah / kg,24000
+2026-08-21,Kabupaten Situbondo,Pasar Ardirejo,39,Bawang Merah / kg,24000
+2026-08-22,Kabupaten Situbondo,Pasar Ardirejo,39,Bawang Merah / kg,24000
+2026-08-23,Kabupaten Situbondo,Pasar Ardirejo,39,Bawang Merah / kg,24000
+2026-08-24,Kabupaten Situbondo,Pasar Ardirejo,39,Bawang Merah / kg,24000
+2026-08-25,Kabupaten Situbondo,Pasar Ardirejo,39,Bawang Merah / kg,24000
+2026-08-26,Kabupaten Situbondo,Pasar Ardirejo,39,Bawang Merah / kg,24000
+2026-08-20,Kabupaten Situbondo,Pasar Mimbaan Baru,39,Bawang Merah / kg,25000
+2026-08-21,Kabupaten Situbondo,Pasar Mimbaan Baru,39,Bawang Merah / kg,25000
+2026-08-22,Kabupaten Situbondo,Pasar Mimbaan Baru,39,Bawang Merah / kg,25000
+2026-08-23,Kabupaten Situbondo,Pasar Mimbaan Baru,39,Bawang Merah / kg,25000
+2026-08-24,Kabupaten Situbondo,Pasar Mimbaan Baru,39,Bawang Merah / kg,25000
+2026-08-25,Kabupaten Situbondo,Pasar Mimbaan Baru,39,Bawang Merah / kg,25000
+2026-08-26,Kabupaten Situbondo,Pasar Mimbaan Baru,39,Bawang Merah / kg,25000
+2026-08-20,Kabupaten Situbondo,Pasar Sumber Kolak,39,Bawang Merah / kg,24000
+2026-08-21,Kabupaten Situbondo,Pasar Sumber Kolak,39,Bawang Merah / kg,24000
+2026-08-22,Kabupaten Situbondo,Pasar Sumber Kolak,39,Bawang Merah / kg,24000
+2026-08-23,Kabupaten Situbondo,Pasar Sumber Kolak,39,Bawang Merah / kg,24000
+2026-08-24,Kabupaten Situbondo,Pasar Sumber Kolak,39,Bawang Merah / kg,24000
+2026-08-25,Kabupaten Situbondo,Pasar Sumber Kolak,39,Bawang Merah / kg,25000
+2026-08-26,Kabupaten Situbondo,Pasar Sumber Kolak,39,Bawang Merah / kg,25000
+2026-08-20,Kabupaten Sumenep,Pasar Anom Baru,39,Bawang Merah / kg,30000
+2026-08-21,Kabupaten Sumenep,Pasar Anom Baru,39,Bawang Merah / kg,30000
+2026-08-22,Kabupaten Sumenep,Pasar Anom Baru,39,Bawang Merah / kg,30000
+2026-08-23,Kabupaten Sumenep,Pasar Anom Baru,39,Bawang Merah / kg,30000
+2026-08-24,Kabupaten Sumenep,Pasar Anom Baru,39,Bawang Merah / kg,30000
+2026-08-25,Kabupaten Sumenep,Pasar Anom Baru,39,Bawang Merah / kg,30000
+2026-08-26,Kabupaten Sumenep,Pasar Anom Baru,39,Bawang Merah / kg,30000
+2026-08-20,Kabupaten Sumenep,Pasar Bangkal,39,Bawang Merah / kg,32000
+2026-08-21,Kabupaten Sumenep,Pasar Bangkal,39,Bawang Merah / kg,32000
+2026-08-22,Kabupaten Sumenep,Pasar Bangkal,39,Bawang Merah / kg,32000
+2026-08-23,Kabupaten Sumenep,Pasar Bangkal,39,Bawang Merah / kg,32000
+2026-08-24,Kabupaten Sumenep,Pasar Bangkal,39,Bawang Merah / kg,30000
+2026-08-25,Kabupaten Sumenep,Pasar Bangkal,39,Bawang Merah / kg,30000
+2026-08-26,Kabupaten Sumenep,Pasar Bangkal,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Trenggalek,Pasar Basah,39,Bawang Merah / kg,22000
+2026-08-21,Kabupaten Trenggalek,Pasar Basah,39,Bawang Merah / kg,22000
+2026-08-22,Kabupaten Trenggalek,Pasar Basah,39,Bawang Merah / kg,22000
+2026-08-23,Kabupaten Trenggalek,Pasar Basah,39,Bawang Merah / kg,22000
+2026-08-24,Kabupaten Trenggalek,Pasar Basah,39,Bawang Merah / kg,22000
+2026-08-25,Kabupaten Trenggalek,Pasar Basah,39,Bawang Merah / kg,22000
+2026-08-26,Kabupaten Trenggalek,Pasar Basah,39,Bawang Merah / kg,22000
+2026-08-20,Kabupaten Trenggalek,Pasar Subuh,39,Bawang Merah / kg,24000
+2026-08-21,Kabupaten Trenggalek,Pasar Subuh,39,Bawang Merah / kg,24000
+2026-08-22,Kabupaten Trenggalek,Pasar Subuh,39,Bawang Merah / kg,24000
+2026-08-23,Kabupaten Trenggalek,Pasar Subuh,39,Bawang Merah / kg,24000
+2026-08-24,Kabupaten Trenggalek,Pasar Subuh,39,Bawang Merah / kg,24000
+2026-08-25,Kabupaten Trenggalek,Pasar Subuh,39,Bawang Merah / kg,24000
+2026-08-26,Kabupaten Trenggalek,Pasar Subuh,39,Bawang Merah / kg,24000
+2026-08-20,Kabupaten Tuban,Pasar Bangilan,39,Bawang Merah / kg,25000
+2026-08-21,Kabupaten Tuban,Pasar Bangilan,39,Bawang Merah / kg,25000
+2026-08-22,Kabupaten Tuban,Pasar Bangilan,39,Bawang Merah / kg,25000
+2026-08-23,Kabupaten Tuban,Pasar Bangilan,39,Bawang Merah / kg,25000
+2026-08-24,Kabupaten Tuban,Pasar Bangilan,39,Bawang Merah / kg,25000
+2026-08-25,Kabupaten Tuban,Pasar Bangilan,39,Bawang Merah / kg,23000
+2026-08-26,Kabupaten Tuban,Pasar Bangilan,39,Bawang Merah / kg,23000
+2026-08-20,Kabupaten Tuban,Pasar Baru Tuban,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Tuban,Pasar Baru Tuban,39,Bawang Merah / kg,28000
+2026-08-22,Kabupaten Tuban,Pasar Baru Tuban,39,Bawang Merah / kg,28000
+2026-08-23,Kabupaten Tuban,Pasar Baru Tuban,39,Bawang Merah / kg,28000
+2026-08-24,Kabupaten Tuban,Pasar Baru Tuban,39,Bawang Merah / kg,27000
+2026-08-25,Kabupaten Tuban,Pasar Baru Tuban,39,Bawang Merah / kg,27000
+2026-08-26,Kabupaten Tuban,Pasar Baru Tuban,39,Bawang Merah / kg,27000
+2026-08-20,Kabupaten Tuban,Pasar Jatirogo,39,Bawang Merah / kg,24000
+2026-08-21,Kabupaten Tuban,Pasar Jatirogo,39,Bawang Merah / kg,24000
+2026-08-22,Kabupaten Tuban,Pasar Jatirogo,39,Bawang Merah / kg,26000
+2026-08-23,Kabupaten Tuban,Pasar Jatirogo,39,Bawang Merah / kg,26000
+2026-08-24,Kabupaten Tuban,Pasar Jatirogo,39,Bawang Merah / kg,26000
+2026-08-25,Kabupaten Tuban,Pasar Jatirogo,39,Bawang Merah / kg,26000
+2026-08-26,Kabupaten Tuban,Pasar Jatirogo,39,Bawang Merah / kg,26000
+2026-08-20,Kabupaten Tulungagung,Pasar Bandung,39,Bawang Merah / kg,23000
+2026-08-21,Kabupaten Tulungagung,Pasar Bandung,39,Bawang Merah / kg,23000
+2026-08-22,Kabupaten Tulungagung,Pasar Bandung,39,Bawang Merah / kg,23000
+2026-08-23,Kabupaten Tulungagung,Pasar Bandung,39,Bawang Merah / kg,23000
+2026-08-24,Kabupaten Tulungagung,Pasar Bandung,39,Bawang Merah / kg,23000
+2026-08-25,Kabupaten Tulungagung,Pasar Bandung,39,Bawang Merah / kg,23000
+2026-08-26,Kabupaten Tulungagung,Pasar Bandung,39,Bawang Merah / kg,23000
+2026-08-20,Kabupaten Tulungagung,Pasar Ngemplak,39,Bawang Merah / kg,28000
+2026-08-21,Kabupaten Tulungagung,Pasar Ngemplak,39,Bawang Merah / kg,28000
+2026-08-22,Kabupaten Tulungagung,Pasar Ngemplak,39,Bawang Merah / kg,25000
+2026-08-23,Kabupaten Tulungagung,Pasar Ngemplak,39,Bawang Merah / kg,25000
+2026-08-24,Kabupaten Tulungagung,Pasar Ngemplak,39,Bawang Merah / kg,25000
+2026-08-25,Kabupaten Tulungagung,Pasar Ngemplak,39,Bawang Merah / kg,25000
+2026-08-26,Kabupaten Tulungagung,Pasar Ngemplak,39,Bawang Merah / kg,28000
+2026-08-20,Kabupaten Tulungagung,Pasar Ngunut,39,Bawang Merah / kg,25000
+2026-08-21,Kabupaten Tulungagung,Pasar Ngunut,39,Bawang Merah / kg,25000
+2026-08-22,Kabupaten Tulungagung,Pasar Ngunut,39,Bawang Merah / kg,25000
+2026-08-23,Kabupaten Tulungagung,Pasar Ngunut,39,Bawang Merah / kg,25000
+2026-08-24,Kabupaten Tulungagung,Pasar Ngunut,39,Bawang Merah / kg,25000
+2026-08-25,Kabupaten Tulungagung,Pasar Ngunut,39,Bawang Merah / kg,25000
+2026-08-26,Kabupaten Tulungagung,Pasar Ngunut,39,Bawang Merah / kg,25000
+2026-08-20,Kabupaten Tulungagung,Pasar Tamanan,39,Bawang Merah / kg,27000
+2026-08-21,Kabupaten Tulungagung,Pasar Tamanan,39,Bawang Merah / kg,27000
+2026-08-22,Kabupaten Tulungagung,Pasar Tamanan,39,Bawang Merah / kg,27000
+2026-08-23,Kabupaten Tulungagung,Pasar Tamanan,39,Bawang Merah / kg,27000
+2026-08-24,Kabupaten Tulungagung,Pasar Tamanan,39,Bawang Merah / kg,27000
+2026-08-25,Kabupaten Tulungagung,Pasar Tamanan,39,Bawang Merah / kg,27000
+2026-08-26,Kabupaten Tulungagung,Pasar Tamanan,39,Bawang Merah / kg,27000
+2026-08-20,Kota Batu,Pasar Besar Kota Batu,39,Bawang Merah / kg,28000
+2026-08-21,Kota Batu,Pasar Besar Kota Batu,39,Bawang Merah / kg,28000
+2026-08-22,Kota Batu,Pasar Besar Kota Batu,39,Bawang Merah / kg,28000
+2026-08-23,Kota Batu,Pasar Besar Kota Batu,39,Bawang Merah / kg,28000
+2026-08-24,Kota Batu,Pasar Besar Kota Batu,39,Bawang Merah / kg,28000
+2026-08-25,Kota Batu,Pasar Besar Kota Batu,39,Bawang Merah / kg,28000
+2026-08-26,Kota Batu,Pasar Besar Kota Batu,39,Bawang Merah / kg,28000
+2026-08-20,Kota Batu,Pasar Gentengan,39,Bawang Merah / kg,38000
+2026-08-21,Kota Batu,Pasar Gentengan,39,Bawang Merah / kg,38000
+2026-08-22,Kota Batu,Pasar Gentengan,39,Bawang Merah / kg,35000
+2026-08-23,Kota Batu,Pasar Gentengan,39,Bawang Merah / kg,35000
+2026-08-24,Kota Batu,Pasar Gentengan,39,Bawang Merah / kg,35000
+2026-08-25,Kota Batu,Pasar Gentengan,39,Bawang Merah / kg,35000
+2026-08-26,Kota Batu,Pasar Gentengan,39,Bawang Merah / kg,35000
+2026-08-20,Kota Batu,Pasar Pesanggrahan,39,Bawang Merah / kg,30000
+2026-08-21,Kota Batu,Pasar Pesanggrahan,39,Bawang Merah / kg,30000
+2026-08-22,Kota Batu,Pasar Pesanggrahan,39,Bawang Merah / kg,30000
+2026-08-23,Kota Batu,Pasar Pesanggrahan,39,Bawang Merah / kg,30000
+2026-08-24,Kota Batu,Pasar Pesanggrahan,39,Bawang Merah / kg,29000
+2026-08-25,Kota Batu,Pasar Pesanggrahan,39,Bawang Merah / kg,29000
+2026-08-26,Kota Batu,Pasar Pesanggrahan,39,Bawang Merah / kg,28000
+2026-08-20,Kota Batu,Pasar Songgoriti,39,Bawang Merah / kg,40000
+2026-08-21,Kota Batu,Pasar Songgoriti,39,Bawang Merah / kg,40000
+2026-08-22,Kota Batu,Pasar Songgoriti,39,Bawang Merah / kg,40000
+2026-08-23,Kota Batu,Pasar Songgoriti,39,Bawang Merah / kg,40000
+2026-08-24,Kota Batu,Pasar Songgoriti,39,Bawang Merah / kg,40000
+2026-08-25,Kota Batu,Pasar Songgoriti,39,Bawang Merah / kg,40000
+2026-08-26,Kota Batu,Pasar Songgoriti,39,Bawang Merah / kg,40000
+2026-08-20,Kota Blitar,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-21,Kota Blitar,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-22,Kota Blitar,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-23,Kota Blitar,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-24,Kota Blitar,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-25,Kota Blitar,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-26,Kota Blitar,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-20,Kota Blitar,Pasar Pon,39,Bawang Merah / kg,25000
+2026-08-21,Kota Blitar,Pasar Pon,39,Bawang Merah / kg,25000
+2026-08-22,Kota Blitar,Pasar Pon,39,Bawang Merah / kg,25000
+2026-08-23,Kota Blitar,Pasar Pon,39,Bawang Merah / kg,25000
+2026-08-24,Kota Blitar,Pasar Pon,39,Bawang Merah / kg,25000
+2026-08-25,Kota Blitar,Pasar Pon,39,Bawang Merah / kg,25000
+2026-08-26,Kota Blitar,Pasar Pon,39,Bawang Merah / kg,25000
+2026-08-20,Kota Madiun,Pasar Besar,39,Bawang Merah / kg,30000
+2026-08-21,Kota Madiun,Pasar Besar,39,Bawang Merah / kg,30000
+2026-08-22,Kota Madiun,Pasar Besar,39,Bawang Merah / kg,30000
+2026-08-23,Kota Madiun,Pasar Besar,39,Bawang Merah / kg,30000
+2026-08-24,Kota Madiun,Pasar Besar,39,Bawang Merah / kg,30000
+2026-08-25,Kota Madiun,Pasar Besar,39,Bawang Merah / kg,30000
+2026-08-26,Kota Madiun,Pasar Besar,39,Bawang Merah / kg,29000
+2026-08-20,Kota Madiun,Pasar Sleko,39,Bawang Merah / kg,30000
+2026-08-21,Kota Madiun,Pasar Sleko,39,Bawang Merah / kg,30000
+2026-08-22,Kota Madiun,Pasar Sleko,39,Bawang Merah / kg,30000
+2026-08-23,Kota Madiun,Pasar Sleko,39,Bawang Merah / kg,30000
+2026-08-24,Kota Madiun,Pasar Sleko,39,Bawang Merah / kg,28000
+2026-08-25,Kota Madiun,Pasar Sleko,39,Bawang Merah / kg,28000
+2026-08-26,Kota Madiun,Pasar Sleko,39,Bawang Merah / kg,28000
+2026-08-20,Kota Madiun,Pasar Srijaya,39,Bawang Merah / kg,35000
+2026-08-21,Kota Madiun,Pasar Srijaya,39,Bawang Merah / kg,35000
+2026-08-22,Kota Madiun,Pasar Srijaya,39,Bawang Merah / kg,35000
+2026-08-23,Kota Madiun,Pasar Srijaya,39,Bawang Merah / kg,35000
+2026-08-24,Kota Madiun,Pasar Srijaya,39,Bawang Merah / kg,30000
+2026-08-25,Kota Madiun,Pasar Srijaya,39,Bawang Merah / kg,30000
+2026-08-26,Kota Madiun,Pasar Srijaya,39,Bawang Merah / kg,30000
+2026-08-20,Kota Mojokerto,Pasar Prajuritkulon,39,Bawang Merah / kg,26000
+2026-08-21,Kota Mojokerto,Pasar Prajuritkulon,39,Bawang Merah / kg,26000
+2026-08-22,Kota Mojokerto,Pasar Prajuritkulon,39,Bawang Merah / kg,26000
+2026-08-23,Kota Mojokerto,Pasar Prajuritkulon,39,Bawang Merah / kg,26000
+2026-08-24,Kota Mojokerto,Pasar Prajuritkulon,39,Bawang Merah / kg,28000
+2026-08-25,Kota Mojokerto,Pasar Prajuritkulon,39,Bawang Merah / kg,28000
+2026-08-26,Kota Mojokerto,Pasar Prajuritkulon,39,Bawang Merah / kg,26000
+2026-08-20,Kota Mojokerto,Pasar Tanjung Anyar,39,Bawang Merah / kg,27000
+2026-08-21,Kota Mojokerto,Pasar Tanjung Anyar,39,Bawang Merah / kg,26000
+2026-08-22,Kota Mojokerto,Pasar Tanjung Anyar,39,Bawang Merah / kg,26000
+2026-08-23,Kota Mojokerto,Pasar Tanjung Anyar,39,Bawang Merah / kg,26000
+2026-08-24,Kota Mojokerto,Pasar Tanjung Anyar,39,Bawang Merah / kg,25000
+2026-08-25,Kota Mojokerto,Pasar Tanjung Anyar,39,Bawang Merah / kg,25000
+2026-08-26,Kota Mojokerto,Pasar Tanjung Anyar,39,Bawang Merah / kg,25000
+2026-08-20,Kota Pasuruan,Pasar Besar,39,Bawang Merah / kg,26500
+2026-08-21,Kota Pasuruan,Pasar Besar,39,Bawang Merah / kg,26500
+2026-08-22,Kota Pasuruan,Pasar Besar,39,Bawang Merah / kg,26500
+2026-08-23,Kota Pasuruan,Pasar Besar,39,Bawang Merah / kg,26500
+2026-08-24,Kota Pasuruan,Pasar Besar,39,Bawang Merah / kg,26500
+2026-08-25,Kota Pasuruan,Pasar Besar,39,Bawang Merah / kg,26500
+2026-08-26,Kota Pasuruan,Pasar Besar,39,Bawang Merah / kg,26500
+2026-08-20,Kota Pasuruan,Pasar Kebonagung,39,Bawang Merah / kg,26500
+2026-08-21,Kota Pasuruan,Pasar Kebonagung,39,Bawang Merah / kg,26500
+2026-08-22,Kota Pasuruan,Pasar Kebonagung,39,Bawang Merah / kg,26500
+2026-08-23,Kota Pasuruan,Pasar Kebonagung,39,Bawang Merah / kg,26500
+2026-08-24,Kota Pasuruan,Pasar Kebonagung,39,Bawang Merah / kg,26500
+2026-08-25,Kota Pasuruan,Pasar Kebonagung,39,Bawang Merah / kg,26500
+2026-08-26,Kota Pasuruan,Pasar Kebonagung,39,Bawang Merah / kg,26500
+2026-08-20,Kota Probolinggo,Pasar Baru,39,Bawang Merah / kg,35000
+2026-08-21,Kota Probolinggo,Pasar Baru,39,Bawang Merah / kg,35000
+2026-08-22,Kota Probolinggo,Pasar Baru,39,Bawang Merah / kg,35000
+2026-08-23,Kota Probolinggo,Pasar Baru,39,Bawang Merah / kg,35000
+2026-08-24,Kota Probolinggo,Pasar Baru,39,Bawang Merah / kg,35000
+2026-08-25,Kota Probolinggo,Pasar Baru,39,Bawang Merah / kg,35000
+2026-08-26,Kota Probolinggo,Pasar Baru,39,Bawang Merah / kg,35000
+2026-08-20,Kota Probolinggo,Pasar Kronong,39,Bawang Merah / kg,31000
+2026-08-21,Kota Probolinggo,Pasar Kronong,39,Bawang Merah / kg,31000
+2026-08-22,Kota Probolinggo,Pasar Kronong,39,Bawang Merah / kg,31000
+2026-08-23,Kota Probolinggo,Pasar Kronong,39,Bawang Merah / kg,31000
+2026-08-24,Kota Probolinggo,Pasar Kronong,39,Bawang Merah / kg,31000
+2026-08-25,Kota Probolinggo,Pasar Kronong,39,Bawang Merah / kg,31000
+2026-08-26,Kota Probolinggo,Pasar Kronong,39,Bawang Merah / kg,31000
+2026-08-20,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,32000
+2026-08-21,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,32000
+2026-08-22,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,32000
+2026-08-23,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,32000
+2026-08-24,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,32000
+2026-08-25,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,32000
+2026-08-26,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,32000
+2026-08-16,Kota Surabaya,Pasar Genteng,39,Bawang Merah / kg,30000
+2026-08-17,Kota Surabaya,Pasar Genteng,39,Bawang Merah / kg,30000
+2026-08-18,Kota Surabaya,Pasar Genteng,39,Bawang Merah / kg,30000
+2026-08-19,Kota Surabaya,Pasar Genteng,39,Bawang Merah / kg,30000
+2026-08-16,Kota Surabaya,Pasar Keputran,39,Bawang Merah / kg,38000
+2026-08-17,Kota Surabaya,Pasar Keputran,39,Bawang Merah / kg,38000
+2026-08-18,Kota Surabaya,Pasar Keputran,39,Bawang Merah / kg,38000
+2026-08-19,Kota Surabaya,Pasar Keputran,39,Bawang Merah / kg,38000
+2026-08-16,Kota Surabaya,Pasar Pucang Anom,39,Bawang Merah / kg,35000
+2026-08-17,Kota Surabaya,Pasar Pucang Anom,39,Bawang Merah / kg,35000
+2026-08-18,Kota Surabaya,Pasar Pucang Anom,39,Bawang Merah / kg,35000
+2026-08-19,Kota Surabaya,Pasar Pucang Anom,39,Bawang Merah / kg,30000
+2026-08-16,Kota Surabaya,Pasar Soponyono,39,Bawang Merah / kg,28000
+2026-08-17,Kota Surabaya,Pasar Soponyono,39,Bawang Merah / kg,28000
+2026-08-18,Kota Surabaya,Pasar Soponyono,39,Bawang Merah / kg,28000
+2026-08-19,Kota Surabaya,Pasar Soponyono,39,Bawang Merah / kg,28000
+2026-08-16,Kota Surabaya,Pasar Tambahrejo,39,Bawang Merah / kg,32000
+2026-08-17,Kota Surabaya,Pasar Tambahrejo,39,Bawang Merah / kg,28000
+2026-08-18,Kota Surabaya,Pasar Tambahrejo,39,Bawang Merah / kg,30000
+2026-08-19,Kota Surabaya,Pasar Tambahrejo,39,Bawang Merah / kg,30000
+2026-08-16,Kota Surabaya,Pasar Wonokromo,39,Bawang Merah / kg,30000
+2026-08-17,Kota Surabaya,Pasar Wonokromo,39,Bawang Merah / kg,30000
+2026-08-18,Kota Surabaya,Pasar Wonokromo,39,Bawang Merah / kg,30000
+2026-08-19,Kota Surabaya,Pasar Wonokromo,39,Bawang Merah / kg,28000
+2026-08-16,Kota Malang,Pasar Besar,39,Bawang Merah / kg,27000
+2026-08-17,Kota Malang,Pasar Besar,39,Bawang Merah / kg,27000
+2026-08-18,Kota Malang,Pasar Besar,39,Bawang Merah / kg,27000
+2026-08-19,Kota Malang,Pasar Besar,39,Bawang Merah / kg,27000
+2026-08-16,Kota Malang,Pasar Blimbing,39,Bawang Merah / kg,35000
+2026-08-17,Kota Malang,Pasar Blimbing,39,Bawang Merah / kg,35000
+2026-08-18,Kota Malang,Pasar Blimbing,39,Bawang Merah / kg,35000
+2026-08-19,Kota Malang,Pasar Blimbing,39,Bawang Merah / kg,35000
+2026-08-16,Kota Malang,Pasar Dinoyo,39,Bawang Merah / kg,28000
+2026-08-17,Kota Malang,Pasar Dinoyo,39,Bawang Merah / kg,28000
+2026-08-18,Kota Malang,Pasar Dinoyo,39,Bawang Merah / kg,30000
+2026-08-19,Kota Malang,Pasar Dinoyo,39,Bawang Merah / kg,30000
+2026-08-16,Kota Malang,Pasar Klojen,39,Bawang Merah / kg,32000
+2026-08-17,Kota Malang,Pasar Klojen,39,Bawang Merah / kg,32000
+2026-08-18,Kota Malang,Pasar Klojen,39,Bawang Merah / kg,32000
+2026-08-19,Kota Malang,Pasar Klojen,39,Bawang Merah / kg,35000
+2026-08-16,Kota Malang,Pasar Oro-oro Dowo,39,Bawang Merah / kg,32000
+2026-08-17,Kota Malang,Pasar Oro-oro Dowo,39,Bawang Merah / kg,32000
+2026-08-18,Kota Malang,Pasar Oro-oro Dowo,39,Bawang Merah / kg,32000
+2026-08-19,Kota Malang,Pasar Oro-oro Dowo,39,Bawang Merah / kg,32000
+2026-08-16,Kota Malang,Pasar Tawangmangu,39,Bawang Merah / kg,30000
+2026-08-17,Kota Malang,Pasar Tawangmangu,39,Bawang Merah / kg,30000
+2026-08-18,Kota Malang,Pasar Tawangmangu,39,Bawang Merah / kg,30000
+2026-08-19,Kota Malang,Pasar Tawangmangu,39,Bawang Merah / kg,30000
+2026-08-16,Kota Kediri,Pasar Bandar,39,Bawang Merah / kg,28000
+2026-08-17,Kota Kediri,Pasar Bandar,39,Bawang Merah / kg,26000
+2026-08-18,Kota Kediri,Pasar Bandar,39,Bawang Merah / kg,25000
+2026-08-19,Kota Kediri,Pasar Bandar,39,Bawang Merah / kg,25000
+2026-08-16,Kota Kediri,Pasar Pahing,39,Bawang Merah / kg,30000
+2026-08-17,Kota Kediri,Pasar Pahing,39,Bawang Merah / kg,30000
+2026-08-18,Kota Kediri,Pasar Pahing,39,Bawang Merah / kg,32000
+2026-08-19,Kota Kediri,Pasar Pahing,39,Bawang Merah / kg,32000
+2026-08-16,Kota Kediri,Pasar Setono Betek,39,Bawang Merah / kg,26000
+2026-08-17,Kota Kediri,Pasar Setono Betek,39,Bawang Merah / kg,26000
+2026-08-18,Kota Kediri,Pasar Setono Betek,39,Bawang Merah / kg,26000
+2026-08-19,Kota Kediri,Pasar Setono Betek,39,Bawang Merah / kg,26000
+2026-08-16,Kabupaten Jember,Pasar Kreongan,39,Bawang Merah / kg,28000
+2026-08-17,Kabupaten Jember,Pasar Kreongan,39,Bawang Merah / kg,27000
+2026-08-18,Kabupaten Jember,Pasar Kreongan,39,Bawang Merah / kg,27000
+2026-08-19,Kabupaten Jember,Pasar Kreongan,39,Bawang Merah / kg,27000
+2026-08-16,Kabupaten Jember,Pasar Mangli,39,Bawang Merah / kg,28000
+2026-08-17,Kabupaten Jember,Pasar Mangli,39,Bawang Merah / kg,28000
+2026-08-18,Kabupaten Jember,Pasar Mangli,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Jember,Pasar Mangli,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Jember,Pasar Tanjung,39,Bawang Merah / kg,28000
+2026-08-17,Kabupaten Jember,Pasar Tanjung,39,Bawang Merah / kg,28000
+2026-08-18,Kabupaten Jember,Pasar Tanjung,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Jember,Pasar Tanjung,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Jember,Pasar Tegal Besar,39,Bawang Merah / kg,30000
+2026-08-17,Kabupaten Jember,Pasar Tegal Besar,39,Bawang Merah / kg,30000
+2026-08-18,Kabupaten Jember,Pasar Tegal Besar,39,Bawang Merah / kg,30000
+2026-08-19,Kabupaten Jember,Pasar Tegal Besar,39,Bawang Merah / kg,30000
+2026-08-16,Kabupaten Jember,Pasar Wirolegi,39,Bawang Merah / kg,24000
+2026-08-17,Kabupaten Jember,Pasar Wirolegi,39,Bawang Merah / kg,24000
+2026-08-18,Kabupaten Jember,Pasar Wirolegi,39,Bawang Merah / kg,24000
+2026-08-19,Kabupaten Jember,Pasar Wirolegi,39,Bawang Merah / kg,26000
+2026-08-16,Kabupaten Bangkalan,Pasar Baru Bancaran,39,Bawang Merah / kg,35000
+2026-08-17,Kabupaten Bangkalan,Pasar Baru Bancaran,39,Bawang Merah / kg,35000
+2026-08-18,Kabupaten Bangkalan,Pasar Baru Bancaran,39,Bawang Merah / kg,30000
+2026-08-19,Kabupaten Bangkalan,Pasar Baru Bancaran,39,Bawang Merah / kg,30000
+2026-08-16,Kabupaten Bangkalan,Pasar Ki Lemah Duwur,39,Bawang Merah / kg,35000
+2026-08-17,Kabupaten Bangkalan,Pasar Ki Lemah Duwur,39,Bawang Merah / kg,35000
+2026-08-18,Kabupaten Bangkalan,Pasar Ki Lemah Duwur,39,Bawang Merah / kg,30000
+2026-08-19,Kabupaten Bangkalan,Pasar Ki Lemah Duwur,39,Bawang Merah / kg,30000
+2026-08-16,Kabupaten Bangkalan,Pasar Senenan,39,Bawang Merah / kg,35000
+2026-08-17,Kabupaten Bangkalan,Pasar Senenan,39,Bawang Merah / kg,35000
+2026-08-18,Kabupaten Bangkalan,Pasar Senenan,39,Bawang Merah / kg,30000
+2026-08-19,Kabupaten Bangkalan,Pasar Senenan,39,Bawang Merah / kg,30000
+2026-08-16,Kabupaten Banyuwangi,Pasar Banyuwangi,39,Bawang Merah / kg,30000
+2026-08-17,Kabupaten Banyuwangi,Pasar Banyuwangi,39,Bawang Merah / kg,30000
+2026-08-18,Kabupaten Banyuwangi,Pasar Banyuwangi,39,Bawang Merah / kg,30000
+2026-08-19,Kabupaten Banyuwangi,Pasar Banyuwangi,39,Bawang Merah / kg,30000
+2026-08-16,Kabupaten Banyuwangi,Pasar Blambangan,39,Bawang Merah / kg,28000
+2026-08-17,Kabupaten Banyuwangi,Pasar Blambangan,39,Bawang Merah / kg,28000
+2026-08-18,Kabupaten Banyuwangi,Pasar Blambangan,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Banyuwangi,Pasar Blambangan,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Banyuwangi,Pasar Genteng I,39,Bawang Merah / kg,23000
+2026-08-17,Kabupaten Banyuwangi,Pasar Genteng I,39,Bawang Merah / kg,23000
+2026-08-18,Kabupaten Banyuwangi,Pasar Genteng I,39,Bawang Merah / kg,23000
+2026-08-19,Kabupaten Banyuwangi,Pasar Genteng I,39,Bawang Merah / kg,23000
+2026-08-16,Kabupaten Banyuwangi,Pasar Jajag,39,Bawang Merah / kg,28000
+2026-08-17,Kabupaten Banyuwangi,Pasar Jajag,39,Bawang Merah / kg,28000
+2026-08-18,Kabupaten Banyuwangi,Pasar Jajag,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Banyuwangi,Pasar Jajag,39,Bawang Merah / kg,25000
+2026-08-16,Kabupaten Banyuwangi,Pasar Rogojampi,39,Bawang Merah / kg,25000
+2026-08-17,Kabupaten Banyuwangi,Pasar Rogojampi,39,Bawang Merah / kg,25000
+2026-08-18,Kabupaten Banyuwangi,Pasar Rogojampi,39,Bawang Merah / kg,25000
+2026-08-19,Kabupaten Banyuwangi,Pasar Rogojampi,39,Bawang Merah / kg,25000
+2026-08-16,Kabupaten Blitar,Pasar Lodoyo,39,Bawang Merah / kg,23000
+2026-08-17,Kabupaten Blitar,Pasar Lodoyo,39,Bawang Merah / kg,23000
+2026-08-18,Kabupaten Blitar,Pasar Lodoyo,39,Bawang Merah / kg,23000
+2026-08-19,Kabupaten Blitar,Pasar Lodoyo,39,Bawang Merah / kg,23000
+2026-08-16,Kabupaten Blitar,Pasar Wlingi,39,Bawang Merah / kg,24000
+2026-08-17,Kabupaten Blitar,Pasar Wlingi,39,Bawang Merah / kg,24000
+2026-08-18,Kabupaten Blitar,Pasar Wlingi,39,Bawang Merah / kg,22000
+2026-08-19,Kabupaten Blitar,Pasar Wlingi,39,Bawang Merah / kg,22000
+2026-08-16,Kabupaten Bojonegoro,Pasar Kota Baru,39,Bawang Merah / kg,30000
+2026-08-17,Kabupaten Bojonegoro,Pasar Kota Baru,39,Bawang Merah / kg,30000
+2026-08-18,Kabupaten Bojonegoro,Pasar Kota Baru,39,Bawang Merah / kg,30000
+2026-08-19,Kabupaten Bojonegoro,Pasar Kota Baru,39,Bawang Merah / kg,30000
+2026-08-16,Kabupaten Bojonegoro,Pasar Wisata (Pasar Kota Lama),39,Bawang Merah / kg,25000
+2026-08-17,Kabupaten Bojonegoro,Pasar Wisata (Pasar Kota Lama),39,Bawang Merah / kg,25000
+2026-08-18,Kabupaten Bojonegoro,Pasar Wisata (Pasar Kota Lama),39,Bawang Merah / kg,24000
+2026-08-19,Kabupaten Bojonegoro,Pasar Wisata (Pasar Kota Lama),39,Bawang Merah / kg,24000
+2026-08-16,Kabupaten Bondowoso,Pasar Induk Bondowoso,39,Bawang Merah / kg,29000
+2026-08-17,Kabupaten Bondowoso,Pasar Induk Bondowoso,39,Bawang Merah / kg,29000
+2026-08-18,Kabupaten Bondowoso,Pasar Induk Bondowoso,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Bondowoso,Pasar Induk Bondowoso,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Bondowoso,Pasar Maesan,39,Bawang Merah / kg,28000
+2026-08-17,Kabupaten Bondowoso,Pasar Maesan,39,Bawang Merah / kg,28000
+2026-08-18,Kabupaten Bondowoso,Pasar Maesan,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Bondowoso,Pasar Maesan,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Bondowoso,Pasar Prajekan,39,Bawang Merah / kg,28000
+2026-08-17,Kabupaten Bondowoso,Pasar Prajekan,39,Bawang Merah / kg,28000
+2026-08-18,Kabupaten Bondowoso,Pasar Prajekan,39,Bawang Merah / kg,27000
+2026-08-19,Kabupaten Bondowoso,Pasar Prajekan,39,Bawang Merah / kg,27000
+2026-08-16,Kabupaten Bondowoso,Pasar Wonosari,39,Bawang Merah / kg,27000
+2026-08-17,Kabupaten Bondowoso,Pasar Wonosari,39,Bawang Merah / kg,27000
+2026-08-18,Kabupaten Bondowoso,Pasar Wonosari,39,Bawang Merah / kg,27000
+2026-08-19,Kabupaten Bondowoso,Pasar Wonosari,39,Bawang Merah / kg,27000
+2026-08-16,Kabupaten Gresik,Pasar Baru,39,Bawang Merah / kg,28000
+2026-08-17,Kabupaten Gresik,Pasar Baru,39,Bawang Merah / kg,28000
+2026-08-18,Kabupaten Gresik,Pasar Baru,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Gresik,Pasar Baru,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Gresik,Pasar Kota,39,Bawang Merah / kg,35000
+2026-08-17,Kabupaten Gresik,Pasar Kota,39,Bawang Merah / kg,35000
+2026-08-18,Kabupaten Gresik,Pasar Kota,39,Bawang Merah / kg,35000
+2026-08-19,Kabupaten Gresik,Pasar Kota,39,Bawang Merah / kg,35000
+2026-08-16,Kabupaten Gresik,Pasar Sidomoro,39,Bawang Merah / kg,24000
+2026-08-17,Kabupaten Gresik,Pasar Sidomoro,39,Bawang Merah / kg,24000
+2026-08-18,Kabupaten Gresik,Pasar Sidomoro,39,Bawang Merah / kg,24000
+2026-08-19,Kabupaten Gresik,Pasar Sidomoro,39,Bawang Merah / kg,25000
+2026-08-16,Kabupaten Jombang,Pasar Cukir,39,Bawang Merah / kg,24000
+2026-08-17,Kabupaten Jombang,Pasar Cukir,39,Bawang Merah / kg,20000
+2026-08-18,Kabupaten Jombang,Pasar Cukir,39,Bawang Merah / kg,20000
+2026-08-19,Kabupaten Jombang,Pasar Cukir,39,Bawang Merah / kg,20000
+2026-08-16,Kabupaten Jombang,Pasar Ploso,39,Bawang Merah / kg,25000
+2026-08-17,Kabupaten Jombang,Pasar Ploso,39,Bawang Merah / kg,25000
+2026-08-18,Kabupaten Jombang,Pasar Ploso,39,Bawang Merah / kg,25000
+2026-08-19,Kabupaten Jombang,Pasar Ploso,39,Bawang Merah / kg,25000
+2026-08-16,Kabupaten Jombang,Pasar Pon,39,Bawang Merah / kg,22000
+2026-08-17,Kabupaten Jombang,Pasar Pon,39,Bawang Merah / kg,22000
+2026-08-18,Kabupaten Jombang,Pasar Pon,39,Bawang Merah / kg,22000
+2026-08-19,Kabupaten Jombang,Pasar Pon,39,Bawang Merah / kg,22000
+2026-08-16,Kabupaten Kediri,Pasar Gringging,39,Bawang Merah / kg,23000
+2026-08-17,Kabupaten Kediri,Pasar Gringging,39,Bawang Merah / kg,24000
+2026-08-18,Kabupaten Kediri,Pasar Gringging,39,Bawang Merah / kg,24000
+2026-08-19,Kabupaten Kediri,Pasar Gringging,39,Bawang Merah / kg,24000
+2026-08-16,Kabupaten Kediri,Pasar Ngadiluwih,39,Bawang Merah / kg,28000
+2026-08-17,Kabupaten Kediri,Pasar Ngadiluwih,39,Bawang Merah / kg,28000
+2026-08-18,Kabupaten Kediri,Pasar Ngadiluwih,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Kediri,Pasar Ngadiluwih,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Kediri,Pasar Pamenang,39,Bawang Merah / kg,25000
+2026-08-17,Kabupaten Kediri,Pasar Pamenang,39,Bawang Merah / kg,26000
+2026-08-18,Kabupaten Kediri,Pasar Pamenang,39,Bawang Merah / kg,26000
+2026-08-19,Kabupaten Kediri,Pasar Pamenang,39,Bawang Merah / kg,26000
+2026-08-16,Kabupaten Lamongan,Pasar Babat,39,Bawang Merah / kg,25000
+2026-08-17,Kabupaten Lamongan,Pasar Babat,39,Bawang Merah / kg,25000
+2026-08-18,Kabupaten Lamongan,Pasar Babat,39,Bawang Merah / kg,25000
+2026-08-19,Kabupaten Lamongan,Pasar Babat,39,Bawang Merah / kg,25000
+2026-08-16,Kabupaten Lamongan,Pasar Blimbing,39,Bawang Merah / kg,25000
+2026-08-17,Kabupaten Lamongan,Pasar Blimbing,39,Bawang Merah / kg,25000
+2026-08-18,Kabupaten Lamongan,Pasar Blimbing,39,Bawang Merah / kg,25000
+2026-08-19,Kabupaten Lamongan,Pasar Blimbing,39,Bawang Merah / kg,25000
+2026-08-16,Kabupaten Lamongan,Pasar Mantup,39,Bawang Merah / kg,25000
+2026-08-17,Kabupaten Lamongan,Pasar Mantup,39,Bawang Merah / kg,25000
+2026-08-18,Kabupaten Lamongan,Pasar Mantup,39,Bawang Merah / kg,25000
+2026-08-19,Kabupaten Lamongan,Pasar Mantup,39,Bawang Merah / kg,25000
+2026-08-16,Kabupaten Lamongan,Pasar Sidoharjo,39,Bawang Merah / kg,25000
+2026-08-17,Kabupaten Lamongan,Pasar Sidoharjo,39,Bawang Merah / kg,25000
+2026-08-18,Kabupaten Lamongan,Pasar Sidoharjo,39,Bawang Merah / kg,25000
+2026-08-19,Kabupaten Lamongan,Pasar Sidoharjo,39,Bawang Merah / kg,25000
+2026-08-16,Kabupaten Lumajang,Pasar Baru,39,Bawang Merah / kg,25000
+2026-08-17,Kabupaten Lumajang,Pasar Baru,39,Bawang Merah / kg,25000
+2026-08-18,Kabupaten Lumajang,Pasar Baru,39,Bawang Merah / kg,25000
+2026-08-19,Kabupaten Lumajang,Pasar Baru,39,Bawang Merah / kg,25000
+2026-08-16,Kabupaten Lumajang,Pasar Pasirian,39,Bawang Merah / kg,30000
+2026-08-17,Kabupaten Lumajang,Pasar Pasirian,39,Bawang Merah / kg,30000
+2026-08-18,Kabupaten Lumajang,Pasar Pasirian,39,Bawang Merah / kg,30000
+2026-08-19,Kabupaten Lumajang,Pasar Pasirian,39,Bawang Merah / kg,30000
+2026-08-16,Kabupaten Lumajang,Pasar Sukodono,39,Bawang Merah / kg,29000
+2026-08-17,Kabupaten Lumajang,Pasar Sukodono,39,Bawang Merah / kg,29000
+2026-08-18,Kabupaten Lumajang,Pasar Sukodono,39,Bawang Merah / kg,30000
+2026-08-19,Kabupaten Lumajang,Pasar Sukodono,39,Bawang Merah / kg,25000
+2026-08-16,Kabupaten Madiun,Pasar Dolopo,39,Bawang Merah / kg,23300
+2026-08-17,Kabupaten Madiun,Pasar Dolopo,39,Bawang Merah / kg,23300
+2026-08-18,Kabupaten Madiun,Pasar Dolopo,39,Bawang Merah / kg,23600
+2026-08-19,Kabupaten Madiun,Pasar Dolopo,39,Bawang Merah / kg,23600
+2026-08-16,Kabupaten Madiun,Pasar Dungus,39,Bawang Merah / kg,25000
+2026-08-17,Kabupaten Madiun,Pasar Dungus,39,Bawang Merah / kg,25000
+2026-08-18,Kabupaten Madiun,Pasar Dungus,39,Bawang Merah / kg,25000
+2026-08-19,Kabupaten Madiun,Pasar Dungus,39,Bawang Merah / kg,25000
+2026-08-16,Kabupaten Madiun,Pasar Pagotan,39,Bawang Merah / kg,28000
+2026-08-17,Kabupaten Madiun,Pasar Pagotan,39,Bawang Merah / kg,28000
+2026-08-18,Kabupaten Madiun,Pasar Pagotan,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Madiun,Pasar Pagotan,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Madiun,Pasar Umum Caruban,39,Bawang Merah / kg,24000
+2026-08-17,Kabupaten Madiun,Pasar Umum Caruban,39,Bawang Merah / kg,24000
+2026-08-18,Kabupaten Madiun,Pasar Umum Caruban,39,Bawang Merah / kg,24000
+2026-08-19,Kabupaten Madiun,Pasar Umum Caruban,39,Bawang Merah / kg,24000
+2026-08-16,Kabupaten Magetan,Pasar Gorang Gareng I Kawedanan,39,Bawang Merah / kg,30000
+2026-08-17,Kabupaten Magetan,Pasar Gorang Gareng I Kawedanan,39,Bawang Merah / kg,30000
+2026-08-18,Kabupaten Magetan,Pasar Gorang Gareng I Kawedanan,39,Bawang Merah / kg,30000
+2026-08-19,Kabupaten Magetan,Pasar Gorang Gareng I Kawedanan,39,Bawang Merah / kg,30000
+2026-08-16,Kabupaten Magetan,Pasar Maospati,39,Bawang Merah / kg,30000
+2026-08-17,Kabupaten Magetan,Pasar Maospati,39,Bawang Merah / kg,30000
+2026-08-18,Kabupaten Magetan,Pasar Maospati,39,Bawang Merah / kg,30000
+2026-08-19,Kabupaten Magetan,Pasar Maospati,39,Bawang Merah / kg,30000
+2026-08-16,Kabupaten Magetan,Pasar Sayur I,39,Bawang Merah / kg,28000
+2026-08-17,Kabupaten Magetan,Pasar Sayur I,39,Bawang Merah / kg,28000
+2026-08-18,Kabupaten Magetan,Pasar Sayur I,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Magetan,Pasar Sayur I,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Malang,Pasar Karang Ploso,39,Bawang Merah / kg,26000
+2026-08-17,Kabupaten Malang,Pasar Karang Ploso,39,Bawang Merah / kg,26000
+2026-08-18,Kabupaten Malang,Pasar Karang Ploso,39,Bawang Merah / kg,25000
+2026-08-19,Kabupaten Malang,Pasar Karang Ploso,39,Bawang Merah / kg,25000
+2026-08-16,Kabupaten Malang,Pasar Kepanjen,39,Bawang Merah / kg,28000
+2026-08-17,Kabupaten Malang,Pasar Kepanjen,39,Bawang Merah / kg,28000
+2026-08-18,Kabupaten Malang,Pasar Kepanjen,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Malang,Pasar Kepanjen,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Malang,Pasar Lawang,39,Bawang Merah / kg,26000
+2026-08-17,Kabupaten Malang,Pasar Lawang,39,Bawang Merah / kg,26000
+2026-08-18,Kabupaten Malang,Pasar Lawang,39,Bawang Merah / kg,26000
+2026-08-19,Kabupaten Malang,Pasar Lawang,39,Bawang Merah / kg,26000
+2026-08-16,Kabupaten Malang,Pasar Singosari,39,Bawang Merah / kg,25000
+2026-08-17,Kabupaten Malang,Pasar Singosari,39,Bawang Merah / kg,25000
+2026-08-18,Kabupaten Malang,Pasar Singosari,39,Bawang Merah / kg,24000
+2026-08-19,Kabupaten Malang,Pasar Singosari,39,Bawang Merah / kg,24000
+2026-08-16,Kabupaten Malang,Pasar Turen,39,Bawang Merah / kg,30000
+2026-08-17,Kabupaten Malang,Pasar Turen,39,Bawang Merah / kg,30000
+2026-08-18,Kabupaten Malang,Pasar Turen,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Malang,Pasar Turen,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Mojokerto,Pasar Gempol  Kerep,39,Bawang Merah / kg,26000
+2026-08-17,Kabupaten Mojokerto,Pasar Gempol  Kerep,39,Bawang Merah / kg,26000
+2026-08-18,Kabupaten Mojokerto,Pasar Gempol  Kerep,39,Bawang Merah / kg,26000
+2026-08-19,Kabupaten Mojokerto,Pasar Gempol  Kerep,39,Bawang Merah / kg,26000
+2026-08-16,Kabupaten Mojokerto,Pasar Kedung Maling,39,Bawang Merah / kg,25000
+2026-08-17,Kabupaten Mojokerto,Pasar Kedung Maling,39,Bawang Merah / kg,25000
+2026-08-18,Kabupaten Mojokerto,Pasar Kedung Maling,39,Bawang Merah / kg,25000
+2026-08-19,Kabupaten Mojokerto,Pasar Kedung Maling,39,Bawang Merah / kg,26000
+2026-08-16,Kabupaten Mojokerto,Pasar Poh Jejer,39,Bawang Merah / kg,27000
+2026-08-17,Kabupaten Mojokerto,Pasar Poh Jejer,39,Bawang Merah / kg,27000
+2026-08-18,Kabupaten Mojokerto,Pasar Poh Jejer,39,Bawang Merah / kg,27000
+2026-08-19,Kabupaten Mojokerto,Pasar Poh Jejer,39,Bawang Merah / kg,26000
+2026-08-16,Kabupaten Mojokerto,Pasar Raya Mojosari,39,Bawang Merah / kg,28000
+2026-08-17,Kabupaten Mojokerto,Pasar Raya Mojosari,39,Bawang Merah / kg,28000
+2026-08-18,Kabupaten Mojokerto,Pasar Raya Mojosari,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Mojokerto,Pasar Raya Mojosari,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Nganjuk,Pasar Berbek,39,Bawang Merah / kg,22000
+2026-08-17,Kabupaten Nganjuk,Pasar Berbek,39,Bawang Merah / kg,22000
+2026-08-18,Kabupaten Nganjuk,Pasar Berbek,39,Bawang Merah / kg,22000
+2026-08-19,Kabupaten Nganjuk,Pasar Berbek,39,Bawang Merah / kg,22000
+2026-08-16,Kabupaten Nganjuk,Pasar Wage,39,Bawang Merah / kg,22000
+2026-08-17,Kabupaten Nganjuk,Pasar Wage,39,Bawang Merah / kg,22000
+2026-08-18,Kabupaten Nganjuk,Pasar Wage,39,Bawang Merah / kg,22000
+2026-08-19,Kabupaten Nganjuk,Pasar Wage,39,Bawang Merah / kg,22000
+2026-08-16,Kabupaten Nganjuk,Pasar Warujayeng,39,Bawang Merah / kg,23000
+2026-08-17,Kabupaten Nganjuk,Pasar Warujayeng,39,Bawang Merah / kg,23000
+2026-08-18,Kabupaten Nganjuk,Pasar Warujayeng,39,Bawang Merah / kg,23000
+2026-08-19,Kabupaten Nganjuk,Pasar Warujayeng,39,Bawang Merah / kg,23000
+2026-08-16,Kabupaten Ngawi,Pasar Beran,39,Bawang Merah / kg,30000
+2026-08-17,Kabupaten Ngawi,Pasar Beran,39,Bawang Merah / kg,30000
+2026-08-18,Kabupaten Ngawi,Pasar Beran,39,Bawang Merah / kg,30000
+2026-08-19,Kabupaten Ngawi,Pasar Beran,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Ngawi,Pasar Besar Ngawi,39,Bawang Merah / kg,30000
+2026-08-17,Kabupaten Ngawi,Pasar Besar Ngawi,39,Bawang Merah / kg,30000
+2026-08-18,Kabupaten Ngawi,Pasar Besar Ngawi,39,Bawang Merah / kg,30000
+2026-08-19,Kabupaten Ngawi,Pasar Besar Ngawi,39,Bawang Merah / kg,30000
+2026-08-16,Kabupaten Ngawi,Pasar Paron,39,Bawang Merah / kg,30000
+2026-08-17,Kabupaten Ngawi,Pasar Paron,39,Bawang Merah / kg,30000
+2026-08-18,Kabupaten Ngawi,Pasar Paron,39,Bawang Merah / kg,30000
+2026-08-19,Kabupaten Ngawi,Pasar Paron,39,Bawang Merah / kg,26000
+2026-08-16,Kabupaten Pacitan,Pasar Arjosari,39,Bawang Merah / kg,26000
+2026-08-17,Kabupaten Pacitan,Pasar Arjosari,39,Bawang Merah / kg,26000
+2026-08-18,Kabupaten Pacitan,Pasar Arjosari,39,Bawang Merah / kg,26000
+2026-08-19,Kabupaten Pacitan,Pasar Arjosari,39,Bawang Merah / kg,26000
+2026-08-16,Kabupaten Pacitan,Pasar Arjowinangun,39,Bawang Merah / kg,25000
+2026-08-17,Kabupaten Pacitan,Pasar Arjowinangun,39,Bawang Merah / kg,28000
+2026-08-18,Kabupaten Pacitan,Pasar Arjowinangun,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Pacitan,Pasar Arjowinangun,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Pacitan,Pasar Minulyo,39,Bawang Merah / kg,28000
+2026-08-17,Kabupaten Pacitan,Pasar Minulyo,39,Bawang Merah / kg,28000
+2026-08-18,Kabupaten Pacitan,Pasar Minulyo,39,Bawang Merah / kg,26000
+2026-08-19,Kabupaten Pacitan,Pasar Minulyo,39,Bawang Merah / kg,26000
+2026-08-16,Kabupaten Pamekasan,Pasar Kolpajung,39,Bawang Merah / kg,30000
+2026-08-17,Kabupaten Pamekasan,Pasar Kolpajung,39,Bawang Merah / kg,30000
+2026-08-18,Kabupaten Pamekasan,Pasar Kolpajung,39,Bawang Merah / kg,30000
+2026-08-19,Kabupaten Pamekasan,Pasar Kolpajung,39,Bawang Merah / kg,30000
+2026-08-16,Kabupaten Pamekasan,Pasar Waru,39,Bawang Merah / kg,30000
+2026-08-17,Kabupaten Pamekasan,Pasar Waru,39,Bawang Merah / kg,30000
+2026-08-18,Kabupaten Pamekasan,Pasar Waru,39,Bawang Merah / kg,30000
+2026-08-19,Kabupaten Pamekasan,Pasar Waru,39,Bawang Merah / kg,30000
+2026-08-16,Kabupaten Pasuruan,Pasar Bangil,39,Bawang Merah / kg,30000
+2026-08-17,Kabupaten Pasuruan,Pasar Bangil,39,Bawang Merah / kg,30000
+2026-08-18,Kabupaten Pasuruan,Pasar Bangil,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Pasuruan,Pasar Bangil,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Pasuruan,Pasar Pandaan,39,Bawang Merah / kg,29700
+2026-08-17,Kabupaten Pasuruan,Pasar Pandaan,39,Bawang Merah / kg,30000
+2026-08-18,Kabupaten Pasuruan,Pasar Pandaan,39,Bawang Merah / kg,29000
+2026-08-19,Kabupaten Pasuruan,Pasar Pandaan,39,Bawang Merah / kg,29000
+2026-08-16,Kabupaten Pasuruan,Pasar Sukorejo,39,Bawang Merah / kg,25000
+2026-08-17,Kabupaten Pasuruan,Pasar Sukorejo,39,Bawang Merah / kg,25000
+2026-08-18,Kabupaten Pasuruan,Pasar Sukorejo,39,Bawang Merah / kg,25000
+2026-08-19,Kabupaten Pasuruan,Pasar Sukorejo,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Ponorogo,Pasar Legi,39,Bawang Merah / kg,26000
+2026-08-17,Kabupaten Ponorogo,Pasar Legi,39,Bawang Merah / kg,26000
+2026-08-18,Kabupaten Ponorogo,Pasar Legi,39,Bawang Merah / kg,26000
+2026-08-19,Kabupaten Ponorogo,Pasar Legi,39,Bawang Merah / kg,26000
+2026-08-16,Kabupaten Ponorogo,Pasar Sumoroto,39,Bawang Merah / kg,28000
+2026-08-17,Kabupaten Ponorogo,Pasar Sumoroto,39,Bawang Merah / kg,28000
+2026-08-18,Kabupaten Ponorogo,Pasar Sumoroto,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Ponorogo,Pasar Sumoroto,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Probolinggo,Pasar Dringu,39,Bawang Merah / kg,32000
+2026-08-17,Kabupaten Probolinggo,Pasar Dringu,39,Bawang Merah / kg,32000
+2026-08-18,Kabupaten Probolinggo,Pasar Dringu,39,Bawang Merah / kg,32000
+2026-08-19,Kabupaten Probolinggo,Pasar Dringu,39,Bawang Merah / kg,32000
+2026-08-16,Kabupaten Probolinggo,Pasar Leces,39,Bawang Merah / kg,20000
+2026-08-17,Kabupaten Probolinggo,Pasar Leces,39,Bawang Merah / kg,20000
+2026-08-18,Kabupaten Probolinggo,Pasar Leces,39,Bawang Merah / kg,30000
+2026-08-19,Kabupaten Probolinggo,Pasar Leces,39,Bawang Merah / kg,30000
+2026-08-16,Kabupaten Probolinggo,Pasar Semampir,39,Bawang Merah / kg,28000
+2026-08-17,Kabupaten Probolinggo,Pasar Semampir,39,Bawang Merah / kg,28000
+2026-08-18,Kabupaten Probolinggo,Pasar Semampir,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Probolinggo,Pasar Semampir,39,Bawang Merah / kg,30000
+2026-08-16,Kabupaten Sampang,Pasar Rongtengah,39,Bawang Merah / kg,30000
+2026-08-17,Kabupaten Sampang,Pasar Rongtengah,39,Bawang Merah / kg,25000
+2026-08-18,Kabupaten Sampang,Pasar Rongtengah,39,Bawang Merah / kg,25000
+2026-08-19,Kabupaten Sampang,Pasar Rongtengah,39,Bawang Merah / kg,25000
+2026-08-16,Kabupaten Sampang,Pasar Srimangunan,39,Bawang Merah / kg,32000
+2026-08-17,Kabupaten Sampang,Pasar Srimangunan,39,Bawang Merah / kg,25000
+2026-08-18,Kabupaten Sampang,Pasar Srimangunan,39,Bawang Merah / kg,25000
+2026-08-19,Kabupaten Sampang,Pasar Srimangunan,39,Bawang Merah / kg,25000
+2026-08-16,Kabupaten Sidoarjo,Pasar Krian,39,Bawang Merah / kg,24000
+2026-08-17,Kabupaten Sidoarjo,Pasar Krian,39,Bawang Merah / kg,24000
+2026-08-18,Kabupaten Sidoarjo,Pasar Krian,39,Bawang Merah / kg,24000
+2026-08-19,Kabupaten Sidoarjo,Pasar Krian,39,Bawang Merah / kg,24000
+2026-08-16,Kabupaten Sidoarjo,Pasar Larangan,39,Bawang Merah / kg,28000
+2026-08-17,Kabupaten Sidoarjo,Pasar Larangan,39,Bawang Merah / kg,28000
+2026-08-18,Kabupaten Sidoarjo,Pasar Larangan,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Sidoarjo,Pasar Larangan,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Situbondo,Pasar Ardirejo,39,Bawang Merah / kg,25000
+2026-08-17,Kabupaten Situbondo,Pasar Ardirejo,39,Bawang Merah / kg,25000
+2026-08-18,Kabupaten Situbondo,Pasar Ardirejo,39,Bawang Merah / kg,24000
+2026-08-19,Kabupaten Situbondo,Pasar Ardirejo,39,Bawang Merah / kg,24000
+2026-08-16,Kabupaten Situbondo,Pasar Mimbaan Baru,39,Bawang Merah / kg,25000
+2026-08-17,Kabupaten Situbondo,Pasar Mimbaan Baru,39,Bawang Merah / kg,25000
+2026-08-18,Kabupaten Situbondo,Pasar Mimbaan Baru,39,Bawang Merah / kg,25000
+2026-08-19,Kabupaten Situbondo,Pasar Mimbaan Baru,39,Bawang Merah / kg,25000
+2026-08-16,Kabupaten Situbondo,Pasar Sumber Kolak,39,Bawang Merah / kg,26000
+2026-08-17,Kabupaten Situbondo,Pasar Sumber Kolak,39,Bawang Merah / kg,26000
+2026-08-18,Kabupaten Situbondo,Pasar Sumber Kolak,39,Bawang Merah / kg,24000
+2026-08-19,Kabupaten Situbondo,Pasar Sumber Kolak,39,Bawang Merah / kg,24000
+2026-08-16,Kabupaten Sumenep,Pasar Anom Baru,39,Bawang Merah / kg,30000
+2026-08-17,Kabupaten Sumenep,Pasar Anom Baru,39,Bawang Merah / kg,30000
+2026-08-18,Kabupaten Sumenep,Pasar Anom Baru,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Sumenep,Pasar Anom Baru,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Sumenep,Pasar Bangkal,39,Bawang Merah / kg,32000
+2026-08-17,Kabupaten Sumenep,Pasar Bangkal,39,Bawang Merah / kg,32000
+2026-08-18,Kabupaten Sumenep,Pasar Bangkal,39,Bawang Merah / kg,32000
+2026-08-19,Kabupaten Sumenep,Pasar Bangkal,39,Bawang Merah / kg,32000
+2026-08-16,Kabupaten Trenggalek,Pasar Basah,39,Bawang Merah / kg,22000
+2026-08-17,Kabupaten Trenggalek,Pasar Basah,39,Bawang Merah / kg,22000
+2026-08-18,Kabupaten Trenggalek,Pasar Basah,39,Bawang Merah / kg,22000
+2026-08-19,Kabupaten Trenggalek,Pasar Basah,39,Bawang Merah / kg,22000
+2026-08-16,Kabupaten Trenggalek,Pasar Subuh,39,Bawang Merah / kg,24000
+2026-08-17,Kabupaten Trenggalek,Pasar Subuh,39,Bawang Merah / kg,24000
+2026-08-18,Kabupaten Trenggalek,Pasar Subuh,39,Bawang Merah / kg,24000
+2026-08-19,Kabupaten Trenggalek,Pasar Subuh,39,Bawang Merah / kg,24000
+2026-08-16,Kabupaten Tuban,Pasar Bangilan,39,Bawang Merah / kg,27000
+2026-08-17,Kabupaten Tuban,Pasar Bangilan,39,Bawang Merah / kg,27000
+2026-08-18,Kabupaten Tuban,Pasar Bangilan,39,Bawang Merah / kg,27000
+2026-08-19,Kabupaten Tuban,Pasar Bangilan,39,Bawang Merah / kg,26000
+2026-08-16,Kabupaten Tuban,Pasar Baru Tuban,39,Bawang Merah / kg,26000
+2026-08-17,Kabupaten Tuban,Pasar Baru Tuban,39,Bawang Merah / kg,26000
+2026-08-18,Kabupaten Tuban,Pasar Baru Tuban,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Tuban,Pasar Baru Tuban,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Tuban,Pasar Jatirogo,39,Bawang Merah / kg,25000
+2026-08-17,Kabupaten Tuban,Pasar Jatirogo,39,Bawang Merah / kg,25000
+2026-08-18,Kabupaten Tuban,Pasar Jatirogo,39,Bawang Merah / kg,25000
+2026-08-19,Kabupaten Tuban,Pasar Jatirogo,39,Bawang Merah / kg,25000
+2026-08-16,Kabupaten Tulungagung,Pasar Bandung,39,Bawang Merah / kg,23000
+2026-08-17,Kabupaten Tulungagung,Pasar Bandung,39,Bawang Merah / kg,23000
+2026-08-18,Kabupaten Tulungagung,Pasar Bandung,39,Bawang Merah / kg,23000
+2026-08-19,Kabupaten Tulungagung,Pasar Bandung,39,Bawang Merah / kg,23000
+2026-08-16,Kabupaten Tulungagung,Pasar Ngemplak,39,Bawang Merah / kg,28000
+2026-08-17,Kabupaten Tulungagung,Pasar Ngemplak,39,Bawang Merah / kg,28000
+2026-08-18,Kabupaten Tulungagung,Pasar Ngemplak,39,Bawang Merah / kg,28000
+2026-08-19,Kabupaten Tulungagung,Pasar Ngemplak,39,Bawang Merah / kg,28000
+2026-08-16,Kabupaten Tulungagung,Pasar Ngunut,39,Bawang Merah / kg,25000
+2026-08-17,Kabupaten Tulungagung,Pasar Ngunut,39,Bawang Merah / kg,25000
+2026-08-18,Kabupaten Tulungagung,Pasar Ngunut,39,Bawang Merah / kg,25000
+2026-08-19,Kabupaten Tulungagung,Pasar Ngunut,39,Bawang Merah / kg,25000
+2026-08-16,Kabupaten Tulungagung,Pasar Tamanan,39,Bawang Merah / kg,27000
+2026-08-17,Kabupaten Tulungagung,Pasar Tamanan,39,Bawang Merah / kg,27000
+2026-08-18,Kabupaten Tulungagung,Pasar Tamanan,39,Bawang Merah / kg,27000
+2026-08-19,Kabupaten Tulungagung,Pasar Tamanan,39,Bawang Merah / kg,27000
+2026-08-16,Kota Batu,Pasar Besar Kota Batu,39,Bawang Merah / kg,28000
+2026-08-17,Kota Batu,Pasar Besar Kota Batu,39,Bawang Merah / kg,28000
+2026-08-18,Kota Batu,Pasar Besar Kota Batu,39,Bawang Merah / kg,28000
+2026-08-19,Kota Batu,Pasar Besar Kota Batu,39,Bawang Merah / kg,28000
+2026-08-16,Kota Batu,Pasar Gentengan,39,Bawang Merah / kg,35000
+2026-08-17,Kota Batu,Pasar Gentengan,39,Bawang Merah / kg,40000
+2026-08-18,Kota Batu,Pasar Gentengan,39,Bawang Merah / kg,40000
+2026-08-19,Kota Batu,Pasar Gentengan,39,Bawang Merah / kg,38000
+2026-08-16,Kota Batu,Pasar Pesanggrahan,39,Bawang Merah / kg,30000
+2026-08-17,Kota Batu,Pasar Pesanggrahan,39,Bawang Merah / kg,28000
+2026-08-18,Kota Batu,Pasar Pesanggrahan,39,Bawang Merah / kg,30000
+2026-08-19,Kota Batu,Pasar Pesanggrahan,39,Bawang Merah / kg,30000
+2026-08-16,Kota Batu,Pasar Songgoriti,39,Bawang Merah / kg,40000
+2026-08-17,Kota Batu,Pasar Songgoriti,39,Bawang Merah / kg,40000
+2026-08-18,Kota Batu,Pasar Songgoriti,39,Bawang Merah / kg,40000
+2026-08-19,Kota Batu,Pasar Songgoriti,39,Bawang Merah / kg,40000
+2026-08-16,Kota Blitar,Pasar Legi,39,Bawang Merah / kg,28000
+2026-08-17,Kota Blitar,Pasar Legi,39,Bawang Merah / kg,28000
+2026-08-18,Kota Blitar,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-19,Kota Blitar,Pasar Legi,39,Bawang Merah / kg,25000
+2026-08-16,Kota Blitar,Pasar Pon,39,Bawang Merah / kg,28000
+2026-08-17,Kota Blitar,Pasar Pon,39,Bawang Merah / kg,28000
+2026-08-18,Kota Blitar,Pasar Pon,39,Bawang Merah / kg,25000
+2026-08-19,Kota Blitar,Pasar Pon,39,Bawang Merah / kg,25000
+2026-08-16,Kota Madiun,Pasar Besar,39,Bawang Merah / kg,30000
+2026-08-17,Kota Madiun,Pasar Besar,39,Bawang Merah / kg,30000
+2026-08-18,Kota Madiun,Pasar Besar,39,Bawang Merah / kg,30000
+2026-08-19,Kota Madiun,Pasar Besar,39,Bawang Merah / kg,30000
+2026-08-16,Kota Madiun,Pasar Sleko,39,Bawang Merah / kg,35000
+2026-08-17,Kota Madiun,Pasar Sleko,39,Bawang Merah / kg,35000
+2026-08-18,Kota Madiun,Pasar Sleko,39,Bawang Merah / kg,30000
+2026-08-19,Kota Madiun,Pasar Sleko,39,Bawang Merah / kg,30000
+2026-08-16,Kota Madiun,Pasar Srijaya,39,Bawang Merah / kg,32000
+2026-08-17,Kota Madiun,Pasar Srijaya,39,Bawang Merah / kg,32000
+2026-08-18,Kota Madiun,Pasar Srijaya,39,Bawang Merah / kg,35000
+2026-08-19,Kota Madiun,Pasar Srijaya,39,Bawang Merah / kg,35000
+2026-08-16,Kota Mojokerto,Pasar Prajuritkulon,39,Bawang Merah / kg,26000
+2026-08-17,Kota Mojokerto,Pasar Prajuritkulon,39,Bawang Merah / kg,26000
+2026-08-18,Kota Mojokerto,Pasar Prajuritkulon,39,Bawang Merah / kg,26000
+2026-08-19,Kota Mojokerto,Pasar Prajuritkulon,39,Bawang Merah / kg,26000
+2026-08-16,Kota Mojokerto,Pasar Tanjung Anyar,39,Bawang Merah / kg,28000
+2026-08-17,Kota Mojokerto,Pasar Tanjung Anyar,39,Bawang Merah / kg,28000
+2026-08-18,Kota Mojokerto,Pasar Tanjung Anyar,39,Bawang Merah / kg,27000
+2026-08-19,Kota Mojokerto,Pasar Tanjung Anyar,39,Bawang Merah / kg,27000
+2026-08-16,Kota Pasuruan,Pasar Besar,39,Bawang Merah / kg,30000
+2026-08-17,Kota Pasuruan,Pasar Besar,39,Bawang Merah / kg,30000
+2026-08-18,Kota Pasuruan,Pasar Besar,39,Bawang Merah / kg,26500
+2026-08-19,Kota Pasuruan,Pasar Besar,39,Bawang Merah / kg,26500
+2026-08-16,Kota Pasuruan,Pasar Kebonagung,39,Bawang Merah / kg,30000
+2026-08-17,Kota Pasuruan,Pasar Kebonagung,39,Bawang Merah / kg,30000
+2026-08-18,Kota Pasuruan,Pasar Kebonagung,39,Bawang Merah / kg,26500
+2026-08-19,Kota Pasuruan,Pasar Kebonagung,39,Bawang Merah / kg,26500
+2026-08-16,Kota Probolinggo,Pasar Baru,39,Bawang Merah / kg,34000
+2026-08-17,Kota Probolinggo,Pasar Baru,39,Bawang Merah / kg,34000
+2026-08-18,Kota Probolinggo,Pasar Baru,39,Bawang Merah / kg,34000
+2026-08-19,Kota Probolinggo,Pasar Baru,39,Bawang Merah / kg,34000
+2026-08-16,Kota Probolinggo,Pasar Kronong,39,Bawang Merah / kg,30000
+2026-08-17,Kota Probolinggo,Pasar Kronong,39,Bawang Merah / kg,30000
+2026-08-18,Kota Probolinggo,Pasar Kronong,39,Bawang Merah / kg,30000
+2026-08-19,Kota Probolinggo,Pasar Kronong,39,Bawang Merah / kg,30000
+2026-08-16,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,32000
+2026-08-17,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,32000
+2026-08-18,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,32000
+2026-08-19,Kota Probolinggo,Pasar Wonoasih,39,Bawang Merah / kg,32000

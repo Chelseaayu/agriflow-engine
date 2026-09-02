@@ -10,7 +10,7 @@
 import {
   createContext, useCallback, useContext, useEffect, useMemo, useState,
 } from "react";
-import type { Session, User } from "@supabase/supabase-js";
+import type { Provider, Session, User } from "@supabase/supabase-js";
 import { getSupabase, isAuthConfigured } from "./supabase";
 import {
   credentialsMatch, currentDevUser, enterDev, exitDev, DEV_LOGIN_ENABLED,
@@ -33,7 +33,7 @@ type AuthContextValue = {
   loading: boolean;
   configured: boolean;
   signIn: (email: string, password: string) => Promise<AuthResult>;
-  signUp: (email: string, password: string) => Promise<AuthResult>;
+  signInWithOAuth: (provider: Provider, nextPath?: string) => Promise<AuthResult>;
   signOut: () => Promise<void>;
   requestPasswordReset: (email: string) => Promise<AuthResult>;
   updatePassword: (newPassword: string) => Promise<AuthResult>;
@@ -97,12 +97,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { error: error?.message ?? null };
   }, []);
 
-  const signUp = useCallback(async (email: string, password: string) => {
-    const supabase = getSupabase();
-    if (!supabase) return { error: NOT_CONFIGURED };
-    const { error } = await supabase.auth.signUp({ email, password });
-    return { error: error?.message ?? null };
-  }, []);
+  // Social login (Google today, any Supabase Provider tomorrow). Self-serve
+  // email/password signup is gone on purpose: accounts come from OAuth or are
+  // provisioned by an admin, which removes the password-policy and
+  // leaked-password surface from this app entirely. The browser leaves the
+  // page for the provider's consent screen, so on success nothing after the
+  // call runs; redirectTo brings the visitor back to the page they wanted
+  // (and must be listed in Supabase's Authentication > URL Configuration
+  // allow-list, or Supabase falls back to the Site URL).
+  const signInWithOAuth = useCallback(
+    async (provider: Provider, nextPath: string = "/") => {
+      const supabase = getSupabase();
+      if (!supabase) return { error: NOT_CONFIGURED };
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: { redirectTo: `${window.location.origin}${nextPath}` },
+      });
+      return { error: error?.message ?? null };
+    },
+    [],
+  );
 
   const signOut = useCallback(async () => {
     await getSupabase()?.auth.signOut();
@@ -146,12 +160,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       loading,
       configured: configured || DEV_LOGIN_ENABLED,
       signIn,
-      signUp,
+      signInWithOAuth,
       signOut,
       requestPasswordReset,
       updatePassword,
     }),
-    [session, devUser, loading, configured, signIn, signUp, signOut,
+    [session, devUser, loading, configured, signIn, signInWithOAuth, signOut,
      requestPasswordReset, updatePassword],
   );
 

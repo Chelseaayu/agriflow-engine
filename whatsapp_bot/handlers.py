@@ -473,14 +473,11 @@ def handle_forecast(intent: Intent, data: EngineData) -> str:
             "Contoh: \"Prediksi harga cabai rawit Surabaya\""
         )
 
-    # Resolve IHK city_id
+    # Resolve city_id (38 kabupaten/kota since active Siskaperbapo history)
     city_id = _resolve_city_id(kab_id, kab_name)
     if city_id is None:
-        available_cities = "Jember, Banyuwangi, Sumenep, Kota Kediri, "
-        available_cities += "Kota Malang, Kota Probolinggo, Kota Madiun, Kota Surabaya"
         return (
-            "Data historis harga tersedia untuk 8 kota IHK Jawa Timur:\n"
-            + available_cities + ".\n"
+            "Data historis harga tersedia untuk 38 kabupaten/kota Jawa Timur.\n"
             "Contoh: \"Prediksi harga bawang merah Surabaya\""
         )
 

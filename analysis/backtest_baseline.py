@@ -113,14 +113,12 @@ def main():
     args = ap.parse_args()
     conformal = not args.no_conformal
 
+    active = _load_active_series(PRICE_DIR)
+
     per_commodity: dict[str, list[dict]] = defaultdict(list)
     detail = []
-    for fname, comm in FILE_COMMODITY.items():
-        path = os.path.join(PRICE_DIR, fname)
-        if not os.path.exists(path):
-            continue
-        series_by_city = _load_series(path)
-        for cid, series in series_by_city.items():
+    for comm, by_city in sorted(active.items()):
+        for cid, series in sorted(by_city.items()):
             m = _score(series, args.horizon)
             if m is None:
                 continue

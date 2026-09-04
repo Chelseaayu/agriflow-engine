@@ -1,6 +1,6 @@
 {
   "method": "hampel_mad_v2",
-  "generated_at": "2026-08-28T14:07:57+00:00",
+  "generated_at": "2026-09-04T12:12:31+00:00",
   "params": {
     "window": 30,
     "k": 3.0,
@@ -10,5 +10,5 @@
   "n_records": 5686,
   "first_anomaly_date": "2021-02-15",
   "last_anomaly_date": "2025-12-31",
-  "price_dir": "/Users/master/Research/Project Data/agriflow-review/repo/sample_data/price_history"
+  "price_dir": "/home/runner/work/agriflow-engine/agriflow-engine/sample_data/price_history"
 }
